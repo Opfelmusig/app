@@ -5,7 +5,24 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
-  modules: ["@nuxt/eslint", "@nuxt/ui", "@vueuse/nuxt"],
+  modules: [
+    "@nuxt/eslint",
+    "@nuxt/ui",
+    "@vueuse/nuxt",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate",
+    "@waradu/keyboard/nuxt",
+  ],
+
+  // Modules
+
+  keyboard: {
+    capture: true,
+  },
+
+  piniaPluginPersistedstate: {
+    storage: "localStorage",
+  },
 
   // Tauri
 
@@ -44,6 +61,18 @@ export default defineNuxtConfig({
         subsets: ["latin"],
       },
     ],
+  },
+
+  icon: {
+    provider: "server",
+    fallbackToApi: false,
+    serverBundle: {
+      collections: ["lucide"],
+    },
+    clientBundle: {
+      scan: true,
+      icons: [],
+    },
   },
 
   // Others
