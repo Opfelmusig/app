@@ -28,4 +28,10 @@ export default defineNuxtConfig({
       },
     ],
   },
+
+  // Others
+
+  experimental: {
+    typescriptPlugin: true,
+  },
 });

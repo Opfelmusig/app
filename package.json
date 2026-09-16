@@ -24,8 +24,11 @@
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
+    "@golar/vue": "^0.1.10",
+    "@iconify-json/lucide": "^1.2.131",
     "@nuxt/eslint": "^1.17.0",
     "eslint": "^10.10.0",
+    "golar": "^0.1.10",
     "lefthook": "^2.1.12",
     "oxfmt": "^0.67.0",
     "typescript": "^7.0.2"
