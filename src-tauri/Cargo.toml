@@ -13,7 +13,7 @@ name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.6.3" }
+tauri-build = { version = "2.6.3", features = [] }
 
 [dependencies]
 serde_json = "1.0"
@@ -26,6 +26,8 @@ tauri = { version = "2.11.3", features = [
   "devtools",
 ] }
 tauri-plugin-log = "2"
+tauri-plugin-deep-link = "2"
+tauri-plugin-updater = "2"
 
 [profile.dev.package.scrypt]
 opt-level = 3

@@ -1,0 +1,104 @@
+name: "publish"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: "macos"
+            runner: '["self-hosted", "macOS", "ARM64"]'
+            args: "--target aarch64-apple-darwin"
+          - os: "linux"
+            runner: '["self-hosted", "Linux", "X64"]'
+            args: ""
+          - os: "windows"
+            runner: '["self-hosted", "Windows", "X64"]'
+            args: ""
+
+    runs-on: ${{ fromJSON(matrix.runner) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          set-safe-directory: false
+      - uses: oven-sh/setup-bun@v2
+
+      - name: setup node
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Configure runner Rust directories
+        shell: "node {0}"
+        run: |
+          const fs = require("node:fs")
+          const path = require("node:path")
+          const toolCache = process.env.RUNNER_TOOL_CACHE
+
+          if (!toolCache) {
+            throw new Error("RUNNER_TOOL_CACHE is not available.")
+          }
+
+          fs.appendFileSync(
+            process.env.GITHUB_ENV,
+            `CARGO_HOME=${path.join(toolCache, "cargo")}\nRUSTUP_HOME=${path.join(toolCache, "rustup")}\n`,
+          )
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.os == 'macos' && 'aarch64-apple-darwin' || '' }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+          cache-bin: "false"
+
+      - name: Cache bun dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
+
+      - name: install frontend dependencies
+        run: bun ci
+
+      - name: Set app version
+        shell: "node {0}"
+        run: |
+          const fs = require("node:fs")
+          const configPath = "src-tauri/tauri.conf.json"
+          const config = JSON.parse(fs.readFileSync(configPath, "utf8"))
+          const [major, minor] = config.version.split(".").map(Number)
+          const runNumber = Number(process.env.GITHUB_RUN_NUMBER)
+
+          if (!Number.isSafeInteger(runNumber) || runNumber > 65535) {
+            throw new Error("Workflow run number exceeds the MSI version limit.")
+          }
+
+          config.version = `${major}.${minor}.${runNumber}`
+          fs.writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`)
+
+      - uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.DOWNLOADS_REPO_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        with:
+          owner: opfelmusig
+          repo: downloads
+          releaseCommitish: main
+          tagName: app-v__VERSION__
+          releaseName: "App v__VERSION__"
+          releaseBody: "There may or may not be a changelog for v__VERSION__. Check the [CHANGELOG](https://github.com/opfelmusig/downloads/blob/main/CHANGELOG.md)."
+          releaseDraft: false
+          prerelease: false
+          uploadUpdaterJson: true
+          args: ${{ matrix.args }}
