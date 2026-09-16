@@ -15,6 +15,9 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.11.1",
+    "@vueuse/components": "^14.4.0",
+    "@vueuse/nuxt": "^14.4.0",
+    "@vueuse/router": "^14.4.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.3.0",
     "nuxt": "^4.5.2",
