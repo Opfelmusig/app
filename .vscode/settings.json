@@ -3,6 +3,15 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "tailwindCSS.experimental.configFile": "app/assets/css/tailwind.css",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.classAttributes": ["class", "ui"],
+  "tailwindCSS.classFunctions": ["defineAppConfig", "cn", "cva"],
   "[vue]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
