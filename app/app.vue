@@ -1,6 +1,15 @@
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-  </div>
+  <UApp :locale="en">
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </UApp>
 </template>
+
+<script lang="ts" setup>
+import { en } from "@nuxt/ui/locale";
+
+useHead({
+  titleTemplate: (title) => (title ? `${title} | Öpfelmusig` : "Öpfelmusig"),
+});
+</script>
