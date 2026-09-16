@@ -7,6 +7,23 @@ export default defineNuxtConfig({
 
   modules: ["@nuxt/eslint", "@nuxt/ui", "@vueuse/nuxt"],
 
+  // Tauri
+
+  ssr: false,
+
+  vite: {
+    clearScreen: false,
+    envPrefix: ["VITE_", "TAURI_"],
+    resolve: {
+      dedupe: ["vue"],
+    },
+    server: {
+      strictPort: true,
+    },
+  },
+
+  ignore: ["**/src-tauri/**"],
+
   // UI
 
   css: ["~/assets/css/tailwind.css"],

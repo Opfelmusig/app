@@ -1,0 +1,42 @@
+{
+  "app": {
+    "windows": [
+      {
+        "title": "Öpfelmusig",
+        "dragDropEnabled": false,
+        "visible": false,
+        "decorations": true,
+        "width": 1000,
+        "height": 650,
+        "minWidth": 700,
+        "minHeight": 500,
+        "resizable": true,
+        "fullscreen": false,
+        "theme": "Dark",
+        "backgroundColor": "#18181b",
+        "backgroundThrottling": "disabled",
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay"
+      }
+    ]
+  },
+  "bundle": {
+    "macOS": {
+      "dmg": {
+        "background": "./dmg/background.jpg",
+        "windowSize": {
+          "width": 600,
+          "height": 700
+        },
+        "appPosition": {
+          "x": 317,
+          "y": 470
+        },
+        "applicationFolderPosition": {
+          "x": 310,
+          "y": 130
+        }
+      }
+    }
+  }
+}
