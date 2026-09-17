@@ -3,5 +3,33 @@
   "identifier": "default",
   "description": "enables the default permissions",
   "windows": ["main"],
-  "permissions": ["core:default"]
+  "permissions": [
+    "core:default",
+    "deep-link:default",
+    "updater:default",
+    "core:webview:allow-create-webview-window",
+    "core:window:allow-set-focus",
+    "core:window:default",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-start-dragging",
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://amp-api.music.apple.com"
+        },
+        {
+          "url": "https://music.apple.com"
+        },
+        {
+          "url": "https://play.music.apple.com"
+        },
+        {
+          "url": "https://universal-activity-service.itunes.apple.com"
+        }
+      ]
+    }
+  ]
 }

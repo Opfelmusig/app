@@ -29,6 +29,7 @@ tauri-plugin-log = "2"
 tauri-plugin-deep-link = "2"
 tauri-plugin-updater = "2"
 tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
+tauri-plugin-http = { version = "2", features = ["unsafe-headers"] }
 
 [profile.dev.package.scrypt]
 opt-level = 3
