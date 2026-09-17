@@ -23,17 +23,17 @@
 </template>
 
 <script lang="ts" setup>
-import { AppleMusicError } from "@opfelmusig/lib";
-
 useHead({ title: "Login" });
 
 const token = ref("");
 const error = ref<string>();
 const loading = ref(false);
 
-const { $auth } = useNuxtApp();
+const { login } = useAuth();
 
 const submit = async () => {
+  if (loading.value) return;
+
   error.value = undefined;
 
   if (!token.value) {
@@ -44,11 +44,9 @@ const submit = async () => {
   loading.value = true;
 
   try {
-    await $auth.login(token.value);
+    await login(token.value);
   } catch (ex) {
-    await $auth.logout();
-
-    if (ex instanceof AppleMusicError && ex.status === 403) {
+    if (isAuthError(ex)) {
       error.value = "Invalid User Token";
     } else {
       error.value = "Unknown Error";

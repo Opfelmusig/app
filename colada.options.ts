@@ -9,6 +9,9 @@ export default {
   plugins: [
     PiniaColadaCachePersister({
       key: "queries-v1",
+      filter: {
+        predicate: ({ meta }) => meta.persist !== false,
+      },
       storage: {
         async getItem(key: string) {
           return (await get<string>(key, store)) ?? null;
