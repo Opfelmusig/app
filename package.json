@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.11.1",
+    "@opfelmusig/lib": "^0.0.0-ci.10.sha-1e790db",
     "@pinia/nuxt": "^1.0.2",
     "@vueuse/components": "^14.4.0",
     "@vueuse/nuxt": "^14.4.0",
@@ -31,7 +32,7 @@
   },
   "devDependencies": {
     "@golar/vue": "^0.1.10",
-    "@iconify-json/lucide": "^1.2.131",
+    "@iconify-json/lucide": "^1.2.132",
     "@nuxt/eslint": "^1.17.0",
     "@tauri-apps/cli": "^2.11.4",
     "eslint": "^10.10.0",
@@ -39,5 +40,8 @@
     "lefthook": "^2.1.12",
     "oxfmt": "^0.67.0",
     "typescript": "^7.0.2"
+  },
+  "patchedDependencies": {
+    "reka-ui@2.10.4": "patches/reka-ui@2.10.4.patch"
   }
 }
