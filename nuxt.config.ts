@@ -1,9 +1,13 @@
+import type { devtools } from "vue";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // Nuxt
 
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+
+  // Modules
 
   modules: [
     "@nuxt/eslint",
@@ -12,9 +16,8 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate",
     "@waradu/keyboard/nuxt",
+    "@pinia/colada-nuxt",
   ],
-
-  // Modules
 
   keyboard: {
     capture: true,
