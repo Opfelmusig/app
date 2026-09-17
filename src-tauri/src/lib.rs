@@ -2,13 +2,13 @@ use tauri::{AppHandle, Manager};
 
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _, _| {
+        /* .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             focus_main_window(app)
-        }))
+        })) */
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_http::init())
-        .invoke_handler(tauri::generate_handler![native_open_devtools,])
+        .invoke_handler(tauri::generate_handler![native_open_devtools])
         .setup(|app| {
             let app_data_dir = app
                 .path()

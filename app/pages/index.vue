@@ -1,7 +1,6 @@
 <template>
-  <h1>{{ $profile.data.value?.attributes?.name }}</h1>
+  <div class="p-8">
+    <h1>{{ $profile.data.value?.attributes?.name }}</h1>
+    <UButton @click="$auth.logout">Logout</UButton>
+  </div>
 </template>
-
-<script lang="ts" setup>
-const { $profile } = useNuxtApp();
-</script>

@@ -11,7 +11,8 @@ export default defineNuxtPlugin({
   name: "opfelmusig",
   dependsOn: ["colada-ready"],
   setup: async () => {
-    const vaultPath = await join(await appDataDir(), "auth.hold");
+    const dataDir = await appDataDir();
+    const vaultPath = await join(dataDir, "auth.hold");
     const stronghold = await Stronghold.load(vaultPath, "opfelmusig:auth");
     const client = await stronghold.loadClient(CLIENT).catch(() => stronghold.createClient(CLIENT));
     const store = client.getStore();
@@ -21,7 +22,8 @@ export default defineNuxtPlugin({
       return storedToken ? new TextDecoder().decode(storedToken) : null;
     }
 
-    const token = ref(await get());
+    const token = ref<string | null>();
+    token.value = await get();
 
     async function set(newToken: string) {
       await store.insert(TOKEN_KEY, Array.from(new TextEncoder().encode(newToken)));
@@ -57,6 +59,7 @@ export default defineNuxtPlugin({
       },
       userToken: () => token.value,
       fetch,
+      debug: true,
     });
 
     const profileQuery = useQuery({
@@ -115,42 +118,39 @@ export default defineNuxtPlugin({
         return;
       }
 
-      try {
-        const storefront = await opfelmusig.useUserDefault();
+      const storefront = await opfelmusig.useUserDefault();
 
-        if (
-          settingsStore.language &&
-          storefront?.supportedLanguageTags.includes(settingsStore.language)
-        ) {
-          opfelmusig.setLanguageFromTag(settingsStore.language);
-        } else {
-          settingsStore.language = storefront?.defaultLanguageTag;
-        }
-
-        await profileQuery.refresh(true);
-      } catch (ex) {
-        if (ex instanceof AppleMusicError && ex.status === 403) {
-          await logout();
-          await navigateTo("/login");
-          return;
-        }
-
-        throw ex;
+      if (
+        settingsStore.language &&
+        storefront?.supportedLanguageTags.includes(settingsStore.language)
+      ) {
+        opfelmusig.setLanguageFromTag(settingsStore.language);
+      } else {
+        settingsStore.language = storefront?.defaultLanguageTag;
       }
+
+      await profileQuery.refresh(true);
     }
 
-    await prepareClient();
+    try {
+      await prepareClient();
+    } catch {
+      await logout();
+      await navigateTo("/login");
+    }
 
     async function login(newToken: string) {
       clearProfile();
       await set(newToken);
       await prepareClient();
+      await navigateTo("/");
     }
 
     async function logout() {
       await remove();
       settingsStore.language = undefined;
       clearProfile();
+      await navigateTo("/login");
     }
 
     return {

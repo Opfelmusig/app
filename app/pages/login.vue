@@ -46,6 +46,8 @@ const submit = async () => {
   try {
     await $auth.login(token.value);
   } catch (ex) {
+    await $auth.logout();
+
     if (ex instanceof AppleMusicError && ex.status === 403) {
       error.value = "Invalid User Token";
     } else {
