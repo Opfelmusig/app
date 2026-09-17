@@ -2,7 +2,7 @@
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
-  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.preferences.includePackageJsonAutoImports": "on",
   "tailwindCSS.experimental.configFile": "app/assets/css/tailwind.css",
   "files.associations": {
     "*.css": "tailwindcss"
