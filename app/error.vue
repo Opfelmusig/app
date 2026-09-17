@@ -49,7 +49,6 @@
 const error = useError();
 
 const isDev = import.meta.dev;
-const clearingCaches = ref(false);
 
 const status = computed(() => error.value?.status ?? error.value?.statusCode);
 const title = computed(

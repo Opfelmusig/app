@@ -1,5 +1,3 @@
-import type { devtools } from "vue";
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // Nuxt
