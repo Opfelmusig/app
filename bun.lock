@@ -10,6 +10,7 @@
         "@pinia/colada": "^1.4.4",
         "@pinia/colada-nuxt": "^1.1.0",
         "@pinia/colada-plugin-auto-refetch": "^0.2.6",
+        "@pinia/colada-plugin-cache-persister": "^1.1.1",
         "@pinia/nuxt": "^1.0.2",
         "@vueuse/components": "^14.4.0",
         "@vueuse/nuxt": "^14.4.0",
@@ -17,6 +18,7 @@
         "@waradu/keyboard": "^9.2.0",
         "class-variance-authority": "^0.7.1",
         "cn": "^0.3.0",
+        "idb-keyval": "^6.3.0",
         "nuxt": "^4.5.2",
         "pinia-plugin-persistedstate": "^4.7.1",
         "tailwind-scrollbar-hide": "^4.0.0",
@@ -383,6 +385,8 @@
     "@pinia/colada-nuxt": ["@pinia/colada-nuxt@1.1.0", "", { "dependencies": { "@nuxt/kit": "^4.5.2" }, "peerDependencies": { "@pinia/colada": ">=1.4.3" } }, "sha512-QuFco8I+LsXCf52OMGwXvctXMzCV2GY7mLrQ8rMy6d60YeO2h9dZ7MuxWilW0kMIdcrqS6na17f4OCT7sFwBiQ=="],
 
     "@pinia/colada-plugin-auto-refetch": ["@pinia/colada-plugin-auto-refetch@0.2.6", "", { "peerDependencies": { "@pinia/colada": ">=1.0.0" } }, "sha512-u/W8orRnOEHKWqatQ1yaHr9R1UPKJseHKjShW23oqq4TrOZvR6RU8Nc7flBtTbauU2KCydpgDQE68tWAZ4sNsg=="],
+
+    "@pinia/colada-plugin-cache-persister": ["@pinia/colada-plugin-cache-persister@1.1.1", "", { "dependencies": { "nostics": "^1.2.0" }, "peerDependencies": { "@pinia/colada": ">=1.4.2" } }, "sha512-4C9An/vcf703NfSbqFjhaNdvFbDRvzUHZFKm8sq6MYcEFaJjGmsODrb2BEoTbRWaLh12sEyGWzV6drPqaTSXRw=="],
 
     "@pinia/nuxt": ["@pinia/nuxt@1.0.2", "", { "dependencies": { "@nuxt/kit": "^4.4.8" }, "peerDependencies": { "pinia": "^4.0.3" } }, "sha512-x+G/zz7SDjLq3TUf0jpaXiOb03ZY+O3i0q8aMP76Lz3MS/NaE71SJCCZjYiF8dNsz/0oOnCPT2DKghkumXlVRw=="],
 
@@ -1273,6 +1277,8 @@
     "httpxy": ["httpxy@0.5.5", "", {}, "sha512-uDjmnPyp1q4Sgzf3w+J/Fc6UqcCEj0x4Wjp7OqK5dGhNeDgpyrAmnS6ey8QWrX3SWDon2DMKf9sBa5X9+CVyMA=="],
 
     "human-signals": ["human-signals@5.0.0", "", {}, "sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ=="],
+
+    "idb-keyval": ["idb-keyval@6.3.0", "", {}, "sha512-um+2dgAWmYsu615EXpWVwSmapJhON0G43t3Ka/EVaohzPQXSMqKEqeDK/oIW3Ow+BXaF2PvSc+oBTFp793A5Ow=="],
 
     "identifier-regex": ["identifier-regex@1.1.0", "", { "dependencies": { "reserved-identifiers": "^1.0.0" } }, "sha512-SLX4H/vtcYlYnL7XqnuJKHU7Z8517TgsW9nmQiGOgMCjQ8V/deLYu6bEmbGoXe7WMMhc9+EUGyFFneHja8KabA=="],
 
