@@ -22,20 +22,4 @@ export default withNuxt(
       "vue/return-in-computed-property": "off",
     },
   },
-).append({
-  name: "custom/imports",
-  files: ["app/**/*", "server/**/*", "shared/**/*"],
-  rules: {
-    "no-restricted-imports": [
-      "error",
-      {
-        patterns: [
-          {
-            group: ["../*", "../**", "./*", "./**", ".", ".."],
-            message: "Use absolute instead of relative imports.",
-          },
-        ],
-      },
-    ],
-  },
-});
+);
