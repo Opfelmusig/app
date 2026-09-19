@@ -29,7 +29,7 @@ const token = ref("");
 const error = ref<string>();
 const loading = ref(false);
 
-const { login } = useAuth();
+const { $auth } = useNuxtApp();
 
 const submit = async () => {
   if (loading.value) return;
@@ -44,7 +44,7 @@ const submit = async () => {
   loading.value = true;
 
   try {
-    await login(token.value);
+    await $auth.login(token.value);
   } catch (ex) {
     if (isAuthError(ex)) {
       error.value = "Invalid User Token";
