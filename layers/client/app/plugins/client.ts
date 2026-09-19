@@ -3,6 +3,7 @@ import { Stronghold } from "@tauri-apps/plugin-stronghold";
 import { OpfelMusigClient } from "@opfelmusig/lib";
 import { fetch } from "@tauri-apps/plugin-http";
 import ms from "ms";
+import { getAppleMusicDeveloperToken } from "#layers/client/app/lib/getAppleMusicDeveloperToken";
 
 const TOKEN_KEY = "apple-music:user-token";
 const CLIENT = "auth";
