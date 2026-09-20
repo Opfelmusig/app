@@ -92,6 +92,11 @@ export default defineNuxtPlugin({
       startSync().catch(() => undefined);
     }
 
+    async function manualSync() {
+      await initializePromise;
+      return startSync();
+    }
+
     async function startSync() {
       if (!auth.valid.value) return;
 
@@ -204,7 +209,7 @@ export default defineNuxtPlugin({
       provide: {
         library: {
           client,
-          sync: startSync,
+          sync: manualSync,
           state: readonly(state),
           progress: readonly(progress),
           error: readonly(error),
