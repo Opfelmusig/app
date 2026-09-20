@@ -32,7 +32,7 @@ export default defineNuxtPlugin({
       .catch(() => stronghold.createClient(CLIENT));
     const store = strongholdClient.getStore();
 
-    log.info("Stronghold ready");
+    log.info("Credential store ready");
 
     async function get() {
       const storedToken = await store.get(TOKEN_KEY);
@@ -42,7 +42,7 @@ export default defineNuxtPlugin({
     const token = ref<string | null>();
     token.value = await get();
 
-    log.info("Stored developer token aquired");
+    log.info("Stored user token loaded", { found: token.value !== null });
 
     const tokenValid = ref(false);
 
@@ -51,7 +51,7 @@ export default defineNuxtPlugin({
       await stronghold.save();
       token.value = newToken;
 
-      log.info("Stored token saved");
+      log.info("User token stored");
     }
 
     async function remove() {
@@ -59,7 +59,7 @@ export default defineNuxtPlugin({
       await stronghold.save();
       token.value = null;
 
-      log.info("Removed stored token");
+      log.info("Stored user token removed");
     }
 
     const profile = ref<UserProfile>();
@@ -76,7 +76,7 @@ export default defineNuxtPlugin({
 
         const { data } = await developerToken.refresh(true);
 
-        log.info("New developer token aquired");
+        log.info("Apple Music developer token refreshed");
 
         return data;
       },
@@ -92,7 +92,7 @@ export default defineNuxtPlugin({
 
       const startedAt = performance.now();
 
-      log.info("Preparing auth and testing credentials");
+      log.info("Authentication validation started");
 
       const storefront = await client.useUserDefault();
 
@@ -119,16 +119,15 @@ export default defineNuxtPlugin({
 
       tokenValid.value = true;
 
-      log.info("Auth ready and valid", {
+      log.info("Authentication validated", {
         durationMs: Math.round(performance.now() - startedAt),
         storefront: storefront?.name,
         language: settingsStore.language,
-        profileId: profileId.value,
       });
     }
 
     async function login(newToken: string) {
-      log.info("Logging in");
+      log.info("Login started");
 
       await set(newToken);
       try {
@@ -136,18 +135,18 @@ export default defineNuxtPlugin({
       } catch (cause) {
         await logout();
 
-        log.error("Auth failed", { cause });
+        log.error("Login failed", { cause });
 
         throw cause;
       }
 
-      log.info("Logged in");
+      log.info("Login completed");
 
       await navigateTo("/");
     }
 
     async function logout() {
-      log.info("Loggin out");
+      log.info("Logout started");
 
       await remove();
       settingsStore.language = undefined;
@@ -156,7 +155,7 @@ export default defineNuxtPlugin({
 
       await nuxtApp.callHook("auth:logout");
 
-      log.info("Logged out");
+      log.info("Logout completed");
 
       await navigateTo("/login");
     }
@@ -164,7 +163,7 @@ export default defineNuxtPlugin({
     try {
       await prepareClient();
     } catch (cause) {
-      log.error("Auth failed", { cause });
+      log.error("Stored authentication validation failed", { cause });
 
       if (isAuthError(cause)) {
         await logout();

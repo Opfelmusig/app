@@ -13,7 +13,7 @@ export async function syncAppleMusic(
 ) {
   const log = logger.withTag("sync");
 
-  log.info("Fetching data from Apple Music");
+  log.info("Apple Music library fetch started");
 
   progress.state = "fetching";
 
@@ -22,10 +22,13 @@ export async function syncAppleMusic(
   // Simulate download
   await sleep(5_000, signal);
 
-  log.info("Fetched data from Apple Music", {
+  log.info("Apple Music library fetch completed", {
     durationMs: Math.round(performance.now() - startedAt),
   });
-  log.info("Writing to database");
+
+  const writeStartedAt = performance.now();
+
+  log.info("Local library write started");
 
   progress.songs = 3;
   progress.state = "writing";
@@ -43,8 +46,8 @@ export async function syncAppleMusic(
     });
   });
 
-  log.info("Saved data to database", {
-    durationMs: Math.round(performance.now() - startedAt),
+  log.info("Local library write completed", {
+    durationMs: Math.round(performance.now() - writeStartedAt),
   });
 
   return lastSyncedAt;

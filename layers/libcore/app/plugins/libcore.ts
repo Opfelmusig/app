@@ -62,12 +62,12 @@ export default defineNuxtPlugin({
     }
 
     async function initializeSync() {
-      log.info("Initialized sync");
+      log.info("Checking local library state");
 
       const dbState = await client.state();
 
       if (dbState?.lastSyncedAt) {
-        log.info("Already synced", { lastSyncedAt: dbState.lastSyncedAt });
+        log.info("Loaded existing library state", { lastSyncedAt: dbState.lastSyncedAt });
 
         state.ready = true;
         state.syncing = false;
@@ -82,7 +82,7 @@ export default defineNuxtPlugin({
     async function startSync() {
       if (!auth.valid.value) return;
 
-      log.debug("Requesting sync");
+      log.debug("Library sync requested", { alreadyRunning: syncPromise !== null });
 
       return (syncPromise ??= sync().finally(() => {
         syncPromise = null;
@@ -92,7 +92,7 @@ export default defineNuxtPlugin({
     async function sync() {
       const startedAt = performance.now();
 
-      log.info("Started syncing");
+      log.info("Library sync started");
 
       error.value = null;
       state.syncing = true;
@@ -114,7 +114,7 @@ export default defineNuxtPlugin({
           playlists: progress.playlists,
         });
       } catch (cause) {
-        log.error("Syncing failed", { cause });
+        log.error("Library sync failed", { cause });
 
         if (cause instanceof Error) {
           error.value = cause;
@@ -131,14 +131,14 @@ export default defineNuxtPlugin({
     }
 
     async function clear() {
-      log.info("Clearing data");
+      log.info("Clearing local library");
 
       state.ready = false;
       syncController?.abort();
 
       await Promise.allSettled([initializePromise, syncPromise].filter(Boolean));
 
-      log.debug("All promises settled");
+      log.debug("Library operations stopped");
 
       error.value = null;
       resetProgress();
@@ -156,23 +156,23 @@ export default defineNuxtPlugin({
       state.syncing = false;
       state.lastSyncedAt = undefined;
 
-      log.info("All data cleared");
+      log.info("Local library cleared");
     }
 
     nuxtApp.hook("auth:logout", clear);
 
     if (auth.valid.value) {
-      log.info("Already logged in starting sync");
+      log.info("Authenticated at startup, initializing library");
       await initialize();
     } else {
-      log.info("Not logged in wating to sync");
+      log.info("Unauthenticated at startup, library initialization deferred");
     }
 
     watch(auth.valid, (valid) => {
       if (valid) {
-        log.info("Logged in starting sync");
+        log.info("Authentication established, initializing library");
         initialize().catch((cause) => {
-          log.error("Initializing sync failed", { cause });
+          log.error("Library initialization failed", { cause });
         });
       }
     });
@@ -182,7 +182,6 @@ export default defineNuxtPlugin({
         library: {
           client,
           sync: startSync,
-          clear,
           state: readonly(state),
           progress: readonly(progress),
           error: readonly(error),
