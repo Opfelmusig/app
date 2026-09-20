@@ -1,4 +1,5 @@
-import { defineScopes, type ScopedResourceOf } from "@opfelmusig/lib";
+import { defineScopes } from "@opfelmusig/lib";
+import type { ScopedResourceOf } from "@opfelmusig/lib/types";
 
 export const profileScope = defineScopes({
   "personal-social-profiles": {

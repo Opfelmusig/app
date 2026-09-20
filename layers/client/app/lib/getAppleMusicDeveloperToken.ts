@@ -1,17 +1,33 @@
 import { fetch } from "@tauri-apps/plugin-http";
+import { logger } from "~/lib/logger";
 
 const appleMusicUrl = "https://music.apple.com";
 const indexPathPattern = /\/assets\/index-legacy[-~][^/]+\.js/;
 const tokenPattern = /"(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)"/;
 
+const log = logger.withTag("devtoken");
+
 export async function getAppleMusicDeveloperToken() {
+  log.info("Trying to aquire Apple Music web developer token");
+
   const mainPageBody = await fetchText(appleMusicUrl, "main page");
+
   const indexJsPath = mainPageBody.match(indexPathPattern)?.[0];
-  if (!indexJsPath) throw new Error("Apple Music index script not found");
+  if (!indexJsPath) {
+    log.error("Apple Music index script not found");
+    throw new Error("Apple Music index script not found");
+  }
+
+  log.info("Fetching Apple Music idex script", { indexJsPath });
 
   const jsFileBody = await fetchText(`${appleMusicUrl}${indexJsPath}`, "JS file");
   const token = jsFileBody.match(tokenPattern)?.[1];
-  if (!token) throw new Error("Apple Music Developer Token not found");
+  if (!token) {
+    log.error("Apple Music Developer Token not found");
+    throw new Error("Apple Music Developer Token not found");
+  }
+
+  log.info("Aquired Apple Music web developer token", { token });
 
   return token;
 }

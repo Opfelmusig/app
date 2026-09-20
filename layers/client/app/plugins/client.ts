@@ -5,6 +5,7 @@ import { fetch } from "@tauri-apps/plugin-http";
 import ms from "ms";
 import { getAppleMusicDeveloperToken } from "#layers/client/app/lib/getAppleMusicDeveloperToken";
 import { profileScope, type UserProfile } from "#layers/client/app/lib/profileScope";
+import { logger } from "~/lib/logger";
 
 const TOKEN_KEY = "apple-music:user-token";
 const CLIENT = "auth";
@@ -13,6 +14,8 @@ export default defineNuxtPlugin({
   name: "client:ready",
   dependsOn: ["colada:ready"],
   setup: async (nuxtApp) => {
+    const log = logger.withTag("auth");
+
     const developerToken = useQuery({
       key: ["apple-music", "developer-token"],
       query: getAppleMusicDeveloperToken,
@@ -29,6 +32,8 @@ export default defineNuxtPlugin({
       .catch(() => stronghold.createClient(CLIENT));
     const store = strongholdClient.getStore();
 
+    log.info("Stronghold ready");
+
     async function get() {
       const storedToken = await store.get(TOKEN_KEY);
       return storedToken ? new TextDecoder().decode(storedToken) : null;
@@ -36,18 +41,25 @@ export default defineNuxtPlugin({
 
     const token = ref<string | null>();
     token.value = await get();
+
+    log.info("Stored developer token aquired");
+
     const tokenValid = ref(false);
 
     async function set(newToken: string) {
       await store.insert(TOKEN_KEY, Array.from(new TextEncoder().encode(newToken)));
       await stronghold.save();
       token.value = newToken;
+
+      log.info("Stored token saved");
     }
 
     async function remove() {
       await store.remove(TOKEN_KEY);
       await stronghold.save();
       token.value = null;
+
+      log.info("Removed stored token");
     }
 
     const profile = ref<UserProfile>();
@@ -63,6 +75,9 @@ export default defineNuxtPlugin({
         }
 
         const { data } = await developerToken.refresh(true);
+
+        log.info("New developer token aquired");
+
         return data;
       },
       userToken: () => token.value,
@@ -74,6 +89,10 @@ export default defineNuxtPlugin({
 
     async function prepareClient() {
       if (!token.value) return;
+
+      const startedAt = performance.now();
+
+      log.info("Preparing auth and testing credentials");
 
       const storefront = await client.useUserDefault();
 
@@ -99,37 +118,58 @@ export default defineNuxtPlugin({
       if (!profileId.value) throw new Error("Profile id not found");
 
       tokenValid.value = true;
+
+      log.info("Auth ready and valid", {
+        durationMs: Math.round(performance.now() - startedAt),
+        storefront: storefront?.name,
+        language: settingsStore.language,
+        profileId: profileId.value,
+      });
     }
 
     async function login(newToken: string) {
+      log.info("Logging in");
+
       await set(newToken);
       try {
         await prepareClient();
-      } catch (ex) {
+      } catch (cause) {
         await logout();
-        throw ex;
+
+        log.error("Auth failed", { cause });
+
+        throw cause;
       }
+
+      log.info("Logged in");
 
       await navigateTo("/");
     }
 
     async function logout() {
+      log.info("Loggin out");
+
       await remove();
       settingsStore.language = undefined;
       tokenValid.value = false;
       profile.value = undefined;
 
       await nuxtApp.callHook("auth:logout");
+
+      log.info("Logged out");
+
       await navigateTo("/login");
     }
 
     try {
       await prepareClient();
-    } catch (ex) {
-      if (isAuthError(ex)) {
+    } catch (cause) {
+      log.error("Auth failed", { cause });
+
+      if (isAuthError(cause)) {
         await logout();
       } else {
-        throw ex;
+        throw cause;
       }
     }
 
