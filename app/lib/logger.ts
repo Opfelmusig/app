@@ -1,8 +1,7 @@
 import { createConsola } from "consola";
 
 export const logger = createConsola({
-  // TODO: uncommend once finished and ready to release
-  level: 4 /* import.meta.dev ? 4 : 1 */,
+  level: import.meta.dev ? 4 : 3,
 
   defaults: {
     tag: "app",

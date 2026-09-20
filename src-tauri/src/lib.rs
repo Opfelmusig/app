@@ -1,7 +1,32 @@
 use tauri::{AppHandle, Manager};
+use tauri_plugin_log::{RotationStrategy, Target, TargetKind};
 
 pub fn run() {
+    let log_level = if cfg!(debug_assertions) {
+        log::LevelFilter::Debug
+    } else {
+        log::LevelFilter::Info
+    };
+    let log_file_name = if cfg!(debug_assertions) {
+        "opfelmusig-dev"
+    } else {
+        "opfelmusig"
+    };
+
     tauri::Builder::default()
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .level(log_level)
+                .targets([
+                    Target::new(TargetKind::Stdout),
+                    Target::new(TargetKind::LogDir {
+                        file_name: Some(log_file_name.to_owned()),
+                    }),
+                ])
+                .max_file_size(2_000_000)
+                .rotation_strategy(RotationStrategy::KeepSome(3))
+                .build(),
+        )
         /* .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             focus_main_window(app)
         })) */
@@ -26,17 +51,6 @@ pub fn run() {
 
             app.handle()
                 .plugin(tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build())?;
-
-            let log_level = if cfg!(debug_assertions) {
-                log::LevelFilter::Info
-            } else {
-                log::LevelFilter::Error
-            };
-            app.handle().plugin(
-                tauri_plugin_log::Builder::default()
-                    .level(log_level)
-                    .build(),
-            )?;
 
             focus_main_window(app.handle());
             Ok(())

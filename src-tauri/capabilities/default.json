@@ -13,6 +13,7 @@
     "core:window:allow-toggle-maximize",
     "core:window:allow-start-dragging",
     "deep-link:default",
+    "log:default",
     "updater:default",
     "stronghold:default",
     "stronghold:allow-remove-store-record",
