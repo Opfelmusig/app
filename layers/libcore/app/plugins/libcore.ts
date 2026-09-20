@@ -66,6 +66,15 @@ export default defineNuxtPlugin({
 
       const dbState = await client.state();
 
+      if (dbState?.lastSyncedAt && dbState?.profileId !== auth.profileId.value) {
+        log.warn("Local library belongs to a different account, clearing cached data");
+
+        await clearData();
+        startSync().catch(() => undefined);
+
+        return;
+      }
+
       if (dbState?.lastSyncedAt) {
         log.info("Loaded existing library state", { lastSyncedAt: dbState.lastSyncedAt });
 
@@ -99,7 +108,17 @@ export default defineNuxtPlugin({
       syncController = new AbortController();
 
       try {
-        const lastSyncedAt = await syncAppleMusic(db, opfelmusig, syncController.signal, progress);
+        if (!auth.profileId.value) {
+          throw new Error("Profile ID not found");
+        }
+
+        const lastSyncedAt = await syncAppleMusic(
+          db,
+          opfelmusig,
+          auth.profileId.value,
+          syncController.signal,
+          progress,
+        );
 
         state.ready = true;
         state.lastSyncedAt = lastSyncedAt;
@@ -130,16 +149,7 @@ export default defineNuxtPlugin({
       }
     }
 
-    async function clear() {
-      log.info("Clearing local library");
-
-      state.ready = false;
-      syncController?.abort();
-
-      await Promise.allSettled([initializePromise, syncPromise].filter(Boolean));
-
-      log.debug("Library operations stopped");
-
+    async function clearData() {
       error.value = null;
       resetProgress();
 
@@ -150,11 +160,22 @@ export default defineNuxtPlugin({
         queryCache.remove(entry);
       }
 
-      syncController = null;
-
       state.ready = false;
       state.syncing = false;
       state.lastSyncedAt = undefined;
+    }
+
+    async function clear() {
+      log.info("Clearing local library");
+
+      state.ready = false;
+      syncController?.abort();
+
+      await Promise.allSettled([initializePromise, syncPromise].filter(Boolean));
+
+      log.debug("Library operations stopped");
+
+      await clearData();
 
       log.info("Local library cleared");
     }

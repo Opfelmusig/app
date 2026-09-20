@@ -2,6 +2,7 @@ import type { Artwork, EditorialVideo, RatingValue } from "@opfelmusig/lib/types
 
 export interface LibraryState {
   id: "library";
+  profileId?: string;
   lastSyncedAt?: Date;
 }
 

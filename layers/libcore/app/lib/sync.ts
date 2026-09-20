@@ -8,6 +8,7 @@ import { logger } from "~/lib/logger";
 export async function syncAppleMusic(
   db: LibraryDatabase,
   client: OpfelMusigClient,
+  profileId: string,
   signal: AbortSignal,
   progress: LibraryProgress,
 ) {
@@ -42,6 +43,7 @@ export async function syncAppleMusic(
 
     await db.library_state.put({
       id: "library",
+      profileId,
       lastSyncedAt,
     });
   });
