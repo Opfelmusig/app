@@ -17,6 +17,8 @@ pub fn run() {
         .plugin(
             tauri_plugin_log::Builder::new()
                 .level(log_level)
+                .level_for("symphonia_format_isomp4", log::LevelFilter::Warn)
+                .level_for("app_lib::widevine", log::LevelFilter::Warn)
                 .targets([
                     Target::new(TargetKind::Stdout),
                     Target::new(TargetKind::LogDir {
