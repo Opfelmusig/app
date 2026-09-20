@@ -27,7 +27,7 @@ export async function getAppleMusicDeveloperToken() {
     throw new Error("Apple Music Developer Token not found");
   }
 
-  log.info("Apple Music developer token discovered", { token });
+  log.info("Apple Music developer token discovered");
 
   return token;
 }
