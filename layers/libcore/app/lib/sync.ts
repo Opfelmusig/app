@@ -20,7 +20,7 @@ export async function syncAppleMusic(
   const startedAt = performance.now();
 
   // Simulate download
-  await sleep(10_000, signal);
+  await sleep(5_000, signal);
 
   log.info("Fetched data from Apple Music", {
     durationMs: Math.round(performance.now() - startedAt),
