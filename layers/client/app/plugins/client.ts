@@ -12,7 +12,7 @@ const CLIENT = "auth";
 export default defineNuxtPlugin({
   name: "client:ready",
   dependsOn: ["colada:ready"],
-  setup: async () => {
+  setup: async (nuxtApp) => {
     const developerToken = useQuery({
       key: ["apple-music", "developer-token"],
       query: getAppleMusicDeveloperToken,
@@ -119,6 +119,7 @@ export default defineNuxtPlugin({
       tokenValid.value = false;
       profile.value = undefined;
 
+      await nuxtApp.callHook("auth:logout");
       await navigateTo("/login");
     }
 
