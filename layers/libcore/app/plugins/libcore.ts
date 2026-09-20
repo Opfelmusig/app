@@ -5,6 +5,7 @@ import { logger } from "~/lib/logger";
 
 export interface LibraryState {
   ready: boolean;
+  initializing: boolean;
   syncing: boolean;
   lastSyncedAt?: Date;
 }
@@ -36,6 +37,7 @@ export default defineNuxtPlugin({
 
     const state = reactive<LibraryState>({
       ready: false,
+      initializing: false,
       syncing: false,
     });
     const progress = reactive<LibraryProgress>({
@@ -56,13 +58,20 @@ export default defineNuxtPlugin({
     }
 
     function initialize() {
-      return (initializePromise ??= initializeSync()
+      if (initializePromise) return initializePromise;
+
+      state.initializing = true;
+
+      initializePromise = initializeSync()
         .catch((cause) => {
           log.error("Library initialization failed", { cause });
         })
         .finally(() => {
+          state.initializing = false;
           initializePromise = null;
-        }));
+        });
+
+      return initializePromise;
     }
 
     async function initializeSync() {

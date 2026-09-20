@@ -4,7 +4,14 @@
     <span>{{ profileId }}</span>
     <div class="flex gap-2">
       <UButton @click="logout">Logout</UButton>
-      <UButton color="warning" :loading="state.syncing" @click="sync">Rescan library</UButton>
+      <UButton
+        color="warning"
+        :disabled="state.initializing"
+        :loading="state.syncing"
+        @click="sync"
+      >
+        Rescan library
+      </UButton>
     </div>
     <span>Scan Progress: {{ progress.state }}</span>
     <div class="flex flex-col">
