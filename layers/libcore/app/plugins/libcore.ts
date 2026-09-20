@@ -56,9 +56,13 @@ export default defineNuxtPlugin({
     }
 
     function initialize() {
-      return (initializePromise ??= initializeSync().finally(() => {
-        initializePromise = null;
-      }));
+      return (initializePromise ??= initializeSync()
+        .catch((cause) => {
+          log.error("Library initialization failed", { cause });
+        })
+        .finally(() => {
+          initializePromise = null;
+        }));
     }
 
     async function initializeSync() {
@@ -184,7 +188,7 @@ export default defineNuxtPlugin({
 
     if (auth.valid.value) {
       log.info("Authenticated at startup, initializing library");
-      await initialize();
+      initialize();
     } else {
       log.info("Unauthenticated at startup, library initialization deferred");
     }
@@ -192,9 +196,7 @@ export default defineNuxtPlugin({
     watch(auth.valid, (valid) => {
       if (valid) {
         log.info("Authentication established, initializing library");
-        initialize().catch((cause) => {
-          log.error("Library initialization failed", { cause });
-        });
+        initialize();
       }
     });
 
