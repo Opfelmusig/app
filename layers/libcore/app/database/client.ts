@@ -1,10 +1,14 @@
-import { LibraryDatabase } from "#layers/libcore/app/database/dexie";
+import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 
 export class LibraryClient {
   private readonly db: LibraryDatabase;
 
-  constructor() {
-    this.db = new LibraryDatabase("opfelmusig-library");
+  constructor(db: LibraryDatabase) {
+    this.db = db;
+  }
+
+  delete() {
+    return this.db.delete({ disableAutoOpen: false });
   }
 
   state() {
