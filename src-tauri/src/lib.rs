@@ -1,5 +1,6 @@
 use tauri::{AppHandle, Manager};
-use tauri_plugin_log::{RotationStrategy, Target, TargetKind};
+use tauri_plugin_log::{RotationStrategy, Target, TargetKind, WEBVIEW_TARGET};
+use time::{macros::format_description, OffsetDateTime};
 
 pub fn run() {
     let log_level = if cfg!(debug_assertions) {
@@ -12,6 +13,7 @@ pub fn run() {
     } else {
         "opfelmusig"
     };
+    let log_date_format = format_description!("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]");
 
     tauri::Builder::default()
         .plugin(
@@ -19,6 +21,23 @@ pub fn run() {
                 .level(log_level)
                 .level_for("symphonia_format_isomp4", log::LevelFilter::Warn)
                 .level_for("app_lib::widevine", log::LevelFilter::Warn)
+                .format(move |out, message, record| {
+                    let target = if record.target().starts_with(WEBVIEW_TARGET) {
+                        WEBVIEW_TARGET
+                    } else {
+                        record.target()
+                    };
+
+                    out.finish(format_args!(
+                        "{}[{}][{}] {}",
+                        OffsetDateTime::now_utc()
+                            .format(log_date_format)
+                            .expect("valid log date format"),
+                        target,
+                        record.level(),
+                        message
+                    ))
+                })
                 .targets([
                     Target::new(TargetKind::Stdout),
                     Target::new(TargetKind::LogDir {
