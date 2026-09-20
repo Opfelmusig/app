@@ -94,7 +94,12 @@ export default defineNuxtPlugin({
 
       log.info("Authentication validation started");
 
-      const storefront = await client.useUserDefault();
+      const [storefront, profileData] = await Promise.all([
+        client.useUserDefault(),
+        client.me.getProfile({
+          scopes: profileScope,
+        }),
+      ]);
 
       if (
         settingsStore.language &&
@@ -104,10 +109,6 @@ export default defineNuxtPlugin({
       } else {
         settingsStore.language = storefront?.defaultLanguageTag;
       }
-
-      const profileData = await client.me.getProfile({
-        scopes: profileScope,
-      });
 
       profile.value = profileData.data[0];
 
