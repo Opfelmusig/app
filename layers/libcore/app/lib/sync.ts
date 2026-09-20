@@ -1,6 +1,6 @@
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import type * as Library from "#layers/libcore/app/database/types";
-import type { LibraryProgress } from "#layers/libcore/app/plugins/prepare";
+import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { logger } from "~/lib/logger";
 
@@ -80,6 +80,7 @@ function createRandomSong(): Library.Song {
       width: 0,
       height: 0,
     },
+    genreNames: [],
     durationInMillis: 180_000,
     trackNumber: 1,
   };

@@ -42,9 +42,10 @@ export interface Song {
   name: string;
   artistName: string;
   albumName: string;
+  genreNames: string[];
   artwork: Artwork;
   durationInMillis: number;
-  trackNumber: number;
+  trackNumber?: number;
   releaseDate?: string;
 
   catalogId?: string;
@@ -75,7 +76,6 @@ export interface Artist {
   resource_id: string;
 
   name: string;
-
   artwork?: Artwork;
   genreNames: string[];
   catalogId?: string;

@@ -18,7 +18,7 @@ export interface LibraryProgress {
 }
 
 export default defineNuxtPlugin({
-  name: "libcore:prepare",
+  name: "libcore:ready",
   dependsOn: ["client:ready"],
   setup: async (nuxtApp) => {
     const log = logger.withTag("libcore");
@@ -128,8 +128,6 @@ export default defineNuxtPlugin({
         resetProgress();
         syncController = null;
       }
-
-      log.info("Finished sync");
     }
 
     async function clear() {
