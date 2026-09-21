@@ -14,6 +14,12 @@
       </UButton>
     </div>
     <span>Scan Progress: {{ progress.state }}</span>
+    <div class="flex flex-col gap-2 pl-4 text-sm text-muted">
+      <span>Songs: {{ progress.songs }}</span>
+      <span>Albums: {{ progress.albums }}</span>
+      <span>Artists: {{ progress.artists }}</span>
+      <span>Playlists: {{ progress.playlists }}</span>
+    </div>
     <div class="flex flex-col">
       <span v-for="song in data" :key="song.resource_id">{{ song.name }}</span>
     </div>
