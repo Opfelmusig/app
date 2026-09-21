@@ -122,8 +122,8 @@ export default defineNuxtPlugin({
 
       log.info("Authentication validated", {
         durationMs: Math.round(performance.now() - startedAt),
-        storefront: storefront?.name,
-        language: settingsStore.language,
+        storefront: client.config.storefront,
+        language: client.config.language?.default,
       });
     }
 
