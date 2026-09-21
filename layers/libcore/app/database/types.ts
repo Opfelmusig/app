@@ -1,5 +1,13 @@
 import type { Artwork, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
 
+export enum LibraryListId {
+  Songs = "songs",
+  Albums = "albums",
+  Artists = "artists",
+  Playlists = "playlists",
+  Pins = "pins",
+}
+
 export interface DbLibraryState {
   id: "library";
   profileId?: string;
@@ -7,8 +15,6 @@ export interface DbLibraryState {
 }
 
 export type DbResourceType = "song" | "album" | "artist" | "playlist" | "folder";
-
-export type DbListId = "recently-added" | "songs" | "albums" | "artists" | "playlists" | "pins";
 
 export type DbCatalogLinkType = "album" | "artist";
 
