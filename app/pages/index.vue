@@ -10,7 +10,7 @@
         :loading="state.syncing"
         @click="sync"
       >
-        {{ statusText }}
+        Sync Library
       </UButton>
     </div>
     <span v-if="error" class="text-error">{{ error.name }}: {{ error.message }}</span>
@@ -25,23 +25,29 @@
       <span>Artists: {{ progress.artists }}</span>
       <span>Playlists: {{ progress.playlists }}</span>
     </div>
-    <div class="flex flex-col">
-      <span v-for="song in data" :key="song.resource_id">{{ song.name }}</span>
+    <div class="flex flex-col h-100 overflow-auto p-2 px-3 rounded-md bg-muted/20 gap-2">
+      <div v-for="song in data" :key="song.id" class="flex gap-2 items-center">
+        <img
+          v-if="song.artwork"
+          :src="getArtworkUrl(song.artwork, { width: 128 })"
+          class="size-12 rounded-lg"
+        />
+        <div v-else class="size-12 rounded-lg bg-muted" />
+        <div class="flex flex-col max-w-100 whitespace-nowrap min-w-0">
+          <span class="truncate">{{ song.name }}</span>
+          <span class="text-sm text-muted truncate">
+            {{ song.albumName }} - {{ song.artistName }}
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { getArtworkUrl } from "@opfelmusig/lib/helpers";
+
 const { profile, logout, profileId } = useAuth();
 const { data } = useLibrarySongs();
 const { sync, state, progress, error } = useLibrary();
-
-const statusText = computed(() => {
-  if (state.initializing) return "Initializing Library";
-  if (state.ready && state.syncing) return "Syncing Library in the background";
-  if (!state.ready && state.syncing) return "Syncing Library";
-  if (!state.ready && !state.syncing) return "Library not Ready";
-
-  return "Sync Library";
-});
 </script>

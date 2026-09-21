@@ -1,6 +1,6 @@
 import type { Artwork, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
 
-export enum LibraryListId {
+export enum DbListId {
   Songs = "songs",
   Albums = "albums",
   Artists = "artists",
@@ -41,7 +41,7 @@ export interface DbSong {
   artistName: string;
   albumName: string;
   genreNames: string[];
-  artwork: Artwork;
+  artwork?: Artwork;
   durationInMillis: number;
   trackNumber?: number;
   releaseDate?: string;
@@ -59,7 +59,7 @@ export interface DbAlbum {
   name: string;
   artistName: string;
   genreNames: string[];
-  artwork: Artwork;
+  artwork?: Artwork;
   releaseDate?: string;
   dateAdded?: Date;
 
