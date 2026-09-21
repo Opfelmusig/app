@@ -23,11 +23,11 @@ export async function fetchAppleMusicLibrary(
 
   const dbLibraryCatalogLinks: Library.LibraryCatalogLink[] = [];
 
-  const [songs, albums, artists, playlists, pins, tree] = await getAllLibraryPages(
-    client,
-    signal,
-    progress,
-  );
+  const library = await getAllLibraryPages(client, signal, progress);
+
+  // Album tracks
+  // Playlist tracks
+  // Artist albums
 
   return {
     resources: dbResources,
@@ -47,34 +47,40 @@ function getAllLibraryPages(
   signal: AbortSignal,
   progress: LibraryProgress,
 ) {
-  return Promise.all([
-    collect(client.library.songs.iterateAll({ limit: 100, scopes, config: { signal } }), {
+  return Promise.allKeyed({
+    songs: collect(client.library.songs.iterateAll({ limit: 100, scopes, config: { signal } }), {
       signal,
       onItem: () => {
         progress.songs++;
       },
     }),
-    collect(client.library.albums.iterateAll({ limit: 100, scopes, config: { signal } }), {
+    albums: collect(client.library.albums.iterateAll({ limit: 100, scopes, config: { signal } }), {
       signal,
       onItem: () => {
         progress.albums++;
       },
     }),
-    collect(client.library.artists.iterateAll({ limit: 100, scopes, config: { signal } }), {
-      signal,
-      onItem: () => {
-        progress.artists++;
+    artists: collect(
+      client.library.artists.iterateAll({ limit: 100, scopes, config: { signal } }),
+      {
+        signal,
+        onItem: () => {
+          progress.artists++;
+        },
       },
-    }),
-    collect(client.library.playlists.iterateAll({ limit: 100, scopes, config: { signal } }), {
-      signal,
-      onItem: () => {
-        progress.playlists++;
+    ),
+    playlists: collect(
+      client.library.playlists.iterateAll({ limit: 100, scopes, config: { signal } }),
+      {
+        signal,
+        onItem: () => {
+          progress.playlists++;
+        },
       },
-    }),
-    client.library
+    ),
+    pins: client.library
       .getPins({ scopes: emptyScopes, config: { signal } })
       .then((response) => response.data),
-    collect(client.library.playlistFolders.iterateTree({ config: { signal } }), { signal }),
-  ]);
+    tree: collect(client.library.playlistFolders.iterateTree({ config: { signal } }), { signal }),
+  });
 }
