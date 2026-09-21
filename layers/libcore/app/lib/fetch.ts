@@ -4,6 +4,7 @@ import type * as Library from "#layers/libcore/app/database/types";
 import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 import { collect } from "#layers/libcore/app/lib/helpers";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
+import { emptyScopes, scopes } from "#layers/libcore/app/lib/scopes";
 
 export async function fetchAppleMusicLibrary(
   client: OpfelMusigClient,
@@ -21,21 +22,20 @@ export async function fetchAppleMusicLibrary(
 
   const dbLibraryCatalogLinks: Library.LibraryCatalogLink[] = [];
 
-  const [songs, albums, artists, playlists, recentlyAdded, pins, tree] = await Promise.all([
-    collect(client.library.songs.iterateAll({ limit: 100 }), () => {
+  const [songs, albums, artists, playlists, pins, tree] = await Promise.all([
+    collect(client.library.songs.iterateAll({ limit: 100, scopes }), () => {
       progress.songs++;
     }),
-    collect(client.library.albums.iterateAll({ limit: 100 }), () => {
+    collect(client.library.albums.iterateAll({ limit: 100, scopes }), () => {
       progress.albums++;
     }),
-    collect(client.library.artists.iterateAll({ limit: 100 }), () => {
+    collect(client.library.artists.iterateAll({ limit: 100, scopes }), () => {
       progress.artists++;
     }),
-    collect(client.library.playlists.iterateAll({ limit: 100 }), () => {
+    collect(client.library.playlists.iterateAll({ limit: 100, scopes }), () => {
       progress.playlists++;
     }),
-    collect(client.library.iterateRecentlyAdded({ limit: 25 })),
-    client.library.getPins({ limit: 100 }).then((response) => response.data),
+    client.library.getPins({ scopes: emptyScopes }).then((response) => response.data),
     collect(client.library.playlistFolders.iterateTree()),
   ]);
 
