@@ -44,7 +44,7 @@ export interface Song {
   artwork: Artwork;
   durationInMillis: number;
   trackNumber?: number;
-  releaseDate?: Date;
+  releaseDate?: string;
 
   catalogId?: string;
   personalRating?: RatingValue;
@@ -60,7 +60,7 @@ export interface Album {
   artistName: string;
   genreNames: string[];
   artwork: Artwork;
-  releaseDate?: Date;
+  releaseDate?: string;
   dateAdded?: Date;
 
   editorialVideo?: EditorialVideo;
