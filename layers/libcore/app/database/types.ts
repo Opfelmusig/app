@@ -61,6 +61,7 @@ export interface Album {
   genreNames: string[];
   artwork: Artwork;
   releaseDate?: string;
+  dateAdded?: string;
 
   editorialVideo?: EditorialVideo;
   catalogId?: string;
@@ -91,6 +92,7 @@ export interface Playlist {
   lastModifiedDate?: string;
   canEdit: boolean;
   isPublic: boolean;
+  dateAdded?: string;
   tags: string[];
 
   editorialVideo?: EditorialVideo;
@@ -105,6 +107,7 @@ export interface Folder {
   resource_id: string;
 
   name: string;
+  dateAdded?: string;
 
   children_list_id: string;
 }
