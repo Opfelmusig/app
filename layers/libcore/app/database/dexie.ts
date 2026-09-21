@@ -1,15 +1,6 @@
 import Dexie, { type Table } from "dexie";
 import type * as Library from "#layers/libcore/app/database/types";
 
-const builtInLists = [
-  "recently-added",
-  "songs",
-  "albums",
-  "artists",
-  "playlists",
-  "pins",
-] as const satisfies readonly Library.BuiltInListId[];
-
 export class LibraryDatabase extends Dexie {
   library_state!: Table<Library.LibraryState, string>;
 
@@ -42,15 +33,6 @@ export class LibraryDatabase extends Dexie {
       folders: "resource_id",
 
       library_catalog_link: "id, &[resource_id+type+position]",
-    });
-
-    this.on("populate", async () => {
-      await this.lists.bulkAdd(
-        builtInLists.map<Library.List>((id) => ({
-          id,
-          state: "pending",
-        })),
-      );
     });
   }
 }

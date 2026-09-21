@@ -16,8 +16,6 @@ export type BuiltInListId =
   | "playlists"
   | "pins";
 
-export type ListState = "pending" | "done";
-
 export type CatalogLinkType = "album" | "artist";
 
 export interface Resource {
@@ -27,7 +25,6 @@ export interface Resource {
 
 export interface List {
   id: string;
-  state: ListState;
 }
 
 export interface ListResource {
