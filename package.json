@@ -30,6 +30,7 @@
     "@waradu/keyboard": "^9.2.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.3.0",
+    "core-js": "3",
     "dexie": "^4.4.6",
     "idb-keyval": "^6.3.0",
     "ms": "^2.1.3",
