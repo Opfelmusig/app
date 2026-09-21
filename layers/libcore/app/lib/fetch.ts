@@ -1,6 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { OpfelMusigClient } from "@opfelmusig/lib";
-import type * as Library from "#layers/libcore/app/database/types";
+import type {
+  DbAlbum,
+  DbArtist,
+  DbFolder,
+  DbLibraryCatalogLink,
+  DbList,
+  DbListResource,
+  DbPlaylist,
+  DbResource,
+  DbSong,
+} from "#layers/libcore/app/database/types";
 import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 import { emptyScopes, scopes } from "#layers/libcore/app/lib/scopes";
@@ -11,17 +21,17 @@ export async function fetchAppleMusicLibrary(
   signal: AbortSignal,
   progress: LibraryProgress,
 ): Promise<AppleMusicLibrary> {
-  const dbResources: Library.Resource[] = [];
-  const dbLists: Library.List[] = [];
-  const dbListResources: Library.ListResource[] = [];
+  const dbResources: DbResource[] = [];
+  const dbLists: DbList[] = [];
+  const dbListResources: DbListResource[] = [];
 
-  const dbSongs: Library.Song[] = [];
-  const dbAlbums: Library.Album[] = [];
-  const dbArtists: Library.Artist[] = [];
-  const dbPlaylists: Library.Playlist[] = [];
-  const dbFolders: Library.Folder[] = [];
+  const dbSongs: DbSong[] = [];
+  const dbAlbums: DbAlbum[] = [];
+  const dbArtists: DbArtist[] = [];
+  const dbPlaylists: DbPlaylist[] = [];
+  const dbFolders: DbFolder[] = [];
 
-  const dbLibraryCatalogLinks: Library.LibraryCatalogLink[] = [];
+  const dbLibraryCatalogLinks: DbLibraryCatalogLink[] = [];
 
   const library = await getAllLibraryPages(client, signal, progress);
 

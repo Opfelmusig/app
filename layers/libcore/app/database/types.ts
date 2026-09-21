@@ -1,40 +1,34 @@
 import type { Artwork, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
 
-export interface LibraryState {
+export interface DbLibraryState {
   id: "library";
   profileId?: string;
   lastSyncedAt?: Date;
 }
 
-export type ResourceType = "song" | "album" | "artist" | "playlist" | "folder";
+export type DbResourceType = "song" | "album" | "artist" | "playlist" | "folder";
 
-export type BuiltInListId =
-  | "recently-added"
-  | "songs"
-  | "albums"
-  | "artists"
-  | "playlists"
-  | "pins";
+export type DbListId = "recently-added" | "songs" | "albums" | "artists" | "playlists" | "pins";
 
-export type CatalogLinkType = "album" | "artist";
+export type DbCatalogLinkType = "album" | "artist";
 
-export interface Resource {
+export interface DbResource {
   id: string;
-  type: ResourceType;
+  type: DbResourceType;
 }
 
-export interface List {
+export interface DbList {
   id: string;
 }
 
-export interface ListResource {
+export interface DbListResource {
   id: string;
   resource_id: string;
   list_id: string;
   position: number;
 }
 
-export interface Song {
+export interface DbSong {
   id: string;
 
   name: string;
@@ -53,7 +47,7 @@ export interface Song {
   artist_id?: string;
 }
 
-export interface Album {
+export interface DbAlbum {
   id: string;
 
   name: string;
@@ -71,7 +65,7 @@ export interface Album {
   artist_id?: string;
 }
 
-export interface Artist {
+export interface DbArtist {
   id: string;
 
   name: string;
@@ -83,7 +77,7 @@ export interface Artist {
   albums_list_id: string;
 }
 
-export interface Playlist {
+export interface DbPlaylist {
   id: string;
 
   name: string;
@@ -103,7 +97,7 @@ export interface Playlist {
   tracks_list_id: string;
 }
 
-export interface Folder {
+export interface DbFolder {
   id: string;
 
   name: string;
@@ -112,11 +106,11 @@ export interface Folder {
   children_list_id: string;
 }
 
-export interface LibraryCatalogLink {
+export interface DbLibraryCatalogLink {
   id: string;
   resource_id: string;
   catalog_id: string;
-  type: CatalogLinkType;
+  type: DbCatalogLinkType;
   name: string;
   position: number;
 }
