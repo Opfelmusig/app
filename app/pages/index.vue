@@ -13,6 +13,7 @@
         {{ statusText }}
       </UButton>
     </div>
+    <span v-if="error" class="text-error">{{ error.name }}: {{ error.message }}</span>
     <span>Scan Progress: {{ progress.state }}</span>
     <span v-if="state.lastSyncedAt" class="text-sm text-muted">
       Last Synced:
@@ -33,7 +34,7 @@
 <script lang="ts" setup>
 const { profile, logout, profileId } = useAuth();
 const { data } = useLibrarySongs();
-const { sync, state, progress } = useLibrary();
+const { sync, state, progress, error } = useLibrary();
 
 const statusText = computed(() => {
   if (state.initializing) return "Initializing Library";
