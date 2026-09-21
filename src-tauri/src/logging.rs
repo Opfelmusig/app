@@ -19,6 +19,10 @@ pub fn plugin<R: Runtime>() -> tauri::plugin::TauriPlugin<R> {
         .level(level)
         .level_for("symphonia_format_isomp4", log::LevelFilter::Warn)
         .level_for("app_lib::widevine", log::LevelFilter::Warn)
+        .level_for(
+            "tao::platform_impl::platform::event_loop::runner",
+            log::LevelFilter::Info,
+        )
         .format(move |out, message, record| {
             let target = if record.target().starts_with(WEBVIEW_TARGET) {
                 WEBVIEW_TARGET
