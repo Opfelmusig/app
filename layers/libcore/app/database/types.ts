@@ -44,7 +44,7 @@ export interface Song {
   artwork: Artwork;
   durationInMillis: number;
   trackNumber?: number;
-  releaseDate?: string;
+  releaseDate?: Date;
 
   catalogId?: string;
   personalRating?: RatingValue;
@@ -60,8 +60,8 @@ export interface Album {
   artistName: string;
   genreNames: string[];
   artwork: Artwork;
-  releaseDate?: string;
-  dateAdded?: string;
+  releaseDate?: Date;
+  dateAdded?: Date;
 
   editorialVideo?: EditorialVideo;
   catalogId?: string;
@@ -89,10 +89,10 @@ export interface Playlist {
   name: string;
   artwork?: Artwork;
   description?: string;
-  lastModifiedDate?: string;
+  lastModifiedDate?: Date;
   canEdit: boolean;
   isPublic: boolean;
-  dateAdded?: string;
+  dateAdded?: Date;
   tags: string[];
 
   editorialVideo?: EditorialVideo;
@@ -107,7 +107,7 @@ export interface Folder {
   resource_id: string;
 
   name: string;
-  dateAdded?: string;
+  dateAdded?: Date;
 
   children_list_id: string;
 }
