@@ -39,7 +39,7 @@ export async function syncAppleMusic(
 
   const lastSyncedAt = new Date();
 
-  await saveAppleMusicLibrary(db, lastSyncedAt, profileId, library);
+  await saveAppleMusicLibrary(db, lastSyncedAt, profileId, library, signal);
 
   log.info("Local library write completed", {
     durationMs: Math.round(performance.now() - writeStartedAt),

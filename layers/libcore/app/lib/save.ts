@@ -6,26 +6,36 @@ export async function saveAppleMusicLibrary(
   lastSyncedAt: Date,
   profileId: string,
   library: AppleMusicLibrary,
+  signal: AbortSignal,
 ) {
-  await db.transaction("rw", db.tables, async () => {
-    await Promise.all(db.tables.map((table) => table.clear()));
+  await db.transaction("rw", db.tables, async (transaction) => {
+    const abort = () => transaction.abort();
+    signal.addEventListener("abort", abort, { once: true });
 
-    await Promise.all([
-      db.resources.bulkPut(library.resources),
-      db.lists.bulkPut(library.lists),
-      db.list_resources.bulkPut(library.listResources),
-      db.songs.bulkPut(library.songs),
-      db.albums.bulkPut(library.albums),
-      db.artists.bulkPut(library.artists),
-      db.playlists.bulkPut(library.playlists),
-      db.folders.bulkPut(library.folders),
-      db.library_catalog_link.bulkPut(library.libraryCatalogLinks),
-    ]);
+    try {
+      signal.throwIfAborted();
 
-    await db.library_state.put({
-      id: "library",
-      profileId,
-      lastSyncedAt,
-    });
+      await Promise.all(db.tables.map((table) => table.clear()));
+
+      await Promise.all([
+        db.resources.bulkPut(library.resources),
+        db.lists.bulkPut(library.lists),
+        db.list_resources.bulkPut(library.listResources),
+        db.songs.bulkPut(library.songs),
+        db.albums.bulkPut(library.albums),
+        db.artists.bulkPut(library.artists),
+        db.playlists.bulkPut(library.playlists),
+        db.folders.bulkPut(library.folders),
+        db.library_catalog_link.bulkPut(library.libraryCatalogLinks),
+      ]);
+
+      await db.library_state.put({
+        id: "library",
+        profileId,
+        lastSyncedAt,
+      });
+    } finally {
+      signal.removeEventListener("abort", abort);
+    }
   });
 }

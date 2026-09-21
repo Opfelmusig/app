@@ -75,6 +75,6 @@ function getAllLibraryPages(
     client.library
       .getPins({ scopes: emptyScopes, config: { signal } })
       .then((response) => response.data),
-    collect(client.library.playlistFolders.iterateTree({ config: { signal } })),
+    collect(client.library.playlistFolders.iterateTree({ config: { signal } }), { signal }),
   ]);
 }
