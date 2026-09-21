@@ -6,7 +6,7 @@
       "name": "app-next",
       "dependencies": {
         "@nuxt/ui": "^4.11.1",
-        "@opfelmusig/lib": "0.0.0-ci.15.sha-f3afa9a",
+        "@opfelmusig/lib": "^0.0.0-ci.16.sha-797a9f8",
         "@pinia/colada": "^1.4.5",
         "@pinia/colada-nuxt": "^1.2.0",
         "@pinia/colada-plugin-auto-refetch": "^0.2.6",
@@ -344,7 +344,7 @@
 
     "@nuxtjs/color-mode": ["@nuxtjs/color-mode@4.0.1", "", { "dependencies": { "@nuxt/kit": "^4.4.6", "exsolve": "^1.0.8", "pathe": "^2.0.3", "pkg-types": "^2.3.1", "semver": "^7.8.1" } }, "sha512-eiA7hWXi5zNHaYKyJFCGF6i0wFZtuvR7KDXZ6jiSvwxjCpRFwphrw0MOSmNfArTSSsT1wpW+/2H92cejeVfUlg=="],
 
-    "@opfelmusig/lib": ["@opfelmusig/lib@0.0.0-ci.15.sha-f3afa9a", "", { "dependencies": { "zod": "^4.5.4" } }, "sha512-JpziXzRp749ZaiqwEZxkkHB/MrhDD5RolkIuES4SWZBkYTuLpURkBkJbpOgFdq+RmctwCd727bEs+p6gljoyzg=="],
+    "@opfelmusig/lib": ["@opfelmusig/lib@0.0.0-ci.16.sha-797a9f8", "", { "dependencies": { "zod": "^4.5.4" } }, "sha512-4ec0z4+9yu4d7dnoBszCnSsNE/DuT/OWQBmoCFE3+K9rIdN+sPW2xRqp40oUt1VUpqeZF+xrYTVrHfWMAsRKgA=="],
 
     "@oxc-project/types": ["@oxc-project/types@0.149.0", "", {}, "sha512-Efcc+iF0j3Bf67YjEqIqWXbX5XddXoK/Mw4K1/JuXwRCZ8N16VR7iT23nlCc9XrveFVh/E5Rqs2StT0V8v9LdA=="],
 

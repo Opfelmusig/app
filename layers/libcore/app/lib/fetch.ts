@@ -5,6 +5,7 @@ import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 import { collect } from "#layers/libcore/app/lib/helpers";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 import { emptyScopes, scopes } from "#layers/libcore/app/lib/scopes";
+import { collect } from "@opfelmusig/lib/helpers";
 
 export async function fetchAppleMusicLibrary(
   client: OpfelMusigClient,
