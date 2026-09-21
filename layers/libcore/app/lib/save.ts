@@ -1,5 +1,5 @@
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
-import type { AppleMusicLibrary } from "#layers/libcore/app/lib/fetch";
+import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
 export async function saveAppleMusicLibrary(
   db: LibraryDatabase,
