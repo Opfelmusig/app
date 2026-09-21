@@ -35,7 +35,7 @@ export interface ListResource {
 }
 
 export interface Song {
-  resource_id: string;
+  id: string;
 
   name: string;
   artistName: string;
@@ -54,7 +54,7 @@ export interface Song {
 }
 
 export interface Album {
-  resource_id: string;
+  id: string;
 
   name: string;
   artistName: string;
@@ -72,7 +72,7 @@ export interface Album {
 }
 
 export interface Artist {
-  resource_id: string;
+  id: string;
 
   name: string;
   artwork?: Artwork;
@@ -84,7 +84,7 @@ export interface Artist {
 }
 
 export interface Playlist {
-  resource_id: string;
+  id: string;
 
   name: string;
   artwork?: Artwork;
@@ -104,7 +104,7 @@ export interface Playlist {
 }
 
 export interface Folder {
-  resource_id: string;
+  id: string;
 
   name: string;
   dateAdded?: Date;
