@@ -10,10 +10,14 @@
         :loading="state.syncing"
         @click="sync"
       >
-        Rescan library
+        {{ statusText }}
       </UButton>
     </div>
     <span>Scan Progress: {{ progress.state }}</span>
+    <span v-if="state.lastSyncedAt" class="text-sm text-muted">
+      Last Synced:
+      <NuxtTime :datetime="state.lastSyncedAt" relative numeric="auto" relative-style="long" />
+    </span>
     <div class="flex flex-col gap-2 pl-4 text-sm text-muted">
       <span>Songs: {{ progress.songs }}</span>
       <span>Albums: {{ progress.albums }}</span>
@@ -30,4 +34,13 @@
 const { profile, logout, profileId } = useAuth();
 const { data } = useLibrarySongs();
 const { sync, state, progress } = useLibrary();
+
+const statusText = computed(() => {
+  if (state.initializing) return "Initializing Library";
+  if (state.ready && state.syncing) return "Syncing Library in the background";
+  if (!state.ready && state.syncing) return "Syncing Library";
+  if (!state.ready && !state.syncing) return "Library not Ready";
+
+  return "Sync Library";
+});
 </script>

@@ -5,7 +5,7 @@ import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { logger } from "~/lib/logger";
 
-export async function syncAppleMusic(
+export async function syncAppleMusicLibrary(
   db: LibraryDatabase,
   client: OpfelMusigClient,
   profileId: string,

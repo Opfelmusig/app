@@ -1,6 +1,6 @@
 import { LibraryClient } from "#layers/libcore/app/database/client";
 import { LibraryDatabase } from "#layers/libcore/app/database/dexie";
-import { syncAppleMusic } from "#layers/libcore/app/lib/sync";
+import { syncAppleMusicLibrary } from "#layers/libcore/app/lib/sync";
 import { logger } from "~/lib/logger";
 
 export interface LibraryState {
@@ -135,7 +135,7 @@ export default defineNuxtPlugin({
           throw new Error("Profile ID not found");
         }
 
-        const lastSyncedAt = await syncAppleMusic(
+        const lastSyncedAt = await syncAppleMusicLibrary(
           db,
           opfelmusig,
           auth.profileId.value,
