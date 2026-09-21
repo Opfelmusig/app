@@ -22,4 +22,20 @@ export default withNuxt(
       "vue/return-in-computed-property": "off",
     },
   },
-);
+).append({
+  name: "custom/imports",
+  files: ["app/**/*", "layers/*/app/**/*"],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: ["../*", "../**", "./*", "./**", ".", ".."],
+            message: "Use absolute import paths.",
+          },
+        ],
+      },
+    ],
+  },
+});
