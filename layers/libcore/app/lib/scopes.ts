@@ -1,6 +1,7 @@
 import { defineScopes } from "@opfelmusig/lib";
+import type { ScopedResourceOf } from "@opfelmusig/lib/types";
 
-export const scopes = defineScopes({
+export const songsScopes = defineScopes({
   "library-songs": {
     fields: [
       "name",
@@ -31,10 +32,21 @@ export const scopes = defineScopes({
     ],
     extend: ["personalRating"],
     relationships: {
-      albums: "relate",
+      albums: "include",
       artists: "include",
     },
   },
+  albums: {
+    fields: ["name"],
+  },
+  artists: {
+    fields: ["name"],
+  },
+});
+
+export type SongsScopes = ScopedResourceOf<"library-songs", typeof songsScopes>;
+
+export const albumsScopes = defineScopes({
   "library-albums": {
     fields: ["name", "artistName", "artwork", "dateAdded", "genreNames", "releaseDate"],
     relationships: {
@@ -49,6 +61,14 @@ export const scopes = defineScopes({
       artists: "include",
     },
   },
+  artists: {
+    fields: ["name"],
+  },
+});
+
+export type AlbumsScopes = ScopedResourceOf<"library-albums", typeof albumsScopes>;
+
+export const artistsScopes = defineScopes({
   "library-artists": {
     fields: ["name"],
     relationships: {
@@ -58,6 +78,11 @@ export const scopes = defineScopes({
   artists: {
     fields: ["name", "artwork", "genreNames"],
   },
+});
+
+export type ArtistsScopes = ScopedResourceOf<"library-artists", typeof artistsScopes>;
+
+export const playlistsScopes = defineScopes({
   "library-playlists": {
     fields: [
       "name",
@@ -86,6 +111,8 @@ export const scopes = defineScopes({
   },
 });
 
+export type PlaylistsScopes = ScopedResourceOf<"library-playlists", typeof playlistsScopes>;
+
 export const emptyScopes = defineScopes({
   "library-songs": { fields: ["name"] },
   "library-albums": { fields: ["name"] },
@@ -94,3 +121,5 @@ export const emptyScopes = defineScopes({
   "library-playlist-folders": { fields: ["name"] },
   "library-music-videos": { fields: ["name"] },
 });
+
+export type EmptyScopes = ScopedResourceOf<"library-artists", typeof emptyScopes>;

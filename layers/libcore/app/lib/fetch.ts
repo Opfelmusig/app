@@ -3,7 +3,13 @@ import { collect } from "@opfelmusig/lib/helpers";
 
 import { DbListId } from "#layers/libcore/app/database/types";
 import type { DbSong } from "#layers/libcore/app/database/types";
-import { emptyScopes, scopes } from "#layers/libcore/app/lib/scopes";
+import {
+  albumsScopes,
+  artistsScopes,
+  emptyScopes,
+  playlistsScopes,
+  songsScopes,
+} from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 
@@ -81,20 +87,26 @@ function getAllLibraryPages(
   progress: LibraryProgress,
 ) {
   return Promise.allKeyed({
-    songs: collect(client.library.songs.iterateAll({ limit: 100, scopes, config: { signal } }), {
-      signal,
-      onItem: () => {
-        progress.songs++;
+    songs: collect(
+      client.library.songs.iterateAll({ limit: 100, scopes: songsScopes, config: { signal } }),
+      {
+        signal,
+        onItem: () => {
+          progress.songs++;
+        },
       },
-    }),
-    albums: collect(client.library.albums.iterateAll({ limit: 100, scopes, config: { signal } }), {
-      signal,
-      onItem: () => {
-        progress.albums++;
+    ),
+    albums: collect(
+      client.library.albums.iterateAll({ limit: 100, scopes: albumsScopes, config: { signal } }),
+      {
+        signal,
+        onItem: () => {
+          progress.albums++;
+        },
       },
-    }),
+    ),
     artists: collect(
-      client.library.artists.iterateAll({ limit: 100, scopes, config: { signal } }),
+      client.library.artists.iterateAll({ limit: 100, scopes: artistsScopes, config: { signal } }),
       {
         signal,
         onItem: () => {
@@ -103,7 +115,11 @@ function getAllLibraryPages(
       },
     ),
     playlists: collect(
-      client.library.playlists.iterateAll({ limit: 100, scopes, config: { signal } }),
+      client.library.playlists.iterateAll({
+        limit: 100,
+        scopes: playlistsScopes,
+        config: { signal },
+      }),
       {
         signal,
         onItem: () => {
