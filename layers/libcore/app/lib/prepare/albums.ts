@@ -1,11 +1,13 @@
 import type { DbAlbum } from "#layers/libcore/app/database/types";
 import {
   addLibraryCatalogLink,
+  addList,
   addListResource,
   addResource,
 } from "#layers/libcore/app/lib/prepare/helpers";
 import { albumTracksListId } from "#layers/libcore/app/lib/prepare/ids";
-import type { AlbumsScopes } from "#layers/libcore/app/lib/scopes";
+import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
+import type { AlbumsScopes, SongsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
 export function addAlbums(target: AppleMusicLibrary, resources: AlbumsScopes[], listId: string) {
@@ -64,4 +66,18 @@ function parseAlbum(resource: AlbumsScopes): DbAlbum {
     tracksListId: albumTracksListId(resource.id),
     artistId: artist?.id,
   };
+}
+
+export function addAlbumTracks(
+  target: AppleMusicLibrary,
+  resources: Record<string, SongsScopes[]>,
+) {
+  const entries = Object.entries(resources);
+
+  entries.forEach(([id, tracks]) => {
+    const listId = albumTracksListId(id);
+
+    addList(target, listId);
+    addSongs(target, tracks, listId);
+  });
 }
