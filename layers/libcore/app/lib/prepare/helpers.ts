@@ -37,7 +37,7 @@ export function addLibraryCatalogLink(
   position: number,
 ) {
   target.libraryCatalogLinks.push({
-    id: `${id}-artist-${catalogId}-${position}`,
+    id: `${id}-${type}-${catalogId}-${position}`,
     catalogId,
     type,
     name: name,
