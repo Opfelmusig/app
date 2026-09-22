@@ -49,6 +49,14 @@ export default defineNuxtPlugin({
     });
     const error = ref<Error | null>(null);
 
+    function resetProgress() {
+      progress.state = "idle";
+      progress.songs = 0;
+      progress.albums = 0;
+      progress.artists = 0;
+      progress.playlists = 0;
+    }
+
     function initialize() {
       if (initializePromise) return initializePromise;
 
@@ -85,19 +93,8 @@ export default defineNuxtPlugin({
         state.syncing = false;
         state.lastSyncedAt = dbState.lastSyncedAt;
 
-        const stats = await client.stats();
-
-        progress.songs = stats.songs;
-        progress.albums = stats.albums;
-        progress.artists = stats.artists;
-        progress.playlists = stats.playlists;
-
         log.info("Loaded existing library state", {
           lastSyncedAt: dbState.lastSyncedAt,
-          songs: progress.songs,
-          albums: progress.albums,
-          artists: progress.artists,
-          playlists: progress.playlists,
         });
 
         return;
@@ -167,14 +164,14 @@ export default defineNuxtPlugin({
         throw cause;
       } finally {
         state.syncing = false;
-        progress.state = "idle";
+        resetProgress();
         syncController = null;
       }
     }
 
     async function clearData() {
       error.value = null;
-      progress.state = "idle";
+      resetProgress();
       progress.songs = 0;
       progress.albums = 0;
       progress.artists = 0;

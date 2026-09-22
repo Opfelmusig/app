@@ -1,4 +1,5 @@
 import type { DbResourceType, DbCatalogLinkType } from "#layers/libcore/app/database/types";
+import { libraryCatalogLinkId, listResourceId } from "#layers/libcore/app/lib/prepare/ids";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
 export function addList(target: AppleMusicLibrary, listId: string) {
@@ -24,7 +25,7 @@ export function addListResource(
   listId: string,
   position: number,
 ) {
-  const id = `${listId}-${position}`;
+  const id = listResourceId(listId, position);
 
   if (target.listResources.has(id)) return;
 
@@ -44,7 +45,7 @@ export function addLibraryCatalogLink(
   name: string,
   position: number,
 ) {
-  const id = `${resourceId}-${type}-${position}`;
+  const id = libraryCatalogLinkId(resourceId, type, position);
 
   if (target.libraryCatalogLinks.has(id)) return;
 
