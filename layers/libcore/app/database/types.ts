@@ -29,8 +29,8 @@ export interface DbList {
 
 export interface DbListResource {
   id: string;
-  resource_id: string;
-  list_id: string;
+  resourceId: string;
+  listId: string;
   position: number;
 }
 
@@ -49,8 +49,8 @@ export interface DbSong {
   catalogId?: string;
   personalRating?: RatingValue;
 
-  album_id?: string;
-  artist_id?: string;
+  albumId?: string;
+  artistId?: string;
 }
 
 export interface DbAlbum {
@@ -67,8 +67,8 @@ export interface DbAlbum {
   catalogId?: string;
   personalRating?: RatingValue;
 
-  tracks_list_id: string;
-  artist_id?: string;
+  tracksListId: string;
+  artistId?: string;
 }
 
 export interface DbArtist {
@@ -80,7 +80,7 @@ export interface DbArtist {
   catalogId?: string;
   personalRating?: RatingValue;
 
-  albums_list_id: string;
+  albumsListId: string;
 }
 
 export interface DbPlaylist {
@@ -100,7 +100,7 @@ export interface DbPlaylist {
   curatorName?: string;
   curatorHandle?: string;
 
-  tracks_list_id: string;
+  tracksListId: string;
 }
 
 export interface DbFolder {
@@ -109,13 +109,13 @@ export interface DbFolder {
   name: string;
   dateAdded?: Date;
 
-  children_list_id: string;
+  childrenListId: string;
 }
 
 export interface DbLibraryCatalogLink {
   id: string;
-  resource_id: string;
-  catalog_id: string;
+  resourceId: string;
+  catalogId: string;
   type: DbCatalogLinkType;
   name: string;
   position: number;

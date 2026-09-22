@@ -42,8 +42,8 @@ export async function fetchAppleMusicLibrary(
     });
     target.listResources.push({
       id: `${song.id}-${DbListId.Songs}-${index}`,
-      resource_id: song.id,
-      list_id: DbListId.Songs,
+      resourceId: song.id,
+      listId: DbListId.Songs,
       position: index,
     });
 
@@ -56,11 +56,11 @@ export async function fetchAppleMusicLibrary(
     if (album && catalog.attributes?.albumName) {
       target.libraryCatalogLinks.push({
         id: `${parsed.id}-album`,
-        catalog_id: album.id,
+        catalogId: album.id,
         type: "album",
         name: catalog.attributes.albumName,
         position: 0,
-        resource_id: parsed.id,
+        resourceId: parsed.id,
       });
     }
 
@@ -71,11 +71,11 @@ export async function fetchAppleMusicLibrary(
 
       target.libraryCatalogLinks.push({
         id: `${parsed.id}-artist-${artist.id}-${index}`,
-        catalog_id: artist.id,
+        catalogId: artist.id,
         type: "artist",
         name: artist.attributes.name,
         position: index,
-        resource_id: parsed.id,
+        resourceId: parsed.id,
       });
     });
   });
@@ -184,8 +184,8 @@ function parseSong(song: LibraryPage<"songs">): DbSong {
     artwork: attributes.artwork ?? catalog?.attributes?.artwork,
     releaseDate: attributes.releaseDate ?? catalog?.attributes?.releaseDate,
     personalRating: catalog?.attributes?.personalRating,
-    album_id: album?.id,
-    artist_id: artist?.id,
+    albumId: album?.id,
+    artistId: artist?.id,
     catalogId: catalog?.id,
   };
 }

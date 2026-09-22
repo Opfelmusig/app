@@ -12,7 +12,7 @@ export class LibraryClient {
   }
 
   state() {
-    return this.db.library_state.get("library");
+    return this.db.libraryState.get("library");
   }
 
   async stats() {

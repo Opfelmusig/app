@@ -20,16 +20,16 @@ export async function saveAppleMusicLibrary(
       await Promise.all([
         db.resources.bulkPut(library.resources),
         db.lists.bulkPut(library.lists),
-        db.list_resources.bulkPut(library.listResources),
+        db.listResources.bulkPut(library.listResources),
         db.songs.bulkPut(library.songs),
         db.albums.bulkPut(library.albums),
         db.artists.bulkPut(library.artists),
         db.playlists.bulkPut(library.playlists),
         db.folders.bulkPut(library.folders),
-        db.library_catalog_link.bulkPut(library.libraryCatalogLinks),
+        db.libraryCatalogLink.bulkPut(library.libraryCatalogLinks),
       ]);
 
-      await db.library_state.put({
+      await db.libraryState.put({
         id: "library",
         profileId,
         lastSyncedAt,

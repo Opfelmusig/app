@@ -14,11 +14,11 @@ import type {
 } from "#layers/libcore/app/database/types";
 
 export class LibraryDatabase extends Dexie {
-  library_state!: Table<DbLibraryState, string>;
+  libraryState!: Table<DbLibraryState, string>;
 
   resources!: Table<DbResource, string>;
   lists!: Table<DbList, string>;
-  list_resources!: Table<DbListResource, string>;
+  listResources!: Table<DbListResource, string>;
 
   songs!: Table<DbSong, string>;
   albums!: Table<DbAlbum, string>;
@@ -26,17 +26,17 @@ export class LibraryDatabase extends Dexie {
   playlists!: Table<DbPlaylist, string>;
   folders!: Table<DbFolder, string>;
 
-  library_catalog_link!: Table<DbLibraryCatalogLink, string>;
+  libraryCatalogLink!: Table<DbLibraryCatalogLink, string>;
 
   constructor(name: string) {
     super(name);
 
     this.version(1).stores({
-      library_state: "id",
+      libraryState: "id",
 
       resources: "id, type",
       lists: "id",
-      list_resources: "id, resource_id, &[list_id+position]",
+      listResources: "id, resourceId, &[listId+position]",
 
       songs: "id",
       albums: "id",
@@ -44,7 +44,7 @@ export class LibraryDatabase extends Dexie {
       playlists: "id",
       folders: "id",
 
-      library_catalog_link: "id, &[resource_id+type+position]",
+      libraryCatalogLink: "id,  &[resourceId+type+position], &[resourceId+type+catalogId]",
     });
   }
 }
