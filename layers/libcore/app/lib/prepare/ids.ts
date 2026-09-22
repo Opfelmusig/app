@@ -9,5 +9,5 @@ export const libraryCatalogLinkId = (
 
 export const albumTracksListId = (resourceId: string) => `album:${resourceId}:tracks`;
 export const playlistTracksListId = (resourceId: string) => `playlist:${resourceId}:tracks`;
-export const artistAlbumListId = (resourceId: string) => `artist:${resourceId}:albums`;
+export const artistAlbumsListId = (resourceId: string) => `artist:${resourceId}:albums`;
 export const folderChildrenListId = (resourceId: string) => `folder:${resourceId}:children`;

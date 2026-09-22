@@ -158,7 +158,7 @@ export default defineNuxtPlugin({
         if (cause instanceof Error) {
           error.value = cause;
         } else {
-          error.value = new Error("Unknown error");
+          error.value = new Error("Unknown Error");
         }
 
         throw cause;

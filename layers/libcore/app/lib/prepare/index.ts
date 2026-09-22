@@ -19,19 +19,19 @@ export function prepareAppleMusicLibrary(
 
   addList(target, DbListId.Albums);
   addAlbums(target, pages.albums, DbListId.Albums);
-  addAlbumTracks(target, resourcePages.albums);
+  addAlbumTracks(target, resourcePages.albumTracks);
 
   addList(target, DbListId.Artists);
   addArtists(target, pages.artists, DbListId.Artists);
-  addArtistAlbums(target, resourcePages.artists);
+  addArtistAlbums(target, resourcePages.artistAlbums);
 
   addList(target, DbListId.Playlists);
   addPlaylists(target, pages.playlists, DbListId.Playlists);
-  addPlaylistTracks(target, resourcePages.playlists);
+  addPlaylistTracks(target, resourcePages.playlistTracks);
 
   addList(target, DbListId.Pins);
   addPins(target, pages.pins, DbListId.Pins);
 
   addList(target, DbListId.PlaylistFolders);
-  addFolders(target, pages.tree, DbListId.PlaylistFolders);
+  addFolders(target, pages.playlistFolders, DbListId.PlaylistFolders);
 }

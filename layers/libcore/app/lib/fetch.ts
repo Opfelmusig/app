@@ -53,7 +53,7 @@ export interface LibraryPages {
   artists: ArtistsScopes[];
   playlists: PlaylistsScopes[];
   pins: PinsScopes[];
-  tree: PlaylistFoldersScopes[];
+  playlistFolders: PlaylistFoldersScopes[];
 }
 
 function fetchAllLibraryPages(
@@ -107,14 +107,16 @@ function fetchAllLibraryPages(
       .then((response) =>
         response.data.filter((resource) => isNotResourceType(resource, "library-music-videos")),
       ),
-    tree: collect(client.library.playlistFolders.iterateTree({ config: { signal } }), { signal }),
+    playlistFolders: collect(client.library.playlistFolders.iterateTree({ config: { signal } }), {
+      signal,
+    }),
   });
 }
 
 export interface LibraryResourcePages {
-  albums: Record<string, SongsScopes[]>;
-  artists: Record<string, AlbumsScopes[]>;
-  playlists: Record<string, SongsScopes[]>;
+  albumTracks: Record<string, SongsScopes[]>;
+  artistAlbums: Record<string, AlbumsScopes[]>;
+  playlistTracks: Record<string, SongsScopes[]>;
 }
 
 function fetchAllLibraryResourcePages(
@@ -123,7 +125,7 @@ function fetchAllLibraryResourcePages(
   pages: LibraryPages,
 ): Promise<LibraryResourcePages> {
   return Promise.allKeyed({
-    albums: Promise.allKeyed(
+    albumTracks: Promise.allKeyed(
       Object.fromEntries(
         pages.albums.map((album) => [
           album.id,
@@ -138,7 +140,7 @@ function fetchAllLibraryResourcePages(
         ]),
       ),
     ),
-    artists: Promise.allKeyed(
+    artistAlbums: Promise.allKeyed(
       Object.fromEntries(
         pages.artists.map((artist) => [
           artist.id,
@@ -153,7 +155,7 @@ function fetchAllLibraryResourcePages(
         ]),
       ),
     ),
-    playlists: Promise.allKeyed(
+    playlistTracks: Promise.allKeyed(
       Object.fromEntries(
         pages.playlists.map((playlist) => [
           playlist.id,

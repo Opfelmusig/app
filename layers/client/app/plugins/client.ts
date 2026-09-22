@@ -77,7 +77,7 @@ export default defineNuxtPlugin({
 
         const { data } = await developerToken.refresh(true);
 
-        log.info("Apple Music developer token refreshed");
+        log.info("Apple Music Developer Token refreshed");
 
         return data;
       },
@@ -117,7 +117,7 @@ export default defineNuxtPlugin({
 
       profileId.value = profile.value?.relationships?.["social-profile"].data[0]?.id;
 
-      if (!profileId.value) throw new Error("Profile id not found");
+      if (!profileId.value) throw new Error("Profile ID not found");
 
       tokenValid.value = true;
 

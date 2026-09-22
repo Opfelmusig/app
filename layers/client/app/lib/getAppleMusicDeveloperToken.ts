@@ -9,7 +9,7 @@ const tokenPattern = /"(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)"/;
 const log = logger.withTag("devtoken");
 
 export async function getAppleMusicDeveloperToken() {
-  log.info("Apple Music developer token discovery started");
+  log.info("Apple Music Developer Token discovery started");
 
   const mainPageBody = await fetchText(appleMusicUrl, "main page");
 
@@ -24,11 +24,11 @@ export async function getAppleMusicDeveloperToken() {
   const jsFileBody = await fetchText(`${appleMusicUrl}${indexJsPath}`, "JS file");
   const token = jsFileBody.match(tokenPattern)?.[1];
   if (!token) {
-    log.error("Apple Music developer token not found in index script");
+    log.error("Apple Music Developer Token not found in index script");
     throw new Error("Apple Music Developer Token not found");
   }
 
-  log.info("Apple Music developer token discovered");
+  log.info("Apple Music Developer Token discovered");
 
   return token;
 }

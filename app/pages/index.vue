@@ -14,7 +14,7 @@
       </UButton>
     </div>
     <span v-if="error" class="text-error">{{ error.name }}: {{ error.message }}</span>
-    <span>Scan Progress: {{ progress.state }}</span>
+    <span>Sync Progress: {{ progress.state }}</span>
     <span v-if="state.lastSyncedAt" class="text-sm text-muted">
       Last Synced:
       <NuxtTime :datetime="state.lastSyncedAt" relative numeric="auto" relative-style="long" />

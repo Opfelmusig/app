@@ -26,7 +26,7 @@ export class LibraryDatabase extends Dexie {
   playlists!: Table<DbPlaylist, string>;
   folders!: Table<DbFolder, string>;
 
-  libraryCatalogLink!: Table<DbLibraryCatalogLink, string>;
+  libraryCatalogLinks!: Table<DbLibraryCatalogLink, string>;
 
   constructor(name: string) {
     super(name);
@@ -44,7 +44,7 @@ export class LibraryDatabase extends Dexie {
       playlists: "id",
       folders: "id",
 
-      libraryCatalogLink: "id, &[resourceId+type+position]",
+      libraryCatalogLinks: "id, &[resourceId+type+position]",
     });
   }
 }
