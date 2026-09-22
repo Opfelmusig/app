@@ -26,7 +26,7 @@ export async function fetchAppleMusicLibrary(
   const target = createEmptyLibrary();
 
   const pages = await fetchAllLibraryPages(client, signal, progress);
-  const playlistTracks = await fetchPlaylistTracks(client, signal, pages.playlists);
+  const playlistTracks = await fetchPlaylistTracks(client, signal, pages, progress);
 
   prepareAppleMusicLibrary(target, pages, playlistTracks);
 
@@ -107,20 +107,26 @@ function fetchAllLibraryPages(
       .then((response) =>
         response.data.filter((resource) => isNotResourceType(resource, "library-music-videos")),
       ),
-    playlistFolders: collect(client.library.playlistFolders.iterateFolders({ config: { signal } }), {
-      signal,
-    }),
+    playlistFolders: collect(
+      client.library.playlistFolders.iterateFolders({ config: { signal } }),
+      {
+        signal,
+      },
+    ),
   });
 }
 
 function fetchPlaylistTracks(
   client: OpfelMusigClient,
   signal: AbortSignal,
-  playlists: PlaylistsScopes[],
+  pages: LibraryPages,
+  progress: LibraryProgress,
 ): Promise<Record<string, SongsScopes[]>> {
+  const seenSongIds = new Set(pages.songs.map((song) => song.id));
+
   return Promise.allKeyed(
     Object.fromEntries(
-      playlists.map((playlist) => [
+      pages.playlists.map((playlist) => [
         playlist.id,
         collect(
           client.library.playlists.iterateRelationship(playlist.id, "tracks", {
@@ -128,7 +134,15 @@ function fetchPlaylistTracks(
             scopes: songsScopes,
             config: { signal },
           }),
-          { signal },
+          {
+            signal,
+            onItem: (item) => {
+              if (isResourceType(item, "library-songs") && !seenSongIds.has(item.id)) {
+                seenSongIds.add(item.id);
+                progress.songs++;
+              }
+            },
+          },
         ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
       ]),
     ),
