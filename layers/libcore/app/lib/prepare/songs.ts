@@ -1,4 +1,4 @@
-import type { DbListId, DbSong } from "#layers/libcore/app/database/types";
+import type { DbSong } from "#layers/libcore/app/database/types";
 import {
   addLibraryCatalogLink,
   addListResource,
@@ -10,7 +10,7 @@ import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 export function addSong(
   target: AppleMusicLibrary,
   song: SongsScopes,
-  listId: DbListId,
+  listId: string,
   position: number,
 ) {
   const parsed = parseSong(song);

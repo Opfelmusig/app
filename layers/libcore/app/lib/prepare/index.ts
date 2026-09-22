@@ -8,9 +8,6 @@ export function prepareAppleMusicLibrary(
   pages: LibraryPages,
   _resourcePages: LibraryResourcePages,
 ) {
-  target.lists.push({
-    id: DbListId.Songs,
-  });
-
+  target.lists.push({ id: DbListId.Songs });
   pages.songs.forEach((song, index) => addSong(target, song, DbListId.Songs, index));
 }
