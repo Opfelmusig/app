@@ -7,17 +7,17 @@ import {
 import type { SongsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
-export function addSongs(target: AppleMusicLibrary, songs: SongsScopes[], listId: string) {
-  songs.forEach((song, index) => addSong(target, song, listId, index));
+export function addSongs(target: AppleMusicLibrary, resources: SongsScopes[], listId: string) {
+  resources.forEach((resource, index) => addSong(target, resource, listId, index));
 }
 
 export function addSong(
   target: AppleMusicLibrary,
-  song: SongsScopes,
+  resource: SongsScopes,
   listId: string,
   position: number,
 ) {
-  const parsed = parseSong(song);
+  const parsed = parseSong(resource);
 
   addListResource(target, parsed.id, listId, position);
 
@@ -26,7 +26,7 @@ export function addSong(
   target.songs.set(parsed.id, parsed);
   addResource(target, parsed.id, "song");
 
-  const catalog = song.relationships?.catalog.data[0];
+  const catalog = resource.relationships?.catalog.data[0];
 
   if (!catalog) return;
 
@@ -47,27 +47,30 @@ export function addSong(
   );
 }
 
-function parseSong(song: SongsScopes): DbSong {
-  const catalog = song.relationships?.catalog.data[0];
-  const album = song.relationships?.albums.data[0];
-  const artist = song.relationships?.artists.data[0];
-  const attributes = song.attributes;
+function parseSong(resource: SongsScopes): DbSong {
+  const catalog = resource.relationships?.catalog.data[0];
+  const album = resource.relationships?.albums.data[0];
+  const artist = resource.relationships?.artists.data[0];
+  const attributes = resource.attributes;
 
-  if (!attributes) throw new Error(`Invalid Apple Music song: ${song.id}: missing attributes`);
+  if (!attributes) throw new Error(`Invalid Apple Music song: ${resource.id}: missing attributes`);
 
   return {
-    id: song.id,
+    id: resource.id,
+
     name: attributes.name,
-    trackNumber: attributes.trackNumber,
     albumName: attributes.albumName,
     artistName: attributes.artistName,
-    durationInMillis: attributes.durationInMillis,
     genreNames: attributes.genreNames,
     artwork: attributes.artwork ?? catalog?.attributes?.artwork,
+    durationInMillis: attributes.durationInMillis,
+    trackNumber: attributes.trackNumber,
     releaseDate: attributes.releaseDate ?? catalog?.attributes?.releaseDate,
+
+    catalogId: catalog?.id,
     personalRating: catalog?.attributes?.personalRating,
+
     albumId: album?.id,
     artistId: artist?.id,
-    catalogId: catalog?.id,
   };
 }

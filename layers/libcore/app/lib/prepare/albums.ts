@@ -8,17 +8,17 @@ import { albumTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import type { AlbumsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
-export function addAlbums(target: AppleMusicLibrary, album: AlbumsScopes[], listId: string) {
-  album.forEach((album, index) => addAlbum(target, album, listId, index));
+export function addAlbums(target: AppleMusicLibrary, resources: AlbumsScopes[], listId: string) {
+  resources.forEach((resource, index) => addAlbum(target, resource, listId, index));
 }
 
 export function addAlbum(
   target: AppleMusicLibrary,
-  album: AlbumsScopes,
+  resource: AlbumsScopes,
   listId: string,
   position: number,
 ) {
-  const parsed = parseAlbum(album);
+  const parsed = parseAlbum(resource);
 
   addListResource(target, parsed.id, listId, position);
 
@@ -27,7 +27,7 @@ export function addAlbum(
   target.albums.set(parsed.id, parsed);
   addResource(target, parsed.id, "album");
 
-  const catalog = album.relationships?.catalog.data[0];
+  const catalog = resource.relationships?.catalog.data[0];
 
   if (!catalog) return;
 
@@ -40,15 +40,15 @@ export function addAlbum(
   );
 }
 
-function parseAlbum(album: AlbumsScopes): DbAlbum {
-  const catalog = album.relationships?.catalog.data[0];
-  const artist = album.relationships?.artists.data[0];
-  const attributes = album.attributes;
+function parseAlbum(resource: AlbumsScopes): DbAlbum {
+  const catalog = resource.relationships?.catalog.data[0];
+  const artist = resource.relationships?.artists.data[0];
+  const attributes = resource.attributes;
 
-  if (!attributes) throw new Error(`Invalid Apple Music album: ${album.id}: missing attributes`);
+  if (!attributes) throw new Error(`Invalid Apple Music album: ${resource.id}: missing attributes`);
 
   return {
-    id: album.id,
+    id: resource.id,
 
     name: attributes.name,
     artistName: attributes.artistName,
@@ -61,7 +61,7 @@ function parseAlbum(album: AlbumsScopes): DbAlbum {
     catalogId: catalog?.id,
     personalRating: catalog?.attributes?.personalRating,
 
-    tracksListId: albumTracksListId(album.id),
+    tracksListId: albumTracksListId(resource.id),
     artistId: artist?.id,
   };
 }
