@@ -1,16 +1,16 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
-import { collect, isResourceType } from "@opfelmusig/lib/helpers";
+import { collect, isNotResourceType, isResourceType } from "@opfelmusig/lib/helpers";
 
 import { prepareAppleMusicLibrary } from "#layers/libcore/app/lib/prepare";
 import {
   albumsScopes,
   artistsScopes,
-  emptyScopes,
+  pinsScopes,
   playlistsScopes,
   songsScopes,
   type AlbumsScopes,
   type ArtistsScopes,
-  type EmptyScopes,
+  type PinsScopes,
   type PlaylistFoldersScopes,
   type PlaylistsScopes,
   type SongsScopes,
@@ -52,7 +52,7 @@ export interface LibraryPages {
   albums: AlbumsScopes[];
   artists: ArtistsScopes[];
   playlists: PlaylistsScopes[];
-  pins: EmptyScopes[];
+  pins: PinsScopes[];
   tree: PlaylistFoldersScopes[];
 }
 
@@ -103,8 +103,10 @@ function fetchAllLibraryPages(
       },
     ),
     pins: client.library
-      .getPins({ scopes: emptyScopes, config: { signal } })
-      .then((response) => response.data),
+      .getPins({ scopes: pinsScopes, config: { signal } })
+      .then((response) =>
+        response.data.filter((resource) => isNotResourceType(resource, "library-music-videos")),
+      ),
     tree: collect(client.library.playlistFolders.iterateTree({ config: { signal } }), { signal }),
   });
 }
