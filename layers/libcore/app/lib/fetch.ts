@@ -1,5 +1,5 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
-import { collect } from "@opfelmusig/lib/helpers";
+import { collect, isResourceType } from "@opfelmusig/lib/helpers";
 
 import { prepareAppleMusicLibrary } from "#layers/libcore/app/lib/prepare";
 import {
@@ -25,13 +25,10 @@ export async function fetchAppleMusicLibrary(
 ): Promise<AppleMusicLibrary> {
   const target = createEmptyLibrary();
 
-  const library = await getAllLibraryPages(client, signal, progress);
+  const pages = await fetchAllLibraryPages(client, signal, progress);
+  const resourcePages = await fetchAllLibraryResourcePages(client, signal, pages);
 
-  prepareAppleMusicLibrary(target, library);
-
-  // Album tracks
-  // Playlist tracks
-  // Artist albums
+  prepareAppleMusicLibrary(target, pages, resourcePages);
 
   return target;
 }
@@ -59,7 +56,7 @@ export interface LibraryPages {
   tree: PlaylistFoldersScopes[];
 }
 
-function getAllLibraryPages(
+function fetchAllLibraryPages(
   client: OpfelMusigClient,
   signal: AbortSignal,
   progress: LibraryProgress,
@@ -109,5 +106,65 @@ function getAllLibraryPages(
       .getPins({ scopes: emptyScopes, config: { signal } })
       .then((response) => response.data),
     tree: collect(client.library.playlistFolders.iterateTree({ config: { signal } }), { signal }),
+  });
+}
+
+export interface LibraryResourcePages {
+  albums: Record<string, SongsScopes[]>;
+  artists: Record<string, AlbumsScopes[]>;
+  playlists: Record<string, SongsScopes[]>;
+}
+
+function fetchAllLibraryResourcePages(
+  client: OpfelMusigClient,
+  signal: AbortSignal,
+  pages: LibraryPages,
+): Promise<LibraryResourcePages> {
+  return Promise.allKeyed({
+    albums: Promise.allKeyed(
+      Object.fromEntries(
+        pages.albums.map((album) => [
+          album.id,
+          collect(
+            client.library.albums.iterateRelationship(album.id, "tracks", {
+              limit: 100,
+              scopes: songsScopes,
+              config: { signal },
+            }),
+            { signal },
+          ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
+        ]),
+      ),
+    ),
+    artists: Promise.allKeyed(
+      Object.fromEntries(
+        pages.artists.map((artist) => [
+          artist.id,
+          collect(
+            client.library.artists.iterateRelationship(artist.id, "albums", {
+              limit: 100,
+              scopes: albumsScopes,
+              config: { signal },
+            }),
+            { signal },
+          ),
+        ]),
+      ),
+    ),
+    playlists: Promise.allKeyed(
+      Object.fromEntries(
+        pages.playlists.map((playlist) => [
+          playlist.id,
+          collect(
+            client.library.playlists.iterateRelationship(playlist.id, "tracks", {
+              limit: 100,
+              scopes: songsScopes,
+              config: { signal },
+            }),
+            { signal },
+          ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
+        ]),
+      ),
+    ),
   });
 }
