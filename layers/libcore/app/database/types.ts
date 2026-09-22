@@ -77,6 +77,8 @@ export interface DbArtist {
   name: string;
   artwork?: Artwork;
   genreNames: string[];
+
+  editorialVideo?: EditorialVideo;
   catalogId?: string;
   personalRating?: RatingValue;
 

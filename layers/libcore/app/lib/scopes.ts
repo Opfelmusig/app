@@ -80,6 +80,7 @@ export const artistsScopes = defineScopes({
     },
   },
   artists: {
+    extend: ["editorialVideo", "personalRating"],
     fields: ["name", "artwork", "genreNames"],
   },
 });
