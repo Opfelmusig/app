@@ -25,8 +25,15 @@
       <span>Artists: {{ progress.artists }}</span>
       <span>Playlists: {{ progress.playlists }}</span>
     </div>
+    <span>Stats</span>
+    <div class="flex flex-col gap-2 pl-4 text-sm text-muted">
+      <span>Songs: {{ stats?.songs ?? 0 }}</span>
+      <span>Albums: {{ stats?.albums ?? 0 }}</span>
+      <span>Artists: {{ stats?.artists ?? 0 }}</span>
+      <span>Playlists: {{ stats?.playlists ?? 0 }}</span>
+    </div>
     <div class="flex flex-col h-100 overflow-auto p-2 px-3 rounded-md bg-muted/20 gap-2">
-      <div v-for="song in data" :key="song.id" class="flex gap-2 items-center">
+      <div v-for="song in songs" :key="song.id" class="flex gap-2 items-center">
         <img
           v-if="song.artwork"
           :src="getArtworkUrl(song.artwork, { width: 128 })"
@@ -48,6 +55,7 @@
 import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 
 const { profile, logout, profileId } = useAuth();
-const { data } = useLibrarySongs();
+const { data: songs } = useLibrarySongs();
+const { data: stats } = useLibraryStats();
 const { sync, state, progress, error } = useLibrary();
 </script>
