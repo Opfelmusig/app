@@ -1,8 +1,6 @@
 import type { DbArtist } from "#layers/libcore/app/database/types";
-import { addAlbums } from "#layers/libcore/app/lib/prepare/albums";
-import { addList, addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
-import { artistAlbumsListId } from "#layers/libcore/app/lib/prepare/ids";
-import type { AlbumsScopes, ArtistsScopes } from "#layers/libcore/app/lib/scopes";
+import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
+import type { ArtistsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
 export function addArtists(target: AppleMusicLibrary, resources: ArtistsScopes[], listId: string) {
@@ -42,21 +40,5 @@ function parseArtist(resource: ArtistsScopes): DbArtist {
     editorialVideo: catalog?.attributes?.editorialVideo,
     catalogId: catalog?.id,
     personalRating: catalog?.attributes?.personalRating,
-
-    albumsListId: artistAlbumsListId(resource.id),
   };
-}
-
-export function addArtistAlbums(
-  target: AppleMusicLibrary,
-  resources: Record<string, AlbumsScopes[]>,
-) {
-  const entries = Object.entries(resources);
-
-  entries.forEach(([id, albums]) => {
-    const listId = artistAlbumsListId(id);
-
-    addList(target, listId);
-    addAlbums(target, albums, listId);
-  });
 }

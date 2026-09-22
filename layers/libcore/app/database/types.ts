@@ -69,7 +69,6 @@ export interface DbAlbum {
   catalogId?: string;
   personalRating?: RatingValue;
 
-  tracksListId: string;
   artistId?: string;
 }
 
@@ -83,8 +82,6 @@ export interface DbArtist {
   editorialVideo?: EditorialVideo;
   catalogId?: string;
   personalRating?: RatingValue;
-
-  albumsListId: string;
 }
 
 export interface DbPlaylist {
@@ -106,6 +103,7 @@ export interface DbPlaylist {
   personalRating?: RatingValue;
 
   tracksListId: string;
+  parentId?: string;
 }
 
 export interface DbFolder {
@@ -114,7 +112,7 @@ export interface DbFolder {
   name: string;
   dateAdded?: Date;
 
-  childrenListId: string;
+  parentId?: string;
 }
 
 export interface DbLibraryCatalogLink {

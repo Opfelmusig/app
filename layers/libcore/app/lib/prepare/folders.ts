@@ -1,6 +1,5 @@
 import type { DbFolder } from "#layers/libcore/app/database/types";
-import { addList, addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
-import { folderChildrenListId } from "#layers/libcore/app/lib/prepare/ids";
+import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { PlaylistFoldersScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
@@ -10,6 +9,17 @@ export function addFolders(
   listId: string,
 ) {
   resources.forEach((resource, index) => addFolder(target, resource, listId, index));
+
+  resources.forEach((folder) => {
+    folder.relationships?.children.data.forEach((child) => {
+      const resource =
+        child.type === "library-playlist-folders"
+          ? target.folders.get(child.id)
+          : target.playlists.get(child.id);
+
+      if (resource) resource.parentId = folder.id;
+    });
+  });
 }
 
 export function addFolder(
@@ -26,11 +36,6 @@ export function addFolder(
 
   target.folders.set(parsed.id, parsed);
   addResource(target, parsed.id, "folder");
-
-  addList(target, parsed.childrenListId);
-  resource.relationships?.children.data.forEach((child, index) =>
-    addListResource(target, child.id, parsed.childrenListId, index),
-  );
 }
 
 function parseFolder(resource: PlaylistFoldersScopes): DbFolder {
@@ -44,7 +49,5 @@ function parseFolder(resource: PlaylistFoldersScopes): DbFolder {
 
     name: attributes.name,
     dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
-
-    childrenListId: folderChildrenListId(resource.id),
   };
 }

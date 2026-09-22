@@ -38,11 +38,11 @@ export class LibraryDatabase extends Dexie {
       lists: "id",
       listResources: "id, resourceId, &[listId+position]",
 
-      songs: "id",
-      albums: "id",
+      songs: "id, albumId",
+      albums: "id, artistId",
       artists: "id",
-      playlists: "id",
-      folders: "id",
+      playlists: "id, parentId",
+      folders: "id, parentId",
 
       libraryCatalogLinks: "id, &[resourceId+type+position]",
     });

@@ -26,9 +26,9 @@ export async function fetchAppleMusicLibrary(
   const target = createEmptyLibrary();
 
   const pages = await fetchAllLibraryPages(client, signal, progress);
-  const resourcePages = await fetchAllLibraryResourcePages(client, signal, pages);
+  const playlistTracks = await fetchPlaylistTracks(client, signal, pages.playlists);
 
-  prepareAppleMusicLibrary(target, pages, resourcePages);
+  prepareAppleMusicLibrary(target, pages, playlistTracks);
 
   return target;
 }
@@ -113,62 +113,24 @@ function fetchAllLibraryPages(
   });
 }
 
-export interface LibraryResourcePages {
-  albumTracks: Record<string, SongsScopes[]>;
-  artistAlbums: Record<string, AlbumsScopes[]>;
-  playlistTracks: Record<string, SongsScopes[]>;
-}
-
-function fetchAllLibraryResourcePages(
+function fetchPlaylistTracks(
   client: OpfelMusigClient,
   signal: AbortSignal,
-  pages: LibraryPages,
-): Promise<LibraryResourcePages> {
-  return Promise.allKeyed({
-    albumTracks: Promise.allKeyed(
-      Object.fromEntries(
-        pages.albums.map((album) => [
-          album.id,
-          collect(
-            client.library.albums.iterateRelationship(album.id, "tracks", {
-              limit: 100,
-              scopes: songsScopes,
-              config: { signal },
-            }),
-            { signal },
-          ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
-        ]),
-      ),
+  playlists: PlaylistsScopes[],
+): Promise<Record<string, SongsScopes[]>> {
+  return Promise.allKeyed(
+    Object.fromEntries(
+      playlists.map((playlist) => [
+        playlist.id,
+        collect(
+          client.library.playlists.iterateRelationship(playlist.id, "tracks", {
+            limit: 100,
+            scopes: songsScopes,
+            config: { signal },
+          }),
+          { signal },
+        ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
+      ]),
     ),
-    artistAlbums: Promise.allKeyed(
-      Object.fromEntries(
-        pages.artists.map((artist) => [
-          artist.id,
-          collect(
-            client.library.artists.iterateRelationship(artist.id, "albums", {
-              limit: 100,
-              scopes: albumsScopes,
-              config: { signal },
-            }),
-            { signal },
-          ),
-        ]),
-      ),
-    ),
-    playlistTracks: Promise.allKeyed(
-      Object.fromEntries(
-        pages.playlists.map((playlist) => [
-          playlist.id,
-          collect(
-            client.library.playlists.iterateRelationship(playlist.id, "tracks", {
-              limit: 100,
-              scopes: songsScopes,
-              config: { signal },
-            }),
-            { signal },
-          ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
-        ]),
-      ),
-    ),
-  });
+  );
 }
