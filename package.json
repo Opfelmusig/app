@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.11.1",
-    "@opfelmusig/lib": "^0.0.0-ci.17.sha-53b0087",
+    "@opfelmusig/lib": "^0.0.0-ci.18.sha-83cb32d",
     "@pinia/colada": "^1.4.5",
     "@pinia/colada-nuxt": "^1.2.0",
     "@pinia/colada-plugin-auto-refetch": "^0.2.6",
@@ -47,7 +47,7 @@
     "@pinia/colada-devtools": "^2.0.0",
     "@tauri-apps/cli": "^2.11.4",
     "@types/ms": "^2.1.0",
-    "eslint": "^10.10.0",
+    "eslint": "^10.11.0",
     "lefthook": "^2.1.14",
     "oxfmt": "^0.68.0",
     "typescript": "^6.0.3",

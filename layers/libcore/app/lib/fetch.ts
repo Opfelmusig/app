@@ -9,6 +9,12 @@ import {
   emptyScopes,
   playlistsScopes,
   songsScopes,
+  type AlbumsScopes,
+  type ArtistsScopes,
+  type EmptyScopes,
+  type PlaylistFoldersScopes,
+  type PlaylistsScopes,
+  type SongsScopes,
 } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
@@ -81,11 +87,20 @@ export async function fetchAppleMusicLibrary(
   return target;
 }
 
+export interface LibraryPages {
+  songs: SongsScopes[];
+  albums: AlbumsScopes[];
+  artists: ArtistsScopes[];
+  playlists: PlaylistsScopes[];
+  pins: EmptyScopes[];
+  tree: PlaylistFoldersScopes[];
+}
+
 function getAllLibraryPages(
   client: OpfelMusigClient,
   signal: AbortSignal,
   progress: LibraryProgress,
-) {
+): Promise<LibraryPages> {
   return Promise.allKeyed({
     songs: collect(
       client.library.songs.iterateAll({ limit: 100, scopes: songsScopes, config: { signal } }),
@@ -134,9 +149,6 @@ function getAllLibraryPages(
   });
 }
 
-type PagesResponse = Awaited<ReturnType<typeof getAllLibraryPages>>;
-type PageResponse<TKey extends keyof PagesResponse> = PagesResponse[TKey][number];
-
 function createEmptyLibrary(): AppleMusicLibrary {
   return {
     resources: [],
@@ -151,7 +163,9 @@ function createEmptyLibrary(): AppleMusicLibrary {
   };
 }
 
-function parseSong(song: PageResponse<"songs">): DbSong {
+type LibraryPage<TKey extends keyof LibraryPages> = LibraryPages[TKey][number];
+
+function parseSong(song: LibraryPage<"songs">): DbSong {
   const catalog = song.relationships?.catalog.data[0];
   const album = song.relationships?.albums.data[0];
   const artist = song.relationships?.artists.data[0];
