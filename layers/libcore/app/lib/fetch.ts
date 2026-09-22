@@ -1,10 +1,11 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
+import { collect } from "@opfelmusig/lib/helpers";
+
 import { DbListId } from "#layers/libcore/app/database/types";
 import type { DbSong } from "#layers/libcore/app/database/types";
-import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
-import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 import { emptyScopes, scopes } from "#layers/libcore/app/lib/scopes";
-import { collect } from "@opfelmusig/lib/helpers";
+import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
+import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 
 export async function fetchAppleMusicLibrary(
   client: OpfelMusigClient,

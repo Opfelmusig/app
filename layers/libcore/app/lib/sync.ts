@@ -1,8 +1,9 @@
+import type { OpfelMusigClient } from "@opfelmusig/lib";
+
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import { fetchAppleMusicLibrary } from "#layers/libcore/app/lib/fetch";
 import { saveAppleMusicLibrary } from "#layers/libcore/app/lib/save";
 import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
-import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { logger } from "~/lib/logger";
 
 export async function syncAppleMusicLibrary(

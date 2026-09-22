@@ -1,4 +1,5 @@
 import { fetch } from "@tauri-apps/plugin-http";
+
 import { logger } from "~/lib/logger";
 
 const appleMusicUrl = "https://music.apple.com";

@@ -1,6 +1,5 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "singleQuote": false,
-  "endOfLine": "lf",
-  "ignorePatterns": ["bun.lock"]
+  "ignorePatterns": ["bun.lock"],
+  "sortImports": true
 }

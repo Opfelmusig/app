@@ -1,8 +1,9 @@
-import { appDataDir, join } from "@tauri-apps/api/path";
-import { Stronghold } from "@tauri-apps/plugin-stronghold";
 import { OpfelMusigClient } from "@opfelmusig/lib";
+import { appDataDir, join } from "@tauri-apps/api/path";
 import { fetch } from "@tauri-apps/plugin-http";
+import { Stronghold } from "@tauri-apps/plugin-stronghold";
 import ms from "ms";
+
 import { getAppleMusicDeveloperToken } from "#layers/client/app/lib/getAppleMusicDeveloperToken";
 import { profileScope, type UserProfile } from "#layers/client/app/lib/profileScope";
 import { logger } from "~/lib/logger";
