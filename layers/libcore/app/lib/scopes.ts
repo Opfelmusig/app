@@ -15,6 +15,7 @@ export const songsScopes = defineScopes({
       "durationInMillis",
       "genreNames",
       "releaseDate",
+      "discNumber",
       "trackNumber",
     ],
     relationships: {
@@ -32,6 +33,7 @@ export const songsScopes = defineScopes({
       "durationInMillis",
       "genreNames",
       "releaseDate",
+      "discNumber",
       "trackNumber",
     ],
     extend: ["personalRating"],

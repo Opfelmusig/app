@@ -44,6 +44,7 @@ export interface DbSong {
   genreNames: string[];
   artwork?: Artwork;
   durationInMillis: number;
+  discNumber?: number;
   trackNumber?: number;
   releaseDate?: string;
 
