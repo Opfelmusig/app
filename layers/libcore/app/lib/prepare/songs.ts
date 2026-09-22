@@ -7,6 +7,10 @@ import {
 import type { SongsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
+export function addSongs(target: AppleMusicLibrary, songs: SongsScopes[], listId: string) {
+  songs.forEach((song, index) => addSong(target, song, listId, index));
+}
+
 export function addSong(
   target: AppleMusicLibrary,
   song: SongsScopes,
