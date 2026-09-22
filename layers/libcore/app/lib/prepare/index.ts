@@ -3,6 +3,7 @@ import type { LibraryPages, LibraryResourcePages } from "#layers/libcore/app/lib
 import { addAlbums, addAlbumTracks } from "#layers/libcore/app/lib/prepare/albums";
 import { addArtistAlbums, addArtists } from "#layers/libcore/app/lib/prepare/artists";
 import { addList } from "#layers/libcore/app/lib/prepare/helpers";
+import { addPlaylists, addPlaylistTracks } from "#layers/libcore/app/lib/prepare/playlists";
 import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
@@ -23,6 +24,10 @@ export function prepareAppleMusicLibrary(
   addArtistAlbums(target, resourcePages.artists);
 
   addList(target, DbListId.Playlists);
+  addPlaylists(target, pages.playlists, DbListId.Playlists);
+  addPlaylistTracks(target, resourcePages.playlists);
 
   addList(target, DbListId.Pins);
+
+  addList(target, DbListId.PlaylistFolders);
 }

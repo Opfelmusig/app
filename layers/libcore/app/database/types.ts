@@ -6,6 +6,7 @@ export enum DbListId {
   Artists = "artists",
   Playlists = "playlists",
   Pins = "pins",
+  PlaylistFolders = "playlist-folders",
 }
 
 export interface DbLibraryState {
@@ -96,11 +97,12 @@ export interface DbPlaylist {
   isPublic: boolean;
   dateAdded?: Date;
   tags: string[];
+  curatorName?: string;
+  curatorSocialHandle?: string;
 
   editorialVideo?: EditorialVideo;
+  catalogId?: string;
   personalRating?: RatingValue;
-  curatorName?: string;
-  curatorHandle?: string;
 
   tracksListId: string;
 }
