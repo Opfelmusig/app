@@ -35,15 +35,15 @@ export async function fetchAppleMusicLibrary(
 
 function createEmptyLibrary(): AppleMusicLibrary {
   return {
-    resources: [],
-    lists: [],
-    listResources: [],
-    songs: [],
-    albums: [],
-    artists: [],
-    playlists: [],
-    folders: [],
-    libraryCatalogLinks: [],
+    resources: new Map(),
+    lists: new Map(),
+    listResources: new Map(),
+    songs: new Map(),
+    albums: new Map(),
+    artists: new Map(),
+    playlists: new Map(),
+    folders: new Map(),
+    libraryCatalogLinks: new Map(),
   };
 }
 

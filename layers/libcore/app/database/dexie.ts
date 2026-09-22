@@ -44,7 +44,7 @@ export class LibraryDatabase extends Dexie {
       playlists: "id",
       folders: "id",
 
-      libraryCatalogLink: "id,  &[resourceId+type+position], &[resourceId+type+catalogId]",
+      libraryCatalogLink: "id, &[resourceId+type+position]",
     });
   }
 }

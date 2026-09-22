@@ -11,15 +11,15 @@ import type {
 } from "#layers/libcore/app/database/types";
 
 export interface AppleMusicLibrary {
-  resources: DbResource[];
-  lists: DbList[];
-  listResources: DbListResource[];
+  resources: Map<string, DbResource>;
+  lists: Map<string, DbList>;
+  listResources: Map<string, DbListResource>;
 
-  songs: DbSong[];
-  albums: DbAlbum[];
-  artists: DbArtist[];
-  playlists: DbPlaylist[];
-  folders: DbFolder[];
+  songs: Map<string, DbSong>;
+  albums: Map<string, DbAlbum>;
+  artists: Map<string, DbArtist>;
+  playlists: Map<string, DbPlaylist>;
+  folders: Map<string, DbFolder>;
 
-  libraryCatalogLinks: DbLibraryCatalogLink[];
+  libraryCatalogLinks: Map<string, DbLibraryCatalogLink>;
 }

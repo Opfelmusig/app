@@ -14,13 +14,12 @@ export function addSong(
   position: number,
 ) {
   const parsed = parseSong(song);
-  const existing = target.songs.find((song) => song.id === parsed.id);
 
   addListResource(target, parsed.id, listId, position);
 
-  if (existing) return;
+  if (target.songs.has(parsed.id)) return;
 
-  target.songs.push(parsed);
+  target.songs.set(parsed.id, parsed);
   addResource(target, parsed.id, "song");
 
   const catalog = song.relationships?.catalog.data[0];

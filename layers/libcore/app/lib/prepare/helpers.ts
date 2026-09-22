@@ -1,28 +1,36 @@
 import type { DbResourceType, DbCatalogLinkType } from "#layers/libcore/app/database/types";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
-export function addList(target: AppleMusicLibrary, id: string) {
-  target.lists.push({
-    id,
+export function addList(target: AppleMusicLibrary, listId: string) {
+  if (target.lists.has(listId)) return;
+
+  target.lists.set(listId, {
+    id: listId,
   });
 }
 
-export function addResource(target: AppleMusicLibrary, id: string, type: DbResourceType) {
-  target.resources.push({
-    id,
+export function addResource(target: AppleMusicLibrary, resourceId: string, type: DbResourceType) {
+  if (target.resources.has(resourceId)) return;
+
+  target.resources.set(resourceId, {
+    id: resourceId,
     type,
   });
 }
 
 export function addListResource(
   target: AppleMusicLibrary,
-  id: string,
+  resourceId: string,
   listId: string,
   position: number,
 ) {
-  target.listResources.push({
-    id: `${id}-${listId}-${position}`,
-    resourceId: id,
+  const id = `${listId}-${position}`;
+
+  if (target.listResources.has(id)) return;
+
+  target.listResources.set(id, {
+    id: id,
+    resourceId: resourceId,
     listId,
     position: position,
   });
@@ -30,18 +38,22 @@ export function addListResource(
 
 export function addLibraryCatalogLink(
   target: AppleMusicLibrary,
-  id: string,
+  resourceId: string,
   type: DbCatalogLinkType,
   catalogId: string,
   name: string,
   position: number,
 ) {
-  target.libraryCatalogLinks.push({
-    id: `${id}-${type}-${catalogId}-${position}`,
+  const id = `${resourceId}-${type}-${position}`;
+
+  if (target.libraryCatalogLinks.has(id)) return;
+
+  target.libraryCatalogLinks.set(id, {
+    id: id,
     catalogId,
     type,
     name: name,
     position,
-    resourceId: id,
+    resourceId: resourceId,
   });
 }
