@@ -1,16 +1,6 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { DbListId } from "#layers/libcore/app/database/types";
-import type {
-  DbAlbum,
-  DbArtist,
-  DbFolder,
-  DbLibraryCatalogLink,
-  DbList,
-  DbListResource,
-  DbPlaylist,
-  DbResource,
-  DbSong,
-} from "#layers/libcore/app/database/types";
+import type { DbSong } from "#layers/libcore/app/database/types";
 import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 import { emptyScopes, scopes } from "#layers/libcore/app/lib/scopes";
@@ -21,33 +11,23 @@ export async function fetchAppleMusicLibrary(
   signal: AbortSignal,
   progress: LibraryProgress,
 ): Promise<AppleMusicLibrary> {
-  const dbResources: DbResource[] = [];
-  const dbLists: DbList[] = [];
-  const dbListResources: DbListResource[] = [];
-
-  const dbSongs: DbSong[] = [];
-  const dbAlbums: DbAlbum[] = [];
-  const dbArtists: DbArtist[] = [];
-  const dbPlaylists: DbPlaylist[] = [];
-  const dbFolders: DbFolder[] = [];
-
-  const dbLibraryCatalogLinks: DbLibraryCatalogLink[] = [];
+  const target = createEmptyLibrary();
 
   const library = await getAllLibraryPages(client, signal, progress);
 
-  dbLists.push({
+  target.lists.push({
     id: DbListId.Songs,
   });
 
   library.songs.forEach((song, index) => {
     const parsed = parseSong(song);
 
-    dbSongs.push(parsed);
-    dbResources.push({
+    target.songs.push(parsed);
+    target.resources.push({
       id: parsed.id,
       type: "song",
     });
-    dbListResources.push({
+    target.listResources.push({
       id: `${song.id}-${DbListId.Songs}-${index}`,
       resource_id: song.id,
       list_id: DbListId.Songs,
@@ -61,7 +41,7 @@ export async function fetchAppleMusicLibrary(
     const album = catalog.relationships?.albums.data[0];
 
     if (album && catalog.attributes?.albumName) {
-      dbLibraryCatalogLinks.push({
+      target.libraryCatalogLinks.push({
         id: `${parsed.id}-album`,
         catalog_id: album.id,
         type: "album",
@@ -76,7 +56,7 @@ export async function fetchAppleMusicLibrary(
     artists?.forEach((artist, index) => {
       if (!artist.attributes) return;
 
-      dbLibraryCatalogLinks.push({
+      target.libraryCatalogLinks.push({
         id: `${parsed.id}-artist-${artist.id}-${index}`,
         catalog_id: artist.id,
         type: "artist",
@@ -91,17 +71,7 @@ export async function fetchAppleMusicLibrary(
   // Playlist tracks
   // Artist albums
 
-  return {
-    resources: dbResources,
-    lists: dbLists,
-    listResources: dbListResources,
-    songs: dbSongs,
-    albums: dbAlbums,
-    artists: dbArtists,
-    playlists: dbPlaylists,
-    folders: dbFolders,
-    libraryCatalogLinks: dbLibraryCatalogLinks,
-  };
+  return target;
 }
 
 function getAllLibraryPages(
@@ -149,6 +119,20 @@ function getAllLibraryPages(
 
 type PagesResponse = Awaited<ReturnType<typeof getAllLibraryPages>>;
 type PageResponse<TKey extends keyof PagesResponse> = PagesResponse[TKey][number];
+
+function createEmptyLibrary(): AppleMusicLibrary {
+  return {
+    resources: [],
+    lists: [],
+    listResources: [],
+    songs: [],
+    albums: [],
+    artists: [],
+    playlists: [],
+    folders: [],
+    libraryCatalogLinks: [],
+  };
+}
 
 function parseSong(song: PageResponse<"songs">): DbSong {
   const catalog = song.relationships?.catalog.data[0];
