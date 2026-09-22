@@ -37,6 +37,7 @@ function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
     throw new Error(`Invalid Apple Music playlist: ${resource.id}: missing attributes`);
 
   const lastModifiedDate = attributes.lastModifiedDate ?? catalog?.attributes?.lastModifiedDate;
+  const parentId = resource.relationships?.parent.data[0]?.id ?? "p.playlistsroot";
 
   return {
     id: resource.id,
@@ -56,6 +57,7 @@ function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
     catalogId: catalog?.id,
     personalRating: catalog?.attributes?.personalRating,
 
+    parentId,
     tracksListId: playlistTracksListId(resource.id),
   };
 }

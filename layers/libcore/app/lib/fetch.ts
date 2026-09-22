@@ -107,7 +107,7 @@ function fetchAllLibraryPages(
       .then((response) =>
         response.data.filter((resource) => isNotResourceType(resource, "library-music-videos")),
       ),
-    playlistFolders: collect(client.library.playlistFolders.iterateTree({ config: { signal } }), {
+    playlistFolders: collect(client.library.playlistFolders.iterateFolders({ config: { signal } }), {
       signal,
     }),
   });

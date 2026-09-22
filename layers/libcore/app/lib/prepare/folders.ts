@@ -9,17 +9,6 @@ export function addFolders(
   listId: string,
 ) {
   resources.forEach((resource, index) => addFolder(target, resource, listId, index));
-
-  resources.forEach((folder) => {
-    folder.relationships?.children.data.forEach((child) => {
-      const resource =
-        child.type === "library-playlist-folders"
-          ? target.folders.get(child.id)
-          : target.playlists.get(child.id);
-
-      if (resource) resource.parentId = folder.id;
-    });
-  });
 }
 
 export function addFolder(
@@ -44,10 +33,14 @@ function parseFolder(resource: PlaylistFoldersScopes): DbFolder {
   if (!attributes)
     throw new Error(`Invalid Apple Music playlist folder: ${resource.id}: missing attributes`);
 
+  const parentId = resource.relationships?.parent.data[0]?.id;
+
   return {
     id: resource.id,
 
     name: attributes.name,
     dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+
+    parentId,
   };
 }

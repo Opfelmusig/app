@@ -103,6 +103,7 @@ export const playlistsScopes = defineScopes({
     extend: ["tags"],
     relationships: {
       catalog: "include",
+      parent: "relate",
     },
   },
   playlists: {
