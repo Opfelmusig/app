@@ -1,8 +1,7 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect } from "@opfelmusig/lib/helpers";
 
-import { DbListId } from "#layers/libcore/app/database/types";
-import type { DbSong } from "#layers/libcore/app/database/types";
+import { prepareAppleMusicLibrary } from "#layers/libcore/app/lib/prepare";
 import {
   albumsScopes,
   artistsScopes,
@@ -28,63 +27,27 @@ export async function fetchAppleMusicLibrary(
 
   const library = await getAllLibraryPages(client, signal, progress);
 
-  target.lists.push({
-    id: DbListId.Songs,
-  });
-
-  library.songs.forEach((song, index) => {
-    const parsed = parseSong(song);
-
-    target.songs.push(parsed);
-    target.resources.push({
-      id: parsed.id,
-      type: "song",
-    });
-    target.listResources.push({
-      id: `${song.id}-${DbListId.Songs}-${index}`,
-      resourceId: song.id,
-      listId: DbListId.Songs,
-      position: index,
-    });
-
-    const catalog = song.relationships?.catalog.data[0];
-
-    if (!catalog) return;
-
-    const album = catalog.relationships?.albums.data[0];
-
-    if (album && catalog.attributes?.albumName) {
-      target.libraryCatalogLinks.push({
-        id: `${parsed.id}-album`,
-        catalogId: album.id,
-        type: "album",
-        name: catalog.attributes.albumName,
-        position: 0,
-        resourceId: parsed.id,
-      });
-    }
-
-    const artists = catalog.relationships?.artists.data;
-
-    artists?.forEach((artist, index) => {
-      if (!artist.attributes) return;
-
-      target.libraryCatalogLinks.push({
-        id: `${parsed.id}-artist-${artist.id}-${index}`,
-        catalogId: artist.id,
-        type: "artist",
-        name: artist.attributes.name,
-        position: index,
-        resourceId: parsed.id,
-      });
-    });
-  });
+  prepareAppleMusicLibrary(target, library);
 
   // Album tracks
   // Playlist tracks
   // Artist albums
 
   return target;
+}
+
+function createEmptyLibrary(): AppleMusicLibrary {
+  return {
+    resources: [],
+    lists: [],
+    listResources: [],
+    songs: [],
+    albums: [],
+    artists: [],
+    playlists: [],
+    folders: [],
+    libraryCatalogLinks: [],
+  };
 }
 
 export interface LibraryPages {
@@ -147,45 +110,4 @@ function getAllLibraryPages(
       .then((response) => response.data),
     tree: collect(client.library.playlistFolders.iterateTree({ config: { signal } }), { signal }),
   });
-}
-
-function createEmptyLibrary(): AppleMusicLibrary {
-  return {
-    resources: [],
-    lists: [],
-    listResources: [],
-    songs: [],
-    albums: [],
-    artists: [],
-    playlists: [],
-    folders: [],
-    libraryCatalogLinks: [],
-  };
-}
-
-type LibraryPage<TKey extends keyof LibraryPages> = LibraryPages[TKey][number];
-
-function parseSong(song: LibraryPage<"songs">): DbSong {
-  const catalog = song.relationships?.catalog.data[0];
-  const album = song.relationships?.albums.data[0];
-  const artist = song.relationships?.artists.data[0];
-  const attributes = song.attributes;
-
-  if (!attributes) throw new Error(`Invalid Apple Music song: ${song.id}: missing attributes`);
-
-  return {
-    id: song.id,
-    name: attributes.name,
-    trackNumber: attributes.trackNumber,
-    albumName: attributes.albumName,
-    artistName: attributes.artistName,
-    durationInMillis: attributes.durationInMillis,
-    genreNames: attributes.genreNames,
-    artwork: attributes.artwork ?? catalog?.attributes?.artwork,
-    releaseDate: attributes.releaseDate ?? catalog?.attributes?.releaseDate,
-    personalRating: catalog?.attributes?.personalRating,
-    albumId: album?.id,
-    artistId: artist?.id,
-    catalogId: catalog?.id,
-  };
 }
