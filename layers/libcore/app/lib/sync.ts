@@ -13,7 +13,7 @@ export async function syncAppleMusicLibrary(
   signal: AbortSignal,
   progress: LibraryProgress,
 ) {
-  const log = logger.withTag("sync");
+  const log = logger.withTag("libcore:sync");
 
   log.info("Apple Music library fetch started");
 

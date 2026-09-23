@@ -6,7 +6,7 @@ const appleMusicUrl = "https://music.apple.com";
 const indexPathPattern = /\/assets\/index-legacy[-~][^/]+\.js/;
 const tokenPattern = /"(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)"/;
 
-const log = logger.withTag("devtoken");
+const log = logger.withTag("auth:devtoken");
 
 export async function getAppleMusicDeveloperToken() {
   log.info("Apple Music Developer Token discovery started");
