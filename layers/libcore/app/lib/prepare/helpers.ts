@@ -2,6 +2,20 @@ import type { DbResourceType, DbCatalogLinkType } from "#layers/libcore/app/data
 import { libraryCatalogLinkId, listResourceId } from "#layers/libcore/app/lib/prepare/ids";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
+export function createEmptyLibrary(): AppleMusicLibrary {
+  return {
+    resources: new Map(),
+    lists: new Map(),
+    listResources: new Map(),
+    songs: new Map(),
+    albums: new Map(),
+    artists: new Map(),
+    playlists: new Map(),
+    folders: new Map(),
+    libraryCatalogLinks: new Map(),
+  };
+}
+
 export function addList(target: AppleMusicLibrary, listId: string) {
   if (target.lists.has(listId)) return;
 

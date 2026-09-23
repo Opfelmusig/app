@@ -2,6 +2,7 @@ import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect, isNotResourceType, isResourceType } from "@opfelmusig/lib/helpers";
 
 import { prepareAppleMusicLibrary } from "#layers/libcore/app/lib/prepare";
+import { createEmptyLibrary } from "#layers/libcore/app/lib/prepare/helpers";
 import {
   albumsScopes,
   artistsScopes,
@@ -31,20 +32,6 @@ export async function fetchAppleMusicLibrary(
   prepareAppleMusicLibrary(target, pages, playlistTracks);
 
   return target;
-}
-
-function createEmptyLibrary(): AppleMusicLibrary {
-  return {
-    resources: new Map(),
-    lists: new Map(),
-    listResources: new Map(),
-    songs: new Map(),
-    albums: new Map(),
-    artists: new Map(),
-    playlists: new Map(),
-    folders: new Map(),
-    libraryCatalogLinks: new Map(),
-  };
 }
 
 export interface LibraryPages {

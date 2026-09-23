@@ -29,7 +29,7 @@ export function addPlaylist(
   addResource(target, parsed.id, "playlist");
 }
 
-function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
+export function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
   const catalog = resource.relationships?.catalog.data[0];
   const attributes = resource.attributes;
 
