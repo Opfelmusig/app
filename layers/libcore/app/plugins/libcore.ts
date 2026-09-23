@@ -1,5 +1,8 @@
+import ms from "ms";
+
 import { LibraryClient } from "#layers/libcore/app/database/client";
 import { LibraryDatabase } from "#layers/libcore/app/database/dexie";
+import { refreshArtworks } from "#layers/libcore/app/lib/refreshArtworks";
 import { syncAppleMusicLibrary } from "#layers/libcore/app/lib/sync";
 import { logger } from "~/lib/logger";
 
@@ -34,6 +37,8 @@ export default defineNuxtPlugin({
     let syncController: AbortController | null = null;
     let syncPromise: Promise<void> | null = null;
     let initializePromise: Promise<void> | null = null;
+    let artworkRefreshController: AbortController | null = null;
+    let artworkRefreshPromise: Promise<void> | null = null;
 
     const state = reactive<LibraryState>({
       ready: false,
@@ -47,6 +52,7 @@ export default defineNuxtPlugin({
       artists: 0,
       playlists: 0,
     });
+    const isRefreshingArtworks = ref(false);
     const error = ref<Error | null>(null);
 
     function resetProgress() {
@@ -97,6 +103,8 @@ export default defineNuxtPlugin({
           lastSyncedAt: dbState.lastSyncedAt,
         });
 
+        startArtworkRefresh();
+
         return;
       }
 
@@ -120,6 +128,9 @@ export default defineNuxtPlugin({
 
     async function sync() {
       const startedAt = performance.now();
+
+      artworkRefreshController?.abort();
+      await artworkRefreshPromise;
 
       log.info("Library sync started");
 
@@ -194,14 +205,49 @@ export default defineNuxtPlugin({
 
       state.ready = false;
       syncController?.abort();
+      artworkRefreshController?.abort();
 
-      await Promise.allSettled([initializePromise, syncPromise].filter(Boolean));
+      await Promise.allSettled(
+        [initializePromise, syncPromise, artworkRefreshPromise].filter(Boolean),
+      );
 
       log.debug("Library operations stopped");
 
       await clearData();
 
       log.info("Local library cleared");
+    }
+
+    async function startArtworkRefresh() {
+      if (artworkRefreshPromise) return artworkRefreshPromise;
+
+      artworkRefreshPromise = prepareArtworkRefresh()
+        .catch((cause) => {
+          log.error("Artwork refresh failed", { cause });
+        })
+        .finally(() => {
+          artworkRefreshPromise = null;
+        });
+
+      return artworkRefreshPromise;
+    }
+
+    async function prepareArtworkRefresh() {
+      if (!state.ready || state.syncing) return;
+
+      artworkRefreshController = new AbortController();
+      isRefreshingArtworks.value = true;
+
+      try {
+        const updated = await refreshArtworks(db, opfelmusig, artworkRefreshController.signal);
+
+        if (updated) {
+          await queryCache.invalidateQueries({ key: ["libcore"] });
+        }
+      } finally {
+        artworkRefreshController = null;
+        isRefreshingArtworks.value = false;
+      }
     }
 
     nuxtApp.hook("auth:logout", clear);
@@ -220,11 +266,14 @@ export default defineNuxtPlugin({
       }
     });
 
+    setInterval(startArtworkRefresh, ms("1h"));
+
     return {
       provide: {
         library: {
           client,
           sync: manualSync,
+          refreshArtworks: startArtworkRefresh,
           state: readonly(state),
           progress: readonly(progress),
           error: readonly(error),

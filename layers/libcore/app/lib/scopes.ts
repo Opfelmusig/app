@@ -138,3 +138,12 @@ export type PlaylistFoldersScopes = ScopedResourceOf<
   "library-playlist-folders",
   LibraryPlaylistFolderTreeScopes
 >;
+
+export const artworkScopes = defineScopes({
+  "library-songs": { fields: ["artwork"], relationships: { catalog: "include" } },
+  songs: { fields: ["artwork"] },
+  "library-albums": { fields: ["artwork"], relationships: { catalog: "include" } },
+  albums: { fields: ["artwork"] },
+  "library-playlists": { fields: ["artwork"], relationships: { catalog: "include" } },
+  playlists: { fields: ["artwork"] },
+});
