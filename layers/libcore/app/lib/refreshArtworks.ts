@@ -66,39 +66,45 @@ export async function refreshArtworks(
 
   let updated = false;
 
-  const response = await client.library.getMany(
-    {
-      "library-songs": expired
-        .filter((expired) => expired.type === "song")
-        .map((expired) => expired.id),
-      "library-albums": expired
-        .filter((expired) => expired.type === "album")
-        .map((expired) => expired.id),
-      "library-playlists": expired
-        .filter((expired) => expired.type === "playlist")
-        .map((expired) => expired.id),
-    },
-    {
-      config: { signal },
-      scopes: artworkScopes,
-    },
+  const batchedExpired = Array.from({ length: Math.ceil(expired.length / 100) }, (_, i) =>
+    expired.slice(i * 100, (i + 1) * 100),
   );
+
+  const responses = await Promise.all(
+    batchedExpired.map((expired) =>
+      client.library.getMany(
+        {
+          "library-songs": expired.filter(({ type }) => type === "song").map(({ id }) => id),
+          "library-albums": expired.filter(({ type }) => type === "album").map(({ id }) => id),
+          "library-playlists": expired
+            .filter(({ type }) => type === "playlist")
+            .map(({ id }) => id),
+        },
+        {
+          config: { signal },
+          scopes: artworkScopes,
+        },
+      ),
+    ),
+  );
+
+  const resources = responses.flatMap(({ data }) => data);
 
   log.info("Fetched new artwork resources", {
     durationMs: Math.round(performance.now() - readStartedAt),
-    amount: response.data.length,
+    amount: resources.length,
   });
 
   signal.throwIfAborted();
 
-  const resources = response.data.filter((resource) =>
+  const filteredResources = resources.filter((resource) =>
     isResourceType(resource, "library-songs", "library-albums", "library-playlists"),
   );
 
   const writeStartedAt = performance.now();
 
   await Promise.all(
-    resources.map(async (resource) => {
+    filteredResources.map(async (resource) => {
       const details = expired.find(
         ({ id, type }) => id === resource.id && resource.type === `library-${type}s`,
       );
