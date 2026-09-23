@@ -25,10 +25,6 @@ const tauriReporter: ConsolaReporter = {
 export const logger = createConsola({
   level: import.meta.dev ? 4 : 3,
 
-  defaults: {
-    tag: "app",
-  },
-
   formatOptions: {
     colors: import.meta.dev,
 
