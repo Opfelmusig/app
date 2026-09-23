@@ -273,7 +273,6 @@ export default defineNuxtPlugin({
         library: {
           client,
           sync: manualSync,
-          refreshArtworks: startArtworkRefresh,
           state: readonly(state),
           progress: readonly(progress),
           error: readonly(error),
