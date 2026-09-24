@@ -20,6 +20,7 @@ export default withNuxt(
       "vue/html-self-closing": "off",
       "vue/no-v-html": "off",
       "vue/return-in-computed-property": "off",
+      "vue/multi-word-component-names": "off",
     },
   },
 ).append({
