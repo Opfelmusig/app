@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 flex flex-col gap-2 items-start size-full" data-tauri-drag-region>
+  <div class="p-8 flex flex-col gap-2 items-start size-full">
     <h1>{{ profile?.attributes?.name }}@{{ profile?.attributes?.handle }}</h1>
     <span>{{ profileId }}</span>
     <div class="flex gap-2">

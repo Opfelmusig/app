@@ -1,5 +1,8 @@
 <template>
   <div class="relative flex size-full h-svh flex-col overflow-hidden">
-    <slot />
+    <Titlebar />
+    <div class="flex size-full overflow-hidden">
+      <slot />
+    </div>
   </div>
 </template>

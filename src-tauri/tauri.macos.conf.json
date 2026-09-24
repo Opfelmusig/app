@@ -1,4 +1,6 @@
 {
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "identifier": "dev.waradu.opfelmusig",
   "app": {
     "windows": [
       {
@@ -16,7 +18,11 @@
         "backgroundColor": "#18181b",
         "backgroundThrottling": "disabled",
         "hiddenTitle": true,
-        "titleBarStyle": "Overlay"
+        "titleBarStyle": "Overlay",
+        "trafficLightPosition": {
+          "x": 11,
+          "y": 20
+        }
       }
     ]
   },
