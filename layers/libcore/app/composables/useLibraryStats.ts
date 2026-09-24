@@ -1,4 +1,4 @@
-export default function () {
+export default function useLibraryStats() {
   const library = useLibrary();
 
   return useQuery({
