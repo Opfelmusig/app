@@ -1,3 +1,3 @@
-export default function fname() {
+export default function useClient() {
   return useNuxtApp().$client;
 }
