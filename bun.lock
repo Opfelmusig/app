@@ -14,6 +14,7 @@
         "@pinia/nuxt": "^1.0.2",
         "@tauri-apps/plugin-http": "^2.6.1",
         "@tauri-apps/plugin-log": "^2.9.1",
+        "@tauri-apps/plugin-os": "^2.3.2",
         "@tauri-apps/plugin-stronghold": "^2.3.2",
         "@vueuse/components": "^15.0.0",
         "@vueuse/nuxt": "^15.0.0",
@@ -592,6 +593,8 @@
     "@tauri-apps/plugin-http": ["@tauri-apps/plugin-http@2.6.1", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-9gtfe6eOaVKofASoMZ4Ph8E6vDYnpUTbMXrLt4FkXPzC5+O+wnGqJ9fz2koSPYcQt10bb3cx5qHkU0AU1l8tcQ=="],
 
     "@tauri-apps/plugin-log": ["@tauri-apps/plugin-log@2.9.1", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-8dYNEQOgZcIEqeFtHAsOIGLoptm+j94270Jf2MrGS/zbsYNd4C8DKyOdeYggAyE3ugwr12mTefIfC8lVVEhdlg=="],
+
+    "@tauri-apps/plugin-os": ["@tauri-apps/plugin-os@2.3.2", "", { "dependencies": { "@tauri-apps/api": "^2.8.0" } }, "sha512-n+nXWeuSeF9wcEsSPmRnBEGrRgOy6jjkSU+UVCOV8YUGKb2erhDOxis7IqRXiRVHhY8XMKks00BJ0OAdkpf6+A=="],
 
     "@tauri-apps/plugin-stronghold": ["@tauri-apps/plugin-stronghold@2.3.2", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-tl+dJCvwlY/MyO9yvu9jldrMLa03UeE087Bjmi8LKD+JmXVRX2rWMEvyekDGBRWGhvyjsOr1gUfhvfc+dXtRRQ=="],
 
