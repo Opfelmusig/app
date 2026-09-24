@@ -7,8 +7,11 @@ import {
   warn as tauriWarn,
 } from "@tauri-apps/plugin-log";
 import { createConsola, type ConsolaReporter, type LogObject } from "consola";
+import { configure } from "safe-stable-stringify";
+import { serializeError } from "serialize-error";
 
 const MAX_LOG_LENGTH = 8_000;
+const stringifyLog = configure({ deterministic: false });
 
 const tauriReporter: ConsolaReporter = {
   log(log) {
@@ -54,27 +57,11 @@ function formatLog(log: LogObject) {
 function formatArgument(value: unknown) {
   if (typeof value === "string") return value;
 
-  const seen = new WeakSet<object>();
-
   try {
     return (
-      JSON.stringify(value, (_key, nestedValue) => {
-        if (typeof nestedValue !== "object" || nestedValue === null) return nestedValue;
-
-        if (seen.has(nestedValue)) return "[Circular]";
-        seen.add(nestedValue);
-
-        if (nestedValue instanceof Error) {
-          return {
-            name: nestedValue.name,
-            message: nestedValue.message,
-            stack: nestedValue.stack,
-            cause: nestedValue.cause,
-          };
-        }
-
-        return nestedValue;
-      }) ?? String(value)
+      stringifyLog(value, (_key, nestedValue) =>
+        nestedValue instanceof Error ? serializeError(nestedValue) : nestedValue,
+      ) ?? String(value)
     );
   } catch {
     return String(value);
