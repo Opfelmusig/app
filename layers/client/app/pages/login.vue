@@ -55,4 +55,8 @@ const submit = async () => {
     loading.value = false;
   }
 };
+
+definePageMeta({
+  layout: "empty",
+});
 </script>
