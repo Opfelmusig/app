@@ -7,6 +7,8 @@
 <script lang="ts" setup>
 import type { Artwork } from "@opfelmusig/lib/types";
 
+import type { ResolvedResource } from "#layers/libcore/app/database/types";
+
 const variants = cva(
   "group relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl select-none",
   {
@@ -40,6 +42,7 @@ const props = defineProps<{
   round?: boolean;
   class?: string;
   resource?: ResourceArtworkExtract | null;
+  libraryResource?: ResolvedResource | null;
   artwork?: Artwork;
 }>();
 
@@ -48,12 +51,17 @@ const isRoundedResource = computed(
     props.resource?.type === "library-artists" ||
     props.resource?.type === "artists" ||
     props.resource?.type === "personal-social-profiles" ||
-    props.resource?.type === "social-profiles",
+    props.resource?.type === "social-profiles" ||
+    props.libraryResource?.type === "artist",
 );
 const round = computed(() => isRoundedResource.value || props.round);
 
-const resourceArtwork = useResourceArtwork(() => props.resource);
-const artwork = computed(() => props.artwork ?? resourceArtwork.value);
+const artwork = computed(
+  () =>
+    props.artwork ??
+    resourceArtwork(props.resource) ??
+    libraryResourceArtwork(props.libraryResource),
+);
 
 const imageSize = computed(() => {
   if (!props.size) return 96 * 2;
