@@ -21,11 +21,6 @@ export async function syncAppleMusicLibrary(
 
   const startedAt = performance.now();
 
-  progress.songs = 0;
-  progress.albums = 0;
-  progress.artists = 0;
-  progress.playlists = 0;
-
   const library = await fetchAppleMusicLibrary(client, signal, progress);
 
   log.info("Apple Music library fetch completed", {

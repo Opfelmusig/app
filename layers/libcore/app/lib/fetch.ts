@@ -29,6 +29,8 @@ export async function fetchAppleMusicLibrary(
   const pages = await fetchAllLibraryPages(client, signal, progress);
   const playlistTracks = await fetchPlaylistTracks(client, signal, pages, progress);
 
+  progress.songs.done = true;
+
   prepareAppleMusicLibrary(target, pages, playlistTracks);
 
   return target;
@@ -54,7 +56,7 @@ function fetchAllLibraryPages(
       {
         signal,
         onItem: () => {
-          progress.songs++;
+          progress.songs.count++;
         },
       },
     ),
@@ -63,19 +65,25 @@ function fetchAllLibraryPages(
       {
         signal,
         onItem: () => {
-          progress.albums++;
+          progress.albums.count++;
         },
       },
-    ),
+    ).then((result) => {
+      progress.albums.done = true;
+      return result;
+    }),
     artists: collect(
       client.library.artists.iterateAll({ limit: 100, scopes: artistsScopes, config: { signal } }),
       {
         signal,
         onItem: () => {
-          progress.artists++;
+          progress.artists.count++;
         },
       },
-    ),
+    ).then((result) => {
+      progress.artists.done = true;
+      return result;
+    }),
     playlists: collect(
       client.library.playlists.iterateAll({
         limit: 100,
@@ -85,10 +93,13 @@ function fetchAllLibraryPages(
       {
         signal,
         onItem: () => {
-          progress.playlists++;
+          progress.playlists.count++;
         },
       },
-    ),
+    ).then((result) => {
+      progress.playlists.done = true;
+      return result;
+    }),
     pins: client.library
       .getPins({ scopes: pinsScopes, config: { signal } })
       .then((response) =>
@@ -126,7 +137,7 @@ function fetchPlaylistTracks(
             onItem: (item) => {
               if (isResourceType(item, "library-songs") && !seenSongIds.has(item.id)) {
                 seenSongIds.add(item.id);
-                progress.songs++;
+                progress.songs.count++;
               }
             },
           },

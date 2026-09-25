@@ -13,12 +13,17 @@ export interface LibraryState {
   lastSyncedAt?: Date;
 }
 
+export interface LibraryProgressResource {
+  count: number;
+  done: boolean;
+}
+
 export interface LibraryProgress {
   state: "idle" | "fetching" | "writing";
-  songs: number;
-  albums: number;
-  artists: number;
-  playlists: number;
+  songs: LibraryProgressResource;
+  albums: LibraryProgressResource;
+  artists: LibraryProgressResource;
+  playlists: LibraryProgressResource;
 }
 
 export default defineNuxtPlugin({
@@ -47,10 +52,10 @@ export default defineNuxtPlugin({
     });
     const progress = reactive<LibraryProgress>({
       state: "idle",
-      songs: 0,
-      albums: 0,
-      artists: 0,
-      playlists: 0,
+      songs: { count: 0, done: false },
+      albums: { count: 0, done: false },
+      artists: { count: 0, done: false },
+      playlists: { count: 0, done: false },
     });
     const isRefreshingArtworks = ref(false);
     const error = ref<Error | null>(null);
@@ -62,10 +67,10 @@ export default defineNuxtPlugin({
 
     function resetProgress() {
       progress.state = "idle";
-      progress.songs = 0;
-      progress.albums = 0;
-      progress.artists = 0;
-      progress.playlists = 0;
+      progress.songs = { count: 0, done: false };
+      progress.albums = { count: 0, done: false };
+      progress.artists = { count: 0, done: false };
+      progress.playlists = { count: 0, done: false };
     }
 
     function initialize() {
@@ -154,6 +159,8 @@ export default defineNuxtPlugin({
           throw new Error("Profile ID not found");
         }
 
+        resetProgress();
+
         const lastSyncedAt = await syncAppleMusicLibrary(
           db,
           opfelmusig,
@@ -194,10 +201,6 @@ export default defineNuxtPlugin({
     async function clearData() {
       error.value = null;
       resetProgress();
-      progress.songs = 0;
-      progress.albums = 0;
-      progress.artists = 0;
-      progress.playlists = 0;
 
       await client.delete();
 
