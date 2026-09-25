@@ -55,6 +55,11 @@ export default defineNuxtPlugin({
     const isRefreshingArtworks = ref(false);
     const error = ref<Error | null>(null);
 
+    const hasFailed = computed(
+      () => !state.ready && !state.initializing && !state.syncing && !!error.value,
+    );
+    const isLoading = computed(() => !state.ready && !hasFailed.value);
+
     function resetProgress() {
       progress.state = "idle";
       progress.songs = 0;
@@ -71,6 +76,12 @@ export default defineNuxtPlugin({
       initializePromise = initializeSync()
         .catch((cause) => {
           log.error("Library initialization failed", { cause });
+
+          if (cause instanceof Error) {
+            error.value = cause;
+          } else {
+            error.value = new Error("Unknown Error");
+          }
         })
         .finally(() => {
           state.initializing = false;
@@ -276,6 +287,8 @@ export default defineNuxtPlugin({
           state: readonly(state),
           progress: readonly(progress),
           error: readonly(error),
+          isLoading,
+          hasFailed,
         },
       },
     };
