@@ -119,3 +119,15 @@ export interface DbLibraryCatalogLink {
   name: string;
   position: number;
 }
+
+export type ResolvedResource =
+  | { type: "song"; item: DbSong }
+  | { type: "album"; item: DbAlbum }
+  | { type: "artist"; item: DbArtist }
+  | { type: "playlist"; item: DbPlaylist }
+  | { type: "folder"; item: DbFolder };
+
+export type ResolvedListItem = {
+  entry: DbListResource;
+  resource: ResolvedResource;
+};
