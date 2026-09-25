@@ -15,6 +15,7 @@
         v-model="settingsStore.sidebarSections.pins.collapsed"
         label="Pins"
       >
+        <SidebarPins />
       </SidebarSection>
     </div>
     <div class="flex flex-col gap-2">
