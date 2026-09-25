@@ -1,5 +1,13 @@
 <template>
   <SettingsWrapper>
+    <SettingsSection title="Updates">
+      <SettingsToggle
+        v-model="settingsStore.system.automaticUpdateChecks"
+        label="Automatic update checks"
+        description="Check for updates when Öpfelmusig starts and in intervals."
+        :disabled="isDev"
+      />
+    </SettingsSection>
     <SettingsSection title="Versions">
       <SettingsConfig label="Öpfelmusig">
         <span class="text-muted">v{{ appVersion }}</span>
@@ -19,6 +27,8 @@
 
 <script setup lang="ts">
 import { getTauriVersion, getVersion } from "@tauri-apps/api/app";
+
+const settingsStore = useSettingsStore();
 
 const { versions } = useNuxtApp();
 const appVersion = ref<string>();

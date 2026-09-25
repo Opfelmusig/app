@@ -13,9 +13,16 @@ export const useSettingsStore = defineStore(
       playlists: {},
     });
 
+    const system = reactive({
+      hideTitlebarControls: false,
+      automaticUpdateChecks: true,
+      debugMode: false,
+    });
+
     return {
       language,
       sidebarSections,
+      system,
     };
   },
   {
