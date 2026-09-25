@@ -1,65 +1,33 @@
 <template>
   <div
-    class="flex size-full shrink-0 flex-col overflow-hidden bg-muted/20 p-2 whitespace-nowrap select-none"
+    class="flex size-full relative shrink-0 flex-col overflow-hidden bg-muted/20 whitespace-nowrap select-none"
   >
     <div
-      ref="scroll-area"
-      :style="style"
-      class="scrollbar-hide flex h-full flex-col gap-1 overflow-hidden overflow-y-auto pb-2"
+      class="absolute size-full p-2 transition-all"
+      :class="
+        isSettings
+          ? '-translate-x-20 origin-left opacity-0 blur-md scale-x-60 pointer-events-none'
+          : ''
+      "
     >
-      <SidebarItemIcon icon="lucide:search" to="/search">Search</SidebarItemIcon>
-      <SidebarItemIcon icon="lucide:house" to="/">Home</SidebarItemIcon>
-      <SidebarItemIcon icon="lucide:list-video" to="/history">History</SidebarItemIcon>
-      <SidebarSection
-        v-if="!settingsStore.sidebarSections.pins.hidden"
-        v-model="settingsStore.sidebarSections.pins.collapsed"
-        label="Pins"
-      >
-        <SidebarPins />
-      </SidebarSection>
-      <SidebarSection
-        v-if="!settingsStore.sidebarSections.library.hidden"
-        v-model="settingsStore.sidebarSections.library.collapsed"
-        label="Library"
-      >
-        <SidebarItemIcon icon="lucide:clock" to="/library/recently-added"
-          >Recently Added</SidebarItemIcon
-        >
-        <SidebarItemIcon icon="lucide:music-2" to="/library/songs">Songs</SidebarItemIcon>
-        <SidebarItemIcon icon="lucide:disc" to="/library/albums">Albums</SidebarItemIcon>
-        <SidebarItemIcon icon="lucide:mic-vocal" to="/library/artists">Artists</SidebarItemIcon>
-        <SidebarItemIcon
-          v-if="isCollapsed || settingsStore.sidebarSections.playlists.hidden"
-          to="/resources/library-playlist-folders"
-          icon="lucide:list-music"
-        >
-          Playlists
-        </SidebarItemIcon>
-      </SidebarSection>
-      <SidebarSection
-        v-if="!isCollapsed && !settingsStore.sidebarSections.playlists.hidden"
-        v-model="settingsStore.sidebarSections.playlists.collapsed"
-        label="Playlists"
-      >
-        <SidebarPlaylists />
-      </SidebarSection>
+      <SidebarDefault />
     </div>
-    <div class="flex flex-col gap-2">
-      <SidebarBorder />
-      <div class="flex flex-col">
-        <SidebarUser />
-      </div>
+    <div
+      class="absolute size-full p-2 transition-all"
+      :class="
+        isSettings
+          ? ''
+          : 'translate-x-20 origin-right opacity-0 blur-md scale-x-60 pointer-events-none'
+      "
+    >
+      <SidebarSettings />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-const settingsStore = useSettingsStore();
-
-const { isCollapsed } = useSidebar();
-
-const scrollArea = useTemplateRef("scroll-area");
-const { style } = useScrollShadow(scrollArea, {
-  orientation: "vertical",
-});
+const route = useRoute();
+const isSettings = computed(
+  () => route.path === "/settings" || route.path.startsWith("/settings/"),
+);
 </script>
