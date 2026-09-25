@@ -14,8 +14,8 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@nuxt/ui": "^4.11.1",
-    "@opfelmusig/lib": "^0.0.0-ci.24.sha-c71e606",
+    "@nuxt/ui": "^4.11.2",
+    "@opfelmusig/lib": "^0.0.0-ci.25.sha-4d60690",
     "@pinia/colada": "^1.4.5",
     "@pinia/colada-nuxt": "^1.2.0",
     "@pinia/colada-plugin-auto-refetch": "^0.2.6",
@@ -30,7 +30,7 @@
     "@vueuse/router": "^15.0.0",
     "@waradu/keyboard": "^9.2.0",
     "class-variance-authority": "^0.7.1",
-    "cn": "^0.3.2",
+    "cn": "^0.4.0",
     "core-js": "3",
     "dexie": "^4.4.6",
     "idb-keyval": "^6.3.0",
@@ -42,6 +42,7 @@
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.3.3",
     "vue": "^3.5.43",
+    "vue-collapsed": "^1.3.5",
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
