@@ -1,4 +1,5 @@
 import { OpfelMusigClient } from "@opfelmusig/lib";
+import type { Storefront } from "@opfelmusig/lib/types";
 import { appDataDir, join } from "@tauri-apps/api/path";
 import { fetch } from "@tauri-apps/plugin-http";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
@@ -63,6 +64,7 @@ export default defineNuxtPlugin({
       log.info("Stored user token removed");
     }
 
+    const storefront = ref<Storefront>();
     const profile = ref<UserProfile>();
     const profileId = ref<string>();
 
@@ -95,20 +97,22 @@ export default defineNuxtPlugin({
 
       log.info("Authentication validation started");
 
-      const [storefront, profileData] = await Promise.all([
+      const [defaultStorefront, profileData] = await Promise.all([
         client.useUserDefault(),
         client.me.getProfile({
           scopes: profileScope,
         }),
       ]);
 
+      storefront.value = defaultStorefront;
+
       if (
         settingsStore.language &&
-        storefront?.supportedLanguageTags.includes(settingsStore.language)
+        storefront.value?.attributes?.supportedLanguageTags.includes(settingsStore.language)
       ) {
         client.setLanguageFromTag(settingsStore.language);
       } else {
-        settingsStore.language = storefront?.defaultLanguageTag;
+        settingsStore.language = storefront.value?.attributes?.defaultLanguageTag;
       }
 
       profile.value = profileData.data[0];
@@ -123,7 +127,7 @@ export default defineNuxtPlugin({
 
       log.info("Authentication validated", {
         durationMs: Math.round(performance.now() - startedAt),
-        storefront: client.config.storefront,
+        storefront: storefront.value?.id,
         language: client.config.language?.default,
       });
     }
@@ -181,6 +185,7 @@ export default defineNuxtPlugin({
           valid: readonly(tokenValid),
           profile: readonly(profile),
           profileId: readonly(profileId),
+          storefront: readonly(storefront),
           login,
           logout,
         },

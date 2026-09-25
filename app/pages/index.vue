@@ -1,7 +1,6 @@
 <template>
   <div class="flex size-full flex-col items-start gap-2 p-8">
     <div class="flex gap-2">
-      <UButton @click="logout">Logout</UButton>
       <UButton
         color="warning"
         :disabled="state.initializing"
@@ -34,7 +33,6 @@
 </template>
 
 <script lang="ts" setup>
-const { logout } = useAuth();
 const { data: stats } = useLibraryStats();
 const { sync, state, progress, error } = useLibrary();
 </script>
