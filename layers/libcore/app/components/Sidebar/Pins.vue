@@ -1,8 +1,8 @@
 <template>
   <div class="flex w-full flex-col gap-1">
-    <SidebarIcon v-if="data?.length === 0" icon="lucide:pin-off" variant="disabled">
+    <SidebarItemIcon v-if="data?.length === 0" icon="lucide:pin-off" variant="disabled">
       No Pins
-    </SidebarIcon>
+    </SidebarItemIcon>
     <template v-else-if="data">
       <SidebarItemWrapper
         v-for="pin in data"

@@ -17,6 +17,32 @@
       >
         <SidebarPins />
       </SidebarSection>
+      <SidebarSection
+        v-if="!settingsStore.sidebarSections.library.hidden"
+        v-model="settingsStore.sidebarSections.library.collapsed"
+        label="Library"
+      >
+        <SidebarItemIcon icon="lucide:clock" to="/library/recently-added"
+          >Recently Added</SidebarItemIcon
+        >
+        <SidebarItemIcon icon="lucide:music-2" to="/library/songs">Songs</SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:disc" to="/library/albums">Albums</SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:mic-vocal" to="/library/artists">Artists</SidebarItemIcon>
+        <SidebarItemIcon
+          v-if="isCollapsed || settingsStore.sidebarSections.playlists.hidden"
+          to="/resources/library-playlist-folders"
+          icon="lucide:list-music"
+        >
+          Playlists
+        </SidebarItemIcon>
+      </SidebarSection>
+      <SidebarSection
+        v-if="!isCollapsed && !settingsStore.sidebarSections.playlists.hidden"
+        v-model="settingsStore.sidebarSections.playlists.collapsed"
+        label="Playlists"
+      >
+        <SidebarPlaylists />
+      </SidebarSection>
     </div>
     <div class="flex flex-col gap-2">
       <SidebarBorder />
@@ -29,6 +55,8 @@
 
 <script lang="ts" setup>
 const settingsStore = useSettingsStore();
+
+const { isCollapsed } = useSidebar();
 
 const scrollArea = useTemplateRef("scroll-area");
 const { style } = useScrollShadow(scrollArea, {

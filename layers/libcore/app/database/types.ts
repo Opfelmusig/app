@@ -159,11 +159,11 @@ export type ResolvedDbResource =
   | ResolvedDbPlaylist
   | ResolvedDbFolder;
 
-export type ResolvedDbTreeNode =
-  | ResolvedDbPlaylist
-  | (ResolvedDbFolder & {
-      children: ResolvedDbTreeNode[];
-    });
+export type ResolvedDbFolderNode = ResolvedDbFolder & {
+  children: ResolvedDbTreeNode[];
+};
+
+export type ResolvedDbTreeNode = ResolvedDbPlaylist | ResolvedDbFolderNode;
 
 export interface ResolvedDbListResource {
   entry: DbListResource;
