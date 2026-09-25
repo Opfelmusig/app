@@ -6,7 +6,7 @@
       class="absolute size-full p-2 transition-all"
       :class="
         isSettings
-          ? 'pointer-events-none origin-left -translate-x-20 scale-x-60 opacity-0 blur-md'
+          ? 'pointer-events-none origin-left -translate-x-25 scale-x-50 opacity-0 blur-md'
           : ''
       "
     >
@@ -17,7 +17,7 @@
       :class="
         isSettings
           ? ''
-          : 'pointer-events-none origin-right translate-x-20 scale-x-60 opacity-0 blur-md'
+          : 'pointer-events-none origin-right translate-x-25 scale-x-50 opacity-0 blur-md'
       "
     >
       <SidebarSettings />

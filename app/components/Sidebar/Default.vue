@@ -13,6 +13,7 @@
         v-if="!settingsStore.sidebarSections.pins.hidden"
         v-model="settingsStore.sidebarSections.pins.collapsed"
         label="Pins"
+        collapsible
       >
         <SidebarPins />
       </SidebarSection>
@@ -20,6 +21,7 @@
         v-if="!settingsStore.sidebarSections.library.hidden"
         v-model="settingsStore.sidebarSections.library.collapsed"
         label="Library"
+        collapsible
       >
         <SidebarItemIcon icon="lucide:clock" to="/library/recently-added"
           >Recently Added</SidebarItemIcon
@@ -39,6 +41,7 @@
         v-if="!isCollapsed && !settingsStore.sidebarSections.playlists.hidden"
         v-model="settingsStore.sidebarSections.playlists.collapsed"
         label="Playlists"
+        collapsible
       >
         <SidebarPlaylists />
       </SidebarSection>
