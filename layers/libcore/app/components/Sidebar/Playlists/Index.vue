@@ -15,24 +15,22 @@
       </div>
       <SidebarItemLabel>{{ favoritsPlaylist.item.name }}</SidebarItemLabel>
     </SidebarItemWrapper>
-    <SidebarItemIcon v-if="data?.length === 0" icon="lucide:list-music" variant="disabled">
+    <SidebarItemIcon v-if="children?.length === 0" icon="lucide:list-music" variant="disabled">
       No Playlists
     </SidebarItemIcon>
-    <template v-else-if="data">
-      <template v-for="child in data" :key="child.item.id">
-        <SidebarPlaylistsNode
-          v-if="
-            child.type === 'library-playlists' &&
-            !child.item.tags.includes('favorited') &&
-            child.item.name
-          "
-          :node="child"
-        />
-        <SidebarPlaylistsFolderNode
-          v-else-if="child.type === 'library-playlist-folders' && child.item.name"
-          :node="child"
-        />
+    <template v-else-if="children">
+      <template v-for="child in children" :key="child.item.id">
+        <SidebarPlaylistsNode v-if="child.type === 'library-playlists'" :node="child" />
+        <SidebarPlaylistsFolderNode v-else :node="child" />
       </template>
+
+      <SidebarItemIcon
+        v-if="overflow"
+        icon="lucide:ellipsis"
+        to="/resources/library-playlist-folders"
+      >
+        {{ overflow }} More
+      </SidebarItemIcon>
     </template>
     <SidebarItemIcon
       v-else-if="isLoading || asyncStatus === 'loading'"
@@ -53,5 +51,18 @@ const favoritsPlaylist = computed(() =>
   data.value?.find(
     (child) => child.type === "library-playlists" && child.item.tags.includes("favorited"),
   ),
+);
+
+const filteredChildren = computed(() =>
+  data.value?.filter(
+    (child) =>
+      child.item.name &&
+      (child.type === "library-playlist-folders" ||
+        (child.type === "library-playlists" && !child.item.tags.includes("favorited"))),
+  ),
+);
+const children = computed(() => filteredChildren.value?.slice(0, 25));
+const overflow = computed(() =>
+  filteredChildren.value?.length ? Math.max(filteredChildren.value?.length - 25, 0) : undefined,
 );
 </script>
