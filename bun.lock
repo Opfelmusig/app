@@ -20,7 +20,7 @@
         "@vueuse/components": "^15.0.0",
         "@vueuse/nuxt": "^15.0.0",
         "@vueuse/router": "^15.0.0",
-        "@waradu/keyboard": "^9.2.0",
+        "@waradu/keyboard": "^9.3.0",
         "class-variance-authority": "^0.7.1",
         "cn": "^0.4.0",
         "core-js": "3",
@@ -828,7 +828,7 @@
 
     "@vueuse/shared": ["@vueuse/shared@14.4.0", "", { "peerDependencies": { "vue": "^3.5.0" } }, "sha512-JRgY90Sz8DDtPMsaDflvPMp9xYk69JZAmbuDvAquUVXKr2gEjqtzGNTTthLfckH0BzBqvnu31gb4a8TGLRe79g=="],
 
-    "@waradu/keyboard": ["@waradu/keyboard@9.2.0", "", { "peerDependencies": { "@nuxt/kit": ">=4.0.0" }, "optionalPeers": ["@nuxt/kit"] }, "sha512-ClQDDdR95CqjHC9fixpb2oVlB12xqt4cN3b1TBLWfeVKZ7sy48LeAvfipTRAwSG/UmfOqdNK2yRFuaNrFOtXow=="],
+    "@waradu/keyboard": ["@waradu/keyboard@9.3.0", "", { "peerDependencies": { "@nuxt/kit": ">=4.0.0" }, "optionalPeers": ["@nuxt/kit"] }, "sha512-JUQ0PAMh3XhC69+xUG+h35FMx5NXMmVrtgNbOOFrnzlaBb7n5LatSFTO3AgqbbBZcpiw+/SVr44yReuiuqYvUw=="],
 
     "abbrev": ["abbrev@3.0.1", "", {}, "sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg=="],
 
