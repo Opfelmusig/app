@@ -20,7 +20,7 @@ export function addArtist(
   if (target.artists.has(parsed.id)) return;
 
   target.artists.set(parsed.id, parsed);
-  addResource(target, parsed.id, "artist");
+  addResource(target, parsed.id, "library-artists");
 }
 
 function parseArtist(resource: ArtistsScopes): DbArtist {

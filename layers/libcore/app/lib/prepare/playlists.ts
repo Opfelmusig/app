@@ -26,7 +26,7 @@ export function addPlaylist(
   if (target.playlists.has(parsed.id)) return;
 
   target.playlists.set(parsed.id, parsed);
-  addResource(target, parsed.id, "playlist");
+  addResource(target, parsed.id, "library-playlists");
 }
 
 export function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {

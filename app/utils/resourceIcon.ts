@@ -1,6 +1,8 @@
 import type { ResourceTypes } from "@opfelmusig/lib/types";
 
-export default function (type?: ResourceTypes | (string & {}) | null) {
+import type { DbResourceType } from "#layers/libcore/app/database/types";
+
+export default function (type?: ResourceTypes | DbResourceType | null) {
   switch (type) {
     case "artists":
     case "library-artists":

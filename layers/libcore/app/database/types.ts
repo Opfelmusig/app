@@ -15,7 +15,12 @@ export interface DbLibraryState {
   lastSyncedAt?: Date;
 }
 
-export type DbResourceType = "song" | "album" | "artist" | "playlist" | "folder";
+export type DbResourceType =
+  | "library-songs"
+  | "library-albums"
+  | "library-artists"
+  | "library-playlists"
+  | "library-playlist-folders";
 
 export type DbCatalogLinkType = "album" | "artist";
 
@@ -37,7 +42,7 @@ export interface DbSong {
   name: string;
   artistName: string;
   albumName: string;
-  genreNames: string[];
+  genreNames: readonly string[];
   artwork?: Artwork;
   durationInMillis: number;
   discNumber?: number;
@@ -56,7 +61,7 @@ export interface DbAlbum {
 
   name: string;
   artistName: string;
-  genreNames: string[];
+  genreNames: readonly string[];
   artwork?: Artwork;
   releaseDate?: string;
   dateAdded?: Date;
@@ -73,7 +78,7 @@ export interface DbArtist {
 
   name: string;
   artwork?: Artwork;
-  genreNames: string[];
+  genreNames: readonly string[];
 
   editorialVideo?: EditorialVideo;
   catalogId?: string;
@@ -90,7 +95,7 @@ export interface DbPlaylist {
   canEdit: boolean;
   isPublic: boolean;
   dateAdded?: Date;
-  tags: string[];
+  tags: readonly string[];
   curatorName?: string;
   curatorSocialHandle?: string;
 
@@ -121,11 +126,11 @@ export interface DbLibraryCatalogLink {
 }
 
 export type ResolvedResource =
-  | { type: "song"; item: DbSong }
-  | { type: "album"; item: DbAlbum }
-  | { type: "artist"; item: DbArtist }
-  | { type: "playlist"; item: DbPlaylist }
-  | { type: "folder"; item: DbFolder };
+  | { type: "library-songs"; item: DbSong }
+  | { type: "library-albums"; item: DbAlbum }
+  | { type: "library-artists"; item: DbArtist }
+  | { type: "library-playlists"; item: DbPlaylist }
+  | { type: "library-playlist-folders"; item: DbFolder };
 
 export type ResolvedListItem = {
   entry: DbListResource;

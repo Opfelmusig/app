@@ -24,7 +24,7 @@ export function addAlbum(
   if (target.albums.has(parsed.id)) return;
 
   target.albums.set(parsed.id, parsed);
-  addResource(target, parsed.id, "album");
+  addResource(target, parsed.id, "library-albums");
 
   const catalog = resource.relationships?.catalog.data[0];
 

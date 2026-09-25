@@ -52,7 +52,7 @@ const isRoundedResource = computed(
     props.resource?.type === "artists" ||
     props.resource?.type === "personal-social-profiles" ||
     props.resource?.type === "social-profiles" ||
-    props.libraryResource?.type === "artist",
+    props.libraryResource?.type === "library-artists",
 );
 const round = computed(() => isRoundedResource.value || props.round);
 

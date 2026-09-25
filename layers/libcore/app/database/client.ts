@@ -41,25 +41,25 @@ export class LibraryClient {
     if (!resource) return undefined;
 
     switch (resource.type) {
-      case "song": {
+      case "library-songs": {
         const item = await this.db.songs.get(id);
-        return item ? { type: "song", item } : undefined;
+        return item ? { type: "library-songs", item } : undefined;
       }
-      case "album": {
+      case "library-albums": {
         const item = await this.db.albums.get(id);
-        return item ? { type: "album", item } : undefined;
+        return item ? { type: "library-albums", item } : undefined;
       }
-      case "artist": {
+      case "library-artists": {
         const item = await this.db.artists.get(id);
-        return item ? { type: "artist", item } : undefined;
+        return item ? { type: "library-artists", item } : undefined;
       }
-      case "playlist": {
+      case "library-playlists": {
         const item = await this.db.playlists.get(id);
-        return item ? { type: "playlist", item } : undefined;
+        return item ? { type: "library-playlists", item } : undefined;
       }
-      case "folder": {
+      case "library-playlist-folders": {
         const item = await this.db.folders.get(id);
-        return item ? { type: "folder", item } : undefined;
+        return item ? { type: "library-playlist-folders", item } : undefined;
       }
     }
   }

@@ -24,7 +24,7 @@ export function addSong(
   if (target.songs.has(parsed.id)) return;
 
   target.songs.set(parsed.id, parsed);
-  addResource(target, parsed.id, "song");
+  addResource(target, parsed.id, "library-songs");
 
   const catalog = resource.relationships?.catalog.data[0];
 

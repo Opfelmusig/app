@@ -15,7 +15,7 @@
           size="xs"
         >
           <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
-          <!-- <UIcon v-else :name="resourceIcon(pin.type)" :class="iconClass" /> -->
+          <UIcon v-else :name="resourceIcon(pin.resource.type)" :class="iconClass" />
         </ArtworkWrapper>
         <SidebarItemLabel>{{ pin.resource.item.name }}</SidebarItemLabel>
       </SidebarItemWrapper>

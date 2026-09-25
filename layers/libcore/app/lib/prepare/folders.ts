@@ -24,7 +24,7 @@ export function addFolder(
   if (target.folders.has(parsed.id)) return;
 
   target.folders.set(parsed.id, parsed);
-  addResource(target, parsed.id, "folder");
+  addResource(target, parsed.id, "library-playlist-folders");
 }
 
 function parseFolder(resource: PlaylistFoldersScopes): DbFolder {
