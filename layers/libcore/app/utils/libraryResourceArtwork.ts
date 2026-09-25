@@ -1,6 +1,6 @@
-import type { ResolvedResource } from "#layers/libcore/app/database/types";
+import type { ResolvedDbResource } from "#layers/libcore/app/database/types";
 
-export default function (resource?: ResolvedResource | null) {
+export default function (resource?: ResolvedDbResource | null) {
   switch (resource?.type) {
     case "library-artists":
     case "library-songs":

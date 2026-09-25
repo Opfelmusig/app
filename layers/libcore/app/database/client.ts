@@ -1,8 +1,8 @@
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,
-  type ResolvedListItem,
-  type ResolvedResource,
+  type ResolvedDbListResource,
+  type ResolvedDbResource,
 } from "#layers/libcore/app/database/types";
 
 export class LibraryClient {
@@ -36,18 +36,20 @@ export class LibraryClient {
     };
   }
 
-  async getResource(id: string): Promise<ResolvedResource | undefined> {
+  async getResource(id: string): Promise<ResolvedDbResource | undefined> {
     const resource = await this.db.resources.get(id);
     if (!resource) return undefined;
 
     switch (resource.type) {
       case "library-songs": {
         const item = await this.db.songs.get(id);
-        return item ? { type: "library-songs", item } : undefined;
+        const links = await this.db.libraryCatalogLinks.where("resourceId").equals(id).toArray();
+        return item ? { type: "library-songs", item, links } : undefined;
       }
       case "library-albums": {
         const item = await this.db.albums.get(id);
-        return item ? { type: "library-albums", item } : undefined;
+        const links = await this.db.libraryCatalogLinks.where("resourceId").equals(id).toArray();
+        return item ? { type: "library-albums", item, links } : undefined;
       }
       case "library-artists": {
         const item = await this.db.artists.get(id);
@@ -64,7 +66,7 @@ export class LibraryClient {
     }
   }
 
-  async getListItems(listId: string): Promise<ResolvedListItem[]> {
+  async getListItems(listId: string): Promise<ResolvedDbListResource[]> {
     const entries = await this.db.listResources.where("listId").equals(listId).sortBy("position");
 
     return Promise.all(

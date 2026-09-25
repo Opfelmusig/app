@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import type { Artwork } from "@opfelmusig/lib/types";
 
-import type { ResolvedResource } from "#layers/libcore/app/database/types";
+import type { ResolvedDbResource } from "#layers/libcore/app/database/types";
 
 const variants = cva(
   "group relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl select-none",
@@ -42,7 +42,7 @@ const props = defineProps<{
   round?: boolean;
   class?: string;
   resource?: ResourceArtworkExtract | null;
-  libraryResource?: ResolvedResource | null;
+  libraryResource?: ResolvedDbResource | null;
   artwork?: Artwork;
 }>();
 

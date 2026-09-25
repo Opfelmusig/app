@@ -125,14 +125,41 @@ export interface DbLibraryCatalogLink {
   position: number;
 }
 
-export type ResolvedResource =
-  | { type: "library-songs"; item: DbSong }
-  | { type: "library-albums"; item: DbAlbum }
-  | { type: "library-artists"; item: DbArtist }
-  | { type: "library-playlists"; item: DbPlaylist }
-  | { type: "library-playlist-folders"; item: DbFolder };
+export interface ResolvedDbSong {
+  type: "library-songs";
+  item: DbSong;
+  links: DbLibraryCatalogLink[];
+}
 
-export type ResolvedListItem = {
+export interface ResolvedDbAlbum {
+  type: "library-albums";
+  item: DbAlbum;
+  links: DbLibraryCatalogLink[];
+}
+
+export interface ResolvedDbArtist {
+  type: "library-artists";
+  item: DbArtist;
+}
+
+export interface ResolvedDbPlaylist {
+  type: "library-playlists";
+  item: DbPlaylist;
+}
+
+export interface ResolvedDbFolder {
+  type: "library-playlist-folders";
+  item: DbFolder;
+}
+
+export type ResolvedDbResource =
+  | ResolvedDbSong
+  | ResolvedDbAlbum
+  | ResolvedDbArtist
+  | ResolvedDbPlaylist
+  | ResolvedDbFolder;
+
+export interface ResolvedDbListResource {
   entry: DbListResource;
-  resource: ResolvedResource;
-};
+  resource: ResolvedDbResource;
+}
