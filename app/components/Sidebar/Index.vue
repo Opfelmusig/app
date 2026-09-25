@@ -1,12 +1,12 @@
 <template>
   <div
-    class="flex size-full relative shrink-0 flex-col overflow-hidden bg-muted/20 whitespace-nowrap select-none"
+    class="relative flex size-full shrink-0 flex-col overflow-hidden bg-muted/20 whitespace-nowrap select-none"
   >
     <div
       class="absolute size-full p-2 transition-all"
       :class="
         isSettings
-          ? '-translate-x-20 origin-left opacity-0 blur-md scale-x-60 pointer-events-none'
+          ? 'pointer-events-none origin-left -translate-x-20 scale-x-60 opacity-0 blur-md'
           : ''
       "
     >
@@ -17,7 +17,7 @@
       :class="
         isSettings
           ? ''
-          : 'translate-x-20 origin-right opacity-0 blur-md scale-x-60 pointer-events-none'
+          : 'pointer-events-none origin-right translate-x-20 scale-x-60 opacity-0 blur-md'
       "
     >
       <SidebarSettings />

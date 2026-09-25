@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col size-full overflow-hidden">
+  <div class="flex size-full flex-col overflow-hidden">
     <div
       ref="scroll-area"
       :style="style"

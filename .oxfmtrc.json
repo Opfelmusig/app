@@ -1,5 +1,10 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "ignorePatterns": ["bun.lock"],
-  "sortImports": true
+  "sortImports": true,
+  "sortTailwindcss": {
+    "stylesheet": "./app/assets/css/tailwind.css",
+    "functions": ["defineAppConfig", "cn", "cva"],
+    "attributes": ["class", "class", "ui"]
+  }
 }

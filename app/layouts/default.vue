@@ -10,7 +10,7 @@
         class="size-full overflow-hidden"
         :ui="{
           handle:
-            'w-px transition-colors bg-border data-[state=hover]:bg-(--ui-border-accented) data-[state=drag]:bg-(--ui-border-accented) focus-visible:outline-(--ui-border-accented)',
+            'w-px bg-border transition-colors focus-visible:outline-(--ui-border-accented) data-[state=drag]:bg-(--ui-border-accented) data-[state=hover]:bg-(--ui-border-accented)',
         }"
       >
         <template #sidebar>

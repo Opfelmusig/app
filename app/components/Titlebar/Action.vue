@@ -4,7 +4,7 @@
     variant="ghost"
     :icon
     :disabled
-    class="size-6 justify-center rounded-sm p-0 disabled:text-dimmed/80 hover:text-default"
+    class="size-6 justify-center rounded-sm p-0 hover:text-default disabled:text-dimmed/80"
     :class="active ? 'text-highlighted' : 'text-muted'"
     :ui="{ leadingIcon: smallIcon ? 'size-3.5' : 'size-4' }"
   />

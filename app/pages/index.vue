@@ -1,5 +1,5 @@
 <template>
-  <div class="p-8 flex flex-col gap-2 items-start size-full">
+  <div class="flex size-full flex-col items-start gap-2 p-8">
     <div class="flex gap-2">
       <UButton @click="logout">Logout</UButton>
       <UButton

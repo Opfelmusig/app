@@ -4,11 +4,11 @@
     data-tauri-drag-region
   >
     <div
-      class="flex p-1.5 gap-1.5 justify-between size-full"
+      class="flex size-full justify-between gap-1.5 p-1.5"
       :class="isMacos ? 'ml-19' : ''"
       data-tauri-drag-region
     >
-      <div class="flex gap-1.5 items-center" data-tauri-drag-region>
+      <div class="flex items-center gap-1.5" data-tauri-drag-region>
         <template v-if="layout === 'default'">
           <TitlebarAction
             :icon="isCollapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
@@ -26,7 +26,7 @@
         <TitlebarBadge v-if="isDev" label="DEV" color="error" variant="soft" />
       </div>
       <div
-        class="flex gap-1.5 items-center"
+        class="flex items-center gap-1.5"
         :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''"
         data-tauri-drag-region
       >
