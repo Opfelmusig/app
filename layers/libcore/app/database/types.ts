@@ -159,6 +159,12 @@ export type ResolvedDbResource =
   | ResolvedDbPlaylist
   | ResolvedDbFolder;
 
+export type ResolvedDbTreeNode =
+  | ResolvedDbPlaylist
+  | (ResolvedDbFolder & {
+      children: ResolvedDbTreeNode[];
+    });
+
 export interface ResolvedDbListResource {
   entry: DbListResource;
   resource: ResolvedDbResource;
