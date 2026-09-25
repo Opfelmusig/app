@@ -1,3 +1,5 @@
+import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
+
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,
@@ -87,7 +89,7 @@ export class LibraryClient {
     }
   }
 
-  async getFolderTree(rootId: string = "p.playlistsroot"): Promise<ResolvedDbTreeNode[]> {
+  async getFolderTree(rootId: string = ROOT_FOLDER_ID): Promise<ResolvedDbTreeNode[]> {
     const [folders, playlists] = await Promise.all([
       this.db.folders.toArray(),
       this.db.playlists.toArray(),

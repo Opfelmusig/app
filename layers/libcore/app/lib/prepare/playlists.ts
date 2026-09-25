@@ -1,3 +1,5 @@
+import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
+
 import type { DbPlaylist } from "#layers/libcore/app/database/types";
 import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
@@ -37,7 +39,7 @@ export function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
     throw new Error(`Invalid Apple Music playlist: ${resource.id}: missing attributes`);
 
   const lastModifiedDate = attributes.lastModifiedDate ?? catalog?.attributes?.lastModifiedDate;
-  const parentId = resource.relationships?.parent.data[0]?.id ?? "p.playlistsroot";
+  const parentId = resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID;
 
   return {
     id: resource.id,

@@ -1,3 +1,5 @@
+import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
+
 import type { DbFolder } from "#layers/libcore/app/database/types";
 import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { PlaylistFoldersScopes } from "#layers/libcore/app/lib/scopes";
@@ -17,6 +19,8 @@ export function addFolder(
   listId: string,
   position: number,
 ) {
+  if (resource.id === ROOT_FOLDER_ID) return;
+
   const parsed = parseFolder(resource);
 
   addListResource(target, parsed.id, listId, position);
@@ -33,7 +37,7 @@ function parseFolder(resource: PlaylistFoldersScopes): DbFolder {
   if (!attributes)
     throw new Error(`Invalid Apple Music playlist folder: ${resource.id}: missing attributes`);
 
-  const parentId = resource.relationships?.parent.data[0]?.id;
+  const parentId = resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID;
 
   return {
     id: resource.id,

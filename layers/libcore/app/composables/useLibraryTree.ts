@@ -1,4 +1,6 @@
-export default function useLibraryTree(rootId: MaybeRefOrGetter<string> = "p.playlistsroot") {
+import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
+
+export default function useLibraryTree(rootId: MaybeRefOrGetter<string> = ROOT_FOLDER_ID) {
   const library = useLibrary();
 
   return useQuery({

@@ -103,8 +103,8 @@ export interface DbPlaylist {
   catalogId?: string;
   personalRating?: RatingValue;
 
+  parentId: string;
   tracksListId: string;
-  parentId?: string;
 }
 
 export interface DbFolder {
@@ -113,7 +113,7 @@ export interface DbFolder {
   name: string;
   dateAdded?: Date;
 
-  parentId?: string;
+  parentId: string;
 }
 
 export interface DbLibraryCatalogLink {
