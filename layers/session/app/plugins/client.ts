@@ -4,15 +4,15 @@ import { fetch } from "@tauri-apps/plugin-http";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
 import ms from "ms";
 
-import { getAppleMusicDeveloperToken } from "#layers/client/app/lib/getAppleMusicDeveloperToken";
-import { profileScope, type UserProfile } from "#layers/client/app/lib/profileScope";
+import { getAppleMusicDeveloperToken } from "#layers/session/app/lib/getAppleMusicDeveloperToken";
+import { profileScope, type UserProfile } from "#layers/session/app/lib/profileScope";
 import { logger } from "~/lib/logger";
 
 const TOKEN_KEY = "apple-music:user-token";
 const CLIENT = "auth";
 
 export default defineNuxtPlugin({
-  name: "client:ready",
+  name: "session:ready",
   dependsOn: ["colada:ready"],
   setup: async (nuxtApp) => {
     const log = logger.withTag("auth");

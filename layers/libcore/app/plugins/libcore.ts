@@ -23,7 +23,7 @@ export interface LibraryProgress {
 
 export default defineNuxtPlugin({
   name: "libcore:ready",
-  dependsOn: ["client:ready"],
+  dependsOn: ["session:ready"],
   setup: async (nuxtApp) => {
     const log = logger.withTag("libcore");
 
