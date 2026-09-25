@@ -1,5 +1,5 @@
 <template>
-  <component :is="is ?? 'label'" class="flex items-center justify-between gap-6">
+  <component :is="noLabel ? 'div' : 'label'" class="flex items-center justify-between gap-6">
     <div class="flex min-w-0 items-center gap-3">
       <div class="flex flex-col">
         <span>{{ label }}</span>
@@ -16,6 +16,6 @@
 defineProps<{
   label: string;
   description?: string;
-  is?: string;
+  noLabel?: boolean;
 }>();
 </script>

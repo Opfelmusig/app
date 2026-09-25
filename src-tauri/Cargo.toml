@@ -33,6 +33,7 @@ tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
 tauri-plugin-http = { version = "2.6", features = ["unsafe-headers"] }
 tauri-plugin-stronghold = "2"
 tauri-plugin-os = "2"
+tauri-plugin-opener = "2"
 
 [profile.dev.package.scrypt]
 opt-level = 3

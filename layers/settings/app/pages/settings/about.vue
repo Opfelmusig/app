@@ -1,6 +1,6 @@
 <template>
   <SettingsWrapper>
-    <SettingsSection title="Updates">
+    <SettingsSection>
       <SettingsToggle
         v-model="settingsStore.system.automaticUpdateChecks"
         label="Automatic update checks"
@@ -8,7 +8,8 @@
         :disabled="isDev"
       />
     </SettingsSection>
-    <SettingsSection title="Versions">
+    <USeparator />
+    <SettingsSection>
       <SettingsConfig label="Öpfelmusig">
         <span class="text-muted">v{{ appVersion }}</span>
       </SettingsConfig>

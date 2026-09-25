@@ -18,6 +18,17 @@
     "stronghold:default",
     "stronghold:allow-remove-store-record",
     {
+      "identifier": "opener:allow-open-path",
+      "allow": [{ "path": "$APPDATA" }]
+    },
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://github.com/opfelmusig/downloads/*" },
+        { "url": "musics://music.apple.com/*" }
+      ]
+    },
+    {
       "identifier": "http:default",
       "allow": [
         {
