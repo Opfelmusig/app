@@ -24,6 +24,10 @@ export default defineNuxtConfig({
     storage: "localStorage",
   },
 
+  pinia: {
+    storesDirs: ["stores"],
+  },
+
   // Tauri
 
   ssr: false,
