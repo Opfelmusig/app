@@ -24,10 +24,6 @@ export interface DbResource {
   type: DbResourceType;
 }
 
-export interface DbList {
-  id: string;
-}
-
 export interface DbListResource {
   id: string;
   resourceId: string;

@@ -5,7 +5,6 @@ import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 export function createEmptyLibrary(): AppleMusicLibrary {
   return {
     resources: new Map(),
-    lists: new Map(),
     listResources: new Map(),
     songs: new Map(),
     albums: new Map(),
@@ -14,14 +13,6 @@ export function createEmptyLibrary(): AppleMusicLibrary {
     folders: new Map(),
     libraryCatalogLinks: new Map(),
   };
-}
-
-export function addList(target: AppleMusicLibrary, listId: string) {
-  if (target.lists.has(listId)) return;
-
-  target.lists.set(listId, {
-    id: listId,
-  });
 }
 
 export function addResource(target: AppleMusicLibrary, resourceId: string, type: DbResourceType) {

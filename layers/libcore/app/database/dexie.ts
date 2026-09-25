@@ -6,7 +6,6 @@ import type {
   DbFolder,
   DbLibraryCatalogLink,
   DbLibraryState,
-  DbList,
   DbListResource,
   DbPlaylist,
   DbResource,
@@ -17,7 +16,6 @@ export class LibraryDatabase extends Dexie {
   libraryState!: Table<DbLibraryState, string>;
 
   resources!: Table<DbResource, string>;
-  lists!: Table<DbList, string>;
   listResources!: Table<DbListResource, string>;
 
   songs!: Table<DbSong, string>;
@@ -35,7 +33,6 @@ export class LibraryDatabase extends Dexie {
       libraryState: "id",
 
       resources: "id, type",
-      lists: "id",
       listResources: "id, resourceId, &[listId+position]",
 
       songs: "id, albumId, catalogId",

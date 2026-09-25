@@ -3,7 +3,6 @@ import type {
   DbArtist,
   DbFolder,
   DbLibraryCatalogLink,
-  DbList,
   DbListResource,
   DbPlaylist,
   DbResource,
@@ -12,7 +11,6 @@ import type {
 
 export interface AppleMusicLibrary {
   resources: Map<string, DbResource>;
-  lists: Map<string, DbList>;
   listResources: Map<string, DbListResource>;
 
   songs: Map<string, DbSong>;

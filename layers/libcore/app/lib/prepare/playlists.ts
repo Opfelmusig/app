@@ -1,5 +1,5 @@
 import type { DbPlaylist } from "#layers/libcore/app/database/types";
-import { addList, addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
+import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
 import type { PlaylistsScopes, SongsScopes } from "#layers/libcore/app/lib/scopes";
@@ -71,7 +71,6 @@ export function addPlaylistTracks(
   entries.forEach(([id, tracks]) => {
     const listId = playlistTracksListId(id);
 
-    addList(target, listId);
     addSongs(target, tracks, listId);
   });
 }
