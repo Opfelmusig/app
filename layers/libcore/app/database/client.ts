@@ -93,13 +93,12 @@ export class LibraryClient {
       this.db.playlists.toArray(),
     ]);
 
-    const byName = (a: { name: string }, b: { name: string }) =>
-      a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
 
     function build(parentId: string): ResolvedDbTreeNode[] {
       return [
         ...folders
-          .filter((item) => item.parentId === parentId)
+          .filter((item) => item.parentId === parentId && item.name)
           .sort(byName)
           .map((item) => ({
             type: "library-playlist-folders" as const,
@@ -107,7 +106,7 @@ export class LibraryClient {
             children: build(item.id),
           })),
         ...playlists
-          .filter((item) => item.parentId === parentId)
+          .filter((item) => item.parentId === parentId && item.name)
           .sort(byName)
           .map((item) => ({ type: "library-playlists" as const, item })),
       ];

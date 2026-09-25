@@ -40,12 +40,14 @@
     >
       Loading Playlists
     </SidebarItemIcon>
+
+    {{ error }}
   </div>
 </template>
 
 <script lang="ts" setup>
 const { isLoading } = useLibrary();
-const { data, asyncStatus } = useLibraryTree();
+const { data, asyncStatus, error } = useLibraryTree();
 
 const favoritsPlaylist = computed(() =>
   data.value?.find(
@@ -56,9 +58,8 @@ const favoritsPlaylist = computed(() =>
 const filteredChildren = computed(() =>
   data.value?.filter(
     (child) =>
-      child.item.name &&
-      (child.type === "library-playlist-folders" ||
-        (child.type === "library-playlists" && !child.item.tags.includes("favorited"))),
+      child.type === "library-playlist-folders" ||
+      (child.type === "library-playlists" && !child.item.tags.includes("favorited")),
   ),
 );
 const children = computed(() => filteredChildren.value?.slice(0, 25));
