@@ -1,9 +1,9 @@
 <template>
-  <div class="flex size-full flex-col overflow-hidden">
+  <div class="flex size-full flex-col overflow-hidden pb-2">
     <div
       ref="scroll-area"
       :style="style"
-      class="scrollbar-hide flex h-full flex-col gap-1 overflow-hidden overflow-y-auto pb-2"
+      class="scrollbar-hide flex h-full flex-col gap-1 overflow-hidden overflow-y-auto py-2"
     >
       <SidebarItemIcon icon="lucide:search" to="/search">Search</SidebarItemIcon>
       <SidebarItemIcon icon="lucide:house" to="/">Home</SidebarItemIcon>
@@ -29,6 +29,7 @@
         <SidebarItemIcon icon="lucide:music-2" to="/library/songs">Songs</SidebarItemIcon>
         <SidebarItemIcon icon="lucide:disc" to="/library/albums">Albums</SidebarItemIcon>
         <SidebarItemIcon icon="lucide:mic-vocal" to="/library/artists">Artists</SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:guitar" to="/library/genres">Genres</SidebarItemIcon>
         <SidebarItemIcon
           v-if="isCollapsed || settingsStore.sidebarSections.playlists.hidden"
           to="/resources/library-playlist-folders"

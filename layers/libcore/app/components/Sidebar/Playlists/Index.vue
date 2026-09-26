@@ -1,10 +1,6 @@
 <template>
   <div class="flex w-full flex-col gap-1">
-    <SidebarItemIcon
-      to="/resources/library-playlist-folders"
-      icon="lucide:layout-grid"
-      variant="default"
-    >
+    <SidebarItemIcon to="/resources/library-playlist-folders" icon="lucide:layout-grid">
       All Playlists
     </SidebarItemIcon>
     <SidebarItemWrapper v-if="favoritsPlaylist" :to="libraryResourceLink(favoritsPlaylist)">

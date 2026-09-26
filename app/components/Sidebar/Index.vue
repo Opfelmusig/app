@@ -18,7 +18,7 @@ const isSettings = computed(
 );
 
 const sidebarPage = cva(
-  "absolute size-full p-2 transition-all duration-250 ease-[cubic-bezier(0.34,1.4,0.7,1)]",
+  "absolute size-full px-2 transition-all duration-250 ease-[cubic-bezier(0.34,1.4,0.7,1)]",
   {
     variants: {
       active: {

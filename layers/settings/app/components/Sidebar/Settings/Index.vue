@@ -1,13 +1,13 @@
 <template>
-  <div class="flex size-full flex-col overflow-hidden">
+  <div class="flex size-full flex-col overflow-hidden pt-2">
     <div class="flex flex-col gap-2">
-      <SidebarItemIcon icon="lucide:corner-up-left" to="/">Back</SidebarItemIcon>
+      <SidebarItemIcon icon="lucide:arrow-left" to="/" variant="dimmed">Back</SidebarItemIcon>
       <SidebarBorder />
     </div>
     <div
       ref="scroll-area"
       :style="style"
-      class="scrollbar-hide flex h-full flex-col gap-1 overflow-hidden overflow-y-auto pt-2"
+      class="scrollbar-hide flex h-full flex-col gap-1 overflow-hidden overflow-y-auto py-2"
     >
       <SidebarItemIcon icon="lucide:settings-2" to="/settings">General</SidebarItemIcon>
       <SidebarItemIcon icon="lucide:user" to="/settings/account">Account</SidebarItemIcon>
