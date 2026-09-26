@@ -1,7 +1,5 @@
 import { fetch } from "@tauri-apps/plugin-http";
 
-import { logger } from "~/lib/logger";
-
 const appleMusicUrl = "https://music.apple.com";
 const indexPathPattern = /\/assets\/index-legacy[-~][^/]+\.js/;
 const tokenPattern = /"(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)"/;

@@ -6,7 +6,6 @@ import { Stronghold } from "@tauri-apps/plugin-stronghold";
 
 import { getAppleMusicDeveloperToken } from "#layers/session/app/lib/getAppleMusicDeveloperToken";
 import { profileScope, type UserProfile } from "#layers/session/app/lib/profileScope";
-import { logger } from "~/lib/logger";
 
 const TOKEN_KEY = "apple-music:user-token";
 const CLIENT = "auth";

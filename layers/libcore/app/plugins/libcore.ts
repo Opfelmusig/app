@@ -2,7 +2,6 @@ import { LibraryClient } from "#layers/libcore/app/database/client";
 import { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import { refreshArtworks } from "#layers/libcore/app/lib/refreshArtworks";
 import { syncAppleMusicLibrary } from "#layers/libcore/app/lib/sync";
-import { logger } from "~/lib/logger";
 
 export interface LibraryState {
   ready: boolean;

@@ -5,7 +5,6 @@ import type { Artwork } from "@opfelmusig/lib/types";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import type { DbResourceType } from "#layers/libcore/app/database/types";
 import { artworkScopes } from "#layers/libcore/app/lib/scopes";
-import { logger } from "~/lib/logger";
 
 interface Expired {
   id: string;
