@@ -3,6 +3,8 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,
+  type DbListIdentifier,
+  type DbResourceType,
   type ResolvedDbAlbum,
   type ResolvedDbArtist,
   type ResolvedDbFolder,
@@ -12,6 +14,25 @@ import {
   type ResolvedDbSong,
   type ResolvedDbTreeNode,
 } from "#layers/libcore/app/database/types";
+
+function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceType[] {
+  switch (listId) {
+    case DbListId.Songs:
+      return ["library-songs"];
+    case DbListId.Albums:
+      return ["library-albums"];
+    case DbListId.Artists:
+      return ["library-artists"];
+    case DbListId.Playlists:
+      return ["library-playlists"];
+    case DbListId.PlaylistFolders:
+      return ["library-playlist-folders"];
+    case DbListId.Pins:
+      return ["library-songs", "library-albums", "library-artists", "library-playlists"];
+    default:
+      return ["library-songs"];
+  }
+}
 
 export class LibraryClient {
   private readonly db: LibraryDatabase;
@@ -117,19 +138,19 @@ export class LibraryClient {
     return build(rootId);
   }
 
-  async getListResources(listId: string): Promise<ResolvedDbListResource[]> {
+  async getListResources<L extends DbListIdentifier>(listId: L) {
     const entries = await this.db.listResources.where("listId").equals(listId).sortBy("position");
 
-    return Promise.all(
+    const allowedTypes = getAllowedResourceTypes(listId);
+
+    const results = await Promise.all(
       entries.map(async (entry) => {
         const resource = await this.getResource(entry.resourceId);
-        if (!resource) {
-          throw new Error(`Missing resource ${entry.resourceId} in list ${listId}`);
-        }
-
-        return { entry, resource };
+        return resource && allowedTypes.includes(resource.type) ? { entry, resource } : undefined;
       }),
     );
+
+    return results.filter((result) => result !== undefined) as ResolvedDbListResource<L>[];
   }
 
   songs() {

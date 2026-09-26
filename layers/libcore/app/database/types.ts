@@ -9,6 +9,9 @@ export enum DbListId {
   PlaylistFolders = "playlist-folders",
 }
 
+export type DbPlaylistTracksListId = `playlist:${string}:tracks`;
+export type DbListIdentifier = DbListId | DbPlaylistTracksListId;
+
 export interface DbLibraryState {
   id: "library";
   profileId?: string;
@@ -104,7 +107,7 @@ export interface DbPlaylist {
   personalRating?: RatingValue;
 
   parentId: string;
-  tracksListId: string;
+  tracksListId: DbPlaylistTracksListId;
 }
 
 export interface DbFolder {
@@ -165,7 +168,19 @@ export type ResolvedDbFolderNode = ResolvedDbFolder & {
 
 export type ResolvedDbTreeNode = ResolvedDbPlaylist | ResolvedDbFolderNode;
 
-export interface ResolvedDbListResource {
+type ResolvedDbResourceByList = {
+  [DbListId.Songs]: ResolvedDbSong;
+  [DbListId.Albums]: ResolvedDbAlbum;
+  [DbListId.Artists]: ResolvedDbArtist;
+  [DbListId.Playlists]: ResolvedDbPlaylist;
+  [DbListId.PlaylistFolders]: ResolvedDbFolder;
+  [DbListId.Pins]: Exclude<ResolvedDbResource, ResolvedDbFolder>;
+  [listId: DbPlaylistTracksListId]: ResolvedDbSong;
+};
+
+export type ResolvedDbResourceForList<L extends DbListIdentifier> = ResolvedDbResourceByList[L];
+
+export interface ResolvedDbListResource<L extends DbListIdentifier> {
   entry: DbListResource;
-  resource: ResolvedDbResource;
+  resource: ResolvedDbResourceForList<L>;
 }

@@ -1,4 +1,4 @@
-import type { DbCatalogLinkType } from "#layers/libcore/app/database/types";
+import type { DbCatalogLinkType, DbPlaylistTracksListId } from "#layers/libcore/app/database/types";
 
 export const listResourceId = (listId: string, position: number) => `${listId}:${position}`;
 export const libraryCatalogLinkId = (
@@ -7,4 +7,5 @@ export const libraryCatalogLinkId = (
   position: number,
 ) => `${resourceId}:${type}:${position}`;
 
-export const playlistTracksListId = (resourceId: string) => `playlist:${resourceId}:tracks`;
+export const playlistTracksListId = (resourceId: string): DbPlaylistTracksListId =>
+  `playlist:${resourceId}:tracks`;
