@@ -2,10 +2,10 @@
   <div
     class="relative flex size-full shrink-0 flex-col overflow-hidden bg-muted/20 whitespace-nowrap select-none"
   >
-    <div :class="sidebarPage({ active: !isSettings })">
+    <div :class="cn(sidebarPage({ active: !isSettings }))">
       <SidebarDefault />
     </div>
-    <div :class="sidebarPage({ active: isSettings, direction: 'right' })">
+    <div :class="cn(sidebarPage({ active: isSettings, direction: 'right' }))">
       <SidebarSettings />
     </div>
   </div>

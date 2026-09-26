@@ -2,7 +2,7 @@
   <NuxtLink
     :to
     :title
-    :class="link({ minimized: isCollapsed, variant, noRightPadding, noRoute })"
+    :class="cn(link({ minimized: isCollapsed, variant, noRightPadding, noRoute }))"
     :style="{
       paddingLeft: `${isCollapsed ? 0 : paddingLeft}rem`,
     }"
