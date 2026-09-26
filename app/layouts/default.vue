@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex size-full h-svh flex-col overflow-hidden">
+  <main class="relative flex size-full h-svh flex-col overflow-hidden">
     <Titlebar />
     <div class="flex size-full overflow-hidden">
       <USplitter
@@ -24,7 +24,7 @@
         </template>
       </USplitter>
     </div>
-  </div>
+  </main>
 </template>
 
 <script lang="ts" setup>

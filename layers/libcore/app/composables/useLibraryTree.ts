@@ -4,7 +4,7 @@ export default function useLibraryTree(rootId: MaybeRefOrGetter<string> = ROOT_F
   const library = useLibrary();
 
   return useQuery({
-    key: () => ["libcore", "tree", rootId],
+    key: () => ["libcore", "tree", toValue(rootId)],
     query: () => library.client.getFolderTree(toValue(rootId)),
     enabled: () => library.state.ready,
     meta: { persist: false },
