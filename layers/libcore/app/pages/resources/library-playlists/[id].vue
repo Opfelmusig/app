@@ -1,5 +1,9 @@
 <template>
-  <div ref="scroller" class="flex size-full flex-col overflow-auto" :style>
+  <div
+    ref="scroller"
+    class="flex size-full min-w-0 flex-col overflow-hidden overflow-y-auto"
+    :style
+  >
     <div class="flex gap-4 p-6">
       <ArtworkWrapper
         v-slot="{ artwork, iconClass, imageSize }"
@@ -54,22 +58,49 @@
         </div>
       </div>
     </div>
-    <div v-if="tracks" class="flex w-full flex-col gap-4 border-y border-default p-6">
-      <div v-for="song in tracks" :key="song.resource.item.id" class="flex items-center gap-2">
-        <img
-          v-if="song.resource.item.artwork"
-          :src="getArtworkUrl(song.resource.item.artwork, { width: 128 })"
-          class="size-12 rounded-lg"
-        />
-        <div v-else class="size-12 rounded-lg bg-muted" />
-        <div class="flex min-w-0 flex-col whitespace-nowrap">
-          <span class="truncate">{{ song.resource.item.name }}</span>
-          <span class="truncate text-sm text-muted">
-            {{ song.resource.item.albumName }} - {{ song.resource.item.artistName }}
-          </span>
-        </div>
-      </div>
-    </div>
+    <table class="w-full table-fixed overflow-hidden border-y border-default text-sm select-none">
+      <thead>
+        <tr class="h-8 border-b border-default bg-muted/20 text-left text-muted">
+          <th class="w-14"></th>
+          <th class="pl-2 font-normal">Title</th>
+          <th class="pl-2 font-normal">Artist</th>
+          <th class="pl-2 font-normal">Album</th>
+          <th class="w-20 px-2 text-right font-normal">Length</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          v-for="track in tracks"
+          :key="track.entry.id"
+          class="h-14 border-b border-default hover:bg-muted/20 active:bg-muted"
+        >
+          <td class="p-2">
+            <ArtworkWrapper
+              v-slot="{ iconClass, imageSize, artwork }"
+              :library-resource="track.resource"
+              size="sm"
+              color="muted"
+            >
+              <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+              <UIcon v-else :name="resourceIcon(track.resource.type)" :class="iconClass" />
+            </ArtworkWrapper>
+          </td>
+          <td class="px-2">
+            <span class="block truncate">{{ track.resource.item.name }}</span>
+          </td>
+          <td class="px-2 text-muted">
+            <span class="block truncate">{{ track.resource.item.albumName }}</span>
+          </td>
+          <td class="px-2 text-muted">
+            <span class="block truncate">{{ track.resource.item.artistName }}</span>
+          </td>
+          <td class="px-2 text-right text-muted tabular-nums">
+            {{ msToHMS(track.resource.item.durationInMillis) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <div class="flex justify-between gap-2 p-6 text-sm text-muted">
       <span>
         <span>{{ tracks?.length ?? 0 }} songs, </span>
@@ -94,7 +125,6 @@
 </template>
 
 <script lang="ts" setup>
-import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 import ms from "ms";
 
 const id = useRouteParams<string>("id");
