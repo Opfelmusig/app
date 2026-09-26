@@ -20,7 +20,9 @@
       </SidebarSection>
       <SidebarSection label="Help & Data">
         <SidebarItemIcon icon="lucide:info" to="/settings/about">Updates & About</SidebarItemIcon>
-        <SidebarItemIcon icon="lucide:database" to="/settings/storage">Storage</SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:database" to="/settings/storage">
+          Storage & Library
+        </SidebarItemIcon>
         <SidebarItemIcon icon="lucide:keyboard" to="/settings/shortcuts">Shortcuts</SidebarItemIcon>
       </SidebarSection>
     </div>

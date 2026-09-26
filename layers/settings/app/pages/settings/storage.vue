@@ -1,6 +1,6 @@
 <template>
   <SettingsWrapper>
-    <SettingsConfig no-label label="Sync Library" description="This can take a while" :error>
+    <SettingsConfig no-label label="Sync Library" description="This can take a while." :error>
       <UButton
         color="warning"
         variant="soft"
