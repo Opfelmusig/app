@@ -38,7 +38,7 @@ export function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
   if (!attributes)
     throw new Error(`Invalid Apple Music playlist: ${resource.id}: missing attributes`);
 
-  const lastModifiedDate = attributes.lastModifiedDate ?? catalog?.attributes?.lastModifiedDate;
+  const lastModifiedDate = catalog?.attributes?.lastModifiedDate ?? attributes.lastModifiedDate;
   const parentId = resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID;
 
   return {
