@@ -1,6 +1,6 @@
 // https://github.com/nuxt/ui/blob/v4/src/runtime/composables/useScrollShadow.ts
 
-import { useScroll } from "@vueuse/core";
+import { useMutationObserver, useResizeObserver, useScroll } from "@vueuse/core";
 import type { CSSProperties, MaybeRef, MaybeRefOrGetter } from "vue";
 import { computed, toValue } from "vue";
 
@@ -36,8 +36,16 @@ export function useCustomScrollShadow(
   element: MaybeRef<HTMLElement | null | undefined>,
   options: UseScrollShadowOptions = {},
 ) {
-  const { x, y, arrivedState } = useScroll(element, {
+  const { x, y, arrivedState, measure } = useScroll(element, {
     behavior: options.behavior,
+  });
+
+  useResizeObserver(element, measure);
+  useMutationObserver(element, measure, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    characterData: true,
   });
 
   const style = computed<CSSProperties | undefined>(() => {
