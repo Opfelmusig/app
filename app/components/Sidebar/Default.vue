@@ -61,7 +61,7 @@ const settingsStore = useSettingsStore();
 const { isCollapsed } = useSidebar();
 
 const scrollArea = useTemplateRef("scroll-area");
-const { style } = useScrollShadow(scrollArea, {
+const { style } = useCustomScrollShadow(scrollArea, {
   orientation: "vertical",
 });
 </script>

@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 const scrollArea = useTemplateRef("scroll-area");
-const { style } = useScrollShadow(scrollArea, {
+const { style } = useCustomScrollShadow(scrollArea, {
   orientation: "vertical",
 });
 </script>
