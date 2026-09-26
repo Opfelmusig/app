@@ -70,10 +70,14 @@
   }
 
   h2 {
-    @apply text-xl font-medium text-toned;
+    @apply text-2xl font-medium;
   }
 
   h3 {
+    @apply text-xl font-medium text-toned;
+  }
+
+  h4 {
     @apply text-lg text-muted;
   }
 }
