@@ -17,7 +17,7 @@ const variants = cva(
         xs: "size-5 rounded-md",
         sm: "size-9 rounded-lg",
         md: "size-12 rounded-xl",
-        lg: "size-48 rounded-3xl",
+        lg: "size-40 rounded-3xl",
         xl: "size-64 rounded-4xl",
         "2xl": "size-96 rounded-4xl",
       },
@@ -69,7 +69,7 @@ const imageSize = computed(() => {
   if (props.size === "xs") return 20 * 2;
   if (props.size === "sm") return 40 * 2;
   if (props.size === "md") return 48 * 2;
-  if (props.size === "lg") return 192 * 2;
+  if (props.size === "lg") return 160 * 2;
   if (props.size === "xl") return 265 * 2;
   if (props.size === "2xl") return 512 * 2;
   else return 1024;
