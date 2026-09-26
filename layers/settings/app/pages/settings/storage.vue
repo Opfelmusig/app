@@ -65,7 +65,6 @@
 import type { BadgeProps } from "@nuxt/ui";
 import { appDataDir } from "@tauri-apps/api/path";
 import { openPath } from "@tauri-apps/plugin-opener";
-import ms from "ms";
 
 import type { UBadge } from "#components";
 

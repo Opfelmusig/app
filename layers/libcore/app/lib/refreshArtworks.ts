@@ -1,7 +1,6 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { getArtworkExpiresAt, isResourceType } from "@opfelmusig/lib/helpers";
 import type { Artwork } from "@opfelmusig/lib/types";
-import ms from "ms";
 
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import type { DbResourceType } from "#layers/libcore/app/database/types";

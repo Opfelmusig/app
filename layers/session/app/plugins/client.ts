@@ -3,7 +3,6 @@ import type { Storefront } from "@opfelmusig/lib/types";
 import { appDataDir, join } from "@tauri-apps/api/path";
 import { fetch } from "@tauri-apps/plugin-http";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
-import ms from "ms";
 
 import { getAppleMusicDeveloperToken } from "#layers/session/app/lib/getAppleMusicDeveloperToken";
 import { profileScope, type UserProfile } from "#layers/session/app/lib/profileScope";
