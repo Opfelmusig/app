@@ -6,10 +6,25 @@ import { computed, toValue } from "vue";
 
 export interface UseScrollShadowOptions {
   /**
-   * The shadow size in pixels.
-   * @defaultValue 24
+   * The scrolling behavior used when setting the scroll position.
+   * @defaultValue 'auto'
    */
-  size?: MaybeRefOrGetter<number>;
+  behavior?: MaybeRefOrGetter<ScrollBehavior>;
+  /**
+   * The shadow size in pixels, or a CSS length.
+   * @defaultValue 24px
+   */
+  size?: MaybeRefOrGetter<number | string>;
+  /**
+   * The shadow size at the start of the scroll area.
+   * @defaultValue 24px
+   */
+  sizeStart?: MaybeRefOrGetter<number | string>;
+  /**
+   * The shadow size at the end of the scroll area.
+   * @defaultValue 24px
+   */
+  sizeEnd?: MaybeRefOrGetter<number | string>;
   /**
    * The scroll direction to apply shadows.
    * @defaultValue 'vertical'
@@ -17,11 +32,13 @@ export interface UseScrollShadowOptions {
   orientation?: MaybeRefOrGetter<"vertical" | "horizontal">;
 }
 
-export function useScrollShadow(
+export function useCustomScrollShadow(
   element: MaybeRef<HTMLElement | null | undefined>,
   options: UseScrollShadowOptions = {},
 ) {
-  const { arrivedState } = useScroll(element);
+  const { x, y, arrivedState } = useScroll(element, {
+    behavior: options.behavior,
+  });
 
   const style = computed<CSSProperties | undefined>(() => {
     const el = toValue(element);
@@ -41,19 +58,25 @@ export function useScrollShadow(
       : false;
     if (!overflows) return undefined;
 
-    const size = `${toValue(options.size) ?? 24}px`;
+    const size = toValue(options.size) ?? 24;
+    const start = toValue(options.sizeStart) ?? size;
+    const end = toValue(options.sizeEnd) ?? size;
+    const sizeStart = typeof start === "number" ? `${start}px` : start;
+    const sizeEnd = typeof end === "number" ? `${end}px` : end;
 
     const angle = orientation === "horizontal" ? "90deg" : "180deg";
 
     if (showStart && showEnd) {
       return {
-        maskImage: `linear-gradient(${angle}, transparent, #000 ${size}, #000 calc(100% - ${size}), transparent)`,
+        maskImage: `linear-gradient(${angle}, transparent, #000 ${sizeStart}, #000 calc(100% - ${sizeEnd}), transparent)`,
       };
     }
     if (showStart) {
-      return { maskImage: `linear-gradient(${angle}, transparent, #000 ${size})` };
+      return { maskImage: `linear-gradient(${angle}, transparent, #000 ${sizeStart})` };
     }
-    return { maskImage: `linear-gradient(${angle}, #000, #000 calc(100% - ${size}), transparent)` };
+    return {
+      maskImage: `linear-gradient(${angle}, #000, #000 calc(100% - ${sizeEnd}), transparent)`,
+    };
   });
 
   const isOverflowing = computed(() => {
@@ -70,6 +93,8 @@ export function useScrollShadow(
   });
 
   return {
+    x,
+    y,
     style,
     isOverflowing,
     arrivedState,
