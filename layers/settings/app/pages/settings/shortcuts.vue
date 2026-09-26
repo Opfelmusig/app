@@ -45,11 +45,11 @@ const groupedHandlers = computed<ShortcutGroup[]>(() => {
     if (keys.length === 0) continue;
 
     const meta = handler.config.meta;
+    if (typeof meta?.name !== "string") continue;
     const group = typeof meta?.group === "string" ? meta.group : "Other";
-    const name = typeof meta?.name === "string" ? meta.name : handler.id;
 
     if (!groups.has(group)) groups.set(group, []);
-    groups.get(group)!.push({ id: handler.id, name, keys });
+    groups.get(group)!.push({ id: handler.id, name: meta.name, keys });
   }
 
   return Array.from(groups, ([name, keys]) => ({ name, keys }));
