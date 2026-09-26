@@ -61,7 +61,7 @@
     <table class="w-full table-fixed overflow-hidden border-y border-default text-sm select-none">
       <thead>
         <tr class="h-8 border-b border-default bg-muted/20 text-left text-muted">
-          <th class="w-14"></th>
+          <th class="w-12"></th>
           <th class="pl-2 font-normal">Title</th>
           <th class="pl-2 font-normal">Artist</th>
           <th class="pl-2 font-normal">Album</th>
@@ -73,9 +73,9 @@
         <tr
           v-for="track in tracks"
           :key="track.entry.id"
-          class="h-14 border-b border-default hover:bg-muted/20 active:bg-muted"
+          class="group h-14 border-b border-default hover:bg-muted/20 active:bg-muted"
         >
-          <td class="p-2">
+          <td class="pr-0 pl-2">
             <ArtworkWrapper
               v-slot="{ iconClass, imageSize, artwork }"
               :library-resource="track.resource"
@@ -86,13 +86,21 @@
               <UIcon v-else :name="resourceIcon(track.resource.type)" :class="iconClass" />
             </ArtworkWrapper>
           </td>
-          <td class="px-2">
-            <span class="block truncate">{{ track.resource.item.name }}</span>
+          <td class="pl-2">
+            <span class="flex items-center gap-2">
+              <span class="truncate">{{ track.resource.item.name }}</span>
+              <HelperFilledIcon
+                v-if="track.resource.item.personalRating === 1"
+                name="lucide:star"
+                filled
+                class="mr-2 size-3 text-primary"
+              />
+            </span>
           </td>
-          <td class="px-2 text-muted">
+          <td class="pl-2 text-muted">
             <span class="block truncate">{{ track.resource.item.albumName }}</span>
           </td>
-          <td class="px-2 text-muted">
+          <td class="pl-2 text-muted">
             <span class="block truncate">{{ track.resource.item.artistName }}</span>
           </td>
           <td class="px-2 text-right text-muted tabular-nums">

@@ -1,6 +1,6 @@
 <template>
   <UButton
-    :color="starred ? 'warning' : 'neutral'"
+    :color="starred ? 'primary' : 'neutral'"
     variant="soft"
     class="size-9 shrink-0 justify-center rounded-xl transition-transform active:scale-95"
     size="lg"
