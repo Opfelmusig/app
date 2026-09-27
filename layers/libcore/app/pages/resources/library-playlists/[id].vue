@@ -1,7 +1,7 @@
 <template>
   <div
     ref="scroller"
-    class="flex size-full min-w-0 flex-col overflow-hidden overflow-y-auto"
+    class="relative flex size-full min-w-0 flex-col overflow-hidden overflow-y-auto"
     :style
   >
     <div class="flex gap-4 p-6">
@@ -58,14 +58,14 @@
         </div>
       </div>
     </div>
-    <table class="w-full table-fixed overflow-hidden border-y border-default text-sm select-none">
+    <table class="w-full shrink-0 table-fixed text-sm select-none">
       <thead>
-        <tr class="h-8 border-b border-default bg-muted/20 text-left text-muted">
+        <tr class="sticky top-0 z-10 h-8 border-b border-default bg-dimmed text-left text-muted">
           <th class="w-12"></th>
-          <th class="pl-2 font-normal">Title</th>
-          <th class="pl-2 font-normal">Artist</th>
-          <th class="pl-2 font-normal">Album</th>
-          <th class="w-20 px-2 text-right font-normal">Length</th>
+          <th class="px-2 font-normal">Title</th>
+          <th class="px-2 font-normal">Artist</th>
+          <th class="px-2 font-normal">Album</th>
+          <th class="w-20 pr-4 pl-2 text-right font-normal">Length</th>
         </tr>
       </thead>
 
@@ -73,7 +73,7 @@
         <tr
           v-for="track in tracks"
           :key="track.entry.id"
-          class="group h-14 border-b border-default hover:bg-muted/20 active:bg-muted"
+          class="group h-14 border-b border-default hover:bg-dimmed active:bg-muted"
         >
           <td class="pr-0 pl-2">
             <ArtworkWrapper
@@ -86,24 +86,24 @@
               <UIcon v-else :name="resourceIcon(track.resource.type)" :class="iconClass" />
             </ArtworkWrapper>
           </td>
-          <td class="pl-2">
+          <td class="px-2">
             <span class="flex items-center gap-2">
               <span class="truncate">{{ track.resource.item.name }}</span>
               <HelperFilledIcon
                 v-if="track.resource.item.personalRating === 1"
                 name="lucide:star"
                 filled
-                class="mr-2 size-3 text-primary"
+                class="size-3 text-primary"
               />
             </span>
           </td>
-          <td class="pl-2 text-muted">
+          <td class="px-2 text-muted">
             <span class="block truncate">{{ track.resource.item.albumName }}</span>
           </td>
-          <td class="pl-2 text-muted">
+          <td class="px-2 text-muted">
             <span class="block truncate">{{ track.resource.item.artistName }}</span>
           </td>
-          <td class="px-2 text-right text-muted tabular-nums">
+          <td class="pr-4 pl-2 text-right text-muted tabular-nums">
             {{ msToHMS(track.resource.item.durationInMillis) }}
           </td>
         </tr>
@@ -139,5 +139,7 @@ const { data: playlist } = useLibraryPlaylist(id);
 const { data: tracks } = useLibraryPlaylistTracks(id);
 
 const scroller = useTemplateRef("scroller");
-const { style } = useCustomScrollShadow(scroller);
+const { style } = useCustomScrollShadow(scroller, {
+  sizeStart: 0,
+});
 </script>

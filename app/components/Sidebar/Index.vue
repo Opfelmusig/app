@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex size-full shrink-0 flex-col overflow-hidden bg-muted/20 whitespace-nowrap select-none"
+    class="relative flex size-full shrink-0 flex-col overflow-hidden bg-dimmed whitespace-nowrap select-none"
   >
     <div :class="cn(sidebarPage({ active: !isSettings }))">
       <SidebarDefault />

@@ -27,6 +27,8 @@
   --color-primary-800: oklch(0.336 0.055 248.86);
   --color-primary-900: oklch(0.233 0.037 246.8);
   --color-primary-950: oklch(0.187 0.03 249.48);
+
+  --color-dimmed: #1b1b1e;
 }
 
 @theme inline {
