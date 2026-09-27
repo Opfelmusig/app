@@ -53,7 +53,8 @@
           <OMButtonSecondary icon="lucide:shuffle" />
           <OMButtonSeparator />
           <OMButtonSecondary icon="lucide:arrow-up-down" />
-          <OMButtonStar :starred="playlist.item.personalRating === 1" />
+          <OMButtonSecondary fill icon="lucide:filter" />
+          <OMButtonSecondary fill icon="lucide:star" :active="playlist.item.personalRating === 1" />
           <OMButtonTeritary icon="lucide:ellipsis" />
         </div>
       </div>

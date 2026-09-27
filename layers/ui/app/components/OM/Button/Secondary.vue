@@ -1,20 +1,22 @@
 <template>
   <UButton
-    color="neutral"
+    :color="active ? 'primary' : 'neutral'"
     variant="soft"
-    :icon
     class="size-9 shrink-0 justify-center rounded-xl transition-transform active:scale-95"
     size="lg"
     :disabled
-    :ui="{
-      leadingIcon: 'size-4',
-    }"
-  />
+  >
+    <template v-if="icon" #leading>
+      <OMIcon :name="icon" class="size-4" :filled="fill && active" />
+    </template>
+  </UButton>
 </template>
 
 <script lang="ts" setup>
 defineProps<{
   disabled?: boolean;
   icon?: string;
+  fill?: boolean;
+  active?: boolean;
 }>();
 </script>
