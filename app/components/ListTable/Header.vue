@@ -7,6 +7,5 @@
 <script lang="ts" setup>
 defineProps<{
   text?: string;
-  sortable?: boolean;
 }>();
 </script>
