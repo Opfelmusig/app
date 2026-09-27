@@ -35,7 +35,7 @@ export function addSong(
   albums?.forEach(
     (album, index) =>
       album.attributes &&
-      addLibraryCatalogLink(target, parsed.id, "album", album.id, album.attributes.name, index),
+      addLibraryCatalogLink(target, parsed.id, "albums", album.id, album.attributes.name, index),
   );
 
   const artists = catalog.relationships?.artists.data;
@@ -43,7 +43,7 @@ export function addSong(
   artists?.forEach(
     (artist, index) =>
       artist.attributes &&
-      addLibraryCatalogLink(target, parsed.id, "artist", artist.id, artist.attributes.name, index),
+      addLibraryCatalogLink(target, parsed.id, "artists", artist.id, artist.attributes.name, index),
   );
 }
 

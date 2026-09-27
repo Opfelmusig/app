@@ -25,7 +25,7 @@ export type DbResourceType =
   | "library-playlists"
   | "library-playlist-folders";
 
-export type DbCatalogLinkType = "album" | "artist";
+export type DbCatalogLinkType = "albums" | "artists";
 
 export interface DbResource {
   id: string;

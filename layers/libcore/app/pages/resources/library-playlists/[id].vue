@@ -83,10 +83,20 @@
             {{ track.resource.item.name }}
           </OMTableData>
           <OMTableData class="text-muted">
-            {{ track.resource.item.albumName }}
+            <LibraryLinks
+              :links="track.resource.links"
+              type="albums"
+              :library-name="track.resource.item.albumName"
+              :library-id="track.resource.item.albumId"
+            />
           </OMTableData>
           <OMTableData class="text-muted">
-            {{ track.resource.item.artistName }}
+            <LibraryLinks
+              :links="track.resource.links"
+              type="artists"
+              :library-name="track.resource.item.artistName"
+              :library-id="track.resource.item.artistId"
+            />
           </OMTableData>
           <OMTableData class="text-muted tabular-nums">
             {{ msToHMS(track.resource.item.durationInMillis) }}

@@ -35,7 +35,7 @@ export function addAlbum(
   artists?.forEach(
     (artist, index) =>
       artist.attributes &&
-      addLibraryCatalogLink(target, parsed.id, "artist", artist.id, artist.attributes.name, index),
+      addLibraryCatalogLink(target, parsed.id, "artists", artist.id, artist.attributes.name, index),
   );
 }
 
