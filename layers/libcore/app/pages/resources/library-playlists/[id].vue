@@ -58,24 +58,17 @@
         </div>
       </div>
     </div>
-    <table class="w-full shrink-0 table-fixed text-sm select-none">
-      <thead>
-        <tr class="sticky top-0 z-10 h-8 border-b border-default bg-dimmed text-left text-muted">
-          <th class="w-12"></th>
-          <th class="px-2 font-normal">Title</th>
-          <th class="px-2 font-normal">Artist</th>
-          <th class="px-2 font-normal">Album</th>
-          <th class="w-20 pr-4 pl-2 text-right font-normal">Length</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr
-          v-for="track in tracks"
-          :key="track.entry.id"
-          class="group h-14 border-b border-default hover:bg-dimmed active:bg-muted"
-        >
-          <td class="pr-0 pl-2">
+    <ListTable>
+      <template #header>
+        <ListTableHeader class="w-12" />
+        <ListTableHeader text="Title" />
+        <ListTableHeader text="Artist" />
+        <ListTableHeader text="Album" />
+        <ListTableHeader text="Length" class="w-20" />
+      </template>
+      <template #default>
+        <ListTableRow v-for="track in tracks" :key="track.entry.id">
+          <ListTableImg>
             <ArtworkWrapper
               v-slot="{ iconClass, imageSize, artwork }"
               :library-resource="track.resource"
@@ -85,30 +78,22 @@
               <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
               <UIcon v-else :name="resourceIcon(track.resource.type)" :class="iconClass" />
             </ArtworkWrapper>
-          </td>
-          <td class="px-2">
-            <span class="flex items-center gap-2">
-              <span class="truncate">{{ track.resource.item.name }}</span>
-              <HelperFilledIcon
-                v-if="track.resource.item.personalRating === 1"
-                name="lucide:star"
-                filled
-                class="size-3 text-primary"
-              />
-            </span>
-          </td>
-          <td class="px-2 text-muted">
-            <span class="block truncate">{{ track.resource.item.albumName }}</span>
-          </td>
-          <td class="px-2 text-muted">
-            <span class="block truncate">{{ track.resource.item.artistName }}</span>
-          </td>
-          <td class="pr-4 pl-2 text-right text-muted tabular-nums">
+          </ListTableImg>
+          <ListTableData :star="track.resource.item.personalRating === 1">
+            {{ track.resource.item.name }}
+          </ListTableData>
+          <ListTableData class="text-muted">
+            {{ track.resource.item.albumName }}
+          </ListTableData>
+          <ListTableData class="text-muted">
+            {{ track.resource.item.artistName }}
+          </ListTableData>
+          <ListTableData class="text-muted tabular-nums">
             {{ msToHMS(track.resource.item.durationInMillis) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </ListTableData>
+        </ListTableRow>
+      </template>
+    </ListTable>
     <div class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
         <span>{{ tracks?.length ?? 0 }} songs, </span>
