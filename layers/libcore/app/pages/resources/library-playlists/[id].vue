@@ -4,7 +4,7 @@
     class="relative flex size-full min-w-0 flex-col overflow-hidden overflow-y-auto"
     :style
   >
-    <div class="flex gap-4 p-6">
+    <div class="flex gap-4 p-4">
       <ArtworkWrapper
         v-slot="{ artwork, iconClass, imageSize }"
         :library-resource="playlist"
@@ -109,7 +109,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="flex justify-between gap-2 p-6 text-sm text-muted">
+    <div class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
         <span>{{ tracks?.length ?? 0 }} songs, </span>
         <span>
