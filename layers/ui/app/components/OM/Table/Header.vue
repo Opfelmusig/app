@@ -1,6 +1,6 @@
 <template>
   <th class="px-2 first:pl-4 last:pr-4 last:text-right">
-    <span class="font-normal">{{ text }}</span>
+    <span class="font-normal text-dimmed">{{ text }}</span>
   </th>
 </template>
 

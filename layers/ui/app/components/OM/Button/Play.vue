@@ -5,7 +5,7 @@
     class="h-9 justify-center rounded-xl px-6 transition-transform active:scale-95"
     :disabled
   >
-    <HelperFilledIcon name="lucide:play" class="size-4" filled />
+    <OMIcon name="lucide:play" class="size-4" filled />
     <span class="font-medium">Play</span>
   </UButton>
 </template>

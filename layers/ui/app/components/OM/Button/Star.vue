@@ -6,7 +6,7 @@
     size="lg"
     :disabled
   >
-    <HelperFilledIcon name="lucide:star" class="size-4 shrink-0" :filled="starred" />
+    <OMIcon name="lucide:star" class="size-4 shrink-0" :filled="starred" />
   </UButton>
 </template>
 

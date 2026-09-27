@@ -49,26 +49,26 @@
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <PlaybackButtonPlay />
-          <PlaybackButtonSecondary icon="lucide:shuffle" />
-          <PlaybackButtonSeparator />
-          <PlaybackButtonSecondary icon="lucide:arrow-up-down" />
-          <PlaybackButtonStar :starred="playlist.item.personalRating === 1" />
-          <PlaybackButtonTeritary icon="lucide:ellipsis" />
+          <OMButtonPlay />
+          <OMButtonSecondary icon="lucide:shuffle" />
+          <OMButtonSeparator />
+          <OMButtonSecondary icon="lucide:arrow-up-down" />
+          <OMButtonStar :starred="playlist.item.personalRating === 1" />
+          <OMButtonTeritary icon="lucide:ellipsis" />
         </div>
       </div>
     </div>
-    <ListTable>
+    <OMTable>
       <template #header>
-        <ListTableHeader class="w-12" />
-        <ListTableHeader text="Title" />
-        <ListTableHeader text="Artist" />
-        <ListTableHeader text="Album" />
-        <ListTableHeader text="Length" class="w-20" />
+        <OMTableHeader class="w-12" />
+        <OMTableHeader text="Title" />
+        <OMTableHeader text="Artist" />
+        <OMTableHeader text="Album" />
+        <OMTableHeader text="Length" class="w-20" />
       </template>
       <template #default>
-        <ListTableRow v-for="track in tracks" :key="track.entry.id">
-          <ListTableImg>
+        <OMTableRow v-for="track in tracks" :key="track.entry.id">
+          <OMTableImg>
             <ArtworkWrapper
               v-slot="{ iconClass, imageSize, artwork }"
               :library-resource="track.resource"
@@ -78,22 +78,22 @@
               <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
               <UIcon v-else :name="resourceIcon(track.resource.type)" :class="iconClass" />
             </ArtworkWrapper>
-          </ListTableImg>
-          <ListTableData :star="track.resource.item.personalRating === 1">
+          </OMTableImg>
+          <OMTableData :star="track.resource.item.personalRating === 1">
             {{ track.resource.item.name }}
-          </ListTableData>
-          <ListTableData class="text-muted">
+          </OMTableData>
+          <OMTableData class="text-muted">
             {{ track.resource.item.albumName }}
-          </ListTableData>
-          <ListTableData class="text-muted">
+          </OMTableData>
+          <OMTableData class="text-muted">
             {{ track.resource.item.artistName }}
-          </ListTableData>
-          <ListTableData class="text-muted tabular-nums">
+          </OMTableData>
+          <OMTableData class="text-muted tabular-nums">
             {{ msToHMS(track.resource.item.durationInMillis) }}
-          </ListTableData>
-        </ListTableRow>
+          </OMTableData>
+        </OMTableRow>
       </template>
-    </ListTable>
+    </OMTable>
     <div class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
         <span>{{ tracks?.length ?? 0 }} songs, </span>
