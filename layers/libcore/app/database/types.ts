@@ -186,3 +186,5 @@ export interface ResolvedDbListResource<L extends DbListIdentifier> {
   entry: DbListResource;
   resource: ResolvedDbResourceForList<L>;
 }
+
+export type ResolvedDbPlaylistTracks = ResolvedDbListResource<DbPlaylistTracksListId>;

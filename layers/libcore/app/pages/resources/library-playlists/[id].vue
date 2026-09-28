@@ -75,62 +75,7 @@
         </div>
       </div>
     </div>
-    <OMTable>
-      <template #header>
-        <OMTableHeader class="w-12" />
-        <OMTableHeader text="Title" />
-        <OMTableHeader text="Artist" />
-        <OMTableHeader text="Album" />
-        <OMTableHeader text="Length" class="w-20" />
-      </template>
-      <template #default>
-        <OMTableRow v-for="track in tracks" :key="track.entry.id">
-          <OMTableImg>
-            <ArtworkWrapper
-              v-slot="{ iconClass, imageSize, artwork }"
-              :library-resource="track.resource"
-              size="sm"
-              color="muted"
-            >
-              <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
-              <UIcon v-else :name="resourceIcon(track.resource.type)" :class="iconClass" />
-            </ArtworkWrapper>
-          </OMTableImg>
-          <OMTableData :star="track.resource.item.personalRating === 1">
-            <div class="flex items-center gap-2">
-              <span class="truncate">
-                {{ track.resource.item.name }}
-              </span>
-              <div
-                v-if="track.resource.item.contentRating === 'explicit'"
-                class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-neutral-500 text-[9px] font-bold text-inverted"
-              >
-                E
-              </div>
-            </div>
-          </OMTableData>
-          <OMTableData class="text-muted">
-            <LibraryLinks
-              :links="track.resource.links"
-              type="albums"
-              :library-name="track.resource.item.albumName"
-              :library-id="track.resource.item.albumId"
-            />
-          </OMTableData>
-          <OMTableData class="text-muted">
-            <LibraryLinks
-              :links="track.resource.links"
-              type="artists"
-              :library-name="track.resource.item.artistName"
-              :library-id="track.resource.item.artistId"
-            />
-          </OMTableData>
-          <OMTableData class="text-muted tabular-nums">
-            {{ msToHMS(track.resource.item.durationInMillis) }}
-          </OMTableData>
-        </OMTableRow>
-      </template>
-    </OMTable>
+    <LibrarySongs :songs="tracks" />
     <div class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
         <span>{{ tracks?.length ?? 0 }} songs, </span>
