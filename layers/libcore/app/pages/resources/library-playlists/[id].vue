@@ -1,9 +1,5 @@
 <template>
-  <div
-    ref="scroller"
-    class="relative flex size-full min-w-0 flex-col overflow-hidden overflow-y-auto"
-    :style
-  >
+  <PageWrapper>
     <div class="flex gap-4 p-4">
       <ArtworkWrapper
         v-slot="{ artwork, iconClass, imageSize }"
@@ -96,7 +92,7 @@
         <UIcon name="lucide:arrow-up-right" class="size-3 text-dimmed" />
       </NuxtLink>
     </div>
-  </div>
+  </PageWrapper>
 </template>
 
 <script lang="ts" setup>
@@ -104,9 +100,4 @@ const id = useRouteParams<string>("id");
 
 const { data: playlist } = useLibraryPlaylist(id);
 const { data: tracks } = useLibraryPlaylistTracks(id);
-
-const scroller = useTemplateRef("scroller");
-const { style } = useCustomScrollShadow(scroller, {
-  sizeStart: 0,
-});
 </script>
