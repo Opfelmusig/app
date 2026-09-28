@@ -1,5 +1,5 @@
 <template>
-  <tr class="group hover:bg-raised h-14 border-b border-default active:bg-muted">
+  <tr class="group h-14 hover:bg-raised active:bg-muted">
     <slot />
   </tr>
 </template>

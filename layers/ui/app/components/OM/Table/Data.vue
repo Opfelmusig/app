@@ -1,5 +1,5 @@
 <template>
-  <td class="px-2 first:pl-4 last:pr-4 last:text-right">
+  <td class="border-b border-default px-2 first:pl-4 last:pr-4 last:text-right">
     <span v-if="star" class="flex items-center gap-2">
       <span class="truncate">
         <slot />

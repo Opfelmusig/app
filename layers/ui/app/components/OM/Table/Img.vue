@@ -1,5 +1,5 @@
 <template>
-  <td class="pl-2">
+  <td class="border-b border-default pl-2">
     <slot />
   </td>
 </template>
