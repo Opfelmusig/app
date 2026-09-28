@@ -55,6 +55,7 @@ function parseAlbum(resource: AlbumsScopes): DbAlbum {
     artwork: attributes.artwork ?? catalog?.attributes?.artwork,
     releaseDate: attributes.releaseDate ?? catalog?.attributes?.releaseDate,
     dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+    contentRating: attributes.contentRating ?? catalog?.attributes?.contentRating,
 
     editorialVideo: catalog?.attributes?.editorialVideo,
     catalogId: catalog?.id,

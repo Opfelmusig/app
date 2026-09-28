@@ -17,6 +17,7 @@ export const songsScopes = defineScopes({
       "releaseDate",
       "discNumber",
       "trackNumber",
+      "contentRating",
     ],
     relationships: {
       albums: "relate",
@@ -35,6 +36,7 @@ export const songsScopes = defineScopes({
       "releaseDate",
       "discNumber",
       "trackNumber",
+      "contentRating",
     ],
     extend: ["personalRating"],
     relationships: {
@@ -54,14 +56,22 @@ export type SongsScopes = ScopedResourceOf<"library-songs", typeof songsScopes>;
 
 export const albumsScopes = defineScopes({
   "library-albums": {
-    fields: ["name", "artistName", "artwork", "dateAdded", "genreNames", "releaseDate"],
+    fields: [
+      "name",
+      "artistName",
+      "artwork",
+      "dateAdded",
+      "genreNames",
+      "releaseDate",
+      "contentRating",
+    ],
     relationships: {
       artists: "relate",
       catalog: "include",
     },
   },
   albums: {
-    fields: ["name", "artistName", "artwork", "genreNames", "releaseDate"],
+    fields: ["name", "artistName", "artwork", "genreNames", "releaseDate", "contentRating"],
     extend: ["editorialVideo", "personalRating"],
     relationships: {
       artists: "include",

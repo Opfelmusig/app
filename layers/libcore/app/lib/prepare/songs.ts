@@ -67,6 +67,7 @@ function parseSong(resource: SongsScopes): DbSong {
     discNumber: attributes.discNumber ?? catalog?.attributes?.discNumber,
     trackNumber: attributes.trackNumber,
     releaseDate: attributes.releaseDate ?? catalog?.attributes?.releaseDate,
+    contentRating: attributes.contentRating ?? catalog?.attributes?.contentRating,
 
     catalogId: catalog?.id,
     personalRating: catalog?.attributes?.personalRating,
