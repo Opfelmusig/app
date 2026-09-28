@@ -1,6 +1,7 @@
 mod logging;
 
 use tauri::{AppHandle, Manager};
+use tauri_plugin_window_state::StateFlags;
 
 pub fn run() {
     tauri::Builder::default()
@@ -9,10 +10,21 @@ pub fn run() {
             focus_main_window(app)
         })) */
         .plugin(tauri_plugin_deep_link::init())
+        .plugin(tauri_plugin_prevent_default::debug())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(
+            tauri_plugin_window_state::Builder::default()
+                .with_filter(|label| !label.starts_with("widget-"))
+                .with_state_flags(
+                    StateFlags::all() & !StateFlags::VISIBLE & !StateFlags::DECORATIONS,
+                )
+                .build(),
+        )
         .invoke_handler(tauri::generate_handler![native_open_devtools])
         .setup(|app| {
             let app_data_dir = app
