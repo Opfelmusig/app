@@ -17,6 +17,10 @@
     "updater:default",
     "stronghold:default",
     "stronghold:allow-remove-store-record",
+    "clipboard-manager:allow-write-text",
+    "os:default",
+    "process:allow-exit",
+    "process:allow-restart",
     {
       "identifier": "opener:allow-open-path",
       "allow": [{ "path": "$APPDATA" }]
