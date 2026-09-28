@@ -13,6 +13,10 @@ export const useSettingsStore = defineStore(
       playlists: {},
     });
 
+    const player = reactive({
+      animatedArtwork: true,
+    });
+
     const system = reactive({
       hideTitlebarControls: false,
       automaticUpdateChecks: true,
@@ -23,6 +27,7 @@ export const useSettingsStore = defineStore(
       language,
       sidebarSections,
       system,
+      player,
     };
   },
   {

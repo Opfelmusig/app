@@ -11,8 +11,12 @@
         color="muted"
         size="lg"
       >
-        <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
-        <UIcon v-else :name="resourceIcon('playlists')" :class="iconClass" />
+        <MediaEditorialVideo :editorial-video="playlist?.item.editorialVideo" variant="square">
+          <template #fallback>
+            <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+            <UIcon v-else :name="resourceIcon('playlists')" :class="iconClass" />
+          </template>
+        </MediaEditorialVideo>
       </ArtworkWrapper>
       <div v-if="playlist" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
