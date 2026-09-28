@@ -3,6 +3,7 @@ type SortField = "playlistOrder" | "title" | "album" | "artist" | "length";
 type SortDirection = "asc" | "desc";
 
 const options: { label: string; value: SortField }[] = [
+  { label: "Default", value: "playlistOrder" },
   { label: "Title", value: "title" },
   { label: "Album", value: "album" },
   { label: "Artist", value: "artist" },
@@ -13,12 +14,15 @@ const sort = ref<{ by: SortField; direction: SortDirection }>({
   by: "playlistOrder",
   direction: "asc",
 });
+
+const scroller = useTemplateRef("scroller");
+const { style } = useCustomScrollShadow(scroller);
 </script>
 
 <template>
-  <div class="p-4">
-    <UPopover :content="{ align: 'start' }" :ui="{ content: 'rounded-2xl' }">
-      <UButton color="neutral" variant="soft" icon="lucide:filter" />
+  <div class="flex items-start gap-2 p-4">
+    <UPopover :content="{ align: 'start' }" :ui="{ content: 'overflow-hidden rounded-xl' }">
+      <OMButtonSecondary icon="lucide:arrow-up-down" />
 
       <template #content>
         <div class="flex w-48 flex-col">
@@ -28,7 +32,7 @@ const sort = ref<{ by: SortField; direction: SortDirection }>({
               :key="direction"
               :variant="sort.direction === direction ? 'soft' : 'ghost'"
               :leading-icon="direction === 'asc' ? 'lucide:chevron-down' : 'lucide:chevron-up'"
-              class="w-full justify-center first:rounded-tl-xl last:rounded-tr-xl"
+              class="w-full justify-center rounded-sm first:rounded-tl-lg last:rounded-tr-lg"
               color="neutral"
               :ui="{
                 leadingIcon: 'size-4',
@@ -37,47 +41,74 @@ const sort = ref<{ by: SortField; direction: SortDirection }>({
             />
           </div>
           <USeparator />
-          <div class="flex flex-col gap-1 p-1">
-            <UButton
-              v-for="option in options"
-              :key="option.value"
-              type="button"
-              color="neutral"
-              :variant="sort.by === option.value ? 'soft' : 'ghost'"
-              :label="option.label"
-              :trailing-icon="sort.by === option.value ? 'i-lucide-check' : undefined"
-              class="w-full justify-between"
-              :ui="{
-                trailingIcon: 'size-4',
-              }"
-              @click="
-                () => {
-                  if (sort.by === option.value) sort.by = 'playlistOrder';
-                  else sort.by = option.value;
-                }
-              "
-            />
-          </div>
-          <USeparator />
-          <div class="flex p-1">
-            <UButton
-              variant="ghost"
-              leading-icon="lucide:corner-up-left"
-              class="w-full gap-2 rounded-b-xl"
-              color="error"
-              :ui="{
-                leadingIcon: 'size-4',
-              }"
-              label="Reset"
-              :disabled="sort.direction === 'asc' && sort.by === 'playlistOrder'"
-              @click="
-                sort.direction = 'asc';
-                sort.by = 'playlistOrder';
-              "
-            />
+          <div class="flex flex-col gap-2 p-2">
+            <span class="text-sm text-muted">Sort By</span>
+            <URadioGroup v-model="sort.by" :items="options" />
           </div>
         </div>
       </template>
     </UPopover>
+
+    <UPopover :content="{ align: 'start' }" :ui="{ content: 'overflow-hidden rounded-xl' }">
+      <OMButtonSecondary icon="lucide:filter" />
+
+      <template #content>
+        <div class="flex w-48 flex-col">
+          <div class="flex flex-col gap-2 p-2">
+            <span class="text-sm text-muted">Age Rating</span>
+            <UCheckbox label="Clean" />
+            <UCheckbox label="Explicit" />
+          </div>
+          <USeparator />
+          <div class="flex flex-col gap-2 p-2">
+            <span class="text-sm text-muted">Rating</span>
+            <UCheckbox label="Favorited" />
+            <UCheckbox label="Suggest Less" />
+            <UCheckbox label="No Rating" />
+          </div>
+          <USeparator />
+          <div class="flex flex-col">
+            <span class="p-2 pb-0 text-sm text-muted">Genres</span>
+            <div
+              ref="scroller"
+              class="scrollbar-hide flex max-h-50 flex-col gap-2 overflow-hidden overflow-y-auto p-2"
+              :style
+            >
+              <UCheckbox label="Anime" />
+              <UCheckbox label="Alternative" />
+              <UCheckbox label="Hip-Hop/Rap" />
+              <UCheckbox label="House" />
+              <UCheckbox label="J-Pop" />
+              <UCheckbox label="K-Pop" />
+              <UCheckbox label="Indie Pop" />
+              <UCheckbox label="Pop" />
+            </div>
+          </div>
+        </div>
+      </template>
+    </UPopover>
+
+    <UPopover :content="{ align: 'start' }" :ui="{ content: 'overflow-hidden rounded-xl' }">
+      <OMButtonSecondary icon="lucide:columns-3" />
+
+      <template #content>
+        <div class="flex w-48 flex-col gap-2 p-2">
+          <span class="text-sm text-muted">Columns</span>
+          <UCheckbox label="Artwork" :default-value="true" />
+          <UCheckbox label="Title" :default-value="true" />
+          <UCheckbox label="Artist" :default-value="true" />
+          <UCheckbox label="Album" :default-value="true" />
+          <UCheckbox label="Length" :default-value="true" />
+        </div>
+      </template>
+    </UPopover>
+
+    <UInput
+      variant="soft"
+      color="neutral"
+      icon="lucide:search"
+      placeholder="Search..."
+      :ui="{ base: 'h-9 rounded-xl' }"
+    />
   </div>
 </template>
