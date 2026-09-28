@@ -182,9 +182,11 @@ type ResolvedDbResourceByList = {
 
 export type ResolvedDbResourceForList<L extends DbListIdentifier> = ResolvedDbResourceByList[L];
 
-export interface ResolvedDbListResource<L extends DbListIdentifier> {
+export interface ResolvedDbListResource<R extends ResolvedDbResource> {
   entry: DbListResource;
-  resource: ResolvedDbResourceForList<L>;
+  resource: R;
 }
 
-export type ResolvedDbPlaylistTracks = ResolvedDbListResource<DbPlaylistTracksListId>;
+export type ResolvedDbListResourceByList<L extends DbListIdentifier> = ResolvedDbListResource<
+  ResolvedDbResourceForList<L>
+>;

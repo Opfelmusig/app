@@ -8,7 +8,7 @@ import {
   type ResolvedDbAlbum,
   type ResolvedDbArtist,
   type ResolvedDbFolder,
-  type ResolvedDbListResource,
+  type ResolvedDbListResourceByList,
   type ResolvedDbPlaylist,
   type ResolvedDbResource,
   type ResolvedDbSong,
@@ -150,11 +150,11 @@ export class LibraryClient {
       }),
     );
 
-    return results.filter((result) => result !== undefined) as ResolvedDbListResource<L>[];
+    return results.filter((result) => result !== undefined) as ResolvedDbListResourceByList<L>[];
   }
 
   songs() {
-    return this.db.songs.toArray();
+    return this.getListResources(DbListId.Songs);
   }
 
   pins() {

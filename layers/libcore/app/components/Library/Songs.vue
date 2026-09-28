@@ -58,9 +58,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { ResolvedDbPlaylistTracks } from "#layers/libcore/app/database/types";
+import type { ResolvedDbListResource, ResolvedDbSong } from "#layers/libcore/app/database/types";
 
 defineProps<{
-  songs?: ResolvedDbPlaylistTracks[];
+  songs?: ResolvedDbListResource<ResolvedDbSong>[];
 }>();
 </script>
