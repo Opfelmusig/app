@@ -64,7 +64,7 @@
   }
 
   ::selection {
-    @apply bg-primary-400/50;
+    @apply bg-primary-400/20;
   }
 
   h1 {
