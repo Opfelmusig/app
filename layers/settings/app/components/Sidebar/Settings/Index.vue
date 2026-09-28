@@ -1,7 +1,9 @@
 <template>
   <div class="flex size-full flex-col overflow-hidden pt-2">
     <div class="flex flex-col gap-2">
-      <SidebarItemIcon icon="lucide:arrow-left" to="/" variant="dimmed">Back</SidebarItemIcon>
+      <SidebarItemIcon icon="lucide:arrow-left" :to="lastNonSettingsPage" variant="dimmed">
+        Back
+      </SidebarItemIcon>
       <SidebarBorder />
     </div>
     <div
@@ -30,6 +32,19 @@
 </template>
 
 <script lang="ts" setup>
+const route = useRoute();
+const lastNonSettingsPage = ref("/");
+
+watch(
+  () => route.fullPath,
+  (fullPath) => {
+    if (route.path !== "/settings" && !route.path.startsWith("/settings/")) {
+      lastNonSettingsPage.value = fullPath;
+    }
+  },
+  { immediate: true },
+);
+
 const scrollArea = useTemplateRef("scroll-area");
 const { style } = useCustomScrollShadow(scrollArea, {
   orientation: "vertical",
