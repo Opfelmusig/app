@@ -83,7 +83,17 @@
             </ArtworkWrapper>
           </OMTableImg>
           <OMTableData :star="track.resource.item.personalRating === 1">
-            {{ track.resource.item.name }}
+            <div class="flex items-center gap-2">
+              <span class="truncate">
+                {{ track.resource.item.name }}
+              </span>
+              <div
+                v-if="track.resource.item.contentRating === 'explicit'"
+                class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-zinc-500 text-[9px] font-bold text-inverted"
+              >
+                E
+              </div>
+            </div>
           </OMTableData>
           <OMTableData class="text-muted">
             <LibraryLinks
