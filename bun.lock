@@ -7,9 +7,9 @@
       "dependencies": {
         "@nuxt/ui": "^4.11.2",
         "@opfelmusig/lib": "^0.0.0-ci.28.sha-aaf97ca",
-        "@pinia/colada": "^1.4.5",
+        "@pinia/colada": "^1.4.6",
         "@pinia/colada-nuxt": "^1.2.0",
-        "@pinia/colada-plugin-auto-refetch": "^0.2.6",
+        "@pinia/colada-plugin-auto-refetch": "^0.2.7",
         "@pinia/colada-plugin-cache-persister": "^1.1.2",
         "@pinia/nuxt": "^1.0.2",
         "@tauri-apps/plugin-http": "^2.6.1",
@@ -394,13 +394,13 @@
 
     "@parcel/watcher-wasm": ["@parcel/watcher-wasm@2.6.0", "", { "dependencies": { "is-glob": "^4.0.3", "napi-wasm": "^1.1.0", "picomatch": "^4.0.4" } }, "sha512-dtjbDxKSDPQ8AmA+pS4OFaHE1FKrjtGpLGBxw85uKFkRorjNbvDM/aFPgqosu40wprbp1xw2ZSxIKqghCUHe2w=="],
 
-    "@pinia/colada": ["@pinia/colada@1.4.5", "", { "dependencies": { "nostics": "^1.2.0" }, "peerDependencies": { "pinia": "^2.2.6 || ^3.0.0 || ^4.0.2", "vue": "^3.5.41" } }, "sha512-V+Xy6+MiMMA69Lo4MzvyerAbtu4o1hk6+7XBhN7Y5i4oQ2mFSvmtx2V4Rcx2bGlgznjlezCKrsKqhXlPpNavgA=="],
+    "@pinia/colada": ["@pinia/colada@1.4.6", "", { "dependencies": { "nostics": "^1.2.0" }, "peerDependencies": { "pinia": "^2.2.6 || ^3.0.0 || ^4.0.2", "vue": "^3.5.41" } }, "sha512-ph+R4Mk3nOOZ03879burpyTP5kdQt7p/XaU73zv9ogH3iDnsRevzhHQCSOAfVrZvDgyjeaRGhsq/p+N0bh53HA=="],
 
     "@pinia/colada-devtools": ["@pinia/colada-devtools@2.0.0", "", { "dependencies": { "@devframes/agentic": "^1.0.0", "devframe": "^1.0.0", "zod": "^4.6.4" }, "peerDependencies": { "@devframes/hub": "^1.0.0", "@devframes/hub-ui": "^1.0.0", "@devframes/vite": "^1.0.0", "@vitejs/devtools-kit": "^0.7.5", "vite": "^7.0.0 || ^8.0.0" }, "optionalPeers": ["@devframes/hub", "@devframes/hub-ui", "@devframes/vite", "@vitejs/devtools-kit", "vite"] }, "sha512-T5E5OdWws4DalhHM74LAsibZ8/oA783z2XjGwcq3lQEdXjk/f1OxQN6qyCinh09QuyaQ5VQvoegKJGsPcMEGFA=="],
 
     "@pinia/colada-nuxt": ["@pinia/colada-nuxt@1.2.0", "", { "dependencies": { "@nuxt/kit": "^4.5.2" }, "peerDependencies": { "@pinia/colada": ">=1.4.5", "@pinia/colada-devtools": "^2.0.0" }, "optionalPeers": ["@pinia/colada-devtools"] }, "sha512-9wij8atRPiyC3C9/lWkxRV7LkN+ZILKIU1oeKj0gd66qsF4xsJtRW+sqowGOwe2beYwSkYuztThOA/DaQFuQsQ=="],
 
-    "@pinia/colada-plugin-auto-refetch": ["@pinia/colada-plugin-auto-refetch@0.2.6", "", { "peerDependencies": { "@pinia/colada": ">=1.0.0" } }, "sha512-u/W8orRnOEHKWqatQ1yaHr9R1UPKJseHKjShW23oqq4TrOZvR6RU8Nc7flBtTbauU2KCydpgDQE68tWAZ4sNsg=="],
+    "@pinia/colada-plugin-auto-refetch": ["@pinia/colada-plugin-auto-refetch@0.2.7", "", { "peerDependencies": { "@pinia/colada": ">=1.4.6" } }, "sha512-eo7O/ZZWeVPGzP7ThM1WZO2XeFBJIvdORF/5fewiI9OqH9HaUU6nmmGlkzk6TRWnbpFgAl35agn2rUtxvp7GLg=="],
 
     "@pinia/colada-plugin-cache-persister": ["@pinia/colada-plugin-cache-persister@1.1.2", "", { "dependencies": { "nostics": "^1.2.0" }, "peerDependencies": { "@pinia/colada": ">=1.4.5" } }, "sha512-Ce7Om4B0fsGKzRV3ws3zAJ+9IlGnpdZNRFvh5KIG8Alw/9p4LLvvdIdhrdaYUvbrdHelpKgJmKtJco8rcQqaYw=="],
 
