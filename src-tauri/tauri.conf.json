@@ -25,7 +25,8 @@
         "fullscreen": false,
         "theme": "Dark",
         "backgroundColor": "#18181b",
-        "backgroundThrottling": "disabled"
+        "backgroundThrottling": "disabled",
+        "scrollBarStyle": "fluentOverlay"
       }
     ],
     "security": {
