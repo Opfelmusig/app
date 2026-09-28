@@ -14,7 +14,7 @@
         <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
         <UIcon v-else :name="resourceIcon('playlists')" :class="iconClass" />
       </ArtworkWrapper>
-      <div v-if="playlist" class="flex flex-col justify-end gap-4">
+      <div v-if="playlist" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
           <h2>{{ playlist.item.name }}</h2>
           <div class="flex items-center gap-2 text-sm text-muted">
@@ -30,7 +30,10 @@
                 {{ playlist.item.curatorName }}
               </span>
             </span>
-            <div v-if="playlist.item.curatorName" class="size-1 shrink-0 bg-accented" />
+            <div
+              v-if="playlist.item.curatorName"
+              class="size-1 shrink-0 rounded-full bg-accented"
+            />
             <span v-if="playlist.item.lastModifiedDate" class="truncate">
               Updated
               <NuxtTime
@@ -51,13 +54,20 @@
         <div class="flex items-center gap-2">
           <OMButtonPlay />
           <OMButtonSecondary icon="lucide:shuffle" />
+          <OMButtonSecondary fill icon="lucide:star" :active="playlist.item.personalRating === 1" />
           <OMButtonSeparator />
           <OMButtonSecondary icon="lucide:arrow-up-down" />
           <OMButtonSecondary fill icon="lucide:filter" />
           <OMButtonSecondary fill icon="lucide:columns-3" />
-          <OMButtonSeparator />
-          <OMButtonSecondary fill icon="lucide:star" :active="playlist.item.personalRating === 1" />
-          <OMButtonTeritary icon="lucide:ellipsis" />
+          <UInput
+            variant="soft"
+            color="neutral"
+            icon="lucide:search"
+            placeholder="Search..."
+            class="shrink-0"
+            :ui="{ base: 'h-9 rounded-xl' }"
+          />
+          <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </div>
     </div>

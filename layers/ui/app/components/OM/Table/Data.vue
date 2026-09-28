@@ -4,7 +4,7 @@
       <span class="truncate">
         <slot />
       </span>
-      <OMIcon name="lucide:star" filled class="ml-auto size-3 text-primary" />
+      <OMIcon name="lucide:star" filled class="ml-auto size-3 shrink-0 text-primary" />
     </span>
     <span v-else class="block truncate">
       <slot />

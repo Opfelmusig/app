@@ -14,9 +14,6 @@ const sort = ref<{ by: SortField; direction: SortDirection }>({
   by: "playlistOrder",
   direction: "asc",
 });
-
-const scroller = useTemplateRef("scroller");
-const { style } = useCustomScrollShadow(scroller);
 </script>
 
 <template>
@@ -41,7 +38,7 @@ const { style } = useCustomScrollShadow(scroller);
             />
           </div>
           <USeparator />
-          <div class="flex flex-col gap-2 p-2">
+          <div class="flex flex-col gap-2 p-2 px-2.5">
             <span class="text-sm text-muted">Sort By</span>
             <URadioGroup v-model="sort.by" :items="options" />
           </div>
@@ -54,35 +51,29 @@ const { style } = useCustomScrollShadow(scroller);
 
       <template #content>
         <div class="flex w-48 flex-col">
-          <div class="flex flex-col gap-2 p-2">
+          <div class="flex flex-col gap-2 p-2 px-2.5">
             <span class="text-sm text-muted">Age Rating</span>
             <UCheckbox label="Clean" />
             <UCheckbox label="Explicit" />
           </div>
           <USeparator />
-          <div class="flex flex-col gap-2 p-2">
+          <div class="flex flex-col gap-2 p-2 px-2.5">
             <span class="text-sm text-muted">Rating</span>
             <UCheckbox label="Favorited" />
             <UCheckbox label="Suggest Less" />
             <UCheckbox label="No Rating" />
           </div>
           <USeparator />
-          <div class="flex flex-col">
-            <span class="p-2 pb-0 text-sm text-muted">Genres</span>
-            <div
-              ref="scroller"
-              class="scrollbar-hide flex max-h-50 flex-col gap-2 overflow-hidden overflow-y-auto p-2"
-              :style
-            >
-              <UCheckbox label="Anime" />
-              <UCheckbox label="Alternative" />
-              <UCheckbox label="Hip-Hop/Rap" />
-              <UCheckbox label="House" />
-              <UCheckbox label="J-Pop" />
-              <UCheckbox label="K-Pop" />
-              <UCheckbox label="Indie Pop" />
-              <UCheckbox label="Pop" />
-            </div>
+          <div class="flex flex-col gap-2 p-2 px-2.5">
+            <span class="text-sm text-muted">Genres</span>
+            <UCheckbox label="Anime" />
+            <UCheckbox label="Alternative" />
+            <UCheckbox label="Hip-Hop/Rap" />
+            <UCheckbox label="House" />
+            <UCheckbox label="J-Pop" />
+            <UCheckbox label="K-Pop" />
+            <UCheckbox label="Indie Pop" />
+            <UCheckbox label="Pop" />
           </div>
         </div>
       </template>
@@ -92,7 +83,7 @@ const { style } = useCustomScrollShadow(scroller);
       <OMButtonSecondary icon="lucide:columns-3" />
 
       <template #content>
-        <div class="flex w-48 flex-col gap-2 p-2">
+        <div class="flex w-48 flex-col gap-2 p-2 px-2.5">
           <span class="text-sm text-muted">Columns</span>
           <UCheckbox label="Artwork" :default-value="true" />
           <UCheckbox label="Title" :default-value="true" />
