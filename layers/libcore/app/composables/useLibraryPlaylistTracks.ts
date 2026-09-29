@@ -1,6 +1,6 @@
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
-export default function useLibraryPlaylist(id: MaybeRefOrGetter<string>) {
+export default function useLibraryPlaylistTracks(id: MaybeRefOrGetter<string>) {
   const library = useLibrary();
 
   return useQuery({
