@@ -16,7 +16,7 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </div>
-    <LibraryAlbums :albums />
+    <LibraryGrid :items="albums" />
     <div class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
         <span>{{ albums?.length ?? 0 }} albums</span>
