@@ -5,7 +5,8 @@
       <OMTableHeader text="Title" />
       <OMTableHeader text="Album" />
       <OMTableHeader text="Artist" />
-      <OMTableHeader text="Length" class="w-20" />
+      <OMTableHeader text="Length" class="w-20 text-end" />
+      <OMTableHeader class="w-13" />
     </template>
     <template #default>
       <OMTableRow v-for="song in songs" :key="song.entry.id">
@@ -52,8 +53,11 @@
             :library-id="song.resource.item.artistId"
           />
         </OMTableData>
-        <OMTableData class="text-muted tabular-nums">
+        <OMTableData class="text-end text-muted tabular-nums">
           {{ msToHMS(song.resource.item.durationInMillis) }}
+        </OMTableData>
+        <OMTableData class="no-active">
+          <OMButtonTeritary icon="lucide:ellipsis" class="text-muted" />
         </OMTableData>
       </OMTableRow>
     </template>
