@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex size-full min-h-svh items-center justify-center overflow-hidden overflow-y-auto bg-stone-900 p-8 text-stone-200"
+    class="flex size-full min-h-svh items-center justify-center overflow-hidden overflow-y-auto bg-neutral-900 p-8 text-neutral-200"
     data-tauri-drag-region
   >
     <div class="flex w-200 max-w-full flex-col gap-8" data-tauri-drag-region>
@@ -11,20 +11,20 @@
         <h1 class="text-3xl font-bold text-white sm:text-4xl">
           {{ title }}
         </h1>
-        <p v-if="message" class="text-base text-stone-400">
+        <p v-if="message" class="text-base text-neutral-400">
           {{ message }}
         </p>
         <div class="mt-4 flex gap-2">
           <button
             type="button"
-            class="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-stone-950 transition-opacity hover:opacity-90"
+            class="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-neutral-950 transition-opacity hover:opacity-90"
             @click="clearError({ redirect: '/' })"
           >
             Home
           </button>
           <button
             type="button"
-            class="cursor-pointer rounded-md bg-stone-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-stone-700"
+            class="cursor-pointer rounded-md bg-neutral-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
             @click="reload"
           >
             Reload
@@ -37,7 +37,7 @@
         data-tauri-drag-region
       >
         <pre
-          class="max-h-80 w-200 max-w-full overflow-auto bg-stone-800 p-3 px-4 text-left font-mono text-xs leading-5 break-all text-stone-300"
+          class="max-h-80 w-200 max-w-full overflow-auto bg-neutral-800 p-3 px-4 text-left font-mono text-xs leading-5 break-all text-neutral-300"
           v-html="stack"
         />
       </div>
