@@ -20,17 +20,20 @@
             <UIcon v-else :name="resourceIcon(song.resource.type)" :class="iconClass" />
           </ArtworkWrapper>
         </OMTableImg>
-        <OMTableData :star="song.resource.item.personalRating === 1">
+        <OMTableData>
           <div class="flex items-center gap-2">
             <span class="truncate">
               {{ song.resource.item.name }}
             </span>
-            <div
-              v-if="song.resource.item.contentRating === 'explicit'"
-              class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-neutral-500 text-[9px] font-bold text-inverted"
-            >
+            <OMIcon
+              v-if="song.resource.item.personalRating === 1"
+              name="lucide:star"
+              filled
+              class="size-3 shrink-0 text-primary"
+            />
+            <OMExplicit v-if="song.resource.item.contentRating === 'explicit'" class="ml-auto">
               E
-            </div>
+            </OMExplicit>
           </div>
         </OMTableData>
         <OMTableData class="text-muted">
