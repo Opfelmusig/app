@@ -32,6 +32,8 @@
 </template>
 
 <script lang="ts" setup>
+import { DbListId } from "#layers/libcore/app/database/types";
+
 const { isLoading } = useLibrary();
-const { data, asyncStatus } = useLibraryPins();
+const { data, asyncStatus } = useLibraryList(DbListId.Pins);
 </script>

@@ -70,7 +70,9 @@
 </template>
 
 <script lang="ts" setup>
-const { data: artists } = useLibraryArtists();
+import { DbListId } from "#layers/libcore/app/database/types";
+
+const { data: artists } = useLibraryList(DbListId.Artists);
 
 const activeArtistId = useRouteParams<string | undefined>("id");
 </script>

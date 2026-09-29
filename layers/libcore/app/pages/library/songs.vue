@@ -36,5 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-const { data: songs } = useLibrarySongs();
+import { DbListId } from "#layers/libcore/app/database/types";
+
+const { data: songs } = useLibraryList(DbListId.Songs);
 </script>

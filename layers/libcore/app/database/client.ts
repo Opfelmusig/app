@@ -152,20 +152,4 @@ export class LibraryClient {
 
     return results.filter((result) => result !== undefined) as ResolvedDbListResourceByList<L>[];
   }
-
-  songs() {
-    return this.getListResources(DbListId.Songs);
-  }
-
-  albums() {
-    return this.getListResources(DbListId.Albums);
-  }
-
-  artists() {
-    return this.getListResources(DbListId.Artists);
-  }
-
-  pins() {
-    return this.getListResources(DbListId.Pins);
-  }
 }
