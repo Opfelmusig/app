@@ -23,9 +23,6 @@
         label="Library"
         collapsible
       >
-        <SidebarItemIcon icon="lucide:clock" to="/library/recently-added"
-          >Recently Added</SidebarItemIcon
-        >
         <SidebarItemIcon icon="lucide:music-2" to="/library/songs">Songs</SidebarItemIcon>
         <SidebarItemIcon icon="lucide:disc" to="/library/albums">Albums</SidebarItemIcon>
         <SidebarItemIcon icon="lucide:mic-vocal" to="/library/artists">Artists</SidebarItemIcon>
