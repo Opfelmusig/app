@@ -161,6 +161,10 @@ export class LibraryClient {
     return this.getListResources(DbListId.Albums);
   }
 
+  artists() {
+    return this.getListResources(DbListId.Artists);
+  }
+
   pins() {
     return this.getListResources(DbListId.Pins);
   }
