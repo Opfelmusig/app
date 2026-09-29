@@ -3,8 +3,8 @@
     <template #header>
       <OMTableHeader class="w-12" />
       <OMTableHeader text="Title" />
-      <OMTableHeader text="Artist" />
       <OMTableHeader text="Album" />
+      <OMTableHeader text="Artist" />
       <OMTableHeader text="Length" class="w-20" />
     </template>
     <template #default>
