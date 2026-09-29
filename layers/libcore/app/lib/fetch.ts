@@ -52,7 +52,12 @@ function fetchAllLibraryPages(
 ): Promise<LibraryPages> {
   return Promise.allKeyed({
     songs: collect(
-      client.library.songs.iterateAll({ limit: 100, scopes: songsScopes, config: { signal } }),
+      client.library.songs.iterateAll({
+        limit: 100,
+        scopes: songsScopes,
+        sort: "-dateAdded",
+        config: { signal },
+      }),
       {
         signal,
         onItem: () => {
@@ -61,7 +66,12 @@ function fetchAllLibraryPages(
       },
     ),
     albums: collect(
-      client.library.albums.iterateAll({ limit: 100, scopes: albumsScopes, config: { signal } }),
+      client.library.albums.iterateAll({
+        limit: 100,
+        scopes: albumsScopes,
+        sort: "-dateAdded",
+        config: { signal },
+      }),
       {
         signal,
         onItem: () => {
