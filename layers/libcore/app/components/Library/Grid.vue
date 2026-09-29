@@ -12,7 +12,7 @@
             :library-resource="item.resource"
             size="lg"
             class="aspect-square h-auto w-full"
-            :class="item.resource.type !== 'library-artists' ? 'rounded-xl' : ''"
+            :class="item.resource.type !== 'library-artists' ? 'rounded-2xl' : ''"
             color="muted"
           >
             <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
