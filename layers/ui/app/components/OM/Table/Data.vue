@@ -1,19 +1,7 @@
 <template>
   <td class="border-b border-default px-2">
-    <span v-if="star" class="flex items-center gap-2">
-      <span class="truncate">
-        <slot />
-      </span>
-      <OMIcon name="lucide:star" filled class="ml-auto size-3 shrink-0 text-primary" />
-    </span>
-    <span v-else class="block truncate">
+    <span class="block truncate">
       <slot />
     </span>
   </td>
 </template>
-
-<script lang="ts" setup>
-defineProps<{
-  star?: boolean;
-}>();
-</script>
