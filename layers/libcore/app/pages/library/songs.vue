@@ -18,7 +18,9 @@
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <LibrarySongs :songs />
-    <footer class="flex justify-between gap-2 p-4 text-sm text-muted">
+    <footer
+      class="flex shrink-0 justify-between gap-2 border-t border-default p-4 text-sm text-muted"
+    >
       <span>
         <span>{{ songs?.length ?? 0 }} songs, </span>
         <span>
