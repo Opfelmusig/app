@@ -61,5 +61,6 @@ const { isCollapsed } = useSidebar();
 const scrollArea = useTemplateRef("scroll-area");
 const { style } = useCustomScrollShadow(scrollArea, {
   orientation: "vertical",
+  offset: 4,
 });
 </script>

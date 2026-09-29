@@ -26,6 +26,11 @@ export interface UseScrollShadowOptions {
    */
   sizeEnd?: MaybeRefOrGetter<number | string>;
   /**
+   * Distance from either edge in pixels within which the shadow is hidden.
+   * @defaultValue 0
+   */
+  offset?: MaybeRefOrGetter<number>;
+  /**
    * The scroll direction to apply shadows.
    * @defaultValue 'vertical'
    */
@@ -54,8 +59,15 @@ export function useCustomScrollShadow(
     const [startKey, endKey] =
       orientation === "horizontal" ? (["left", "right"] as const) : (["top", "bottom"] as const);
 
-    const showStart = !arrivedState[startKey];
-    const showEnd = !arrivedState[endKey];
+    const offset = Math.max(0, toValue(options.offset) ?? 0);
+    const position = orientation === "horizontal" ? x.value : y.value;
+    const remaining = el
+      ? orientation === "horizontal"
+        ? el.scrollWidth - el.clientWidth - position
+        : el.scrollHeight - el.clientHeight - position
+      : 0;
+    const showStart = !arrivedState[startKey] && position > offset;
+    const showEnd = !arrivedState[endKey] && remaining > offset;
 
     if (!showStart && !showEnd) return undefined;
 
