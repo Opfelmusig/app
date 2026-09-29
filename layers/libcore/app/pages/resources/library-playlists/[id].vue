@@ -1,6 +1,6 @@
 <template>
   <PageWrapper>
-    <div class="flex gap-4 p-4">
+    <header class="flex gap-4 p-4">
       <ArtworkWrapper
         v-slot="{ artwork, iconClass, imageSize }"
         :library-resource="playlist"
@@ -70,9 +70,9 @@
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </div>
-    </div>
+    </header>
     <LibrarySongs :songs="tracks" />
-    <div class="flex justify-between gap-2 p-4 text-sm text-muted">
+    <footer class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
         <span>{{ tracks?.length ?? 0 }} songs, </span>
         <span>
@@ -91,7 +91,7 @@
         <span>Open Catalog</span>
         <UIcon name="lucide:arrow-up-right" class="size-3 text-dimmed" />
       </NuxtLink>
-    </div>
+    </footer>
   </PageWrapper>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <PageWrapper>
-    <div class="flex items-center gap-2 p-4">
+    <header class="flex items-center gap-2 p-4">
       <OMButtonPlay />
       <OMButtonSecondary icon="lucide:shuffle" />
       <OMButtonSeparator />
@@ -15,13 +15,13 @@
         :ui="{ base: 'h-9 rounded-xl' }"
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
-    </div>
+    </header>
     <LibraryGrid :items="albums" />
-    <div class="flex justify-between gap-2 p-4 text-sm text-muted">
+    <footer class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
         <span>{{ albums?.length ?? 0 }} albums</span>
       </span>
-    </div>
+    </footer>
   </PageWrapper>
 </template>
 
