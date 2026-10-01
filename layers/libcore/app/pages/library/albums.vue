@@ -17,11 +17,9 @@
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <LibraryGrid :items="albums" />
-    <footer
-      class="mt-auto flex justify-between gap-2 border-t border-default p-4 text-sm text-muted"
-    >
+    <LibraryFooter>
       <span>{{ albums?.length ?? 0 }} {{ albums?.length === 1 ? "album" : "albums" }}</span>
-    </footer>
+    </LibraryFooter>
   </PageWrapper>
 </template>
 

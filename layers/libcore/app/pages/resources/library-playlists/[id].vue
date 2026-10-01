@@ -72,9 +72,7 @@
       </div>
     </header>
     <LibrarySongs :songs="tracks" />
-    <footer
-      class="mt-auto flex justify-between gap-2 border-t border-default p-4 text-sm text-muted"
-    >
+    <LibraryFooter>
       <span>
         <span>{{ tracks?.length ?? 0 }} {{ tracks?.length === 1 ? "song" : "songs" }}, </span>
         <span>
@@ -89,7 +87,7 @@
         <span>Open Catalog</span>
         <UIcon name="lucide:arrow-up-right" class="size-3 text-dimmed" />
       </NuxtLink>
-    </footer>
+    </LibraryFooter>
   </PageWrapper>
 </template>
 

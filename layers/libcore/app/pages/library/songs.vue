@@ -18,16 +18,14 @@
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <LibrarySongs :songs />
-    <footer
-      class="mt-auto flex shrink-0 justify-between gap-2 border-t border-default p-4 text-sm text-muted"
-    >
+    <LibraryFooter>
       <span>
         <span>{{ songs?.length ?? 0 }} {{ songs?.length === 1 ? "song" : "songs" }}, </span>
         <span>
           {{ libraryTracksDuration(songs) }}
         </span>
       </span>
-    </footer>
+    </LibraryFooter>
   </PageWrapper>
 </template>
 
