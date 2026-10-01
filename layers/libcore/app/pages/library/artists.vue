@@ -59,9 +59,7 @@
       <footer
         class="flex shrink-0 justify-between gap-2 border-t border-default p-4 text-sm text-muted"
       >
-        <span>
-          <span>{{ artists?.length ?? 0 }} {{ artists?.length === 1 ? "artist" : "artists" }}</span>
-        </span>
+        <span>{{ artists?.length ?? 0 }} {{ artists?.length === 1 ? "artist" : "artists" }}</span>
       </footer>
     </div>
     <USeparator orientation="vertical" />
