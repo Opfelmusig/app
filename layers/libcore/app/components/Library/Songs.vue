@@ -8,11 +8,11 @@
       <OMTableHeader v-if="columns?.includes('genre')" text="Genre" class="w-[10%]" />
       <OMTableHeader v-if="columns?.includes('year')" text="Year" class="w-14" />
       <OMTableHeader v-if="columns?.includes('length')" text="Length" class="w-20 text-end" />
-      <OMTableHeader class="w-13" />
+      <OMTableHeader class="w-12" />
     </template>
     <template #default>
       <OMTableRow v-for="song in songs" :key="song.entry.id">
-        <OMTableImg v-if="columns?.includes('artwork')">
+        <OMTableSimple v-if="columns?.includes('artwork')">
           <ArtworkWrapper
             v-slot="{ iconClass, imageSize, artwork }"
             :library-resource="song.resource"
@@ -22,7 +22,7 @@
             <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
             <UIcon v-else :name="resourceIcon(song.resource.type)" :class="iconClass" />
           </ArtworkWrapper>
-        </OMTableImg>
+        </OMTableSimple>
         <OMTableData>
           <div class="flex items-center gap-2">
             <span class="truncate">
@@ -68,9 +68,9 @@
         <OMTableData v-if="columns?.includes('length')" class="text-end text-muted tabular-nums">
           {{ msToHMS(song.resource.item.durationInMillis) }}
         </OMTableData>
-        <OMTableData class="no-active">
+        <OMTableSimple class="pl-1">
           <OMButtonTeritary icon="lucide:ellipsis" class="text-muted" />
-        </OMTableData>
+        </OMTableSimple>
       </OMTableRow>
     </template>
   </OMTable>
