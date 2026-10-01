@@ -27,6 +27,7 @@
         </div>
       </OMMenu>
       <UInput
+        v-model="search"
         variant="soft"
         color="neutral"
         icon="lucide:search"
@@ -36,12 +37,15 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
-    <LibrarySongs :songs :columns />
+    <LibrarySongs :songs="displayedSongs" :columns />
     <LibraryFooter>
       <span>
-        <span>{{ songs?.length ?? 0 }} {{ songs?.length === 1 ? "song" : "songs" }}, </span>
         <span>
-          {{ libraryTracksDuration(songs) }}
+          {{ displayedSongs?.length ?? 0 }}/{{ songs?.length ?? 0 }}
+          {{ songs?.length === 1 ? "song" : "songs" }},
+        </span>
+        <span>
+          {{ libraryTracksDuration(displayedSongs) }}
         </span>
       </span>
     </LibraryFooter>
@@ -49,9 +53,29 @@
 </template>
 
 <script lang="ts" setup>
+import { useFuse } from "@vueuse/integrations/useFuse";
+
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: songs } = useLibraryList(DbListId.Songs);
 
 const { columns, options, reset } = useLibrarySongsColumns(DbListId.Songs);
+
+const search = ref("");
+
+const { results: searchedSongs } = useFuse(search, () => songs.value ?? [], {
+  matchAllWhenSearchEmpty: true,
+  fuseOptions: {
+    keys: [
+      { name: "resource.item.name", weight: 0.6 },
+      { name: "resource.item.artistName", weight: 0.25 },
+      { name: "resource.item.albumName", weight: 0.15 },
+    ],
+    threshold: 0.4,
+  },
+});
+
+const displayedSongs = computed(() => {
+  return searchedSongs.value.map((entry) => entry.item);
+});
 </script>
