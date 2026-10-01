@@ -9,12 +9,7 @@
       <OMMenu icon="lucide:columns-3">
         <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
           <span class="text-sm text-muted">Columns</span>
-
-          <UCheckboxGroup
-            v-model="visibleColumns"
-            :ui="{ fieldset: 'gap-2' }"
-            :items="columnOptions"
-          />
+          <UCheckboxGroup v-model="columns" :ui="{ fieldset: 'gap-2' }" :items="options" />
         </div>
         <USeparator />
         <div class="flex w-48 flex-col gap-2 p-1">
@@ -27,7 +22,7 @@
             :ui="{
               leadingIcon: 'size-4',
             }"
-            @click="resetColumns"
+            @click="reset"
           />
         </div>
       </OMMenu>
@@ -41,7 +36,7 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
-    <LibrarySongs :songs :columns="visibleColumns" />
+    <LibrarySongs :songs :columns />
     <LibraryFooter>
       <span>
         <span>{{ songs?.length ?? 0 }} {{ songs?.length === 1 ? "song" : "songs" }}, </span>
@@ -54,24 +49,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { SongColumns } from "#layers/libcore/app/components/Library/Songs.vue";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: songs } = useLibraryList(DbListId.Songs);
 
-const defaultColumns: SongColumns[] = ["album", "artist", "length"];
-
-const visibleColumns = ref<SongColumns[]>([...defaultColumns]);
-
-const columnOptions: { label: string; value: SongColumns }[] = [
-  { label: "Album", value: "album" },
-  { label: "Artist", value: "artist" },
-  { label: "Genre", value: "genre" },
-  { label: "Year", value: "year" },
-  { label: "Length", value: "length" },
-];
-
-function resetColumns() {
-  visibleColumns.value = [...defaultColumns];
-}
+const { columns, options, reset } = useLibrarySongsColumns(DbListId.Songs);
 </script>
