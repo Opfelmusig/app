@@ -43,6 +43,15 @@
     </LibraryGridWrapper>
     <footer class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>{{ albums?.length ?? 0 }} {{ albums?.length === 1 ? "album" : "albums" }}</span>
+
+      <NuxtLink
+        v-if="artist?.item.catalogId"
+        :to="`/resources/artists/${artist.item.catalogId}`"
+        class="flex items-center gap-1 hover:underline"
+      >
+        <span>Open Catalog</span>
+        <UIcon name="lucide:arrow-up-right" class="size-3 text-dimmed" />
+      </NuxtLink>
     </footer>
   </PageWrapper>
 </template>
