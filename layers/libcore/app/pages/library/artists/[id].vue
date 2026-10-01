@@ -41,7 +41,9 @@
     <LibraryGridWrapper :count="albums?.length">
       <LibraryGridItem v-for="album in albums" :key="album.item.id" :resource="album" show-year />
     </LibraryGridWrapper>
-    <footer class="flex justify-between gap-2 p-4 text-sm text-muted">
+    <footer
+      class="mt-auto flex justify-between gap-2 border-t border-default p-4 text-sm text-muted"
+    >
       <span>{{ albums?.length ?? 0 }} {{ albums?.length === 1 ? "album" : "albums" }}</span>
 
       <NuxtLink
