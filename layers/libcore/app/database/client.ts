@@ -158,7 +158,7 @@ export class LibraryClient {
   }
 
   async getArtistAlbums(id: string) {
-    const albums = await this.db.albums.where("artistId").equals(id).sortBy("dateAdded");
+    const albums = await this.db.albums.where("artistId").equals(id).reverse().sortBy("dateAdded");
 
     return Promise.all(
       albums.map(async (item): Promise<ResolvedDbAlbum> => ({
