@@ -5,7 +5,11 @@
       <OMButtonSecondary icon="lucide:shuffle" />
       <OMButtonSeparator />
       <OMButtonSecondary icon="lucide:arrow-up-down" />
-      <OMMenu icon="lucide:filter">
+      <OMMenu
+        icon="lucide:filter"
+        :active="selectedRatings.length > 0 || selectedContentRatings.length > 0"
+        fill
+      >
         <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
           <span class="text-sm text-muted">Rating</span>
           <UCheckboxGroup
@@ -23,8 +27,23 @@
             :items="contentRatingOptions"
           />
         </div>
+        <USeparator />
+        <div class="flex w-48 flex-col gap-2 p-1">
+          <UButton
+            label="Reset filters"
+            class="gap-2 rounded-b-lg"
+            variant="ghost"
+            color="error"
+            icon="lucide:corner-up-left"
+            :disabled="selectedRatings.length === 0 && selectedContentRatings.length === 0"
+            :ui="{
+              leadingIcon: 'size-4',
+            }"
+            @click="resetFilters"
+          />
+        </div>
       </OMMenu>
-      <OMMenu icon="lucide:columns-3">
+      <OMMenu icon="lucide:columns-3" :active="columnsChanged">
         <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
           <span class="text-sm text-muted">Columns</span>
           <UCheckboxGroup v-model="columns" :ui="{ fieldset: 'gap-2' }" :items="options" />
@@ -37,6 +56,7 @@
             variant="ghost"
             color="error"
             icon="lucide:corner-up-left"
+            :disabled="!columnsChanged"
             :ui="{
               leadingIcon: 'size-4',
             }"
@@ -78,7 +98,7 @@ import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: songs } = useLibraryList(DbListId.Songs);
 
-const { columns, options, reset } = useLibrarySongsColumns(DbListId.Songs);
+const { columns, options, reset, columnsChanged } = useLibrarySongsColumns(DbListId.Songs);
 
 type RatingFilter = 1 | -1 | 0;
 
@@ -96,6 +116,11 @@ const contentRatingOptions: { label: string; value: ContentRating }[] = [
   { label: "Explicit", value: "explicit" },
   { label: "Clean", value: "clean" },
 ];
+
+function resetFilters() {
+  selectedRatings.value = [];
+  selectedContentRatings.value = [];
+}
 
 const search = ref("");
 
