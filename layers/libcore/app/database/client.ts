@@ -156,4 +156,16 @@ export class LibraryClient {
 
     return results.filter((result) => result !== undefined) as ResolvedDbListResourceByList<L>[];
   }
+
+  async getArtistAlbums(id: string) {
+    const albums = await this.db.albums.where("artistId").equals(id).sortBy("dateAdded");
+
+    return Promise.all(
+      albums.map(async (item): Promise<ResolvedDbAlbum> => ({
+        type: "library-albums",
+        item,
+        links: await this.getLinks(item.id),
+      })),
+    );
+  }
 }
