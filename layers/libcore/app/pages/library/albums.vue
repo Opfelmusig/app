@@ -19,7 +19,7 @@
     <LibraryGrid :items="albums" />
     <footer class="flex justify-between gap-2 p-4 text-sm text-muted">
       <span>
-        <span>{{ albums?.length ?? 0 }} albums</span>
+        <span>{{ albums?.length ?? 0 }} {{ albums?.length === 1 ? "album" : "albums" }}</span>
       </span>
     </footer>
   </PageWrapper>
