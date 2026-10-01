@@ -19,7 +19,7 @@
     </header>
     <LibrarySongs :songs />
     <footer
-      class="flex shrink-0 justify-between gap-2 border-t border-default p-4 text-sm text-muted"
+      class="mt-auto flex shrink-0 justify-between gap-2 border-t border-default p-4 text-sm text-muted"
     >
       <span>
         <span>{{ songs?.length ?? 0 }} {{ songs?.length === 1 ? "song" : "songs" }}, </span>

@@ -72,7 +72,9 @@
       </div>
     </header>
     <LibrarySongs :songs="tracks" />
-    <footer class="flex justify-between gap-2 border-t border-default p-4 text-sm text-muted">
+    <footer
+      class="mt-auto flex justify-between gap-2 border-t border-default p-4 text-sm text-muted"
+    >
       <span>
         <span>{{ tracks?.length ?? 0 }} {{ tracks?.length === 1 ? "song" : "songs" }}, </span>
         <span>
