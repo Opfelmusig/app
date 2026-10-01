@@ -93,13 +93,5 @@ const sort = ref<{ by: SortField; direction: SortDirection }>({
         </div>
       </template>
     </UPopover>
-
-    <UInput
-      variant="soft"
-      color="neutral"
-      icon="lucide:search"
-      placeholder="Search..."
-      :ui="{ base: 'h-9 rounded-xl' }"
-    />
   </div>
 </template>
