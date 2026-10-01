@@ -65,15 +65,19 @@ export class LibraryClient {
     };
   }
 
+  getLinks(resourceId: string) {
+    return this.db.libraryCatalogLinks.where("resourceId").equals(resourceId).toArray();
+  }
+
   async getSong(id: string): Promise<ResolvedDbSong | undefined> {
     const item = await this.db.songs.get(id);
-    const links = await this.db.libraryCatalogLinks.where("resourceId").equals(id).toArray();
+    const links = await this.getLinks(id);
     return item ? { type: "library-songs", item, links } : undefined;
   }
 
   async getAlbum(id: string): Promise<ResolvedDbAlbum | undefined> {
     const item = await this.db.albums.get(id);
-    const links = await this.db.libraryCatalogLinks.where("resourceId").equals(id).toArray();
+    const links = await this.getLinks(id);
     return item ? { type: "library-albums", item, links } : undefined;
   }
 
