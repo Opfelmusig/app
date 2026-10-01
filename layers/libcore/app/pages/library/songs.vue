@@ -5,7 +5,25 @@
       <OMButtonSecondary icon="lucide:shuffle" />
       <OMButtonSeparator />
       <OMButtonSecondary icon="lucide:arrow-up-down" />
-      <OMButtonSecondary fill icon="lucide:filter" />
+      <OMMenu icon="lucide:filter">
+        <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
+          <span class="text-sm text-muted">Rating</span>
+          <UCheckboxGroup
+            v-model="selectedRatings"
+            :ui="{ fieldset: 'gap-2' }"
+            :items="ratingOptions"
+            value-key="rating"
+          />
+        </div>
+        <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
+          <span class="text-sm text-muted">Content Rating</span>
+          <UCheckboxGroup
+            v-model="selectedContentRatings"
+            :ui="{ fieldset: 'gap-2' }"
+            :items="contentRatingOptions"
+          />
+        </div>
+      </OMMenu>
       <OMMenu icon="lucide:columns-3">
         <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
           <span class="text-sm text-muted">Columns</span>
@@ -53,6 +71,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { ContentRating } from "@opfelmusig/lib/types";
 import { useFuse } from "@vueuse/integrations/useFuse";
 
 import { DbListId } from "#layers/libcore/app/database/types";
@@ -60,6 +79,23 @@ import { DbListId } from "#layers/libcore/app/database/types";
 const { data: songs } = useLibraryList(DbListId.Songs);
 
 const { columns, options, reset } = useLibrarySongsColumns(DbListId.Songs);
+
+type RatingFilter = 1 | -1 | 0;
+
+const selectedRatings = ref<RatingFilter[]>([]);
+
+const ratingOptions: { label: string; rating: RatingFilter }[] = [
+  { label: "Favorited", rating: 1 },
+  { label: "Suggest Less", rating: -1 },
+  { label: "No rating", rating: 0 },
+];
+
+const selectedContentRatings = ref<ContentRating[]>([]);
+
+const contentRatingOptions: { label: string; value: ContentRating }[] = [
+  { label: "Explicit", value: "explicit" },
+  { label: "Clean", value: "clean" },
+];
 
 const search = ref("");
 
@@ -76,6 +112,19 @@ const { results: searchedSongs } = useFuse(search, () => songs.value ?? [], {
 });
 
 const displayedSongs = computed(() => {
-  return searchedSongs.value.map((entry) => entry.item);
+  return searchedSongs.value
+    .map((entry) => entry.item)
+    .filter(({ resource }) => {
+      return (
+        selectedRatings.value.length === 0 ||
+        selectedRatings.value.includes(resource.item.personalRating ?? 0)
+      );
+    })
+    .filter(({ resource }) => {
+      return (
+        selectedContentRatings.value.length === 0 ||
+        selectedContentRatings.value.includes(resource.item.contentRating ?? "clean")
+      );
+    });
 });
 </script>
