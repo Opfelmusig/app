@@ -79,7 +79,7 @@
 <script lang="ts" setup>
 import type { ResolvedDbListResource, ResolvedDbSong } from "#layers/libcore/app/database/types";
 
-type SongColumns = "artwork" | "album" | "artist" | "genre" | "year" | "length";
+export type SongColumns = "artwork" | "album" | "artist" | "genre" | "year" | "length";
 
 defineProps<{
   songs?: ResolvedDbListResource<ResolvedDbSong>[];
