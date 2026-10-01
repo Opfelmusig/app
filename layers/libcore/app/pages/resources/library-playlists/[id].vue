@@ -78,11 +78,7 @@
       <span>
         <span>{{ tracks?.length ?? 0 }} {{ tracks?.length === 1 ? "song" : "songs" }}, </span>
         <span>
-          {{
-            ms(libraryTracksDuration(tracks?.map((track) => track.resource.item)), {
-              long: true,
-            })
-          }}
+          {{ libraryTracksDuration(tracks) }}
         </span>
       </span>
       <NuxtLink

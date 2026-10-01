@@ -1,7 +1,11 @@
-import type { DbSong } from "#layers/libcore/app/database/types";
+import type { DbListId, ResolvedDbListResourceByList } from "#layers/libcore/app/database/types";
 
-export default function (tracks?: DbSong[]) {
-  const ms = tracks?.map((d) => d.durationInMillis).reduce((acc, cur) => acc + cur, 0);
+export default function (tracks?: ResolvedDbListResourceByList<DbListId.Songs>[]) {
+  const inMs = tracks
+    ?.map((d) => d.resource.item.durationInMillis)
+    .reduce((acc, cur) => acc + cur, 0);
 
-  return ms ?? 0;
+  return ms(inMs ?? 0, {
+    long: true,
+  });
 }

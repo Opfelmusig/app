@@ -24,11 +24,7 @@
       <span>
         <span>{{ songs?.length ?? 0 }} {{ songs?.length === 1 ? "song" : "songs" }}, </span>
         <span>
-          {{
-            ms(libraryTracksDuration(songs?.map((song) => song.resource.item)), {
-              long: true,
-            })
-          }}
+          {{ libraryTracksDuration(songs) }}
         </span>
       </span>
     </footer>
