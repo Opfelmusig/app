@@ -59,8 +59,7 @@
         v-if="showYear && resource.type === 'library-albums' && resource.item.releaseDate"
         class="truncate text-sm text-muted"
       >
-        <NuxtTime v-if="isYearOnly" :datetime="resource.item.releaseDate" year="numeric" />
-        <NuxtTime v-else :datetime="resource.item.releaseDate" date-style="medium" />
+        <LibraryReleaseDate :release-date="resource.item.releaseDate" />
       </span>
     </div>
   </div>
@@ -73,15 +72,9 @@ import type {
   ResolvedDbPlaylist,
 } from "#layers/libcore/app/database/types";
 
-const props = defineProps<{
+defineProps<{
   resource: ResolvedDbAlbum | ResolvedDbPlaylist | ResolvedDbArtist;
   showArtists?: boolean;
   showYear?: boolean;
 }>();
-
-const isYearOnly = computed(() =>
-  props.resource.type === "library-albums" && props.resource.item.releaseDate
-    ? /^\d{4}$/.test(props.resource.item.releaseDate)
-    : false,
-);
 </script>
