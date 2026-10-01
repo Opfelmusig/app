@@ -17,7 +17,7 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
-    <LibrarySongs :songs />
+    <LibrarySongs :songs :columns="['artwork', 'album', 'artist', 'length']" />
     <LibraryFooter>
       <span>
         <span>{{ songs?.length ?? 0 }} {{ songs?.length === 1 ? "song" : "songs" }}, </span>
