@@ -168,4 +168,27 @@ export class LibraryClient {
       })),
     );
   }
+
+  async getGenres(): Promise<string[]> {
+    const albums = await this.db.albums.toArray();
+
+    return [...new Set(albums.flatMap((album) => album.genreNames))]
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b));
+  }
+
+  async getGenreAlbums(genre: string): Promise<ResolvedDbAlbum[]> {
+    const albums = await this.db.albums
+      .filter((album) => album.genreNames.includes(genre))
+      .reverse()
+      .sortBy("dateAdded");
+
+    return Promise.all(
+      albums.map(async (item): Promise<ResolvedDbAlbum> => ({
+        type: "library-albums",
+        item,
+        links: await this.getLinks(item.id),
+      })),
+    );
+  }
 }
