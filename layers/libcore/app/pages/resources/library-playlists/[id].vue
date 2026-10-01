@@ -79,14 +79,8 @@
           {{ libraryTracksDuration(tracks) }}
         </span>
       </span>
-      <NuxtLink
-        v-if="playlist?.item.catalogId"
-        :to="`/resources/playlists/${playlist.item.catalogId}`"
-        class="flex items-center gap-1 hover:underline"
-      >
-        <span>Open Catalog</span>
-        <UIcon name="lucide:arrow-up-right" class="size-3 text-dimmed" />
-      </NuxtLink>
+
+      <LibraryFooterLink :resource="playlist" />
     </LibraryFooter>
   </PageWrapper>
 </template>
