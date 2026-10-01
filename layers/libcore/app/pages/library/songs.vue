@@ -59,12 +59,11 @@ import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: songs } = useLibraryList(DbListId.Songs);
 
-const defaultColumns: SongColumns[] = ["artwork", "album", "artist", "length"];
+const defaultColumns: SongColumns[] = ["album", "artist", "length"];
 
 const visibleColumns = ref<SongColumns[]>([...defaultColumns]);
 
 const columnOptions: { label: string; value: SongColumns }[] = [
-  { label: "Artwork", value: "artwork" },
   { label: "Album", value: "album" },
   { label: "Artist", value: "artist" },
   { label: "Genre", value: "genre" },

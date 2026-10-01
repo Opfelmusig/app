@@ -1,7 +1,7 @@
 <template>
   <OMTable>
     <template #header>
-      <OMTableHeader v-if="columns?.includes('artwork')" class="w-12" />
+      <OMTableHeader class="w-12" />
       <OMTableHeader text="Title" />
       <OMTableHeader v-if="columns?.includes('album')" text="Album" />
       <OMTableHeader v-if="columns?.includes('artist')" text="Artist" />
@@ -12,7 +12,7 @@
     </template>
     <template #default>
       <OMTableRow v-for="song in songs" :key="song.entry.id">
-        <OMTableSimple v-if="columns?.includes('artwork')">
+        <OMTableSimple>
           <ArtworkWrapper
             v-slot="{ iconClass, imageSize, artwork }"
             :library-resource="song.resource"
@@ -79,7 +79,7 @@
 <script lang="ts" setup>
 import type { ResolvedDbListResource, ResolvedDbSong } from "#layers/libcore/app/database/types";
 
-export type SongColumns = "artwork" | "album" | "artist" | "genre" | "year" | "length";
+export type SongColumns = "album" | "artist" | "genre" | "year" | "length";
 
 defineProps<{
   songs?: ResolvedDbListResource<ResolvedDbSong>[];
