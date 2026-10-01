@@ -1,6 +1,11 @@
 <template>
   <LibraryGridWrapper :count="items?.length">
-    <LibraryGridItem v-for="item in items" :key="item.entry.id" :resource="item.resource" />
+    <LibraryGridItem
+      v-for="item in items"
+      :key="item.entry.id"
+      :resource="item.resource"
+      show-artists
+    />
   </LibraryGridWrapper>
 </template>
 

@@ -31,27 +31,36 @@
           E
         </OMExplicit>
       </NuxtLink>
-      <span v-if="resource.type === 'library-albums'" class="truncate text-sm text-muted">
-        <LibraryLinks
-          :links="resource.links"
-          type="artists"
-          :library-name="resource.item.artistName"
-          :library-id="resource.item.artistId"
-        />
-      </span>
-      <span v-else-if="resource.type === 'library-playlists'" class="truncate text-sm text-muted">
-        <span v-if="resource.item.curatorName" class="truncate">
-          <NuxtLink
-            v-if="resource.item.curatorSocialHandle"
-            :to="`/profile/${resource.item.curatorSocialHandle}`"
-            class="hover:underline"
-          >
-            {{ resource.item.curatorName }}
-          </NuxtLink>
-          <span v-else>
-            {{ resource.item.curatorName }}
+      <template v-if="showArtists">
+        <span v-if="resource.type === 'library-albums'" class="truncate text-sm text-muted">
+          <LibraryLinks
+            :links="resource.links"
+            type="artists"
+            :library-name="resource.item.artistName"
+            :library-id="resource.item.artistId"
+          />
+        </span>
+        <span v-else-if="resource.type === 'library-playlists'" class="truncate text-sm text-muted">
+          <span v-if="resource.item.curatorName" class="truncate">
+            <NuxtLink
+              v-if="resource.item.curatorSocialHandle"
+              :to="`/profile/${resource.item.curatorSocialHandle}`"
+              class="hover:underline"
+            >
+              {{ resource.item.curatorName }}
+            </NuxtLink>
+            <span v-else>
+              {{ resource.item.curatorName }}
+            </span>
           </span>
         </span>
+      </template>
+      <span
+        v-if="showYear && resource.type === 'library-albums' && resource.item.releaseDate"
+        class="truncate text-sm text-muted"
+      >
+        <NuxtTime v-if="isYearOnly" :datetime="resource.item.releaseDate" year="numeric" />
+        <NuxtTime v-else :datetime="resource.item.releaseDate" date-style="medium" />
       </span>
     </div>
   </div>
@@ -64,7 +73,15 @@ import type {
   ResolvedDbPlaylist,
 } from "#layers/libcore/app/database/types";
 
-defineProps<{
+const props = defineProps<{
   resource: ResolvedDbAlbum | ResolvedDbPlaylist | ResolvedDbArtist;
+  showArtists?: boolean;
+  showYear?: boolean;
 }>();
+
+const isYearOnly = computed(() =>
+  props.resource.type === "library-albums" && props.resource.item.releaseDate
+    ? /^\d{4}$/.test(props.resource.item.releaseDate)
+    : false,
+);
 </script>
