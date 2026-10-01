@@ -17,12 +17,19 @@ export default function useLibrarySongsColumns(id: MaybeRefOrGetter<DbListId>) {
     { label: "Length", value: "length" },
   ];
 
+  const columnsChanged = computed(
+    () =>
+      columns.value.length !== defaultColumns.length ||
+      defaultColumns.some((column) => !columns.value.includes(column)),
+  );
+
   function reset() {
     columns.value = [...defaultColumns];
   }
 
   return {
     columns,
+    columnsChanged,
     options,
     reset,
   };
