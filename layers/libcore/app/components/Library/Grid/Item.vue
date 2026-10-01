@@ -59,7 +59,11 @@
         v-if="showYear && resource.type === 'library-albums' && resource.item.releaseDate"
         class="truncate text-sm text-muted"
       >
-        <LibraryReleaseDate :release-date="resource.item.releaseDate" />
+        <NuxtTime
+          v-if="resource.item.releaseDate"
+          :datetime="resource.item.releaseDate"
+          year="numeric"
+        />
       </span>
     </div>
   </div>
