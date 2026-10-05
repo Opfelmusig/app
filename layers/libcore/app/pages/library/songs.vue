@@ -4,7 +4,44 @@
       <OMButtonPlay />
       <OMButtonSecondary icon="lucide:shuffle" />
       <OMButtonSeparator />
-      <OMButtonSecondary icon="lucide:arrow-up-down" />
+      <OMMenu icon="lucide:arrow-up-down" :active="sortChanged">
+        <div class="flex gap-1 p-1">
+          <UButton
+            v-for="direction in directions"
+            :key="direction"
+            :variant="sort.direction === direction ? 'soft' : 'ghost'"
+            :leading-icon="direction === 'asc' ? 'lucide:chevron-down' : 'lucide:chevron-up'"
+            :aria-label="direction === 'asc' ? 'Ascending' : 'Descending'"
+            :aria-pressed="sort.direction === direction"
+            class="w-full justify-center rounded-sm first:rounded-tl-lg last:rounded-tr-lg"
+            color="neutral"
+            :ui="{ leadingIcon: 'size-4' }"
+            @click="sort.direction = direction"
+          />
+        </div>
+        <USeparator />
+        <div class="flex w-48 flex-col gap-2 p-2 px-2.5">
+          <URadioGroup
+            v-model="sort.by"
+            :ui="{ fieldset: 'gap-2' }"
+            :items="sortOptions"
+            aria-label="Sort songs by"
+          />
+        </div>
+        <USeparator />
+        <div class="flex w-48 flex-col gap-2 p-1">
+          <UButton
+            label="Reset sorting"
+            class="gap-2 rounded-b-lg"
+            variant="ghost"
+            color="error"
+            icon="lucide:corner-up-left"
+            :disabled="!sortChanged"
+            :ui="{ leadingIcon: 'size-4' }"
+            @click="resetSorting"
+          />
+        </div>
+      </OMMenu>
       <OMMenu
         icon="lucide:filter"
         :active="selectedRatings.length > 0 || selectedContentRatings.length > 0"
@@ -95,10 +132,20 @@ import type { ContentRating } from "@opfelmusig/lib/types";
 import { useFuse } from "@vueuse/integrations/useFuse";
 
 import { DbListId } from "#layers/libcore/app/database/types";
+import sortLibrarySongs from "#layers/libcore/app/utils/sortLibrarySongs";
 
 const { data: songs } = useLibraryList(DbListId.Songs);
 
 const { columns, options, reset, columnsChanged } = useLibrarySongsColumns(DbListId.Songs);
+
+const {
+  sort,
+  sortChanged,
+  options: sortOptions,
+  reset: resetSorting,
+} = useLibrarySongsSorting(DbListId.Songs);
+
+const directions = ["asc", "desc"] as const;
 
 type RatingFilter = 1 | -1 | 0;
 
@@ -137,7 +184,7 @@ const { results: searchedSongs } = useFuse(search, () => songs.value ?? [], {
 });
 
 const displayedSongs = computed(() => {
-  return searchedSongs.value
+  const filteredSongs = searchedSongs.value
     .map((entry) => entry.item)
     .filter(({ resource }) => {
       return (
@@ -151,5 +198,7 @@ const displayedSongs = computed(() => {
         selectedContentRatings.value.includes(resource.item.contentRating ?? "clean")
       );
     });
+
+  return sortLibrarySongs(filteredSongs, sort.value);
 });
 </script>

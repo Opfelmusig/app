@@ -43,8 +43,8 @@ export interface DbSong {
   id: string;
 
   name: string;
-  artistName: string;
-  albumName: string;
+  artistName?: string;
+  albumName?: string;
   genreNames: readonly string[];
   artwork?: Artwork;
   durationInMillis: number;

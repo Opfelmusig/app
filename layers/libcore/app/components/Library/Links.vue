@@ -9,7 +9,6 @@
       >
         {{ link.name }}
       </NuxtLink>
-      <span v-else>Unknown</span>
     </template>
   </span>
   <template v-else-if="libraryName">
@@ -22,7 +21,6 @@
     </NuxtLink>
     <template v-else>{{ libraryName }}</template>
   </template>
-  <template v-else> Unknown </template>
 </template>
 
 <script lang="ts" setup>
