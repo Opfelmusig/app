@@ -7,10 +7,6 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
-  count?: number;
-}>();
-
 const container = useTemplateRef("container");
 
 const containerWidth = ref(0);
@@ -32,9 +28,7 @@ onMounted(() => {
 
 onUnmounted(() => observer?.disconnect());
 
-const columns = computed(() =>
-  Math.max(1, Math.min(props.count ?? 0, Math.floor((containerWidth.value + gap) / (min + gap)))),
-);
+const columns = computed(() => Math.max(1, Math.floor((containerWidth.value + gap) / (min + gap))));
 
 const gridStyle = computed(() => ({
   gridTemplateColumns: `repeat(${columns.value}, minmax(0, 1fr))`,

@@ -1,5 +1,5 @@
 <template>
-  <LibraryGridWrapper :count="items?.length">
+  <LibraryGridWrapper>
     <LibraryGridItem
       v-for="item in items"
       :key="item.entry.id"

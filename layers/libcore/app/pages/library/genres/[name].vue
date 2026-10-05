@@ -15,7 +15,7 @@
         <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
       </div>
     </header>
-    <LibraryGridWrapper :count="albums?.length">
+    <LibraryGridWrapper>
       <LibraryGridItem v-for="album in albums" :key="album.item.id" :resource="album" show-year />
     </LibraryGridWrapper>
     <LibraryFooter>
