@@ -11,8 +11,8 @@ const container = useTemplateRef("container");
 
 const containerWidth = ref(0);
 
-const min = 180;
-const max = 260;
+const minItemWidth = 180;
+const maxItemWidth = 260;
 const gap = 16;
 
 let observer: ResizeObserver | undefined;
@@ -28,10 +28,20 @@ onMounted(() => {
 
 onUnmounted(() => observer?.disconnect());
 
-const columns = computed(() => Math.max(1, Math.floor((containerWidth.value + gap) / (min + gap))));
+const availableColumns = computed(() => {
+  return Math.floor((containerWidth.value + gap) / (minItemWidth + gap));
+});
+
+const columns = computed(() => {
+  return Math.max(1, availableColumns.value);
+});
+
+const gridWidth = computed(() => {
+  return columns.value * maxItemWidth + (columns.value - 1) * gap;
+});
 
 const gridStyle = computed(() => ({
   gridTemplateColumns: `repeat(${columns.value}, minmax(0, 1fr))`,
-  maxWidth: `${columns.value * max + (columns.value - 1) * gap}px`,
+  maxWidth: `${gridWidth.value}px`,
 }));
 </script>
