@@ -34,15 +34,20 @@
               v-if="playlist.item.curatorName"
               class="size-1 shrink-0 rounded-full bg-accented"
             />
-            <span v-if="playlist.item.lastModifiedDate" class="truncate">
-              Updated
-              <NuxtTime
-                :datetime="playlist.item.lastModifiedDate"
-                date-style="medium"
-                time-style="medium"
-                relative
-              />
-            </span>
+            <UTooltip
+              v-if="playlist.item.lastModifiedDate"
+              :text="playlist.item.lastModifiedDate.toLocaleString()"
+            >
+              <span class="truncate">
+                Updated
+                <NuxtTime
+                  :datetime="playlist.item.lastModifiedDate"
+                  date-style="medium"
+                  time-style="medium"
+                  relative
+                />
+              </span>
+            </UTooltip>
           </div>
           <p
             v-if="playlist?.item.description"
