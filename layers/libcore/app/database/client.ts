@@ -1,18 +1,18 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
+import type { Collection } from "dexie";
 
+import type {
+  AmLibraryPlaylist,
+  AmLibraryPlaylistFolder,
+  AmLibraryTreeNode,
+} from "#layers/amdata/app/types/playlist";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,
   type DbListIdentifier,
-  type DbResourceType,
-  type ResolvedDbAlbum,
-  type ResolvedDbArtist,
-  type ResolvedDbFolder,
   type ResolvedDbListResourceByList,
-  type ResolvedDbPlaylist,
-  type ResolvedDbResource,
-  type ResolvedDbSong,
-  type ResolvedDbTreeNode,
+  type DbResourceType,
+  type DbResourceByType,
 } from "#layers/libcore/app/database/types";
 
 function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceType[] {
@@ -51,10 +51,10 @@ export class LibraryClient {
 
   async stats() {
     const [songs, albums, artists, playlists] = await Promise.all([
-      this.db.songs.count(),
-      this.db.albums.count(),
-      this.db.artists.count(),
-      this.db.playlists.count(),
+      this.resourcesByType("library-songs").count(),
+      this.resourcesByType("library-albums").count(),
+      this.resourcesByType("library-artists").count(),
+      this.resourcesByType("library-playlists").count(),
     ]);
 
     return {
@@ -65,77 +65,69 @@ export class LibraryClient {
     };
   }
 
-  getLinks(resourceId: string) {
-    return this.db.libraryCatalogLinks.where("resourceId").equals(resourceId).toArray();
+  getSong(id: string) {
+    return this.resourceByType(id, "library-songs");
   }
 
-  async getSong(id: string): Promise<ResolvedDbSong | undefined> {
-    const item = await this.db.songs.get(id);
-    const links = await this.getLinks(id);
-    return item ? { type: "library-songs", item, links } : undefined;
+  getAlbum(id: string) {
+    return this.resourceByType(id, "library-albums");
   }
 
-  async getAlbum(id: string): Promise<ResolvedDbAlbum | undefined> {
-    const item = await this.db.albums.get(id);
-    const links = await this.getLinks(id);
-    return item ? { type: "library-albums", item, links } : undefined;
+  getArtist(id: string) {
+    return this.resourceByType(id, "library-artists");
   }
 
-  async getArtist(id: string): Promise<ResolvedDbArtist | undefined> {
-    const item = await this.db.artists.get(id);
-    return item ? { type: "library-artists", item } : undefined;
+  getPlaylist(id: string) {
+    return this.resourceByType(id, "library-playlists");
   }
 
-  async getPlaylist(id: string): Promise<ResolvedDbPlaylist | undefined> {
-    const item = await this.db.playlists.get(id);
-    return item ? { type: "library-playlists", item } : undefined;
+  getFolder(id: string) {
+    return this.resourceByType(id, "library-playlist-folders");
   }
 
-  async getFolder(id: string): Promise<ResolvedDbFolder | undefined> {
-    const item = await this.db.folders.get(id);
-    return item ? { type: "library-playlist-folders", item } : undefined;
+  async resourceByType<T extends DbResourceType>(
+    id: string,
+    type: T,
+  ): Promise<DbResourceByType<T> | undefined> {
+    const resource = await this.getResource(id);
+    if (resource?.type !== type) return undefined;
+
+    return resource as DbResourceByType<T>;
   }
 
-  async getResource(id: string): Promise<ResolvedDbResource | undefined> {
-    const resource = await this.db.resources.get(id);
-    if (!resource) return undefined;
-
-    switch (resource.type) {
-      case "library-songs":
-        return this.getSong(id);
-      case "library-albums":
-        return this.getAlbum(id);
-      case "library-artists":
-        return this.getArtist(id);
-      case "library-playlists":
-        return this.getPlaylist(id);
-      case "library-playlist-folders":
-        return this.getFolder(id);
-    }
+  resourcesByType<T extends DbResourceType>(type: T): Collection<DbResourceByType<T>, string> {
+    return this.db.resources.where("type").equals(type) as Collection<DbResourceByType<T>, string>;
   }
 
-  async getFolderTree(rootId: string = ROOT_FOLDER_ID): Promise<ResolvedDbTreeNode[]> {
+  getResource(id: string) {
+    return this.db.resources.get(id);
+  }
+
+  async getFolderTree(rootId: string = ROOT_FOLDER_ID) {
     const [folders, playlists] = await Promise.all([
-      this.db.folders.toArray(),
-      this.db.playlists.toArray(),
+      this.resourcesByType("library-playlist-folders").toArray(),
+      this.resourcesByType("library-playlists").toArray(),
     ]);
 
-    const byName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
+    const byName = (
+      left: AmLibraryPlaylist | AmLibraryPlaylistFolder,
+      right: AmLibraryPlaylist | AmLibraryPlaylistFolder,
+    ) => left.attributes.name.localeCompare(right.attributes.name);
 
-    function build(parentId: string): ResolvedDbTreeNode[] {
+    function build(parentId: string): AmLibraryTreeNode[] {
       return [
         ...folders
-          .filter((item) => item.parentId === parentId && item.name)
+          .filter((item) => item.parentId === parentId && item.attributes.name)
           .sort(byName)
           .map((item) => ({
-            type: "library-playlist-folders" as const,
+            type: item.type,
             item,
             children: build(item.id),
           })),
         ...playlists
-          .filter((item) => item.parentId === parentId && item.name)
+          .filter((item) => item.parentId === parentId && item.attributes.name)
           .sort(byName)
-          .map((item) => ({ type: "library-playlists" as const, item })),
+          .map((item) => ({ type: item.type, item })),
       ];
     }
 
@@ -149,7 +141,7 @@ export class LibraryClient {
 
     const results = await Promise.all(
       entries.map(async (entry) => {
-        const resource = await this.getResource(entry.resourceId);
+        const resource = await this.db.resources.get(entry.resourceId);
         return resource && allowedTypes.includes(resource.type) ? { entry, resource } : undefined;
       }),
     );
@@ -157,38 +149,25 @@ export class LibraryClient {
     return results.filter((result) => result !== undefined) as ResolvedDbListResourceByList<L>[];
   }
 
-  async getArtistAlbums(id: string) {
-    const albums = await this.db.albums.where("artistId").equals(id).reverse().sortBy("dateAdded");
-
-    return Promise.all(
-      albums.map(async (item): Promise<ResolvedDbAlbum> => ({
-        type: "library-albums",
-        item,
-        links: await this.getLinks(item.id),
-      })),
-    );
+  getArtistAlbums(id: string) {
+    return this.resourcesByType("library-albums")
+      .filter((album) => album.attributes.artistId === id)
+      .reverse()
+      .sortBy("attributes.dateAdded");
   }
 
-  async getGenres(): Promise<string[]> {
-    const albums = await this.db.albums.toArray();
+  async getGenres() {
+    const albums = await this.resourcesByType("library-albums").toArray();
 
-    return [...new Set(albums.flatMap((album) => album.genreNames))]
+    return [...new Set(albums.flatMap((album) => album.attributes.genreNames))]
       .filter(Boolean)
       .sort((a, b) => a.localeCompare(b));
   }
 
-  async getGenreAlbums(genre: string): Promise<ResolvedDbAlbum[]> {
-    const albums = await this.db.albums
-      .filter((album) => album.genreNames.includes(genre))
+  getGenreAlbums(genre: string) {
+    return this.resourcesByType("library-albums")
+      .filter((album) => album.attributes.genreNames.includes(genre))
       .reverse()
-      .sortBy("dateAdded");
-
-    return Promise.all(
-      albums.map(async (item): Promise<ResolvedDbAlbum> => ({
-        type: "library-albums",
-        item,
-        links: await this.getLinks(item.id),
-      })),
-    );
+      .sortBy("attributes.dateAdded");
   }
 }

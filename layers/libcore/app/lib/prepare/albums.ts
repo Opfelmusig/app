@@ -1,9 +1,5 @@
-import type { DbAlbum } from "#layers/libcore/app/database/types";
-import {
-  addLibraryCatalogLink,
-  addListResource,
-  addResource,
-} from "#layers/libcore/app/lib/prepare/helpers";
+import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
+import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { AlbumsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
@@ -21,25 +17,12 @@ export function addAlbum(
 
   addListResource(target, parsed.id, listId, position);
 
-  if (target.albums.has(parsed.id)) return;
+  if (target.resources.has(parsed.id)) return;
 
-  target.albums.set(parsed.id, parsed);
-  addResource(target, parsed.id, "library-albums");
-
-  const catalog = resource.relationships?.catalog.data[0];
-
-  if (!catalog) return;
-
-  const artists = catalog.relationships?.artists.data;
-
-  artists?.forEach(
-    (artist, index) =>
-      artist.attributes &&
-      addLibraryCatalogLink(target, parsed.id, "artists", artist.id, artist.attributes.name, index),
-  );
+  target.resources.set(parsed.id, parsed);
 }
 
-function parseAlbum(resource: AlbumsScopes): DbAlbum {
+function parseAlbum(resource: AlbumsScopes): AmLibraryAlbum {
   const catalog = resource.relationships?.catalog.data[0];
   const artist = resource.relationships?.artists.data[0];
   const attributes = resource.attributes;
@@ -48,19 +31,27 @@ function parseAlbum(resource: AlbumsScopes): DbAlbum {
 
   return {
     id: resource.id,
+    type: "library-albums",
 
-    name: attributes.name,
-    artistName: attributes.artistName,
-    genreNames: attributes.genreNames,
-    artwork: attributes.artwork ?? catalog?.attributes?.artwork,
-    releaseDate: attributes.releaseDate ?? catalog?.attributes?.releaseDate,
-    dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
-    contentRating: attributes.contentRating ?? catalog?.attributes?.contentRating,
+    attributes: {
+      name: attributes.name,
+      artistName: attributes.artistName,
+      genreNames: attributes.genreNames,
+      artwork: attributes.artwork ?? catalog?.attributes?.artwork,
+      releaseDate: attributes.releaseDate ?? catalog?.attributes?.releaseDate,
+      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+      contentRating: attributes.contentRating ?? catalog?.attributes?.contentRating,
+      editorialVideo: catalog?.attributes?.editorialVideo,
+      personalRating: catalog?.attributes?.personalRating,
+      artistId: artist?.id,
 
-    editorialVideo: catalog?.attributes?.editorialVideo,
+      artists:
+        catalog?.relationships?.artists.data.map((artist) => ({
+          id: artist.id,
+          name: artist.attributes?.name ?? "Unknown",
+        })) ?? [],
+    },
+
     catalogId: catalog?.id,
-    personalRating: catalog?.attributes?.personalRating,
-
-    artistId: artist?.id,
   };
 }

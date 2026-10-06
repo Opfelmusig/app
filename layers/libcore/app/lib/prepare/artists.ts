@@ -1,5 +1,5 @@
-import type { DbArtist } from "#layers/libcore/app/database/types";
-import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
+import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
+import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { ArtistsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
@@ -17,13 +17,12 @@ export function addArtist(
 
   addListResource(target, parsed.id, listId, position);
 
-  if (target.artists.has(parsed.id)) return;
+  if (target.resources.has(parsed.id)) return;
 
-  target.artists.set(parsed.id, parsed);
-  addResource(target, parsed.id, "library-artists");
+  target.resources.set(parsed.id, parsed);
 }
 
-function parseArtist(resource: ArtistsScopes): DbArtist {
+function parseArtist(resource: ArtistsScopes): AmLibraryArtist {
   const catalog = resource.relationships?.catalog.data[0];
   const attributes = resource.attributes;
 
@@ -32,13 +31,16 @@ function parseArtist(resource: ArtistsScopes): DbArtist {
 
   return {
     id: resource.id,
+    type: "library-artists",
 
-    name: attributes.name,
-    genreNames: catalog?.attributes?.genreNames ?? [],
-    artwork: catalog?.attributes?.artwork,
+    attributes: {
+      name: attributes.name,
+      genreNames: catalog?.attributes?.genreNames ?? [],
+      artwork: catalog?.attributes?.artwork,
+      editorialVideo: catalog?.attributes?.editorialVideo,
+      personalRating: catalog?.attributes?.personalRating,
+    },
 
-    editorialVideo: catalog?.attributes?.editorialVideo,
     catalogId: catalog?.id,
-    personalRating: catalog?.attributes?.personalRating,
   };
 }

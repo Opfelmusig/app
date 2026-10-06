@@ -24,26 +24,18 @@ export async function refreshArtworks(
   log.info("Checking for expiring artworks");
   const startedAt = performance.now();
 
-  await Promise.all([
-    db.songs.each((resource) => {
-      const expiresAt = getArtworkExpiresAt(resource.artwork)?.getTime();
+  await db.resources
+    .where("type")
+    .anyOf(["library-songs", "library-albums", "library-playlists"])
+    .each((resource) => {
+      if (!("artwork" in resource.attributes)) return;
+
+      const expiresAt = getArtworkExpiresAt(resource.attributes.artwork)?.getTime();
+
       if (expiresAt !== undefined && expiresAt <= cutoff) {
-        expired.push({ type: "library-songs", id: resource.id });
+        expired.push({ type: resource.type, id: resource.id });
       }
-    }),
-    db.albums.each((resource) => {
-      const expiresAt = getArtworkExpiresAt(resource.artwork)?.getTime();
-      if (expiresAt !== undefined && expiresAt <= cutoff) {
-        expired.push({ type: "library-albums", id: resource.id });
-      }
-    }),
-    db.playlists.each((resource) => {
-      const expiresAt = getArtworkExpiresAt(resource.artwork)?.getTime();
-      if (expiresAt !== undefined && expiresAt <= cutoff) {
-        expired.push({ type: "library-playlists", id: resource.id });
-      }
-    }),
-  ]);
+    });
 
   if (expired.length <= 0) {
     log.info("No expired artworks found", {
@@ -126,18 +118,10 @@ export async function refreshArtworks(
 
 async function updateArtwork(
   db: LibraryDatabase,
-  { type, id }: Expired,
+  { id }: Expired,
   artwork: Artwork | undefined,
 ): Promise<void> {
-  switch (type) {
-    case "library-songs":
-      await db.songs.update(id, { artwork });
-      break;
-    case "library-albums":
-      await db.albums.update(id, { artwork });
-      break;
-    case "library-playlists":
-      await db.playlists.update(id, { artwork });
-      break;
-  }
+  await db.resources.update(id, {
+    "attributes.artwork": artwork,
+  });
 }

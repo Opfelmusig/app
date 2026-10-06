@@ -1,7 +1,7 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 
-import type { DbPlaylist } from "#layers/libcore/app/database/types";
-import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
+import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlist";
+import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
 import type { PlaylistsScopes, SongsScopes } from "#layers/libcore/app/lib/scopes";
@@ -25,13 +25,12 @@ export function addPlaylist(
 
   addListResource(target, parsed.id, listId, position);
 
-  if (target.playlists.has(parsed.id)) return;
+  if (target.resources.has(parsed.id)) return;
 
-  target.playlists.set(parsed.id, parsed);
-  addResource(target, parsed.id, "library-playlists");
+  target.resources.set(parsed.id, parsed);
 }
 
-export function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
+export function parsePlaylist(resource: PlaylistsScopes): AmLibraryPlaylist {
   const catalog = resource.relationships?.catalog.data[0];
   const attributes = resource.attributes;
 
@@ -43,24 +42,25 @@ export function parsePlaylist(resource: PlaylistsScopes): DbPlaylist {
 
   return {
     id: resource.id,
+    type: "library-playlists",
 
-    name: attributes.name,
-    artwork: attributes.artwork ?? catalog?.attributes?.artwork,
-    description: attributes.description?.standard ?? catalog?.attributes?.description?.standard,
-    lastModifiedDate: lastModifiedDate ? new Date(lastModifiedDate) : undefined,
-    canEdit: attributes.canEdit,
-    isPublic: attributes.isPublic,
-    dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
-    tags: attributes.tags ?? [],
-    curatorName: catalog?.attributes?.curatorName,
-    curatorSocialHandle: catalog?.attributes?.curatorSocialHandle,
+    attributes: {
+      name: attributes.name,
+      artwork: attributes.artwork ?? catalog?.attributes?.artwork,
+      description: attributes.description?.standard ?? catalog?.attributes?.description?.standard,
+      lastModifiedDate: lastModifiedDate ? new Date(lastModifiedDate) : undefined,
+      canEdit: attributes.canEdit,
+      isPublic: attributes.isPublic,
+      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+      tags: attributes.tags ?? [],
+      curatorName: catalog?.attributes?.curatorName,
+      curatorSocialHandle: catalog?.attributes?.curatorSocialHandle,
+      editorialVideo: catalog?.attributes?.editorialVideo,
+      personalRating: catalog?.attributes?.personalRating,
+    },
 
-    editorialVideo: catalog?.attributes?.editorialVideo,
     catalogId: catalog?.id,
-    personalRating: catalog?.attributes?.personalRating,
-
     parentId,
-    tracksListId: playlistTracksListId(resource.id),
   };
 }
 

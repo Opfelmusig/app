@@ -1,4 +1,7 @@
-import type { Artwork, ContentRating, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
+import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
+import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
+import type { AmLibraryPlaylist, AmLibraryPlaylistFolder } from "#layers/amdata/app/types/playlist";
+import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
 
 export enum DbListId {
   Songs = "songs",
@@ -18,19 +21,12 @@ export interface DbLibraryState {
   lastSyncedAt?: Date;
 }
 
-export type DbResourceType =
-  | "library-songs"
-  | "library-albums"
-  | "library-artists"
-  | "library-playlists"
-  | "library-playlist-folders";
-
-export type DbCatalogLinkType = "albums" | "artists";
-
-export interface DbResource {
-  id: string;
-  type: DbResourceType;
-}
+export type DbResource =
+  | AmLibrarySong
+  | AmLibraryAlbum
+  | AmLibraryArtist
+  | AmLibraryPlaylist
+  | AmLibraryPlaylistFolder;
 
 export interface DbListResource {
   id: string;
@@ -39,150 +35,19 @@ export interface DbListResource {
   position: number;
 }
 
-export interface DbSong {
-  id: string;
-
-  name: string;
-  artistName?: string;
-  albumName?: string;
-  genreNames: readonly string[];
-  artwork?: Artwork;
-  durationInMillis: number;
-  discNumber?: number;
-  trackNumber?: number;
-  releaseDate?: string;
-  contentRating?: ContentRating;
-
-  catalogId?: string;
-  personalRating?: RatingValue;
-
-  albumId?: string;
-  artistId?: string;
-}
-
-export interface DbAlbum {
-  id: string;
-
-  name: string;
-  artistName: string;
-  genreNames: readonly string[];
-  artwork?: Artwork;
-  releaseDate?: string;
-  dateAdded?: Date;
-  contentRating?: ContentRating;
-
-  editorialVideo?: EditorialVideo;
-  catalogId?: string;
-  personalRating?: RatingValue;
-
-  artistId?: string;
-}
-
-export interface DbArtist {
-  id: string;
-
-  name: string;
-  artwork?: Artwork;
-  genreNames: readonly string[];
-
-  editorialVideo?: EditorialVideo;
-  catalogId?: string;
-  personalRating?: RatingValue;
-}
-
-export interface DbPlaylist {
-  id: string;
-
-  name: string;
-  artwork?: Artwork;
-  description?: string;
-  lastModifiedDate?: Date;
-  canEdit: boolean;
-  isPublic: boolean;
-  dateAdded?: Date;
-  tags: readonly string[];
-  curatorName?: string;
-  curatorSocialHandle?: string;
-
-  editorialVideo?: EditorialVideo;
-  catalogId?: string;
-  personalRating?: RatingValue;
-
-  parentId: string;
-  tracksListId: DbPlaylistTracksListId;
-}
-
-export interface DbFolder {
-  id: string;
-
-  name: string;
-  dateAdded?: Date;
-
-  parentId: string;
-}
-
-export interface DbLibraryCatalogLink {
-  id: string;
-  resourceId: string;
-  catalogId: string;
-  type: DbCatalogLinkType;
-  name: string;
-  position: number;
-}
-
-export interface ResolvedDbSong {
-  type: "library-songs";
-  item: DbSong;
-  links: DbLibraryCatalogLink[];
-}
-
-export interface ResolvedDbAlbum {
-  type: "library-albums";
-  item: DbAlbum;
-  links: DbLibraryCatalogLink[];
-}
-
-export interface ResolvedDbArtist {
-  type: "library-artists";
-  item: DbArtist;
-}
-
-export interface ResolvedDbPlaylist {
-  type: "library-playlists";
-  item: DbPlaylist;
-}
-
-export interface ResolvedDbFolder {
-  type: "library-playlist-folders";
-  item: DbFolder;
-}
-
-export type ResolvedDbResource =
-  | ResolvedDbSong
-  | ResolvedDbAlbum
-  | ResolvedDbArtist
-  | ResolvedDbPlaylist
-  | ResolvedDbFolder;
-
-export type ResolvedDbFolderNode = ResolvedDbFolder & {
-  children: ResolvedDbTreeNode[];
-};
-
-export type ResolvedDbTreeNode = ResolvedDbPlaylist | ResolvedDbFolderNode;
-
 type ResolvedDbResourceByList = {
-  [DbListId.Songs]: ResolvedDbSong;
-  [DbListId.Albums]: ResolvedDbAlbum;
-  [DbListId.Artists]: ResolvedDbArtist;
-  [DbListId.Playlists]: ResolvedDbPlaylist;
-  [DbListId.PlaylistFolders]: ResolvedDbFolder;
-  [DbListId.Pins]: Exclude<ResolvedDbResource, ResolvedDbFolder>;
-  [listId: DbPlaylistTracksListId]: ResolvedDbSong;
+  [DbListId.Songs]: AmLibrarySong;
+  [DbListId.Albums]: AmLibraryAlbum;
+  [DbListId.Artists]: AmLibraryArtist;
+  [DbListId.Playlists]: AmLibraryPlaylist;
+  [DbListId.PlaylistFolders]: AmLibraryPlaylistFolder;
+  [DbListId.Pins]: Exclude<DbResource, AmLibraryPlaylistFolder>;
+  [listId: DbPlaylistTracksListId]: AmLibrarySong;
 };
 
 export type ResolvedDbResourceForList<L extends DbListIdentifier> = ResolvedDbResourceByList[L];
 
-export interface ResolvedDbListResource<R extends ResolvedDbResource> {
+export interface ResolvedDbListResource<R extends DbResource> {
   entry: DbListResource;
   resource: R;
 }
@@ -190,3 +55,7 @@ export interface ResolvedDbListResource<R extends ResolvedDbResource> {
 export type ResolvedDbListResourceByList<L extends DbListIdentifier> = ResolvedDbListResource<
   ResolvedDbResourceForList<L>
 >;
+
+export type DbResourceType = DbResource["type"];
+
+export type DbResourceByType<T extends DbResourceType> = Extract<DbResource, { type: T }>;

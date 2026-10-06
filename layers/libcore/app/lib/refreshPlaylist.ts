@@ -11,9 +11,10 @@ import { playlistsScopes, songsScopes } from "#layers/libcore/app/lib/scopes";
 export async function refreshPlaylist(id: string, db: LibraryDatabase, client: OpfelMusigClient) {
   const log = logger.withTag("libcore:refresh");
 
-  const playlist = await db.playlists.get(id);
+  const playlist = await db.resources.get(id);
+  if (playlist?.type !== "library-playlists") return;
 
-  if (!playlist?.catalogId || playlist.canEdit) return;
+  if (!playlist?.catalogId || playlist.attributes.canEdit) return;
 
   log.info("Checking for expired catalog playlist", { id, catalogId: playlist.catalogId });
 
@@ -25,12 +26,12 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   if (!newPlaylist?.attributes) return;
 
   const updatedPlaylist = parsePlaylist(newPlaylist);
-  const newLastModifiedDate = updatedPlaylist.lastModifiedDate;
+  const newLastModifiedDate = updatedPlaylist.attributes.lastModifiedDate;
 
   if (!newLastModifiedDate || Number.isNaN(newLastModifiedDate.getTime())) return;
   if (
-    playlist.lastModifiedDate &&
-    playlist.lastModifiedDate.getTime() === newLastModifiedDate.getTime()
+    playlist.attributes.lastModifiedDate &&
+    playlist.attributes.lastModifiedDate.getTime() === newLastModifiedDate.getTime()
   )
     return;
 
@@ -58,44 +59,36 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
 
   const writeStartedAt = performance.now();
 
-  await db.transaction(
-    "rw",
-    [db.playlists, db.listResources, db.songs, db.resources, db.libraryCatalogLinks],
-    async () => {
-      const currentPlaylist = await db.playlists.get(id);
-      if (!currentPlaylist?.catalogId || currentPlaylist.canEdit) return;
-      if (
-        currentPlaylist.catalogId !== playlist.catalogId ||
-        currentPlaylist.lastModifiedDate?.getTime() !== playlist.lastModifiedDate?.getTime()
-      )
-        return;
+  await db.transaction("rw", [db.listResources, db.resources], async () => {
+    const currentPlaylist = await db.resources.get(id);
+    if (currentPlaylist?.type !== "library-playlists") return;
 
-      const oldEntries = await db.listResources.where("listId").equals(listId).toArray();
+    if (!currentPlaylist?.catalogId || currentPlaylist.attributes.canEdit) return;
+    if (
+      currentPlaylist.catalogId !== playlist.catalogId ||
+      currentPlaylist.attributes.lastModifiedDate?.getTime() !==
+        playlist.attributes.lastModifiedDate?.getTime()
+    )
+      return;
 
-      await db.listResources.where("listId").equals(listId).delete();
-      await db.playlists.put(updatedPlaylist);
-      await db.songs.bulkPut([...prepared.songs.values()]);
-      await db.resources.bulkPut([...prepared.resources.values()]);
+    const oldEntries = await db.listResources.where("listId").equals(listId).toArray();
 
-      for (const songId of prepared.songs.keys()) {
-        await db.libraryCatalogLinks.where("resourceId").equals(songId).delete();
-      }
-      await db.libraryCatalogLinks.bulkPut([...prepared.libraryCatalogLinks.values()]);
-      await db.listResources.bulkPut([...prepared.listResources.values()]);
+    await db.resources.put(updatedPlaylist);
+    await db.resources.bulkPut([...prepared.resources.values()]);
+    await db.listResources.where("listId").equals(listId).delete();
 
-      for (const songId of new Set(oldEntries.map((entry) => entry.resourceId))) {
-        if (prepared.songs.has(songId)) continue;
-        if (await db.listResources.where("resourceId").equals(songId).count()) continue;
+    await db.listResources.bulkPut([...prepared.listResources.values()]);
 
-        await db.libraryCatalogLinks.where("resourceId").equals(songId).delete();
-        await db.songs.delete(songId);
-        await db.resources.delete(songId);
-      }
-    },
-  );
+    for (const songId of new Set(oldEntries.map((entry) => entry.resourceId))) {
+      if (prepared.resources.has(songId)) continue;
+      if (await db.listResources.where("resourceId").equals(songId).count()) continue;
 
-  log.info("Playlist refreshed", {
-    id,
-    durationMs: Math.round(performance.now() - writeStartedAt),
+      await db.resources.delete(songId);
+    }
+
+    log.info("Playlist refreshed", {
+      id,
+      durationMs: Math.round(performance.now() - writeStartedAt),
+    });
   });
 }

@@ -1,7 +1,7 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 
-import type { DbFolder } from "#layers/libcore/app/database/types";
-import { addListResource, addResource } from "#layers/libcore/app/lib/prepare/helpers";
+import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/playlist";
+import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { PlaylistFoldersScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
@@ -25,13 +25,12 @@ export function addFolder(
 
   addListResource(target, parsed.id, listId, position);
 
-  if (target.folders.has(parsed.id)) return;
+  if (target.resources.has(parsed.id)) return;
 
-  target.folders.set(parsed.id, parsed);
-  addResource(target, parsed.id, "library-playlist-folders");
+  target.resources.set(parsed.id, parsed);
 }
 
-function parseFolder(resource: PlaylistFoldersScopes): DbFolder {
+function parseFolder(resource: PlaylistFoldersScopes): AmLibraryPlaylistFolder {
   const attributes = resource.attributes;
 
   if (!attributes)
@@ -41,9 +40,12 @@ function parseFolder(resource: PlaylistFoldersScopes): DbFolder {
 
   return {
     id: resource.id,
+    type: "library-playlist-folders",
 
-    name: attributes.name,
-    dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+    attributes: {
+      name: attributes.name,
+      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+    },
 
     parentId,
   };
