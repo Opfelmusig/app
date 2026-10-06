@@ -28,7 +28,7 @@
       </LibraryFooter>
     </div>
     <USeparator orientation="vertical" />
-    <NuxtPage />
+    <NuxtPage :keepalive="{ max: 5 }" />
   </div>
 </template>
 
