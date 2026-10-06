@@ -1,7 +1,8 @@
 import { fetch } from "@tauri-apps/plugin-http";
 
 const appleMusicUrl = "https://music.apple.com";
-const indexPathPattern = /\/assets\/index-legacy[-~][^/]+\.js/;
+const indexPathPattern = /\/assets\/index(?!-legacy[-~])[-~][^/"\s<>]+\.js/;
+const legacyIndexPathPattern = /\/assets\/index-legacy[-~][^/"\s<>]+\.js/;
 const tokenPattern = /"(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)"/;
 
 const log = logger.withTag("auth:devtoken");
@@ -11,24 +12,40 @@ export async function getAppleMusicDeveloperToken() {
 
   const mainPageBody = await fetchText(appleMusicUrl, "main page");
 
-  const indexJsPath = mainPageBody.match(indexPathPattern)?.[0];
-  if (!indexJsPath) {
+  const indexJsPaths = [
+    mainPageBody.match(legacyIndexPathPattern)?.[0],
+    mainPageBody.match(indexPathPattern)?.[0],
+  ].filter((path) => path !== undefined);
+  if (!indexJsPaths.length) {
     log.error("Apple Music index script URL not found");
     throw new Error("Apple Music index script not found");
   }
 
-  log.info("Apple Music index script fetch started", { path: indexJsPath });
+  let lastError: unknown = new Error("Apple Music Developer Token not found");
 
-  const jsFileBody = await fetchText(`${appleMusicUrl}${indexJsPath}`, "JS file");
-  const token = jsFileBody.match(tokenPattern)?.[1];
-  if (!token) {
-    log.error("Apple Music Developer Token not found in index script");
-    throw new Error("Apple Music Developer Token not found");
+  for (const indexJsPath of indexJsPaths) {
+    log.info("Apple Music index script fetch started", { path: indexJsPath });
+
+    try {
+      const jsFileBody = await fetchText(`${appleMusicUrl}${indexJsPath}`, "JS file");
+      const token = jsFileBody.match(tokenPattern)?.[1];
+      if (!token) {
+        lastError = new Error("Apple Music Developer Token not found");
+        log.warn("Apple Music Developer Token not found in index script", { path: indexJsPath });
+        continue;
+      }
+
+      log.info("Apple Music Developer Token discovered");
+
+      return token;
+    } catch (cause) {
+      lastError = cause;
+      log.warn("Apple Music index script fetch failed", { path: indexJsPath, cause });
+    }
   }
 
-  log.info("Apple Music Developer Token discovered");
-
-  return token;
+  log.error("Apple Music Developer Token discovery failed");
+  throw lastError;
 }
 
 async function fetchText(url: string, label: string) {
