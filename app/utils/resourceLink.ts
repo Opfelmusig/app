@@ -25,6 +25,8 @@ export default function (resource?: LinkableResource | null) {
       if (!album) return;
       return `/resources/${album.type}/${album.id}?song_id=${resource.id}`;
     }
+    case "library-artists":
+      return `/library/artists/${resource.id}`;
     case "personal-social-profiles":
     case "social-profiles":
       return `/profile/${resource.attributes?.handle}`;

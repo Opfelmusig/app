@@ -8,11 +8,7 @@
     </template>
   </span>
   <template v-else-if="libraryName">
-    <NuxtLink
-      v-if="libraryId"
-      class="truncate hover:underline"
-      :to="`/resources/library-${type}/${libraryId}`"
-    >
+    <NuxtLink v-if="libraryId" class="truncate hover:underline" :to="libraryLink">
       {{ libraryName }}
     </NuxtLink>
     <template v-else>{{ libraryName }}</template>
@@ -22,10 +18,15 @@
 <script lang="ts" setup>
 import type { AmCatalogLink } from "#layers/amdata/app/types/resources";
 
-defineProps<{
+const props = defineProps<{
   links: AmCatalogLink[];
   type: "albums" | "artists";
   libraryName?: string;
   libraryId?: string;
 }>();
+
+const libraryLink = computed(() => {
+  if (props.type === "albums") return `/resources/library-albums/${props.libraryId}`;
+  return `/library/artists/${props.libraryId}`;
+});
 </script>
