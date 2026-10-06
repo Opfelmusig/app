@@ -34,7 +34,7 @@ const paddingLeft = computed(() => {
 });
 
 const link = cva(
-  "group relative flex min-w-0 shrink-0 grow-0 items-center gap-2.5 overflow-hidden rounded-xl outline-none",
+  "group hit-area-y-0.5 relative flex min-w-0 shrink-0 grow-0 items-center gap-2.5 rounded-xl outline-none",
   {
     variants: {
       variant: {
