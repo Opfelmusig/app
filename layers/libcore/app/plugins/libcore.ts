@@ -1,6 +1,7 @@
 import { LibraryClient } from "#layers/libcore/app/database/client";
 import { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import { refreshArtworks } from "#layers/libcore/app/lib/refreshArtworks";
+import { refreshPlaylist } from "#layers/libcore/app/lib/refreshPlaylist";
 import { syncAppleMusicLibrary } from "#layers/libcore/app/lib/sync";
 
 export interface LibraryState {
@@ -279,6 +280,11 @@ export default defineNuxtPlugin({
 
     setInterval(startArtworkRefresh, ms("1h"));
 
+    async function refreshAndInvalidatePlaylist(id: string) {
+      await refreshPlaylist(id, db, opfelmusig);
+      await queryCache.invalidateQueries({ key: ["libcore", "playlist", id] });
+    }
+
     return {
       provide: {
         library: {
@@ -289,6 +295,7 @@ export default defineNuxtPlugin({
           error: readonly(error),
           isLoading,
           hasFailed,
+          refreshPlaylist: refreshAndInvalidatePlaylist,
         },
       },
     };
