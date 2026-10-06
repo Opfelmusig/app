@@ -37,6 +37,7 @@
             <UTooltip
               v-if="playlist.item.lastModifiedDate"
               :text="playlist.item.lastModifiedDate.toLocaleString()"
+              arrow
             >
               <span class="truncate">
                 Updated
