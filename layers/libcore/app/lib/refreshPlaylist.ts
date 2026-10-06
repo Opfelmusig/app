@@ -9,9 +9,13 @@ import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
 import { playlistsScopes, songsScopes } from "#layers/libcore/app/lib/scopes";
 
 export async function refreshPlaylist(id: string, db: LibraryDatabase, client: OpfelMusigClient) {
+  const log = logger.withTag("libcore:refresh");
+
   const playlist = await db.playlists.get(id);
 
   if (!playlist?.catalogId || playlist.canEdit) return;
+
+  log.info("Checking for expired catalog playlist", { id, catalogId: playlist.catalogId });
 
   const result = await client.library.playlists.get(id, {
     scopes: playlistsScopes,
@@ -30,6 +34,9 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   )
     return;
 
+  log.info("Catalog playlist is expired, refreshing", { id });
+  const readStartedAt = performance.now();
+
   const tracks = await collect(
     client.library.playlists.iterateRelationship(id, "tracks", {
       limit: 100,
@@ -43,6 +50,13 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
 
   const listId = playlistTracksListId(id);
   addSongs(prepared, songs, listId);
+
+  log.info("Fetched playlist tracks", {
+    id,
+    durationMs: Math.round(performance.now() - readStartedAt),
+  });
+
+  const writeStartedAt = performance.now();
 
   await db.transaction(
     "rw",
@@ -79,4 +93,9 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
       }
     },
   );
+
+  log.info("Playlist refreshed", {
+    id,
+    durationMs: Math.round(performance.now() - writeStartedAt),
+  });
 }

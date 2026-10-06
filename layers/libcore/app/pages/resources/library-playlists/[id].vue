@@ -78,8 +78,23 @@
 </template>
 
 <script lang="ts" setup>
+const library = useLibrary();
 const id = useRouteParams<string>("id");
 
 const { data: playlist } = useLibraryPlaylist(id);
 const { data: tracks } = useLibraryPlaylistTracks(id);
+
+const { mutate: refreshPlaylist } = useMutation({
+  mutation: (playlistId: string) => library.refreshPlaylist(playlistId),
+});
+
+watch(
+  [id, () => library.state.ready],
+  ([playlistId, ready]) => {
+    if (ready && playlistId) {
+      refreshPlaylist(playlistId);
+    }
+  },
+  { immediate: true },
+);
 </script>
