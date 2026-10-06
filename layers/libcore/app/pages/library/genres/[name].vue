@@ -16,7 +16,7 @@
       </div>
     </header>
     <LibraryGridWrapper>
-      <LibraryGridItem v-for="album in albums" :key="album.item.id" :resource="album" show-year />
+      <LibraryGridItem v-for="album in albums" :key="album.id" :resource="album" show-year />
     </LibraryGridWrapper>
     <LibraryFooter>
       <span>{{ albums?.length ?? 0 }} {{ albums?.length === 1 ? "album" : "albums" }}</span>

@@ -4,7 +4,7 @@
     :icon="sidebarFolderOpen ? 'lucide:folder-open' : 'lucide:folder'"
     :inset
   >
-    {{ node.item.name }}
+    {{ node.item.attributes.name }}
   </SidebarItemIcon>
   <Collapse :when="sidebarFolderOpen" class="transition-[height]">
     <div class="flex w-full flex-col gap-1">
@@ -19,22 +19,18 @@
 
       <template v-for="child in children" :key="child.item.id">
         <SidebarPlaylistsNode
-          v-if="child.type === 'library-playlists'"
-          :node="child"
+          v-if="!('children' in child)"
+          :node="child.item"
           :inset="nestedInset"
         />
-        <SidebarPlaylistsFolderNode
-          v-else-if="child.type === 'library-playlist-folders'"
-          :node="child"
-          :inset="nestedInset"
-        />
+        <SidebarPlaylistsFolderNode v-else :node="child" :inset="nestedInset" />
       </template>
 
       <SidebarItemIcon
         v-if="overflow"
         icon="lucide:ellipsis"
         :inset="nestedInset"
-        :to="libraryResourceLink(node)"
+        :to="libraryResourceLink(node.item)"
       >
         {{ overflow }} More
       </SidebarItemIcon>
@@ -45,10 +41,10 @@
 <script lang="ts" setup>
 import { Collapse } from "vue-collapsed";
 
-import type { ResolvedDbFolderNode } from "#layers/libcore/app/database/types";
+import type { AmLibraryTreePlaylistFolder } from "#layers/amdata/app/types/playlist";
 
 const props = defineProps<{
-  node: ResolvedDbFolderNode;
+  node: AmLibraryTreePlaylistFolder;
   inset?: number;
 }>();
 

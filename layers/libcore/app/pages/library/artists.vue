@@ -18,10 +18,8 @@
           v-for="artist in artists"
           :key="artist.entry.id"
           class="group flex h-14 gap-2 border-b border-default p-2 last:border-b-0 hover:bg-raised [&:active:not(:has(.no-active:active))]:bg-muted/60"
-          :class="activeArtistId === artist.resource.item.id ? 'bg-muted/40' : ''"
-          @click="
-            navigateTo({ name: 'library-artists-id', params: { id: artist.resource.item.id } })
-          "
+          :class="activeArtistId === artist.resource.id ? 'bg-muted/40' : ''"
+          @click="navigateTo({ name: 'library-artists-id', params: { id: artist.resource.id } })"
         >
           <ArtworkWrapper
             v-slot="{ iconClass, imageSize, artwork }"
@@ -34,10 +32,10 @@
           </ArtworkWrapper>
           <div class="flex w-full min-w-0 items-center gap-2 overflow-hidden">
             <span class="truncate">
-              {{ artist.resource.item.name }}
+              {{ artist.resource.attributes.name }}
             </span>
             <OMIcon
-              v-if="artist.resource.item.personalRating === 1"
+              v-if="artist.resource.attributes.personalRating === 1"
               name="lucide:star"
               filled
               class="size-3 shrink-0 text-primary"

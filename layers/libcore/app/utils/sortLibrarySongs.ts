@@ -1,4 +1,5 @@
-import type { ResolvedDbListResource, ResolvedDbSong } from "#layers/libcore/app/database/types";
+import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
+import type { ResolvedDbListResource } from "#layers/libcore/app/database/types";
 
 export interface LibrarySongsSort {
   by: "library" | "title" | "artist" | "album" | "genre" | "year" | "length";
@@ -6,9 +7,9 @@ export interface LibrarySongsSort {
 }
 
 export default function sortLibrarySongs(
-  songs: readonly ResolvedDbListResource<ResolvedDbSong>[],
+  songs: readonly ResolvedDbListResource<AmLibrarySong>[],
   sort: LibrarySongsSort,
-): ResolvedDbListResource<ResolvedDbSong>[] {
+): ResolvedDbListResource<AmLibrarySong>[] {
   const direction = sort.direction === "asc" ? 1 : -1;
 
   function compare(left: string = "", right: string = "") {
@@ -24,8 +25,8 @@ export default function sortLibrarySongs(
   }
 
   return songs.toSorted((a, b) => {
-    const left = a.resource.item;
-    const right = b.resource.item;
+    const left = a.resource.attributes;
+    const right = b.resource.attributes;
 
     switch (sort.by) {
       case "library":

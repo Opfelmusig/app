@@ -4,16 +4,16 @@
       <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
       <UIcon v-else :name="resourceIcon(node.type)" :class="iconClass" />
     </ArtworkWrapper>
-    <SidebarItemLabel>{{ node.item.name }}</SidebarItemLabel>
-    <SidebarItemStar v-if="node.item.personalRating === 1" />
+    <SidebarItemLabel>{{ node.attributes.name }}</SidebarItemLabel>
+    <SidebarItemStar v-if="node.attributes.personalRating === 1" />
   </SidebarItemWrapper>
 </template>
 
 <script lang="ts" setup>
-import type { ResolvedDbPlaylist } from "#layers/libcore/app/database/types";
+import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlist";
 
 defineProps<{
-  node: ResolvedDbPlaylist;
+  node: AmLibraryPlaylist;
   inset?: number;
 }>();
 </script>

@@ -9,14 +9,14 @@
       >
         <UIcon name="lucide:square-star" class="size-4" />
       </div>
-      <SidebarItemLabel>{{ favoritsPlaylist.item.name }}</SidebarItemLabel>
+      <SidebarItemLabel>{{ favoritsPlaylist.attributes.name }}</SidebarItemLabel>
     </SidebarItemWrapper>
     <SidebarItemIcon v-if="children?.length === 0" icon="lucide:list-music" variant="disabled">
       No Playlists
     </SidebarItemIcon>
     <template v-else-if="children">
       <template v-for="child in children" :key="child.item.id">
-        <SidebarPlaylistsNode v-if="child.type === 'library-playlists'" :node="child" />
+        <SidebarPlaylistsNode v-if="!('children' in child)" :node="child.item" />
         <SidebarPlaylistsFolderNode v-else :node="child" />
       </template>
 
@@ -46,16 +46,17 @@ const { isLoading } = useLibrary();
 const { data, asyncStatus, error } = useLibraryTree();
 
 const favoritsPlaylist = computed(() =>
-  data.value?.find(
-    (child) => child.type === "library-playlists" && child.item.tags.includes("favorited"),
-  ),
+  data.value
+    ?.map((child) => child.item)
+    .filter((item) => item.type === "library-playlists")
+    .find((item) => item.attributes.tags.includes("favorited")),
 );
 
 const filteredChildren = computed(() =>
   data.value?.filter(
     (child) =>
-      child.type === "library-playlist-folders" ||
-      (child.type === "library-playlists" && !child.item.tags.includes("favorited")),
+      child.item.type === "library-playlist-folders" ||
+      !child.item.attributes.tags.includes("favorited"),
   ),
 );
 const children = computed(() => filteredChildren.value?.slice(0, 25));

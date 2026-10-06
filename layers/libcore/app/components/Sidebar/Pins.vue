@@ -6,7 +6,7 @@
     <template v-else-if="data">
       <SidebarItemWrapper
         v-for="pin in data"
-        :key="`${pin.resource.type}:${pin.resource.item.id}`"
+        :key="pin.resource.id"
         :to="libraryResourceLink(pin.resource)"
       >
         <ArtworkWrapper
@@ -17,7 +17,7 @@
           <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
           <UIcon v-else :name="resourceIcon(pin.resource.type)" :class="iconClass" />
         </ArtworkWrapper>
-        <SidebarItemLabel>{{ pin.resource.item.name }}</SidebarItemLabel>
+        <SidebarItemLabel>{{ pin.resource.attributes.name }}</SidebarItemLabel>
       </SidebarItemWrapper>
     </template>
     <SidebarItemIcon

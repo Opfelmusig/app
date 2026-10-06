@@ -12,10 +12,10 @@
           <UIcon v-else :name="resourceIcon('artists')" :class="iconClass" />
         </ArtworkWrapper>
         <h2 class="truncate">
-          {{ artist?.item.name }}
+          {{ artist?.attributes.name }}
         </h2>
         <OMIcon
-          v-if="artist?.item.personalRating === 1"
+          v-if="artist?.attributes.personalRating === 1"
           name="lucide:star"
           filled
           class="size-4 shrink-0 text-primary"
@@ -31,7 +31,7 @@
       </div>
     </header>
     <LibraryGridWrapper>
-      <LibraryGridItem v-for="album in albums" :key="album.item.id" :resource="album" show-year />
+      <LibraryGridItem v-for="album in albums" :key="album.id" :resource="album" show-year />
     </LibraryGridWrapper>
     <LibraryFooter>
       <span>{{ albums?.length ?? 0 }} {{ albums?.length === 1 ? "album" : "albums" }}</span>

@@ -7,7 +7,10 @@
         color="muted"
         size="lg"
       >
-        <MediaEditorialVideo :editorial-video="playlist?.item.editorialVideo" variant="square">
+        <MediaEditorialVideo
+          :editorial-video="playlist?.attributes.editorialVideo"
+          variant="square"
+        >
           <template #fallback>
             <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
             <UIcon v-else :name="resourceIcon('playlists')" :class="iconClass" />
@@ -16,33 +19,33 @@
       </ArtworkWrapper>
       <div v-if="playlist" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
-          <h2>{{ playlist.item.name }}</h2>
+          <h2>{{ playlist.attributes.name }}</h2>
           <div class="flex items-center gap-2 text-sm text-muted">
-            <span v-if="playlist.item.curatorName" class="truncate">
+            <span v-if="playlist.attributes.curatorName" class="truncate">
               <NuxtLink
-                v-if="playlist.item.curatorSocialHandle"
-                :to="`/profile/${playlist.item.curatorSocialHandle}`"
+                v-if="playlist.attributes.curatorSocialHandle"
+                :to="`/profile/${playlist.attributes.curatorSocialHandle}`"
                 class="hover:underline"
               >
-                {{ playlist.item.curatorName }}
+                {{ playlist.attributes.curatorName }}
               </NuxtLink>
               <span v-else>
-                {{ playlist.item.curatorName }}
+                {{ playlist.attributes.curatorName }}
               </span>
             </span>
             <div
-              v-if="playlist.item.curatorName"
+              v-if="playlist.attributes.curatorName"
               class="size-1 shrink-0 rounded-full bg-accented"
             />
             <UTooltip
-              v-if="playlist.item.lastModifiedDate"
-              :text="playlist.item.lastModifiedDate.toLocaleString()"
+              v-if="playlist.attributes.lastModifiedDate"
+              :text="playlist.attributes.lastModifiedDate.toLocaleString()"
               arrow
             >
               <span class="truncate">
                 Updated
                 <NuxtTime
-                  :datetime="playlist.item.lastModifiedDate"
+                  :datetime="playlist.attributes.lastModifiedDate"
                   date-style="medium"
                   time-style="medium"
                   relative
@@ -51,16 +54,20 @@
             </UTooltip>
           </div>
           <p
-            v-if="playlist?.item.description"
+            v-if="playlist?.attributes.description"
             class="line-clamp-2 text-sm whitespace-break-spaces text-dimmed"
           >
-            {{ playlist.item.description }}
+            {{ playlist.attributes.description }}
           </p>
         </div>
         <div class="flex items-center gap-2">
           <OMButtonPlay />
           <OMButtonSecondary icon="lucide:shuffle" />
-          <OMButtonSecondary fill icon="lucide:star" :active="playlist.item.personalRating === 1" />
+          <OMButtonSecondary
+            fill
+            icon="lucide:star"
+            :active="playlist.attributes.personalRating === 1"
+          />
           <OMButtonSeparator />
           <OMButtonSecondary icon="lucide:arrow-up-down" />
           <OMButtonSecondary fill icon="lucide:filter" />

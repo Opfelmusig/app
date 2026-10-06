@@ -6,24 +6,24 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  ResolvedDbAlbum,
-  ResolvedDbArtist,
-  ResolvedDbPlaylist,
-} from "#layers/libcore/app/database/types";
+import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
+import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
+import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlist";
 
 const props = defineProps<{
-  resource?: ResolvedDbAlbum | ResolvedDbArtist | ResolvedDbPlaylist;
+  resource?: AmLibraryAlbum | AmLibraryArtist | AmLibraryPlaylist;
 }>();
 
 const link = computed(() => {
+  if (!props.resource?.catalogId) return;
+
   switch (props.resource?.type) {
     case "library-albums":
-      return `/resources/albums/${props.resource.item.catalogId}`;
+      return `/resources/albums/${props.resource.catalogId}`;
     case "library-artists":
-      return `/resources/artists/${props.resource.item.catalogId}`;
+      return `/resources/artists/${props.resource.catalogId}`;
     case "library-playlists":
-      return `/resources/playlists/${props.resource.item.catalogId}`;
+      return `/resources/playlists/${props.resource.catalogId}`;
   }
 });
 </script>

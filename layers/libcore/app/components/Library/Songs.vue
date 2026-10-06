@@ -26,47 +26,50 @@
         <OMTableData>
           <div class="flex items-center gap-2">
             <span class="truncate">
-              {{ song.resource.item.name }}
+              {{ song.resource.attributes.name }}
             </span>
             <OMIcon
-              v-if="song.resource.item.personalRating === 1"
+              v-if="song.resource.attributes.personalRating === 1"
               name="lucide:star"
               filled
               class="size-3 shrink-0 text-primary"
             />
-            <OMExplicit v-if="song.resource.item.contentRating === 'explicit'" class="ml-auto">
+            <OMExplicit
+              v-if="song.resource.attributes.contentRating === 'explicit'"
+              class="ml-auto"
+            >
               E
             </OMExplicit>
           </div>
         </OMTableData>
         <OMTableData v-if="columns?.includes('album')" class="text-muted">
           <LibraryLinks
-            :links="song.resource.links"
+            :links="song.resource.attributes.albums"
             type="albums"
-            :library-name="song.resource.item.albumName"
-            :library-id="song.resource.item.albumId"
+            :library-name="song.resource.attributes.albumName"
+            :library-id="song.resource.attributes.albumId"
           />
         </OMTableData>
         <OMTableData v-if="columns?.includes('artist')" class="text-muted">
           <LibraryLinks
-            :links="song.resource.links"
+            :links="song.resource.attributes.artists"
             type="artists"
-            :library-name="song.resource.item.artistName"
-            :library-id="song.resource.item.artistId"
+            :library-name="song.resource.attributes.artistName"
+            :library-id="song.resource.attributes.artistId"
           />
         </OMTableData>
         <OMTableData v-if="columns?.includes('genre')" class="text-muted">
-          {{ song.resource.item.genreNames.join(", ") }}
+          {{ song.resource.attributes.genreNames.join(", ") }}
         </OMTableData>
         <OMTableData v-if="columns?.includes('year')" class="text-muted tabular-nums">
           <NuxtTime
-            v-if="song.resource.item.releaseDate"
-            :datetime="song.resource.item.releaseDate"
+            v-if="song.resource.attributes.releaseDate"
+            :datetime="song.resource.attributes.releaseDate"
             year="numeric"
           />
         </OMTableData>
         <OMTableData v-if="columns?.includes('length')" class="text-end text-muted tabular-nums">
-          {{ msToHMS(song.resource.item.durationInMillis) }}
+          {{ msToHMS(song.resource.attributes.durationInMillis) }}
         </OMTableData>
         <OMTableSimple class="pl-1">
           <OMButtonTeritary icon="lucide:ellipsis" class="text-muted" />
@@ -77,12 +80,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { ResolvedDbListResource, ResolvedDbSong } from "#layers/libcore/app/database/types";
+import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
+import type { ResolvedDbListResource } from "#layers/libcore/app/database/types";
 
 export type SongColumns = "album" | "artist" | "genre" | "year" | "length";
 
 defineProps<{
-  songs?: ResolvedDbListResource<ResolvedDbSong>[];
+  songs?: ResolvedDbListResource<AmLibrarySong>[];
   columns?: SongColumns[];
 }>();
 </script>

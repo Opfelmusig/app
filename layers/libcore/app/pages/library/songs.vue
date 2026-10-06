@@ -175,9 +175,9 @@ const { results: searchedSongs } = useFuse(search, () => songs.value ?? [], {
   matchAllWhenSearchEmpty: true,
   fuseOptions: {
     keys: [
-      { name: "resource.item.name", weight: 0.6 },
-      { name: "resource.item.artistName", weight: 0.25 },
-      { name: "resource.item.albumName", weight: 0.15 },
+      { name: "resource.attributes.name", weight: 0.6 },
+      { name: "resource.attributes.artistName", weight: 0.25 },
+      { name: "resource.attributes.albumName", weight: 0.15 },
     ],
     threshold: 0.4,
   },
@@ -189,13 +189,13 @@ const displayedSongs = computed(() => {
     .filter(({ resource }) => {
       return (
         selectedRatings.value.length === 0 ||
-        selectedRatings.value.includes(resource.item.personalRating ?? 0)
+        selectedRatings.value.includes(resource.attributes.personalRating ?? 0)
       );
     })
     .filter(({ resource }) => {
       return (
         selectedContentRatings.value.length === 0 ||
-        selectedContentRatings.value.includes(resource.item.contentRating ?? "clean")
+        selectedContentRatings.value.includes(resource.attributes.contentRating ?? "clean")
       );
     });
 

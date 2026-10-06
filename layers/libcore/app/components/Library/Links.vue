@@ -1,12 +1,8 @@
 <template>
-  <span v-if="typeLinks?.length" class="truncate">
-    <template v-for="(link, index) in typeLinks" :key="link.id">
+  <span v-if="links.length" class="truncate">
+    <template v-for="(link, index) in links" :key="link.id">
       <span v-if="index !== 0">, </span>
-      <NuxtLink
-        v-if="link.name"
-        class="hover:underline"
-        :to="`/resources/${link.type}/${link.catalogId}`"
-      >
+      <NuxtLink v-if="link.name" class="hover:underline" :to="`/resources/${type}/${link.id}`">
         {{ link.name }}
       </NuxtLink>
     </template>
@@ -24,18 +20,12 @@
 </template>
 
 <script lang="ts" setup>
-import type { DbCatalogLinkType, DbLibraryCatalogLink } from "#layers/libcore/app/database/types";
+import type { AmCatalogLink } from "#layers/amdata/app/types/resources";
 
-const props = defineProps<{
-  links: DbLibraryCatalogLink[];
-  type: DbCatalogLinkType;
+defineProps<{
+  links: AmCatalogLink[];
+  type: "albums" | "artists";
   libraryName?: string;
   libraryId?: string;
 }>();
-
-const typeLinks = computed(() =>
-  props.links
-    .filter((link) => link.type === props.type)
-    .toSorted((a, b) => a.position - b.position),
-);
 </script>
