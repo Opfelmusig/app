@@ -5,7 +5,7 @@
       <OMTableHeader text="Title" />
       <OMTableHeader v-if="columns?.includes('album')" text="Album" />
       <OMTableHeader v-if="columns?.includes('artist')" text="Artist" />
-      <OMTableHeader v-if="columns?.includes('genre')" text="Genre" class="w-[10%]" />
+      <OMTableHeader v-if="columns?.includes('genre')" text="Genre" class="w-[15%]" />
       <OMTableHeader v-if="columns?.includes('year')" text="Year" class="w-14" />
       <OMTableHeader v-if="columns?.includes('length')" text="Length" class="w-20 text-end" />
       <OMTableHeader class="w-12" />
