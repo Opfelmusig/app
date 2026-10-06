@@ -17,7 +17,7 @@
         <div class="mt-4 flex gap-2">
           <button
             type="button"
-            class="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-neutral-950 transition-opacity hover:opacity-90"
+            class="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-90"
             @click="clearError({ redirect: '/' })"
           >
             Home
@@ -28,6 +28,15 @@
             @click="reload"
           >
             Reload
+          </button>
+          <button
+            v-if="state && sync && !state.initializing"
+            type="button"
+            class="cursor-pointer rounded-md bg-yellow-400 px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+            :disabled="state.syncing"
+            @click="sync"
+          >
+            {{ state.syncing ? "Syncing..." : "Sync Library" }}
           </button>
         </div>
       </main>
@@ -73,4 +82,6 @@ const stack = computed(() => {
 function reload() {
   window.location.reload();
 }
+
+const { sync, state } = useLibrary() ?? {};
 </script>
