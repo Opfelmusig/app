@@ -29,3 +29,16 @@ export interface AmLibraryPlaylist extends AmResource {
   catalogId?: string;
   parentId: string;
 }
+
+export interface AmLibraryPlaylistFolder extends AmResource {
+  type: "library-playlist-folders";
+  attributes: {
+    name: string;
+    dateAdded?: Date;
+  };
+  parentId: string;
+}
+
+export type AmLibraryTreeNode =
+  | { item: AmLibraryPlaylist }
+  | { item: AmLibraryPlaylistFolder; children: AmLibraryTreeNode[] };
