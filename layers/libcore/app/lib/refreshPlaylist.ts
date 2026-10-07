@@ -1,6 +1,7 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect, isNotResourceType } from "@opfelmusig/lib/helpers";
 
+import { parseResource } from "#layers/amdata/app/lib/parse";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import { createEmptyLibrary } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";

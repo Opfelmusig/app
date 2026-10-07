@@ -1,5 +1,6 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 
+import { parseResource } from "#layers/amdata/app/lib/parse";
 import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { PlaylistFoldersScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
