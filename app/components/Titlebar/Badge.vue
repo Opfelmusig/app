@@ -1,7 +1,9 @@
 <template>
-  <UTooltip :text="tooltip" arrow>
-    <UBadge :label :color :variant size="sm" />
-  </UTooltip>
+  <UBadge :label :color :variant size="sm">
+    <template v-if="loading" #leading>
+      <UIcon name="lucide:loader-circle" class="size-2.5 shrink-0 animate-spin" />
+    </template>
+  </UBadge>
 </template>
 
 <script lang="ts" setup>
@@ -11,6 +13,6 @@ defineProps<{
   label?: BadgeProps["label"];
   color?: BadgeProps["color"];
   variant?: BadgeProps["variant"];
-  tooltip?: string;
+  loading?: boolean;
 }>();
 </script>
