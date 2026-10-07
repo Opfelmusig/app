@@ -1,0 +1,51 @@
+import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
+import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
+
+import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
+
+type LibraryPlaylistTemplate = ResourceTemplateOf<
+  "library-playlists",
+  "name" | "artwork" | "canEdit" | "dateAdded" | "description" | "isPublic" | "lastModifiedDate",
+  "tags",
+  {
+    catalog: ResourceTemplateOf<
+      "playlists",
+      "curatorName" | "curatorSocialHandle" | "lastModifiedDate",
+      "personalRating" | "editorialVideo"
+    >;
+    parent: ResourceTemplateOf<"library-playlist-folders">;
+  }
+>;
+
+export function parseLibraryPlaylist(resource: LibraryPlaylistTemplate): AmLibraryPlaylist {
+  const catalog = resource.relationships?.catalog.data[0];
+  const attributes = resource.attributes;
+
+  if (!attributes)
+    throw new Error(`Invalid Apple Music playlist: ${resource.id}: missing attributes`);
+
+  const lastModifiedDate = catalog?.attributes?.lastModifiedDate ?? attributes.lastModifiedDate;
+
+  return {
+    id: resource.id,
+    type: "library-playlists",
+
+    attributes: {
+      name: attributes.name,
+      artwork: attributes.artwork,
+      description: attributes.description?.standard,
+      lastModifiedDate: lastModifiedDate ? new Date(lastModifiedDate) : undefined,
+      canEdit: attributes.canEdit,
+      isPublic: attributes.isPublic,
+      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+      tags: attributes.tags ?? [],
+      curatorName: catalog?.attributes?.curatorName,
+      curatorSocialHandle: catalog?.attributes?.curatorSocialHandle,
+      editorialVideo: catalog?.attributes?.editorialVideo,
+      personalRating: catalog?.attributes?.personalRating,
+    },
+
+    catalogId: catalog?.id,
+    parentId: resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID,
+  };
+}

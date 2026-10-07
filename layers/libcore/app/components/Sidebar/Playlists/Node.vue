@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlist";
+import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
 
 defineProps<{
   node: AmLibraryPlaylist;

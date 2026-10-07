@@ -5,7 +5,7 @@ import type {
   AmLibraryPlaylist,
   AmLibraryPlaylistFolder,
   AmLibraryTreeNode,
-} from "#layers/amdata/app/types/playlist";
+} from "#layers/amdata/app/types/playlists";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,

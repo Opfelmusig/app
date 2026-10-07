@@ -26,18 +26,7 @@ export const songsScopes = defineScopes({
     },
   },
   songs: {
-    fields: [
-      "name",
-      "albumName",
-      "artistName",
-      "artwork",
-      "durationInMillis",
-      "genreNames",
-      "releaseDate",
-      "discNumber",
-      "trackNumber",
-      "contentRating",
-    ],
+    fields: ["name"],
     extend: ["personalRating"],
     relationships: {
       albums: "include",
@@ -71,7 +60,7 @@ export const albumsScopes = defineScopes({
     },
   },
   albums: {
-    fields: ["name", "artistName", "artwork", "genreNames", "releaseDate", "contentRating"],
+    fields: ["name"],
     extend: ["editorialVideo", "personalRating"],
     relationships: {
       artists: "include",
@@ -92,8 +81,8 @@ export const artistsScopes = defineScopes({
     },
   },
   artists: {
-    extend: ["editorialVideo", "personalRating"],
-    fields: ["name", "artwork", "genreNames"],
+    fields: ["artwork", "genreNames"],
+    extend: ["editorialArtwork", "personalRating"],
   },
 });
 
@@ -117,14 +106,7 @@ export const playlistsScopes = defineScopes({
     },
   },
   playlists: {
-    fields: [
-      "name",
-      "artwork",
-      "curatorName",
-      "curatorSocialHandle",
-      "description",
-      "lastModifiedDate",
-    ],
+    fields: ["curatorName", "curatorSocialHandle", "lastModifiedDate"],
     extend: ["editorialVideo", "personalRating"],
   },
 });

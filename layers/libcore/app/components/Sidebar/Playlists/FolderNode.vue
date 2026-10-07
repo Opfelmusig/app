@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { Collapse } from "vue-collapsed";
 
-import type { AmLibraryTreePlaylistFolder } from "#layers/amdata/app/types/playlist";
+import type { AmLibraryTreePlaylistFolder } from "#layers/amdata/app/types/playlists";
 
 const props = defineProps<{
   node: AmLibraryTreePlaylistFolder;

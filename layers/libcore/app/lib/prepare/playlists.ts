@@ -1,6 +1,4 @@
-import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
-
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlist";
+import { parseLibraryPlaylist } from "#layers/amdata/app/lib/playlists";
 import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
@@ -21,47 +19,13 @@ export function addPlaylist(
   listId: string,
   position: number,
 ) {
-  const parsed = parsePlaylist(resource);
+  const parsed = parseLibraryPlaylist(resource);
 
   addListResource(target, parsed.id, listId, position);
 
   if (target.resources.has(parsed.id)) return;
 
   target.resources.set(parsed.id, parsed);
-}
-
-export function parsePlaylist(resource: PlaylistsScopes): AmLibraryPlaylist {
-  const catalog = resource.relationships?.catalog.data[0];
-  const attributes = resource.attributes;
-
-  if (!attributes)
-    throw new Error(`Invalid Apple Music playlist: ${resource.id}: missing attributes`);
-
-  const lastModifiedDate = catalog?.attributes?.lastModifiedDate ?? attributes.lastModifiedDate;
-  const parentId = resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID;
-
-  return {
-    id: resource.id,
-    type: "library-playlists",
-
-    attributes: {
-      name: attributes.name,
-      artwork: attributes.artwork ?? catalog?.attributes?.artwork,
-      description: attributes.description?.standard ?? catalog?.attributes?.description?.standard,
-      lastModifiedDate: lastModifiedDate ? new Date(lastModifiedDate) : undefined,
-      canEdit: attributes.canEdit,
-      isPublic: attributes.isPublic,
-      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
-      tags: attributes.tags ?? [],
-      curatorName: catalog?.attributes?.curatorName,
-      curatorSocialHandle: catalog?.attributes?.curatorSocialHandle,
-      editorialVideo: catalog?.attributes?.editorialVideo,
-      personalRating: catalog?.attributes?.personalRating,
-    },
-
-    catalogId: catalog?.id,
-    parentId,
-  };
 }
 
 export function addPlaylistTracks(

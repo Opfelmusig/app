@@ -8,7 +8,7 @@
 <script lang="ts" setup>
 import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
 import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlist";
+import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
 
 const props = defineProps<{
   resource?: AmLibraryAlbum | AmLibraryArtist | AmLibraryPlaylist;
