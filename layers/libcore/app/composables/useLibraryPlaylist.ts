@@ -4,7 +4,7 @@ export default function useLibraryPlaylist(id: MaybeRefOrGetter<string>) {
   return useQuery({
     key: () => ["libcore", "playlist", toValue(id)],
     query: () => library.client.getPlaylist(toValue(id)),
-    enabled: () => library.state.ready,
+    enabled: () => library.state.ready && !!toValue(id),
     meta: { persist: false },
     staleTime: Infinity,
     refetchOnWindowFocus: false,

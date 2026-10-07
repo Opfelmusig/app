@@ -6,7 +6,7 @@ export default function useLibraryTree(rootId: MaybeRefOrGetter<string> = ROOT_F
   return useQuery({
     key: () => ["libcore", "tree", toValue(rootId)],
     query: () => library.client.getFolderTree(toValue(rootId)),
-    enabled: () => library.state.ready,
+    enabled: () => library.state.ready && !!toValue(rootId),
     meta: { persist: false },
     staleTime: Infinity,
     refetchOnWindowFocus: false,

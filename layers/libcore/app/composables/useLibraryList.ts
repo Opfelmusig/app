@@ -6,7 +6,7 @@ export default function useLibrarySongs<L extends DbListId>(id: MaybeRefOrGetter
   return useQuery({
     key: () => ["libcore", "list", toValue(id)],
     query: () => library.client.getListResources<L>(toValue(id)),
-    enabled: () => library.state.ready,
+    enabled: () => library.state.ready && !!toValue(id),
     meta: { persist: false },
     staleTime: Infinity,
     refetchOnWindowFocus: false,

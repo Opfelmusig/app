@@ -4,7 +4,7 @@ export default function useLibraryArtistAlbums(id: MaybeRefOrGetter<string>) {
   return useQuery({
     key: () => ["libcore", "artist", toValue(id), "albums"],
     query: () => library.client.getArtistAlbums(toValue(id)),
-    enabled: () => library.state.ready,
+    enabled: () => library.state.ready && !!toValue(id),
     meta: { persist: false },
     staleTime: Infinity,
     refetchOnWindowFocus: false,

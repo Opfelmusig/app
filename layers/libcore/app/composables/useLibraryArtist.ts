@@ -4,7 +4,7 @@ export default function useLibraryArtist(id: MaybeRefOrGetter<string>) {
   return useQuery({
     key: () => ["libcore", "artist", toValue(id)],
     query: () => library.client.getArtist(toValue(id)),
-    enabled: () => library.state.ready,
+    enabled: () => library.state.ready && !!toValue(id),
     meta: { persist: false },
     staleTime: Infinity,
     refetchOnWindowFocus: false,
