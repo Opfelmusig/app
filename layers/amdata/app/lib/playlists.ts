@@ -3,7 +3,7 @@ import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
 
-type LibraryPlaylistTemplate = ResourceTemplateOf<
+export type LibraryPlaylistTemplate = ResourceTemplateOf<
   "library-playlists",
   "name" | "artwork" | "canEdit" | "dateAdded" | "description" | "isPublic" | "lastModifiedDate",
   "tags",

@@ -3,7 +3,7 @@ import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
 import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/playlists";
 
-type LibraryFolderTemplate = ResourceTemplateOf<
+export type LibraryPlaylistFolderTemplate = ResourceTemplateOf<
   "library-playlist-folders",
   "name" | "dateAdded",
   never,
@@ -13,7 +13,7 @@ type LibraryFolderTemplate = ResourceTemplateOf<
 >;
 
 export function parseLibraryPlaylistFolder(
-  resource: LibraryFolderTemplate,
+  resource: LibraryPlaylistFolderTemplate,
 ): AmLibraryPlaylistFolder {
   const attributes = resource.attributes;
 

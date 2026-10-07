@@ -2,7 +2,7 @@ import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
 import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
 
-type LibrarySongTemplate = ResourceTemplateOf<
+export type LibrarySongTemplate = ResourceTemplateOf<
   "library-songs",
   | "name"
   | "albumName"

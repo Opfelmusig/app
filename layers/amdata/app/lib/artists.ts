@@ -2,7 +2,7 @@ import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
 import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
 
-type LibraryArtistTemplate = ResourceTemplateOf<
+export type LibraryArtistTemplate = ResourceTemplateOf<
   "library-artists",
   "name",
   never,
