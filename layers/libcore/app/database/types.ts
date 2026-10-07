@@ -20,6 +20,7 @@ export type DbListIdentifier = DbListId | DbPlaylistTracksListId;
 
 export interface DbLibraryState {
   id: "library";
+  version: number;
   profileId?: string;
   lastSyncedAt?: Date;
 }

@@ -4,6 +4,8 @@ import { refreshArtworks } from "#layers/libcore/app/lib/refreshArtworks";
 import { refreshPlaylist } from "#layers/libcore/app/lib/refreshPlaylist";
 import { syncAppleMusicLibrary } from "#layers/libcore/app/lib/sync";
 
+export const OPFELMUSIG_LIBRARY_VERSION = 0;
+
 export interface LibraryState {
   ready: boolean;
   initializing: boolean;
@@ -101,6 +103,15 @@ export default defineNuxtPlugin({
 
       if (dbState?.lastSyncedAt && dbState?.profileId !== auth.profileId.value) {
         log.warn("Local library belongs to a different account, clearing cached data");
+
+        await clearData();
+        startSync().catch(() => undefined);
+
+        return;
+      }
+
+      if (dbState && dbState.version !== OPFELMUSIG_LIBRARY_VERSION) {
+        log.warn("Local library cache is outdated, clearing cached data");
 
         await clearData();
         startSync().catch(() => undefined);

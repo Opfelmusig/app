@@ -1,5 +1,6 @@
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
+import { OPFELMUSIG_LIBRARY_VERSION } from "#layers/libcore/app/plugins/libcore";
 
 export async function saveAppleMusicLibrary(
   db: LibraryDatabase,
@@ -24,6 +25,7 @@ export async function saveAppleMusicLibrary(
 
       await db.libraryState.put({
         id: "library",
+        version: OPFELMUSIG_LIBRARY_VERSION,
         profileId,
         lastSyncedAt,
       });
