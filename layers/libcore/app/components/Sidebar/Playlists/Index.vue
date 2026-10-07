@@ -49,14 +49,14 @@ const favoritsPlaylist = computed(() =>
   data.value
     ?.map((child) => child.item)
     .filter((item) => item.type === "library-playlists")
-    .find((item) => item.attributes.tags.includes("favorited")),
+    .find((item) => item.extras.tags.includes("favorited")),
 );
 
 const filteredChildren = computed(() =>
   data.value?.filter(
     (child) =>
       child.item.type === "library-playlist-folders" ||
-      !child.item.attributes.tags.includes("favorited"),
+      !child.item.extras.tags.includes("favorited"),
   ),
 );
 const children = computed(() => filteredChildren.value?.slice(0, 25));

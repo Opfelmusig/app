@@ -117,7 +117,7 @@ export class LibraryClient {
     function build(parentId: string): AmLibraryTreeNode[] {
       return [
         ...folders
-          .filter((item) => item.parentId === parentId && item.attributes.name)
+          .filter((item) => item.extras.parentId === parentId && item.attributes.name)
           .sort(byName)
           .map((item) => ({
             type: item.type,
@@ -125,7 +125,7 @@ export class LibraryClient {
             children: build(item.id),
           })),
         ...playlists
-          .filter((item) => item.parentId === parentId && item.attributes.name)
+          .filter((item) => item.extras.parentId === parentId && item.attributes.name)
           .sort(byName)
           .map((item) => ({ type: item.type, item })),
       ];
@@ -151,9 +151,9 @@ export class LibraryClient {
 
   getArtistAlbums(id: string) {
     return this.resourcesByType("library-albums")
-      .filter((album) => album.attributes.artistId === id)
+      .filter((album) => album.extras.artistId === id)
       .reverse()
-      .sortBy("attributes.dateAdded");
+      .sortBy("extras.dateAdded");
   }
 
   async getGenres() {
@@ -168,6 +168,6 @@ export class LibraryClient {
     return this.resourcesByType("library-albums")
       .filter((album) => album.attributes.genreNames.includes(genre))
       .reverse()
-      .sortBy("attributes.dateAdded");
+      .sortBy("extras.dateAdded");
   }
 }

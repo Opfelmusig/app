@@ -34,6 +34,8 @@ export function parseLibraryArtist(resource: LibraryArtistTemplate): AmLibraryAr
       personalRating: catalog?.attributes?.personalRating,
     },
 
-    catalogId: catalog?.id,
+    extras: {
+      catalogId: catalog?.id,
+    },
   };
 }

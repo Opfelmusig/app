@@ -39,7 +39,7 @@
             :links="resource.attributes.artists"
             type="artists"
             :library-name="resource.attributes.artistName"
-            :library-id="resource.attributes.artistId"
+            :library-id="resource.extras.artistId"
           />
         </span>
         <span v-else-if="resource.type === 'library-playlists'" class="truncate text-sm text-muted">

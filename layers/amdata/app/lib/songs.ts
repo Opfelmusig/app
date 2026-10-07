@@ -55,9 +55,6 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
       contentRating: attributes.contentRating,
       personalRating: catalog?.attributes?.personalRating,
 
-      albumId: album?.id,
-      artistId: artist?.id,
-
       albums:
         catalog?.relationships?.albums.data.map((album) => ({
           id: album.id,
@@ -70,6 +67,10 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
         })) ?? [],
     },
 
-    catalogId: catalog?.id,
+    extras: {
+      catalogId: catalog?.id,
+      albumId: album?.id,
+      artistId: artist?.id,
+    },
   };
 }

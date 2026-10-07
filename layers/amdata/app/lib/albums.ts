@@ -36,11 +36,9 @@ export function parseLibraryAlbum(resource: LibraryAlbumTemplate): AmLibraryAlbu
       genreNames: attributes.genreNames,
       artwork: attributes.artwork,
       releaseDate: attributes.releaseDate,
-      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
       contentRating: attributes.contentRating,
       editorialVideo: catalog?.attributes?.editorialVideo,
       personalRating: catalog?.attributes?.personalRating,
-      artistId: artist?.id,
 
       artists:
         catalog?.relationships?.artists.data.map((artist) => ({
@@ -49,6 +47,10 @@ export function parseLibraryAlbum(resource: LibraryAlbumTemplate): AmLibraryAlbu
         })) ?? [],
     },
 
-    catalogId: catalog?.id,
+    extras: {
+      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+      artistId: artist?.id,
+      catalogId: catalog?.id,
+    },
   };
 }

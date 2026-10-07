@@ -47,7 +47,7 @@
             :links="song.resource.attributes.albums"
             type="albums"
             :library-name="song.resource.attributes.albumName"
-            :library-id="song.resource.attributes.albumId"
+            :library-id="song.resource.extras.albumId"
           />
         </OMTableData>
         <OMTableData v-if="columns?.includes('artist')" class="text-muted">
@@ -55,7 +55,7 @@
             :links="song.resource.attributes.artists"
             type="artists"
             :library-name="song.resource.attributes.artistName"
-            :library-id="song.resource.attributes.artistId"
+            :library-id="song.resource.extras.artistId"
           />
         </OMTableData>
         <OMTableData v-if="columns?.includes('genre')" class="text-muted">

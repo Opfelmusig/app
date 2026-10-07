@@ -14,9 +14,9 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   const playlist = await db.resources.get(id);
   if (playlist?.type !== "library-playlists") return;
 
-  if (!playlist?.catalogId || playlist.attributes.canEdit) return;
+  if (!playlist.extras.catalogId || playlist.extras.canEdit) return;
 
-  log.info("Checking for expired catalog playlist", { id, catalogId: playlist.catalogId });
+  log.info("Checking for expired catalog playlist", { id, catalogId: playlist.extras.catalogId });
 
   const result = await client.library.playlists.get(id, {
     scopes: playlistsScopes,
@@ -63,9 +63,9 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
     const currentPlaylist = await db.resources.get(id);
     if (currentPlaylist?.type !== "library-playlists") return;
 
-    if (!currentPlaylist?.catalogId || currentPlaylist.attributes.canEdit) return;
+    if (!currentPlaylist.extras.catalogId || currentPlaylist.extras.canEdit) return;
     if (
-      currentPlaylist.catalogId !== playlist.catalogId ||
+      currentPlaylist.extras.catalogId !== playlist.extras.catalogId ||
       currentPlaylist.attributes.lastModifiedDate?.getTime() !==
         playlist.attributes.lastModifiedDate?.getTime()
     )

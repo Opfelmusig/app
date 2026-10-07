@@ -18,7 +18,7 @@ export class LibraryDatabase extends Dexie {
     this.version(1).stores({
       libraryState: "id",
 
-      resources: "id, type, parentId, catalogId",
+      resources: "id, type, extras.parentId, extras.catalogId",
       listResources: "id, resourceId, &[listId+position]",
     });
   }

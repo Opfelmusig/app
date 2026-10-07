@@ -13,11 +13,17 @@ export interface AmArtistAttributes {
 export interface AmCatalogArtist extends AmResource {
   type: "artists";
   attributes: AmArtistAttributes;
-  libraryId?: string;
+
+  extras: {
+    libraryId?: string;
+  };
 }
 
 export interface AmLibraryArtist extends AmResource {
   type: "library-artists";
   attributes: AmArtistAttributes;
-  catalogId?: string;
+
+  extras: {
+    catalogId?: string;
+  };
 }

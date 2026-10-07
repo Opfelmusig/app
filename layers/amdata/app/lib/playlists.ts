@@ -35,17 +35,19 @@ export function parseLibraryPlaylist(resource: LibraryPlaylistTemplate): AmLibra
       artwork: attributes.artwork,
       description: attributes.description?.standard,
       lastModifiedDate: lastModifiedDate ? new Date(lastModifiedDate) : undefined,
-      canEdit: attributes.canEdit,
-      isPublic: attributes.isPublic,
-      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
-      tags: attributes.tags ?? [],
       curatorName: catalog?.attributes?.curatorName,
       curatorSocialHandle: catalog?.attributes?.curatorSocialHandle,
       editorialVideo: catalog?.attributes?.editorialVideo,
       personalRating: catalog?.attributes?.personalRating,
     },
 
-    catalogId: catalog?.id,
-    parentId: resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID,
+    extras: {
+      tags: attributes.tags ?? [],
+      canEdit: attributes.canEdit,
+      isPublic: attributes.isPublic,
+      dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
+      catalogId: catalog?.id,
+      parentId: resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID,
+    },
   };
 }

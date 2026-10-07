@@ -5,7 +5,7 @@ export default function (resource?: DbResource | null) {
 
   switch (resource.type) {
     case "library-songs":
-      return `/resources/library-albums/${resource.attributes.albumId}?song_id=${resource.id}`;
+      return `/resources/library-albums/${resource.extras.albumId}?song_id=${resource.id}`;
     case "library-artists":
       return `/library/artists/${resource.id}`;
     default:

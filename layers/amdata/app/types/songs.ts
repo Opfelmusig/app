@@ -15,9 +15,6 @@ export interface AmSongAttributes {
   contentRating?: ContentRating;
   personalRating?: RatingValue;
 
-  albumId?: string;
-  artistId?: string;
-
   albums: AmCatalogLink[];
   artists: AmCatalogLink[];
 }
@@ -25,11 +22,19 @@ export interface AmSongAttributes {
 export interface AmCatalogSong extends AmResource {
   type: "songs";
   attributes: AmSongAttributes;
-  libraryId?: string;
+
+  extras: {
+    libraryId?: string;
+  };
 }
 
 export interface AmLibrarySong extends AmResource {
   type: "library-songs";
   attributes: AmSongAttributes;
-  catalogId?: string;
+
+  extras: {
+    catalogId?: string;
+    albumId?: string;
+    artistId?: string;
+  };
 }

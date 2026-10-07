@@ -8,12 +8,9 @@ export interface AmAlbumAttributes {
   genreNames: readonly string[];
   artwork?: Artwork;
   releaseDate?: string;
-  dateAdded?: Date;
   contentRating?: ContentRating;
   editorialVideo?: EditorialVideo;
   personalRating?: RatingValue;
-
-  artistId?: string;
 
   artists: AmCatalogLink[];
 }
@@ -21,11 +18,19 @@ export interface AmAlbumAttributes {
 export interface AmCatalogAlbum extends AmResource {
   type: "albums";
   attributes: AmAlbumAttributes;
-  libraryId?: string;
+
+  extras: {
+    libraryId?: string;
+  };
 }
 
 export interface AmLibraryAlbum extends AmResource {
   type: "library-albums";
   attributes: AmAlbumAttributes;
-  catalogId?: string;
+
+  extras: {
+    dateAdded?: Date;
+    artistId?: string;
+    catalogId?: string;
+  };
 }

@@ -7,10 +7,6 @@ export interface AmPlaylistAttributes {
   artwork?: Artwork;
   description?: string;
   lastModifiedDate?: Date;
-  canEdit: boolean;
-  isPublic: boolean;
-  dateAdded?: Date;
-  tags: readonly string[];
   curatorName?: string;
   curatorSocialHandle?: string;
   editorialVideo?: EditorialVideo;
@@ -20,14 +16,24 @@ export interface AmPlaylistAttributes {
 export interface AmCatalogPlaylist extends AmResource {
   type: "playlists";
   attributes: AmPlaylistAttributes;
-  libraryId?: string;
+
+  extras: {
+    libraryId?: string;
+  };
 }
 
 export interface AmLibraryPlaylist extends AmResource {
   type: "library-playlists";
   attributes: AmPlaylistAttributes;
-  catalogId?: string;
-  parentId: string;
+
+  extras: {
+    tags: readonly string[];
+    canEdit: boolean;
+    isPublic: boolean;
+    dateAdded?: Date;
+    catalogId?: string;
+    parentId: string;
+  };
 }
 
 export interface AmLibraryPlaylistFolder extends AmResource {
@@ -36,7 +42,10 @@ export interface AmLibraryPlaylistFolder extends AmResource {
     name: string;
     dateAdded?: Date;
   };
-  parentId: string;
+
+  extras: {
+    parentId: string;
+  };
 }
 
 export interface AmLibraryTreePlaylist {

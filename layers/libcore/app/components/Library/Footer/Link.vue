@@ -15,15 +15,15 @@ const props = defineProps<{
 }>();
 
 const link = computed(() => {
-  if (!props.resource?.catalogId) return;
+  if (!props.resource?.extras.catalogId) return;
 
   switch (props.resource?.type) {
     case "library-albums":
-      return `/resources/albums/${props.resource.catalogId}`;
+      return `/resources/albums/${props.resource.extras.catalogId}`;
     case "library-artists":
-      return `/resources/artists/${props.resource.catalogId}`;
+      return `/resources/artists/${props.resource.extras.catalogId}`;
     case "library-playlists":
-      return `/resources/playlists/${props.resource.catalogId}`;
+      return `/resources/playlists/${props.resource.extras.catalogId}`;
   }
 });
 </script>

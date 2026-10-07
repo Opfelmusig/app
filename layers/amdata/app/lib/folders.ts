@@ -29,6 +29,8 @@ export function parseLibraryPlaylistFolder(
       dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
     },
 
-    parentId: resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID,
+    extras: {
+      parentId: resource.relationships?.parent.data[0]?.id ?? ROOT_FOLDER_ID,
+    },
   };
 }
