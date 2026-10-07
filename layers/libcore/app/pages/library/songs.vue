@@ -112,7 +112,7 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
-    <LibrarySongs :songs="displayedSongs" :columns />
+    <AMSongs :songs="displayedSongs" :columns />
     <LibraryFooter>
       <span>
         <span>

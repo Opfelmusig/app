@@ -76,7 +76,7 @@
         </div>
       </div>
     </header>
-    <LibrarySongs :songs="tracks" />
+    <AMSongs :songs="tracks" />
     <LibraryFooter>
       <span>
         <span>{{ tracks?.length ?? 0 }} {{ tracks?.length === 1 ? "song" : "songs" }}, </span>
