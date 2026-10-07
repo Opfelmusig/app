@@ -81,7 +81,7 @@
       <span>
         <span>{{ tracks?.length ?? 0 }} {{ tracks?.length === 1 ? "song" : "songs" }}, </span>
         <span>
-          {{ libraryTracksDuration(tracks) }}
+          {{ tracksDuration(tracks) }}
         </span>
       </span>
 

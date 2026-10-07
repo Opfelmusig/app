@@ -120,7 +120,7 @@
           {{ songs?.length === 1 ? "song" : "songs" }},
         </span>
         <span>
-          {{ libraryTracksDuration(displayedSongs) }}
+          {{ tracksDuration(displayedSongs) }}
         </span>
       </span>
     </LibraryFooter>
