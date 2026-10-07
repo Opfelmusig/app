@@ -24,6 +24,21 @@
         </template>
         <TitlebarAction icon="lucide:rotate-ccw" small-icon @click="reload" />
         <TitlebarBadge v-if="isDev" label="DEV" color="error" variant="soft" />
+        <UTooltip
+          text="This may take a minute. You can keep browsing the catalog while your library syncs."
+          arrow
+        >
+          <NuxtLink to="/settings/storage">
+            <TitlebarBadge
+              v-if="state.syncing"
+              :label="`Syncing Library (${progress.songs.count} songs)`"
+              class="cursor-pointer"
+              color="secondary"
+              variant="soft"
+              loading
+            />
+          </NuxtLink>
+        </UTooltip>
       </div>
       <div
         class="flex items-center gap-1.5"
@@ -60,6 +75,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 const { isCollapsed, toggle } = useSidebar();
 const { canGoBack, canGoForward, goBack, goForward, reload } = useNavigation();
+const { state, progress } = useLibrary();
 
 const layout = useLayout();
 
