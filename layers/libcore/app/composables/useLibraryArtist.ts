@@ -1,9 +1,9 @@
-export default function useLibraryArtist(id: MaybeRefOrGetter<string>) {
+export default function useLibraryArtist(id: MaybeRefOrGetter<string | undefined>) {
   const library = useLibrary();
 
   return useQuery({
-    key: () => ["libcore", "artist", toValue(id)],
-    query: () => library.client.getArtist(toValue(id)),
+    key: () => ["libcore", "artist", toValue(id) ?? null],
+    query: () => library.client.getArtist(toValue(id)!),
     enabled: () => library.state.ready && !!toValue(id),
     meta: { persist: false },
     staleTime: Infinity,
