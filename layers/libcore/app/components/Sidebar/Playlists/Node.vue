@@ -1,5 +1,5 @@
 <template>
-  <SidebarItemWrapper :to="libraryResourceLink(node)" :inset>
+  <SidebarItemWrapper :to="resourceLink(node)" :inset>
     <ArtworkWrapper v-slot="{ iconClass, imageSize, artwork }" :resource="node" size="xs">
       <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
       <UIcon v-else :name="resourceIcon(node.type)" :class="iconClass" />

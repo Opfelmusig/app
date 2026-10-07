@@ -1,6 +1,6 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
-    <NuxtLink class="w-full" :to="libraryResourceLink(resource)">
+    <NuxtLink class="w-full" :to="resourceLink(resource)">
       <ArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
         :resource="resource"
@@ -14,7 +14,7 @@
       </ArtworkWrapper>
     </NuxtLink>
     <div class="flex w-full min-w-0 flex-col">
-      <NuxtLink :to="libraryResourceLink(resource)" class="flex items-center gap-2">
+      <NuxtLink :to="resourceLink(resource)" class="flex items-center gap-2">
         <span class="truncate">
           {{ resource.attributes.name }}
         </span>

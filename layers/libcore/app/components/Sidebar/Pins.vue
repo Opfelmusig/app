@@ -7,7 +7,7 @@
       <SidebarItemWrapper
         v-for="pin in data"
         :key="pin.resource.id"
-        :to="libraryResourceLink(pin.resource)"
+        :to="resourceLink(pin.resource)"
       >
         <ArtworkWrapper
           v-slot="{ iconClass, imageSize, artwork }"

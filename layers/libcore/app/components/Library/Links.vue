@@ -2,7 +2,7 @@
   <span v-if="links.length" class="truncate">
     <template v-for="(link, index) in links" :key="link.id">
       <span v-if="index !== 0">, </span>
-      <NuxtLink v-if="link.name" class="hover:underline" :to="`/resources/${type}/${link.id}`">
+      <NuxtLink v-if="link.name" class="hover:underline" :to="rawResourceLink(type, link.id)">
         {{ link.name }}
       </NuxtLink>
     </template>
@@ -25,8 +25,7 @@ const props = defineProps<{
   libraryId?: string;
 }>();
 
-const libraryLink = computed(() => {
-  if (props.type === "albums") return `/resources/library-albums/${props.libraryId}`;
-  return `/library/artists/${props.libraryId}`;
-});
+const libraryLink = computed(() =>
+  rawResourceLink(props.type === "albums" ? "library-albums" : "library-artists", props.libraryId),
+);
 </script>

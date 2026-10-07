@@ -1,6 +1,6 @@
-import type { ResourceTypes } from "@opfelmusig/lib/types";
+import type { AmResource } from "#layers/amdata/app/types/resources";
 
-export default function (type?: ResourceTypes | null) {
+export default function (type?: AmResource["type"] | null) {
   switch (type) {
     case "artists":
     case "library-artists":
@@ -16,10 +16,9 @@ export default function (type?: ResourceTypes | null) {
     case "library-songs":
     case "songs":
       return "lucide:music-2";
-    case "stations":
-      return "lucide:radio";
+    /* case "stations":
+      return "lucide:radio"; */
     case "social-profiles":
-    case "personal-social-profiles":
       return "lucide:user";
     default:
       return "lucide:music";

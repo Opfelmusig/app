@@ -14,16 +14,5 @@ const props = defineProps<{
   resource?: AmLibraryAlbum | AmLibraryArtist | AmLibraryPlaylist;
 }>();
 
-const link = computed(() => {
-  if (!props.resource?.extras.catalogId) return;
-
-  switch (props.resource?.type) {
-    case "library-albums":
-      return `/resources/albums/${props.resource.extras.catalogId}`;
-    case "library-artists":
-      return `/resources/artists/${props.resource.extras.catalogId}`;
-    case "library-playlists":
-      return `/resources/playlists/${props.resource.extras.catalogId}`;
-  }
-});
+const link = computed(() => resourceRelationLink(props.resource));
 </script>

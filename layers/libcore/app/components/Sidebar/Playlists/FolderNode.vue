@@ -30,7 +30,7 @@
         v-if="overflow"
         icon="lucide:ellipsis"
         :inset="nestedInset"
-        :to="libraryResourceLink(node.item)"
+        :to="resourceLink(node.item)"
       >
         {{ overflow }} More
       </SidebarItemIcon>
