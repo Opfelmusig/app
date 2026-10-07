@@ -1,11 +1,6 @@
 <template>
   <LibraryGridWrapper>
-    <LibraryGridItem
-      v-for="item in items"
-      :key="item.entry.id"
-      :resource="item.resource"
-      show-artists
-    />
+    <LibraryGridItem v-for="item in items" :key="item.key" :resource="item.resource" show-artists />
   </LibraryGridWrapper>
 </template>
 
@@ -13,9 +8,9 @@
 import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
 import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
-import type { ResolvedDbListResource } from "#layers/libcore/app/database/types";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
 
 defineProps<{
-  items?: ResolvedDbListResource<AmLibraryAlbum | AmLibraryPlaylist | AmLibraryArtist>[];
+  items?: AmListResource<AmLibraryAlbum | AmLibraryPlaylist | AmLibraryArtist>[];
 }>();
 </script>

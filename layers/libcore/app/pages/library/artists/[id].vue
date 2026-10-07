@@ -4,7 +4,7 @@
       <div class="flex min-w-0 items-center gap-2">
         <ArtworkWrapper
           v-slot="{ iconClass, imageSize, artwork }"
-          :library-resource="artist"
+          :resource="artist"
           size="sm"
           color="muted"
         >

@@ -4,8 +4,10 @@ import { appDataDir, join } from "@tauri-apps/api/path";
 import { fetch } from "@tauri-apps/plugin-http";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
 
+import { parseResource } from "#layers/amdata/app/lib/parse";
+import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import { getAppleMusicDeveloperToken } from "#layers/session/app/lib/getAppleMusicDeveloperToken";
-import { profileScope, type UserProfile } from "#layers/session/app/lib/profileScope";
+import { profileScope } from "#layers/session/app/lib/profileScope";
 
 const TOKEN_KEY = "apple-music:user-token";
 const CLIENT = "auth";
@@ -63,8 +65,7 @@ export default defineNuxtPlugin({
     }
 
     const storefront = ref<Storefront>();
-    const profile = ref<UserProfile>();
-    const profileId = ref<string>();
+    const profile = ref<AmSocialProfile>();
 
     const client = new OpfelMusigClient({
       developerToken: async () => {
@@ -113,13 +114,9 @@ export default defineNuxtPlugin({
         settingsStore.language = storefront.value?.attributes?.defaultLanguageTag;
       }
 
-      profile.value = profileData.data[0];
+      profile.value = parseResource(profileData.data[0]);
 
       if (!profile.value) throw new Error("Profile not found");
-
-      profileId.value = profile.value?.relationships?.["social-profile"].data[0]?.id;
-
-      if (!profileId.value) throw new Error("Profile ID not found");
 
       tokenValid.value = true;
 
@@ -182,7 +179,6 @@ export default defineNuxtPlugin({
         auth: {
           valid: readonly(tokenValid),
           profile: readonly(profile),
-          profileId: readonly(profileId),
           storefront: readonly(storefront),
           login,
           logout,

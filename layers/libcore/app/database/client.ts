@@ -3,13 +3,15 @@ import type { Collection } from "dexie";
 
 import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,
   type DbListIdentifier,
-  type ResolvedDbListResourceByList,
+  type DbListResourceByList,
   type DbResourceType,
   type DbResourceByType,
+  type DbResource,
 } from "#layers/libcore/app/database/types";
 
 function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceType[] {
@@ -139,11 +141,17 @@ export class LibraryClient {
     const results = await Promise.all(
       entries.map(async (entry) => {
         const resource = await this.db.resources.get(entry.resourceId);
-        return resource && allowedTypes.includes(resource.type) ? { entry, resource } : undefined;
+        return resource && allowedTypes.includes(resource.type)
+          ? ({
+              key: entry.id,
+              position: entry.position,
+              resource,
+            } satisfies AmListResource<DbResource>)
+          : undefined;
       }),
     );
 
-    return results.filter((result) => result !== undefined) as ResolvedDbListResourceByList<L>[];
+    return results.filter((result) => result !== undefined) as DbListResourceByList<L>[];
   }
 
   getArtistAlbums(id: string) {

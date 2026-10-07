@@ -16,14 +16,14 @@
       <div class="flex cursor-pointer flex-col text-sm select-none">
         <div
           v-for="artist in artists"
-          :key="artist.entry.id"
+          :key="artist.key"
           class="group flex h-14 gap-2 border-b border-default p-2 last:border-b-0 hover:bg-raised [&:active:not(:has(.no-active:active))]:bg-muted/60"
           :class="activeArtistId === artist.resource.id ? 'bg-muted/40' : ''"
           @click="navigateTo({ name: 'library-artists-id', params: { id: artist.resource.id } })"
         >
           <ArtworkWrapper
             v-slot="{ iconClass, imageSize, artwork }"
-            :library-resource="artist.resource"
+            :resource="artist.resource"
             size="sm"
             color="muted"
           >

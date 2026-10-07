@@ -11,11 +11,11 @@
       <OMTableHeader class="w-12" />
     </template>
     <template #default>
-      <OMTableRow v-for="song in songs" :key="song.entry.id">
+      <OMTableRow v-for="song in songs" :key="song.key">
         <OMTableSimple>
           <ArtworkWrapper
             v-slot="{ iconClass, imageSize, artwork }"
-            :library-resource="song.resource"
+            :resource="song.resource"
             size="sm"
             color="muted"
           >
@@ -47,7 +47,9 @@
             :links="song.resource.attributes.albums"
             type="albums"
             :library-name="song.resource.attributes.albumName"
-            :library-id="song.resource.extras.albumId"
+            :library-id="
+              song.resource.type === 'library-songs' ? song.resource.extras.albumId : undefined
+            "
           />
         </OMTableData>
         <OMTableData v-if="columns?.includes('artist')" class="text-muted">
@@ -55,7 +57,9 @@
             :links="song.resource.attributes.artists"
             type="artists"
             :library-name="song.resource.attributes.artistName"
-            :library-id="song.resource.extras.artistId"
+            :library-id="
+              song.resource.type === 'library-songs' ? song.resource.extras.artistId : undefined
+            "
           />
         </OMTableData>
         <OMTableData v-if="columns?.includes('genre')" class="text-muted">
@@ -80,13 +84,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
-import type { ResolvedDbListResource } from "#layers/libcore/app/database/types";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
+import type { AmSong } from "#layers/amdata/app/types/songs";
 
 export type SongColumns = "album" | "artist" | "genre" | "year" | "length";
 
 defineProps<{
-  songs?: ResolvedDbListResource<AmLibrarySong>[];
+  songs?: AmListResource<AmSong>[];
   columns?: SongColumns[];
 }>();
 </script>

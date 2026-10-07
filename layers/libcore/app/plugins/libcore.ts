@@ -101,7 +101,7 @@ export default defineNuxtPlugin({
 
       const dbState = await client.state();
 
-      if (dbState?.lastSyncedAt && dbState?.profileId !== auth.profileId.value) {
+      if (dbState?.lastSyncedAt && dbState?.profileId !== auth.profile.value?.id) {
         log.warn("Local library belongs to a different account, clearing cached data");
 
         await clearData();
@@ -164,7 +164,7 @@ export default defineNuxtPlugin({
       syncController = new AbortController();
 
       try {
-        if (!auth.profileId.value) {
+        if (!auth.profile.value?.id) {
           throw new Error("Profile ID not found");
         }
 
@@ -173,7 +173,7 @@ export default defineNuxtPlugin({
         const lastSyncedAt = await syncAppleMusicLibrary(
           db,
           opfelmusig,
-          auth.profileId.value,
+          auth.profile.value?.id,
           syncController.signal,
           progress,
         );

@@ -3,7 +3,7 @@
     <header class="flex gap-4 p-4">
       <ArtworkWrapper
         v-slot="{ artwork, iconClass, imageSize }"
-        :library-resource="playlist"
+        :resource="playlist"
         color="muted"
         size="lg"
       >

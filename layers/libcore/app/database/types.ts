@@ -2,6 +2,7 @@ import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
 import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
 import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
 
 export enum DbListId {
@@ -37,7 +38,7 @@ export interface DbListResource {
   position: number;
 }
 
-type ResolvedDbResourceByList = {
+type DbResourceByList = {
   [DbListId.Songs]: AmLibrarySong;
   [DbListId.Albums]: AmLibraryAlbum;
   [DbListId.Artists]: AmLibraryArtist;
@@ -47,16 +48,7 @@ type ResolvedDbResourceByList = {
   [listId: DbPlaylistTracksListId]: AmLibrarySong;
 };
 
-export type ResolvedDbResourceForList<L extends DbListIdentifier> = ResolvedDbResourceByList[L];
-
-export interface ResolvedDbListResource<R extends DbResource> {
-  entry: DbListResource;
-  resource: R;
-}
-
-export type ResolvedDbListResourceByList<L extends DbListIdentifier> = ResolvedDbListResource<
-  ResolvedDbResourceForList<L>
->;
+export type DbListResourceByList<L extends DbListIdentifier> = AmListResource<DbResourceByList[L]>;
 
 export type DbResourceType = DbResource["type"];
 

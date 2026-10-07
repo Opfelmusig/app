@@ -3,7 +3,7 @@
     <NuxtLink class="w-full" :to="libraryResourceLink(resource)">
       <ArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
-        :library-resource="resource"
+        :resource="resource"
         size="lg"
         class="aspect-square h-auto w-full"
         :class="resource.type !== 'library-artists' ? 'rounded-2xl' : ''"

@@ -7,7 +7,11 @@
 <script lang="ts" setup>
 import type { Artwork } from "@opfelmusig/lib/types";
 
-import type { DbResource } from "#layers/libcore/app/database/types";
+import type { AmAlbum } from "#layers/amdata/app/types/albums";
+import type { AmArtist } from "#layers/amdata/app/types/artists";
+import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
+import type { AmSong } from "#layers/amdata/app/types/songs";
 
 const variants = cva(
   "group relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl select-none",
@@ -41,8 +45,7 @@ const props = defineProps<{
   color?: VariantProps<typeof variants>["color"];
   round?: boolean;
   class?: string;
-  resource?: ResourceArtworkExtract | null;
-  libraryResource?: DbResource | null;
+  resource?: AmSong | AmAlbum | AmArtist | AmPlaylist | AmSocialProfile | null;
   artwork?: Artwork;
 }>();
 
@@ -50,18 +53,11 @@ const isRoundedResource = computed(
   () =>
     props.resource?.type === "library-artists" ||
     props.resource?.type === "artists" ||
-    props.resource?.type === "personal-social-profiles" ||
-    props.resource?.type === "social-profiles" ||
-    props.libraryResource?.type === "library-artists",
+    props.resource?.type === "social-profiles",
 );
 const round = computed(() => isRoundedResource.value || props.round);
 
-const artwork = computed(
-  () =>
-    props.artwork ??
-    resourceArtwork(props.resource) ??
-    libraryResourceArtwork(props.libraryResource),
-);
+const artwork = computed(() => props.artwork ?? props.resource?.attributes.artwork);
 
 const imageSize = computed(() => {
   if (!props.size) return 96 * 2;

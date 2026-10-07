@@ -4,6 +4,7 @@ import type { AmAlbum } from "#layers/amdata/app/types/albums";
 import type { AmArtist } from "#layers/amdata/app/types/artists";
 import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
 import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmSong } from "#layers/amdata/app/types/songs";
 
 export interface AmResourceBase {
@@ -16,4 +17,16 @@ export interface AmCatalogLink {
   name: string;
 }
 
-export type AmResource = AmSong | AmAlbum | AmArtist | AmPlaylist | AmLibraryPlaylistFolder;
+export type AmResource =
+  | AmSong
+  | AmAlbum
+  | AmArtist
+  | AmPlaylist
+  | AmLibraryPlaylistFolder
+  | AmSocialProfile;
+
+export interface AmListResource<TResource extends AmResource> {
+  key: string;
+  position: number;
+  resource: TResource;
+}

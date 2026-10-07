@@ -11,7 +11,7 @@
       >
         <ArtworkWrapper
           v-slot="{ iconClass, imageSize, artwork }"
-          :library-resource="pin.resource"
+          :resource="pin.resource"
           size="xs"
         >
           <ArtworkImage v-if="artwork" :width="imageSize" :artwork />

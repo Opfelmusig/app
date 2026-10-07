@@ -1,7 +1,7 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmCatalogPlaylist, AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
 
 export type LibraryPlaylistTemplate = ResourceTemplateOf<
   "library-playlists",
@@ -52,4 +52,43 @@ export function parseLibraryPlaylist(resource: LibraryPlaylistTemplate): AmLibra
   };
 }
 
-export type PlaylistTemplate = LibraryPlaylistTemplate;
+export type CatalogPlaylistTemplate = ResourceTemplateOf<
+  "playlists",
+  "name" | "artwork" | "description" | "curatorName" | "curatorSocialHandle" | "lastModifiedDate",
+  "personalRating" | "editorialVideo",
+  {
+    library: ResourceTemplateOf<"library-playlists">;
+  }
+>;
+
+export function parseCatalogPlaylist(resource: CatalogPlaylistTemplate): AmCatalogPlaylist {
+  const library = resource.relationships?.library.data[0];
+  const attributes = resource.attributes;
+
+  if (!attributes)
+    throw new Error(`Invalid Apple Music playlist: ${resource.id}: missing attributes`);
+
+  return {
+    id: resource.id,
+    type: "playlists",
+
+    attributes: {
+      name: attributes.name,
+      artwork: attributes.artwork,
+      description: attributes.description?.standard,
+      lastModifiedDate: attributes.lastModifiedDate
+        ? new Date(attributes.lastModifiedDate)
+        : undefined,
+      curatorName: attributes.curatorName,
+      curatorSocialHandle: attributes.curatorSocialHandle,
+      editorialVideo: attributes.editorialVideo,
+      personalRating: attributes.personalRating,
+    },
+
+    extras: {
+      libraryId: library?.id,
+    },
+  };
+}
+
+export type PlaylistTemplate = LibraryPlaylistTemplate | CatalogPlaylistTemplate;

@@ -1,6 +1,7 @@
-import type { DbListId, ResolvedDbListResourceByList } from "#layers/libcore/app/database/types";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
+import type { AmSong } from "#layers/amdata/app/types/songs";
 
-export default function (tracks?: ResolvedDbListResourceByList<DbListId.Songs>[]) {
+export default function (tracks?: AmListResource<AmSong>[]) {
   const inMs = tracks
     ?.map((d) => d.resource.attributes.durationInMillis)
     .reduce((acc, cur) => acc + cur, 0);
