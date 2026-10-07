@@ -71,12 +71,17 @@
           <OMButtonSeparator />
           <OMButtonSecondary icon="lucide:arrow-up-down" />
           <OMButtonSecondary fill icon="lucide:filter" />
-          <OMButtonSecondary fill icon="lucide:columns-3" />
+          <AMControlsColumns
+            v-model="columns"
+            :items="options"
+            :active="columnsChanged"
+            @reset="reset"
+          />
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </div>
     </header>
-    <AMSongs :songs="tracks" />
+    <AMSongs :songs="tracks" :columns />
     <LibraryFooter>
       <span>
         <span>{{ tracks?.length ?? 0 }} {{ tracks?.length === 1 ? "song" : "songs" }}, </span>
@@ -91,11 +96,17 @@
 </template>
 
 <script lang="ts" setup>
+import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
+
 const library = useLibrary();
 const id = useRouteParams<string>("id");
 
 const { data: playlist } = useLibraryPlaylist(id);
 const { data: tracks } = useLibraryPlaylistTracks(id);
+
+const { columns, options, reset, columnsChanged } = useLibrarySongsColumns(() =>
+  playlistTracksListId(toValue(id)),
+);
 
 const { mutate: refreshPlaylist } = useMutation({
   mutation: (playlistId: string) => library.refreshPlaylist(playlistId),

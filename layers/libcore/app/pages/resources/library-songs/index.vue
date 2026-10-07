@@ -80,27 +80,12 @@
           />
         </div>
       </OMMenu>
-      <OMMenu icon="lucide:columns-3" :active="columnsChanged">
-        <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
-          <span class="text-sm text-muted">Columns</span>
-          <UCheckboxGroup v-model="columns" :ui="{ fieldset: 'gap-2' }" :items="options" />
-        </div>
-        <USeparator />
-        <div class="flex w-48 flex-col gap-2 p-1">
-          <UButton
-            label="Reset columns"
-            class="gap-2 rounded-b-lg"
-            variant="ghost"
-            color="error"
-            icon="lucide:corner-up-left"
-            :disabled="!columnsChanged"
-            :ui="{
-              leadingIcon: 'size-4',
-            }"
-            @click="reset"
-          />
-        </div>
-      </OMMenu>
+      <AMControlsColumns
+        v-model="columns"
+        :items="options"
+        :active="columnsChanged"
+        @reset="reset"
+      />
       <UInput
         v-model="search"
         variant="soft"

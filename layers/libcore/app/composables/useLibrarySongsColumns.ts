@@ -1,9 +1,9 @@
-import type { SongColumns } from "#layers/libcore/app/components/Library/Songs.vue";
-import type { DbListId } from "#layers/libcore/app/database/types";
+import type { SongColumns } from "#layers/amdata/app/types/songs";
+import type { DbListIdentifier } from "#layers/libcore/app/database/types";
 
 const defaultColumns: SongColumns[] = ["album", "artist", "length"];
 
-export default function useLibrarySongsColumns(id: MaybeRefOrGetter<DbListId>) {
+export default function useLibrarySongsColumns(id: MaybeRefOrGetter<DbListIdentifier>) {
   const columns = useLocalStorage<SongColumns[]>(
     () => `opfelmusig:song-columns:${toValue(id)}`,
     [...defaultColumns],
