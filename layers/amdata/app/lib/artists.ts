@@ -39,3 +39,5 @@ export function parseLibraryArtist(resource: LibraryArtistTemplate): AmLibraryAr
     },
   };
 }
+
+export type ArtistTemplate = LibraryArtistTemplate;

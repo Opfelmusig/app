@@ -27,3 +27,5 @@ export interface AmLibraryArtist extends AmResource {
     catalogId?: string;
   };
 }
+
+export type AmArtist = AmCatalogArtist | AmLibraryArtist;

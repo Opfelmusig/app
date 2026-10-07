@@ -1,12 +1,10 @@
 import type { ResourceTypes } from "@opfelmusig/lib/types";
 
-import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
-import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
-import type {
-  AmLibraryPlaylist,
-  AmLibraryPlaylistFolder,
-} from "#layers/amdata/app/types/playlists";
-import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
+import type { AmAlbum } from "#layers/amdata/app/types/albums";
+import type { AmArtist } from "#layers/amdata/app/types/artists";
+import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
+import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmSong } from "#layers/amdata/app/types/songs";
 
 export interface AmResource {
   id: string;
@@ -18,9 +16,4 @@ export interface AmCatalogLink {
   name: string;
 }
 
-export type AmResources =
-  | AmLibrarySong
-  | AmLibraryAlbum
-  | AmLibraryArtist
-  | AmLibraryPlaylist
-  | AmLibraryPlaylistFolder;
+export type AmResources = AmSong | AmAlbum | AmArtist | AmPlaylist | AmLibraryPlaylistFolder;

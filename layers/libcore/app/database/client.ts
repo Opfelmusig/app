@@ -1,11 +1,8 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { Collection } from "dexie";
 
-import type {
-  AmLibraryPlaylist,
-  AmLibraryPlaylistFolder,
-  AmLibraryTreeNode,
-} from "#layers/amdata/app/types/playlists";
+import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
+import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,

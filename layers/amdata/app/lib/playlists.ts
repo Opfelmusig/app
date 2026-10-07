@@ -51,3 +51,5 @@ export function parseLibraryPlaylist(resource: LibraryPlaylistTemplate): AmLibra
     },
   };
 }
+
+export type PlaylistTemplate = LibraryPlaylistTemplate;

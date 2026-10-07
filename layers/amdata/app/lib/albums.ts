@@ -54,3 +54,5 @@ export function parseLibraryAlbum(resource: LibraryAlbumTemplate): AmLibraryAlbu
     },
   };
 }
+
+export type AlbumTemplate = LibraryAlbumTemplate;

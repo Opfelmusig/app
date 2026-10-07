@@ -38,3 +38,5 @@ export interface AmLibrarySong extends AmResource {
     artistId?: string;
   };
 }
+
+export type AmSong = AmCatalogSong | AmLibrarySong;

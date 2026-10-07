@@ -1,21 +1,18 @@
-import { parseLibraryAlbum, type LibraryAlbumTemplate } from "#layers/amdata/app/lib/albums";
-import { parseLibraryArtist, type LibraryArtistTemplate } from "#layers/amdata/app/lib/artists";
+import { parseLibraryAlbum, type AlbumTemplate } from "#layers/amdata/app/lib/albums";
+import { parseLibraryArtist, type ArtistTemplate } from "#layers/amdata/app/lib/artists";
 import {
   parseLibraryPlaylistFolder,
   type LibraryPlaylistFolderTemplate,
 } from "#layers/amdata/app/lib/folders";
-import {
-  parseLibraryPlaylist,
-  type LibraryPlaylistTemplate,
-} from "#layers/amdata/app/lib/playlists";
-import { parseLibrarySong, type LibrarySongTemplate } from "#layers/amdata/app/lib/songs";
+import { parseLibraryPlaylist, type PlaylistTemplate } from "#layers/amdata/app/lib/playlists";
+import { parseLibrarySong, type SongTemplate } from "#layers/amdata/app/lib/songs";
 import type { AmResources } from "#layers/amdata/app/types/resources";
 
 export type Templates =
-  | LibrarySongTemplate
-  | LibraryAlbumTemplate
-  | LibraryArtistTemplate
-  | LibraryPlaylistTemplate
+  | SongTemplate
+  | AlbumTemplate
+  | ArtistTemplate
+  | PlaylistTemplate
   | LibraryPlaylistFolderTemplate;
 
 export function parseResource<T extends Templates>(

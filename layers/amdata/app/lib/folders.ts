@@ -1,7 +1,7 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/playlists";
+import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
 
 export type LibraryPlaylistFolderTemplate = ResourceTemplateOf<
   "library-playlist-folders",

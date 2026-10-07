@@ -34,3 +34,5 @@ export interface AmLibraryAlbum extends AmResource {
     catalogId?: string;
   };
 }
+
+export type AmAlbum = AmCatalogAlbum | AmLibraryAlbum;

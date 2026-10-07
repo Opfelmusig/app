@@ -74,3 +74,5 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
     },
   };
 }
+
+export type SongTemplate = LibrarySongTemplate;
