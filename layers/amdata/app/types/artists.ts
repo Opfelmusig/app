@@ -1,6 +1,6 @@
 import type { Artwork, EditorialArtwork, RatingValue } from "@opfelmusig/lib/types";
 
-import type { AmResource } from "#layers/amdata/app/types/resources";
+import type { AmResourceBase } from "#layers/amdata/app/types/resources";
 
 export interface AmArtistAttributes {
   name: string;
@@ -10,7 +10,7 @@ export interface AmArtistAttributes {
   personalRating?: RatingValue;
 }
 
-export interface AmCatalogArtist extends AmResource {
+export interface AmCatalogArtist extends AmResourceBase {
   type: "artists";
   attributes: AmArtistAttributes;
 
@@ -19,7 +19,7 @@ export interface AmCatalogArtist extends AmResource {
   };
 }
 
-export interface AmLibraryArtist extends AmResource {
+export interface AmLibraryArtist extends AmResourceBase {
   type: "library-artists";
   attributes: AmArtistAttributes;
 

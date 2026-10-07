@@ -1,6 +1,6 @@
 import type { Artwork, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
 
-import type { AmResource } from "#layers/amdata/app/types/resources";
+import type { AmResourceBase } from "#layers/amdata/app/types/resources";
 
 export interface AmPlaylistAttributes {
   name: string;
@@ -13,7 +13,7 @@ export interface AmPlaylistAttributes {
   personalRating?: RatingValue;
 }
 
-export interface AmCatalogPlaylist extends AmResource {
+export interface AmCatalogPlaylist extends AmResourceBase {
   type: "playlists";
   attributes: AmPlaylistAttributes;
 
@@ -22,7 +22,7 @@ export interface AmCatalogPlaylist extends AmResource {
   };
 }
 
-export interface AmLibraryPlaylist extends AmResource {
+export interface AmLibraryPlaylist extends AmResourceBase {
   type: "library-playlists";
   attributes: AmPlaylistAttributes;
 

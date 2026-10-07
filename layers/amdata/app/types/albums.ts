@@ -1,6 +1,6 @@
 import type { Artwork, ContentRating, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
 
-import type { AmCatalogLink, AmResource } from "#layers/amdata/app/types/resources";
+import type { AmCatalogLink, AmResourceBase } from "#layers/amdata/app/types/resources";
 
 export interface AmAlbumAttributes {
   name: string;
@@ -15,7 +15,7 @@ export interface AmAlbumAttributes {
   artists: AmCatalogLink[];
 }
 
-export interface AmCatalogAlbum extends AmResource {
+export interface AmCatalogAlbum extends AmResourceBase {
   type: "albums";
   attributes: AmAlbumAttributes;
 
@@ -24,7 +24,7 @@ export interface AmCatalogAlbum extends AmResource {
   };
 }
 
-export interface AmLibraryAlbum extends AmResource {
+export interface AmLibraryAlbum extends AmResourceBase {
   type: "library-albums";
   attributes: AmAlbumAttributes;
 

@@ -6,7 +6,7 @@ import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
 import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmSong } from "#layers/amdata/app/types/songs";
 
-export interface AmResource {
+export interface AmResourceBase {
   id: string;
   type: ResourceTypes;
 }
@@ -16,4 +16,4 @@ export interface AmCatalogLink {
   name: string;
 }
 
-export type AmResources = AmSong | AmAlbum | AmArtist | AmPlaylist | AmLibraryPlaylistFolder;
+export type AmResource = AmSong | AmAlbum | AmArtist | AmPlaylist | AmLibraryPlaylistFolder;

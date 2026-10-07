@@ -6,7 +6,7 @@ import {
 } from "#layers/amdata/app/lib/folders";
 import { parseLibraryPlaylist, type PlaylistTemplate } from "#layers/amdata/app/lib/playlists";
 import { parseLibrarySong, type SongTemplate } from "#layers/amdata/app/lib/songs";
-import type { AmResources } from "#layers/amdata/app/types/resources";
+import type { AmResource } from "#layers/amdata/app/types/resources";
 
 export type Templates =
   | SongTemplate
@@ -17,7 +17,7 @@ export type Templates =
 
 export function parseResource<T extends Templates>(
   resource: T,
-): Extract<AmResources, { type: T["type"] }>;
+): Extract<AmResource, { type: T["type"] }>;
 export function parseResource(resource: Templates) {
   switch (resource.type) {
     case "library-songs":
