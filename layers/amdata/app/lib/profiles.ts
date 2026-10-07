@@ -22,21 +22,7 @@ export function parseProfile(resource: ProfileTemplate): AmSocialProfile {
       : resource.relationships?.["social-profile"].data[0];
   const attributes = profile?.attributes;
 
-  if (attributes) {
-    return {
-      id: resource.id,
-      type: "social-profiles",
-
-      attributes: {
-        name: attributes?.name,
-        handle: attributes?.handle,
-        isPrivate: attributes.isPrivate,
-        isVerified: attributes.isVerified,
-      },
-    };
-  }
-
-  if (!resource.attributes)
+  if (!attributes)
     throw new Error(`Invalid Apple Music profile: ${resource.id}: missing attributes`);
 
   return {
@@ -44,11 +30,11 @@ export function parseProfile(resource: ProfileTemplate): AmSocialProfile {
     type: "social-profiles",
 
     attributes: {
-      name: resource.attributes.name,
-      handle: resource.attributes.handle,
-      artwork: resource.attributes.artwork,
-      isPrivate: resource.attributes.isPrivate,
-      isVerified: resource.attributes.isVerified,
+      name: resource.attributes?.name ?? attributes.name,
+      handle: resource.attributes?.handle ?? attributes.handle,
+      artwork: resource.attributes?.artwork ?? attributes.artwork,
+      isPrivate: resource.attributes?.isPrivate ?? attributes.isPrivate,
+      isVerified: resource.attributes?.isVerified ?? attributes.isVerified,
     },
   };
 }
