@@ -1,8 +1,6 @@
 import type { ResourceTypes } from "@opfelmusig/lib/types";
 
-import type { DbResourceType } from "#layers/libcore/app/database/types";
-
-export default function (type?: ResourceTypes | DbResourceType | null) {
+export default function (type?: ResourceTypes | null) {
   switch (type) {
     case "artists":
     case "library-artists":
@@ -22,7 +20,7 @@ export default function (type?: ResourceTypes | DbResourceType | null) {
       return "lucide:radio";
     case "social-profiles":
     case "personal-social-profiles":
-      return "lucide:user-x";
+      return "lucide:user";
     default:
       return "lucide:music";
   }
