@@ -1,4 +1,3 @@
-import { parseLibraryPlaylist } from "#layers/amdata/app/lib/playlists";
 import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
@@ -19,7 +18,7 @@ export function addPlaylist(
   listId: string,
   position: number,
 ) {
-  const parsed = parseLibraryPlaylist(resource);
+  const parsed = parseResource(resource);
 
   addListResource(target, parsed.id, listId, position);
 

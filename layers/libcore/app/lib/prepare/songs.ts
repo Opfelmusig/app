@@ -1,4 +1,3 @@
-import { parseLibrarySong } from "#layers/amdata/app/lib/songs";
 import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { SongsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
@@ -13,7 +12,7 @@ export function addSong(
   listId: string,
   position: number,
 ) {
-  const parsed = parseLibrarySong(resource);
+  const parsed = parseResource(resource);
 
   addListResource(target, parsed.id, listId, position);
 

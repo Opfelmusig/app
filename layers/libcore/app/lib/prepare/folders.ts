@@ -1,6 +1,5 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 
-import { parseLibraryPlaylistFolder } from "#layers/amdata/app/lib/folders";
 import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { PlaylistFoldersScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
@@ -21,7 +20,7 @@ export function addFolder(
 ) {
   if (resource.id === ROOT_FOLDER_ID) return;
 
-  const parsed = parseLibraryPlaylistFolder(resource);
+  const parsed = parseResource(resource);
 
   addListResource(target, parsed.id, listId, position);
 

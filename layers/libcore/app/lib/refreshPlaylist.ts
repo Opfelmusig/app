@@ -1,7 +1,6 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect, isNotResourceType } from "@opfelmusig/lib/helpers";
 
-import { parseLibraryPlaylist } from "#layers/amdata/app/lib/playlists";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import { createEmptyLibrary } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
@@ -25,7 +24,7 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   const newPlaylist = result.data[0];
   if (!newPlaylist?.attributes) return;
 
-  const updatedPlaylist = parseLibraryPlaylist(newPlaylist);
+  const updatedPlaylist = parseResource(newPlaylist);
   const newLastModifiedDate = updatedPlaylist.attributes.lastModifiedDate;
 
   if (!newLastModifiedDate || Number.isNaN(newLastModifiedDate.getTime())) return;

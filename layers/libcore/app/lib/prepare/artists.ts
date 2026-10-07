@@ -1,4 +1,3 @@
-import { parseLibraryArtist } from "#layers/amdata/app/lib/artists";
 import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { ArtistsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
@@ -13,7 +12,7 @@ export function addArtist(
   listId: string,
   position: number,
 ) {
-  const parsed = parseLibraryArtist(resource);
+  const parsed = parseResource(resource);
 
   addListResource(target, parsed.id, listId, position);
 
