@@ -25,7 +25,9 @@
       >
         <SidebarItemIcon icon="lucide:music-2" to="/library/songs">Songs</SidebarItemIcon>
         <SidebarItemIcon icon="lucide:disc" to="/library/albums">Albums</SidebarItemIcon>
-        <SidebarItemIcon icon="lucide:mic-vocal" to="/library/artists">Artists</SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:mic-vocal" to="/resources/library-artists">
+          Artists
+        </SidebarItemIcon>
         <SidebarItemIcon icon="lucide:guitar" to="/library/genres">Genres</SidebarItemIcon>
         <SidebarItemIcon
           v-if="isCollapsed || settingsStore.sidebarSections.playlists.hidden"
