@@ -7,7 +7,7 @@
       <AMControlsSorting
         v-model="sortBy"
         v-model:direction="direction"
-        :items="sortOptions"
+        :items="LibrarySongSorting"
         :active="sortChanged"
         @reset="resetSorting"
       />
@@ -85,8 +85,9 @@
 import type { ContentRating } from "@opfelmusig/lib/types";
 import { useFuse } from "@vueuse/integrations/useFuse";
 
+import type { SongSort } from "#layers/amdata/app/types/songs";
+import { LibrarySongSorting } from "#layers/amdata/app/types/sorting";
 import { DbListId } from "#layers/libcore/app/database/types";
-import sortLibrarySongs from "#layers/libcore/app/utils/sortLibrarySongs";
 
 const { data: songs } = useLibraryList(DbListId.Songs);
 
@@ -96,9 +97,8 @@ const {
   sortBy,
   direction,
   sortChanged,
-  options: sortOptions,
   reset: resetSorting,
-} = useLibrarySongsSorting(DbListId.Songs);
+} = useSorting<SongSort>(DbListId.Songs, "default");
 
 type RatingFilter = 1 | -1 | 0;
 
@@ -152,6 +152,6 @@ const displayedSongs = computed(() => {
       );
     });
 
-  return sortLibrarySongs(filteredSongs, sortBy.value, direction.value);
+  return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
 </script>

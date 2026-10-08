@@ -72,7 +72,7 @@
           <AMControlsSorting
             v-model="sortBy"
             v-model:direction="direction"
-            :items="sortOptions"
+            :items="DefaultSongSorting"
             :active="sortChanged"
             @reset="resetSorting"
           />
@@ -105,6 +105,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { SongSort } from "#layers/amdata/app/types/songs";
+import { DefaultSongSorting } from "#layers/amdata/app/types/sorting";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 const library = useLibrary();
@@ -121,12 +123,11 @@ const {
   sortBy,
   direction,
   sortChanged,
-  options: sortOptions,
   reset: resetSorting,
-} = useLibrarySongsSorting(() => playlistTracksListId(toValue(id)));
+} = useSorting<SongSort>(() => playlistTracksListId(toValue(id)), "default");
 
 const displayedTracks = computed(() => {
-  return sortLibrarySongs(tracks.value ?? [], sortBy.value, direction.value);
+  return sortSongs(tracks.value ?? [], sortBy.value, direction.value);
 });
 
 const { mutate: refreshPlaylist } = useMutation({
