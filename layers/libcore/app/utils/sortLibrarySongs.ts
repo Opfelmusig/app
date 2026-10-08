@@ -1,16 +1,19 @@
 import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
+import type { AmLibrarySong, SongSorting } from "#layers/amdata/app/types/songs";
 
 export interface LibrarySongsSort {
   by: "library" | "title" | "artist" | "album" | "genre" | "year" | "length";
   direction: "asc" | "desc";
 }
 
+export type SortingDirection = "asc" | "desc";
+
 export default function sortLibrarySongs(
   songs: readonly AmListResource<AmLibrarySong>[],
-  sort: LibrarySongsSort,
+  sort: SongSorting,
+  dir: SortingDirection,
 ): AmListResource<AmLibrarySong>[] {
-  const direction = sort.direction === "asc" ? 1 : -1;
+  const direction = dir === "asc" ? 1 : -1;
 
   function compare(left: string = "", right: string = "") {
     if (left === right) return 0;
@@ -28,8 +31,8 @@ export default function sortLibrarySongs(
     const left = a.resource.attributes;
     const right = b.resource.attributes;
 
-    switch (sort.by) {
-      case "library":
+    switch (sort) {
+      case "default":
         return (a.position - b.position) * direction;
       case "title":
         return compare(left.name, right.name);

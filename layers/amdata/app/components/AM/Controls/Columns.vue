@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import type { CheckboxGroupProps } from "@nuxt/ui";
 
-const model = defineModel<string[]>({ required: true });
+const model = defineModel<string[]>({ default: () => [] });
 
 defineProps<{
   items: CheckboxGroupProps["items"];

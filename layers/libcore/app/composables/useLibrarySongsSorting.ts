@@ -1,15 +1,19 @@
-import type { DbListId } from "#layers/libcore/app/database/types";
-import type { LibrarySongsSort } from "#layers/libcore/app/utils/sortLibrarySongs";
+import type { SongSorting } from "#layers/amdata/app/types/songs";
+import type { DbListIdentifier } from "#layers/libcore/app/database/types";
 
-const defaultSort: LibrarySongsSort = { by: "library", direction: "asc" };
+export default function useLibrarySongsSorting(id: MaybeRefOrGetter<DbListIdentifier>) {
+  const sortBy = useLocalStorage<SongSorting>(
+    () => `opfelmusig:song-sorting:${toValue(id)}`,
+    "default",
+  );
 
-export default function useLibrarySongsSorting(id: MaybeRefOrGetter<DbListId>) {
-  const sort = useLocalStorage<LibrarySongsSort>(() => `opfelmusig:song-sorting:${toValue(id)}`, {
-    ...defaultSort,
-  });
+  const direction = useLocalStorage<SortingDirection>(
+    () => `opfelmusig:song-sorting:${toValue(id)}:direction`,
+    "asc",
+  );
 
-  const options: { label: string; value: LibrarySongsSort["by"] }[] = [
-    { label: "Date Added", value: "library" },
+  const options: { label: string; value: SongSorting }[] = [
+    { label: "Default", value: "default" },
     { label: "Title", value: "title" },
     { label: "Album", value: "album" },
     { label: "Artist", value: "artist" },
@@ -18,13 +22,12 @@ export default function useLibrarySongsSorting(id: MaybeRefOrGetter<DbListId>) {
     { label: "Length", value: "length" },
   ];
 
-  const sortChanged = computed(
-    () => sort.value.by !== defaultSort.by || sort.value.direction !== defaultSort.direction,
-  );
+  const sortChanged = computed(() => sortBy.value !== "default" || direction.value !== "asc");
 
   function reset() {
-    sort.value = { ...defaultSort };
+    sortBy.value = "default";
+    direction.value = "asc";
   }
 
-  return { sort, sortChanged, options, reset };
+  return { sortBy, direction, sortChanged, options, reset };
 }

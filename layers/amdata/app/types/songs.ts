@@ -42,3 +42,4 @@ export interface AmLibrarySong extends AmResourceBase {
 export type AmSong = AmCatalogSong | AmLibrarySong;
 
 export type SongColumns = "album" | "artist" | "genre" | "year" | "length";
+export type SongSorting = "default" | "title" | "artist" | "album" | "genre" | "year" | "length";

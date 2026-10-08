@@ -69,7 +69,13 @@
             :active="playlist.attributes.personalRating === 1"
           />
           <OMButtonSeparator />
-          <OMButtonSecondary icon="lucide:arrow-up-down" />
+          <AMControlsSorting
+            v-model="sortBy"
+            v-model:direction="direction"
+            :items="sortOptions"
+            :active="sortChanged"
+            @reset="resetSorting"
+          />
           <OMButtonSecondary fill icon="lucide:filter" />
           <AMControlsColumns
             v-model="columns"
@@ -81,12 +87,15 @@
         </div>
       </div>
     </header>
-    <AMSongs :songs="tracks" :columns />
+    <AMSongs :songs="displayedTracks" :columns />
     <LibraryFooter>
       <span>
-        <span>{{ tracks?.length ?? 0 }} {{ tracks?.length === 1 ? "song" : "songs" }}, </span>
         <span>
-          {{ tracksDuration(tracks) }}
+          {{ displayedTracks?.length ?? 0 }}/{{ tracks?.length ?? 0 }}
+          {{ tracks?.length === 1 ? "song" : "songs" }},
+        </span>
+        <span>
+          {{ tracksDuration(displayedTracks) }}
         </span>
       </span>
 
@@ -107,6 +116,18 @@ const { data: tracks } = useLibraryPlaylistTracks(id);
 const { columns, options, reset, columnsChanged } = useLibrarySongsColumns(() =>
   playlistTracksListId(toValue(id)),
 );
+
+const {
+  sortBy,
+  direction,
+  sortChanged,
+  options: sortOptions,
+  reset: resetSorting,
+} = useLibrarySongsSorting(() => playlistTracksListId(toValue(id)));
+
+const displayedTracks = computed(() => {
+  return sortLibrarySongs(tracks.value ?? [], sortBy.value, direction.value);
+});
 
 const { mutate: refreshPlaylist } = useMutation({
   mutation: (playlistId: string) => library.refreshPlaylist(playlistId),

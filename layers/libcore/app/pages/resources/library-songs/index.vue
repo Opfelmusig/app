@@ -4,44 +4,13 @@
       <OMButtonPlay />
       <OMButtonSecondary icon="lucide:shuffle" />
       <OMButtonSeparator />
-      <OMMenu icon="lucide:arrow-up-down" :active="sortChanged">
-        <div class="flex gap-1 p-1">
-          <UButton
-            v-for="direction in directions"
-            :key="direction"
-            :variant="sort.direction === direction ? 'soft' : 'ghost'"
-            :leading-icon="direction === 'asc' ? 'lucide:chevron-down' : 'lucide:chevron-up'"
-            :aria-label="direction === 'asc' ? 'Ascending' : 'Descending'"
-            :aria-pressed="sort.direction === direction"
-            class="w-full justify-center rounded-sm first:rounded-tl-lg last:rounded-tr-lg"
-            color="neutral"
-            :ui="{ leadingIcon: 'size-4' }"
-            @click="sort.direction = direction"
-          />
-        </div>
-        <USeparator />
-        <div class="flex w-48 flex-col gap-2 p-2 px-2.5">
-          <URadioGroup
-            v-model="sort.by"
-            :ui="{ fieldset: 'gap-2' }"
-            :items="sortOptions"
-            aria-label="Sort songs by"
-          />
-        </div>
-        <USeparator />
-        <div class="flex w-48 flex-col gap-2 p-1">
-          <UButton
-            label="Reset sorting"
-            class="gap-2 rounded-b-lg"
-            variant="ghost"
-            color="error"
-            icon="lucide:corner-up-left"
-            :disabled="!sortChanged"
-            :ui="{ leadingIcon: 'size-4' }"
-            @click="resetSorting"
-          />
-        </div>
-      </OMMenu>
+      <AMControlsSorting
+        v-model="sortBy"
+        v-model:direction="direction"
+        :items="sortOptions"
+        :active="sortChanged"
+        @reset="resetSorting"
+      />
       <OMMenu
         icon="lucide:filter"
         :active="selectedRatings.length > 0 || selectedContentRatings.length > 0"
@@ -124,13 +93,12 @@ const { data: songs } = useLibraryList(DbListId.Songs);
 const { columns, options, reset, columnsChanged } = useLibrarySongsColumns(DbListId.Songs);
 
 const {
-  sort,
+  sortBy,
+  direction,
   sortChanged,
   options: sortOptions,
   reset: resetSorting,
 } = useLibrarySongsSorting(DbListId.Songs);
-
-const directions = ["asc", "desc"] as const;
 
 type RatingFilter = 1 | -1 | 0;
 
@@ -184,6 +152,6 @@ const displayedSongs = computed(() => {
       );
     });
 
-  return sortLibrarySongs(filteredSongs, sort.value);
+  return sortLibrarySongs(filteredSongs, sortBy.value, direction.value);
 });
 </script>
