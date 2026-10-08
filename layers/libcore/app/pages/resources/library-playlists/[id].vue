@@ -72,7 +72,7 @@
           <AMControlsSorting
             v-model="sortBy"
             v-model:direction="direction"
-            :items="DefaultSongSorting"
+            :items="defaultSongSorting"
             :active="sortChanged"
             @reset="resetSorting"
           />
@@ -106,7 +106,7 @@
 
 <script lang="ts" setup>
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
-import { DefaultSongSorting } from "#layers/amdata/app/lib/sorting";
+import { defaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 

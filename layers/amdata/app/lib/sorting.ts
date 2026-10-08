@@ -3,7 +3,7 @@ import type { SongSort } from "#layers/amdata/app/types/songs";
 export type SortingItem<T> = { label: string; value: T };
 export type SortingDirection = "asc" | "desc";
 
-export const SongSortingBase: SortingItem<SongSort>[] = [
+export const songSortingBase: SortingItem<SongSort>[] = [
   { label: "Title", value: "title" },
   { label: "Album", value: "album" },
   { label: "Artist", value: "artist" },
@@ -12,26 +12,26 @@ export const SongSortingBase: SortingItem<SongSort>[] = [
   { label: "Length", value: "length" },
 ];
 
-export const DefaultSongSorting: SortingItem<SongSort>[] = [
+export const defaultSongSorting: SortingItem<SongSort>[] = [
   {
     label: "Default",
     value: "default",
   },
-  ...SongSortingBase,
+  ...songSortingBase,
 ];
 
-export const AlbumSongSorting: SortingItem<SongSort>[] = [
+export const albumSongSorting: SortingItem<SongSort>[] = [
   {
     label: "Album order",
     value: "discAndTrackNumber",
   },
-  ...SongSortingBase,
+  ...songSortingBase,
 ];
 
-export const LibrarySongSorting: SortingItem<SongSort>[] = [
+export const librarySongSorting: SortingItem<SongSort>[] = [
   {
     label: "Date Added",
     value: "default",
   },
-  ...SongSortingBase,
+  ...songSortingBase,
 ];

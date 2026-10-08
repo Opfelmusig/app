@@ -7,7 +7,7 @@
       <AMControlsSorting
         v-model="sortBy"
         v-model:direction="direction"
-        :items="LibrarySongSorting"
+        :items="librarySongSorting"
         :active="sortChanged"
         @reset="resetSorting"
       />
@@ -85,7 +85,7 @@
 import type { ContentRating } from "@opfelmusig/lib/types";
 
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
-import { LibrarySongSorting } from "#layers/amdata/app/lib/sorting";
+import { librarySongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongColumns, SongSort } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
 
