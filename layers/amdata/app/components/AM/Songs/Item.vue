@@ -1,6 +1,13 @@
 <template>
   <OMTableRow>
-    <OMTableSimple>
+    <OMTableData v-if="albumMode">
+      <div class="flex justify-center text-muted">
+        <span class="truncate text-center tabular-nums">
+          {{ song.resource.attributes.trackNumber }}
+        </span>
+      </div>
+    </OMTableData>
+    <OMTableSimple v-else>
       <ArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
         :resource="song.resource"
@@ -75,5 +82,6 @@ import type { AmSong, SongColumns } from "#layers/amdata/app/types/songs";
 defineProps<{
   song: AmListResource<AmSong>;
   columns?: SongColumns[];
+  albumMode?: boolean;
 }>();
 </script>

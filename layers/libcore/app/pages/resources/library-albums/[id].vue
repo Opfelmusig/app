@@ -66,7 +66,7 @@
         </div>
       </div>
     </header>
-    <AMSongs :songs="displayedTracks" :columns />
+    <AMSongs :songs="displayedTracks" :columns album-mode :album-sort="!sortChanged" />
     <AMFooter>
       <span>
         <AMFooterCount :count="displayedTracks?.length ?? 0" singular="song" />,
@@ -82,7 +82,7 @@
 
 <script lang="ts" setup>
 import { AMLinks, AMReleaseDate } from "#components";
-import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
+import { songColumns } from "#layers/amdata/app/lib/columns";
 import { defaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
@@ -95,7 +95,7 @@ const { data: tracks } = useLibraryAlbumTracks(id);
 
 const { columns, reset, columnsChanged } = useColumns(
   () => playlistTracksListId(toValue(id)),
-  defaultSongColumns,
+  ["artist", "length"],
 );
 
 const {
