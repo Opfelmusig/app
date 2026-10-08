@@ -83,7 +83,6 @@
 
 <script lang="ts" setup>
 import type { ContentRating } from "@opfelmusig/lib/types";
-import { useFuse } from "@vueuse/integrations/useFuse";
 
 import type { SongSort } from "#layers/amdata/app/types/songs";
 import { LibrarySongSorting } from "#layers/amdata/app/types/sorting";
@@ -124,21 +123,11 @@ function resetFilters() {
 
 const search = ref("");
 
-const { results: searchedSongs } = useFuse(search, () => songs.value ?? [], {
-  matchAllWhenSearchEmpty: true,
-  fuseOptions: {
-    keys: [
-      { name: "resource.attributes.name", weight: 0.6 },
-      { name: "resource.attributes.artistName", weight: 0.25 },
-      { name: "resource.attributes.albumName", weight: 0.15 },
-    ],
-    threshold: 0.4,
-  },
-});
+const searchedSongs = useSearchableSongs(songs, search);
 
 const displayedSongs = computed(() => {
   const filteredSongs = filterSongs(
-    searchedSongs.value.map((song) => song.item),
+    searchedSongs.value,
     selectedRatings.value,
     selectedContentRatings.value,
     false,
