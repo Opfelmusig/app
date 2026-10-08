@@ -29,21 +29,21 @@
       </div>
     </OMTableData>
     <OMTableData v-if="columns?.includes('album')" class="text-muted">
-      <LibraryLinks
+      <AMLinks
         :links="song.resource.attributes.albums"
         type="albums"
-        :library-name="song.resource.attributes.albumName"
-        :library-id="
+        :fallback-name="song.resource.attributes.albumName"
+        :fallback-id="
           song.resource.type === 'library-songs' ? song.resource.extras.albumId : undefined
         "
       />
     </OMTableData>
     <OMTableData v-if="columns?.includes('artist')" class="text-muted">
-      <LibraryLinks
+      <AMLinks
         :links="song.resource.attributes.artists"
         type="artists"
-        :library-name="song.resource.attributes.artistName"
-        :library-id="
+        :fallback-name="song.resource.attributes.artistName"
+        :fallback-id="
           song.resource.type === 'library-songs' ? song.resource.extras.artistId : undefined
         "
       />
@@ -68,6 +68,7 @@
 </template>
 
 <script lang="ts" setup>
+import { AMLinks } from "#components";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmSong, SongColumns } from "#layers/amdata/app/types/songs";
 

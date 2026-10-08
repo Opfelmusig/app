@@ -7,11 +7,11 @@
       </NuxtLink>
     </template>
   </span>
-  <template v-else-if="libraryName">
-    <NuxtLink v-if="libraryId" class="truncate hover:underline" :to="libraryLink">
-      {{ libraryName }}
+  <template v-else-if="fallbackName">
+    <NuxtLink v-if="fallbackId" class="truncate hover:underline" :to="libraryLink">
+      {{ fallbackName }}
     </NuxtLink>
-    <template v-else>{{ libraryName }}</template>
+    <template v-else>{{ fallbackName }}</template>
   </template>
 </template>
 
@@ -21,11 +21,11 @@ import type { AmCatalogLink } from "#layers/amdata/app/types/resources";
 const props = defineProps<{
   links: AmCatalogLink[];
   type: "albums" | "artists";
-  libraryName?: string;
-  libraryId?: string;
+  fallbackName?: string;
+  fallbackId?: string;
 }>();
 
 const libraryLink = computed(() =>
-  rawResourceLink(props.type === "albums" ? "library-albums" : "library-artists", props.libraryId),
+  rawResourceLink(props.type === "albums" ? "library-albums" : "library-artists", props.fallbackId),
 );
 </script>

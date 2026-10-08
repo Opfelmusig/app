@@ -35,11 +35,11 @@
       </NuxtLink>
       <template v-if="showArtists">
         <span v-if="resource.type === 'library-albums'" class="truncate text-sm text-muted">
-          <LibraryLinks
+          <AMLinks
             :links="resource.attributes.artists"
             type="artists"
-            :library-name="resource.attributes.artistName"
-            :library-id="resource.extras.artistId"
+            :fallback-name="resource.attributes.artistName"
+            :fallback-id="resource.extras.artistId"
           />
         </span>
         <span v-else-if="resource.type === 'library-playlists'" class="truncate text-sm text-muted">
@@ -72,6 +72,7 @@
 </template>
 
 <script lang="ts" setup>
+import { AMLinks } from "#components";
 import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
 import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";

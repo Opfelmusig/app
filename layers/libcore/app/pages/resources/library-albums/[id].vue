@@ -18,16 +18,16 @@
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
           <h2>{{ album.attributes.name }}</h2>
           <div class="flex items-center gap-2 text-sm text-muted">
-            <LibraryLinks
+            <AMLinks
               :links="album.attributes.artists"
               type="artists"
-              :library-name="album.attributes.artistName"
-              :library-id="album.extras.artistId"
+              :fallback-name="album.attributes.artistName"
+              :fallback-id="album.extras.artistId"
             />
             <div class="size-1 shrink-0 rounded-full bg-accented first:hidden" />
             <span class="truncate">
               Released
-              <LibraryReleaseDate
+              <AMReleaseDate
                 v-if="album.attributes.releaseDate"
                 :release-date="album.attributes.releaseDate"
                 date-style="long"
@@ -84,6 +84,7 @@
 </template>
 
 <script lang="ts" setup>
+import { AMLinks, AMReleaseDate } from "#components";
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
 import { defaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
