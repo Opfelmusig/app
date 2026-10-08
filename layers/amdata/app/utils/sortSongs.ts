@@ -3,7 +3,7 @@ import type { AmSong, SongSort } from "#layers/amdata/app/types/songs";
 import type { SortingDirection } from "#layers/amdata/app/types/sorting";
 
 export default function sortSongs(
-  songs: readonly AmListResource<AmSong>[],
+  songs: AmListResource<AmSong>[],
   sort: SongSort,
   dir: SortingDirection,
 ): AmListResource<AmSong>[] {

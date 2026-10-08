@@ -137,20 +137,12 @@ const { results: searchedSongs } = useFuse(search, () => songs.value ?? [], {
 });
 
 const displayedSongs = computed(() => {
-  const filteredSongs = searchedSongs.value
-    .map((entry) => entry.item)
-    .filter(({ resource }) => {
-      return (
-        selectedRatings.value.length === 0 ||
-        selectedRatings.value.includes(resource.attributes.personalRating ?? 0)
-      );
-    })
-    .filter(({ resource }) => {
-      return (
-        selectedContentRatings.value.length === 0 ||
-        selectedContentRatings.value.includes(resource.attributes.contentRating ?? "clean")
-      );
-    });
+  const filteredSongs = filterSongs(
+    searchedSongs.value.map((song) => song.item),
+    selectedRatings.value,
+    selectedContentRatings.value,
+    false,
+  );
 
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });

@@ -51,3 +51,11 @@ export type SongSort =
   | "genre"
   | "year"
   | "length";
+
+export type SongFilterRating = RatingValue | 0;
+
+export interface SongFilters {
+  rating: SongFilterRating[];
+  contentRating: ContentRating[];
+  inLibrary: boolean;
+}
