@@ -22,9 +22,9 @@
           {{ genre }}
         </NuxtLink>
       </div>
-      <LibraryFooter>
-        <span>{{ genres?.length ?? 0 }} {{ genres?.length === 1 ? "genre" : "genres" }}</span>
-      </LibraryFooter>
+      <AMFooter>
+        <AMFooterCount :count="genres?.length ?? 0" singular="genre" />
+      </AMFooter>
     </div>
     <USeparator orientation="vertical" />
     <PageWrapper v-if="name">
@@ -51,12 +51,9 @@
           show-year
         />
       </LibraryGridWrapper>
-      <LibraryFooter>
-        <span
-          >{{ currentGenreAlbums?.length ?? 0 }}
-          {{ currentGenreAlbums?.length === 1 ? "album" : "albums" }}</span
-        >
-      </LibraryFooter>
+      <AMFooter>
+        <AMFooterCount :count="currentGenreAlbums?.length ?? 0" singular="album" />
+      </AMFooter>
     </PageWrapper>
   </div>
 </template>

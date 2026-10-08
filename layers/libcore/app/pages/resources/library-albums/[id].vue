@@ -67,19 +67,16 @@
       </div>
     </header>
     <AMSongs :songs="displayedTracks" :columns />
-    <LibraryFooter>
+    <AMFooter>
       <span>
-        <span>
-          {{ displayedTracks?.length ?? 0 }}
-          {{ displayedTracks?.length === 1 ? "song" : "songs" }},
-        </span>
+        <AMFooterCount :count="displayedTracks?.length ?? 0" singular="song" />,
         <span>
           {{ tracksDuration(displayedTracks) }}
         </span>
       </span>
 
       <LibraryFooterLink :resource="album" />
-    </LibraryFooter>
+    </AMFooter>
   </PageWrapper>
 </template>
 

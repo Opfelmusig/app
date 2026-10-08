@@ -17,9 +17,9 @@
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <LibraryGrid :items="albums" />
-    <LibraryFooter>
-      <span>{{ albums?.length ?? 0 }} {{ albums?.length === 1 ? "album" : "albums" }}</span>
-    </LibraryFooter>
+    <AMFooter>
+      <AMFooterCount :count="albums?.length ?? 0" singular="album" />
+    </AMFooter>
   </PageWrapper>
 </template>
 

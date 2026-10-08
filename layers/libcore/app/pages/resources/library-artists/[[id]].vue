@@ -43,9 +43,9 @@
           <OMButtonTeritary icon="lucide:ellipsis" class="no-active text-muted" @click.prevent />
         </NuxtLink>
       </div>
-      <LibraryFooter>
-        <span>{{ artists?.length ?? 0 }} {{ artists?.length === 1 ? "artist" : "artists" }}</span>
-      </LibraryFooter>
+      <AMFooter>
+        <AMFooterCount :count="artists?.length ?? 0" singular="artist" />
+      </AMFooter>
     </div>
     <USeparator orientation="vertical" />
     <PageWrapper v-if="id">
@@ -87,14 +87,11 @@
           show-year
         />
       </LibraryGridWrapper>
-      <LibraryFooter>
-        <span
-          >{{ currentArtistAlbums?.length ?? 0 }}
-          {{ currentArtistAlbums?.length === 1 ? "album" : "albums" }}</span
-        >
+      <AMFooter>
+        <AMFooterCount :count="currentArtistAlbums?.length ?? 0" singular="album" />
 
         <LibraryFooterLink :resource="currentArtist" />
-      </LibraryFooter>
+      </AMFooter>
     </PageWrapper>
   </div>
 </template>

@@ -67,17 +67,14 @@
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <AMSongs :songs="displayedSongs" :columns />
-    <LibraryFooter>
+    <AMFooter>
       <span>
-        <span>
-          {{ displayedSongs?.length ?? 0 }}
-          {{ displayedSongs?.length === 1 ? "song" : "songs" }},
-        </span>
+        <AMFooterCount :count="displayedSongs?.length ?? 0" singular="album" />,
         <span>
           {{ tracksDuration(displayedSongs) }}
         </span>
       </span>
-    </LibraryFooter>
+    </AMFooter>
   </PageWrapper>
 </template>
 
