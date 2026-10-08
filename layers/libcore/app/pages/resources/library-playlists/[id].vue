@@ -79,7 +79,7 @@
           <OMButtonSecondary fill icon="lucide:filter" />
           <AMControlsColumns
             v-model="columns"
-            :items="options"
+            :items="songColumns"
             :active="columnsChanged"
             @reset="reset"
           />
@@ -105,6 +105,7 @@
 </template>
 
 <script lang="ts" setup>
+import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
 import { DefaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
@@ -115,8 +116,9 @@ const id = useRouteParams<string>("id");
 const { data: playlist } = useLibraryPlaylist(id);
 const { data: tracks } = useLibraryPlaylistTracks(id);
 
-const { columns, options, reset, columnsChanged } = useLibrarySongsColumns(() =>
-  playlistTracksListId(toValue(id)),
+const { columns, reset, columnsChanged } = useColumns(
+  () => playlistTracksListId(toValue(id)),
+  defaultSongColumns,
 );
 
 const {

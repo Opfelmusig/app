@@ -51,7 +51,7 @@
       </OMMenu>
       <AMControlsColumns
         v-model="columns"
-        :items="options"
+        :items="songColumns"
         :active="columnsChanged"
         @reset="reset"
       />
@@ -84,13 +84,17 @@
 <script lang="ts" setup>
 import type { ContentRating } from "@opfelmusig/lib/types";
 
-import type { SongSort } from "#layers/amdata/app/types/songs";
-import { LibrarySongSorting } from "#layers/amdata/app/types/sorting";
+import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
+import { LibrarySongSorting } from "#layers/amdata/app/lib/sorting";
+import type { SongColumns, SongSort } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: songs } = useLibraryList(DbListId.Songs);
 
-const { columns, options, reset, columnsChanged } = useLibrarySongsColumns(DbListId.Songs);
+const { columns, reset, columnsChanged } = useColumns<SongColumns>(
+  DbListId.Songs,
+  defaultSongColumns,
+);
 
 const {
   sortBy,
