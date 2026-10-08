@@ -91,8 +91,8 @@
     <LibraryFooter>
       <span>
         <span>
-          {{ displayedTracks?.length ?? 0 }}/{{ tracks?.length ?? 0 }}
-          {{ tracks?.length === 1 ? "song" : "songs" }},
+          {{ displayedTracks?.length ?? 0 }}
+          {{ displayedTracks?.length === 1 ? "song" : "songs" }},
         </span>
         <span>
           {{ tracksDuration(displayedTracks) }}

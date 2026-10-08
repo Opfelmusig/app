@@ -70,8 +70,8 @@
     <LibraryFooter>
       <span>
         <span>
-          {{ displayedSongs?.length ?? 0 }}/{{ songs?.length ?? 0 }}
-          {{ songs?.length === 1 ? "song" : "songs" }},
+          {{ displayedSongs?.length ?? 0 }}
+          {{ displayedSongs?.length === 1 ? "song" : "songs" }},
         </span>
         <span>
           {{ tracksDuration(displayedSongs) }}

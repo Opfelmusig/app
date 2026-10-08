@@ -4,6 +4,7 @@ import type { Collection } from "dexie";
 import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
+import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,
@@ -159,6 +160,21 @@ export class LibraryClient {
       .filter((album) => album.extras.artistId === id)
       .reverse()
       .sortBy("extras.dateAdded");
+  }
+
+  async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
+    const songs = await this.resourcesByType("library-songs")
+      .filter((song) => song.extras.albumId === id)
+      .toArray();
+
+    return songs.map(
+      (song, i) =>
+        ({
+          key: song.id,
+          position: i,
+          resource: song,
+        }) satisfies AmListResource<AmLibrarySong>,
+    );
   }
 
   async getGenres() {
