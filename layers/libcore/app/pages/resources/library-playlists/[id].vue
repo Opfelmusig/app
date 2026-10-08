@@ -105,8 +105,8 @@
 </template>
 
 <script lang="ts" setup>
+import { DefaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
-import { DefaultSongSorting } from "#layers/amdata/app/types/sorting";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 const library = useLibrary();

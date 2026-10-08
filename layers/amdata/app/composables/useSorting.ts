@@ -1,4 +1,4 @@
-import type { SortingDirection } from "#layers/amdata/app/types/sorting";
+import type { SortingDirection } from "#layers/amdata/app/lib/sorting";
 
 export default function useSorting<T extends string>(
   id: MaybeRefOrGetter<string>,
