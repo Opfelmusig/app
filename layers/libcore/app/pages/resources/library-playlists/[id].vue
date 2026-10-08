@@ -76,7 +76,18 @@
             :active="sortChanged"
             @reset="resetSorting"
           />
-          <OMButtonSecondary fill icon="lucide:filter" />
+          <AMControlsFilters :active="changed" @click="resetFilters">
+            <AMControlsFiltersItem
+              v-model="selectedRatings"
+              label="Rating"
+              :items="songRatingFilter"
+            />
+            <AMControlsFiltersItem
+              v-model="selectedContentRatings"
+              label="Content Rating"
+              :items="songContentRatingFilter"
+            />
+          </AMControlsFilters>
           <AMControlsColumns
             v-model="columns"
             :items="songColumns"
@@ -103,6 +114,7 @@
 
 <script lang="ts" setup>
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
+import { songContentRatingFilter, songRatingFilter } from "#layers/amdata/app/lib/filters";
 import { defaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
@@ -125,8 +137,17 @@ const {
   reset: resetSorting,
 } = useSorting<SongSort>(() => playlistTracksListId(toValue(id)), "default");
 
+const { selectedRatings, selectedContentRatings, changed, reset: resetFilters } = useSongFilters();
+
 const displayedTracks = computed(() => {
-  return sortSongs(tracks.value ?? [], sortBy.value, direction.value);
+  const filteredSongs = filterSongs(
+    tracks.value ?? [],
+    selectedRatings.value,
+    selectedContentRatings.value,
+    false,
+  );
+
+  return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
 
 const { mutate: refreshPlaylist } = useMutation({

@@ -12,12 +12,16 @@ export default function filterSongs(
   return songs
     .filter(
       (song) =>
-        inLibrary === false || (song.resource.type === "songs" && song.resource.extras.libraryId),
+        inLibrary === false ||
+        song.resource.type === "library-songs" ||
+        song.resource.extras.libraryId,
     )
     .filter(
       (song) =>
         personalRating.length === 0 ||
-        personalRating.includes(song.resource.attributes.personalRating ?? 0),
+        personalRating
+          .map((rating) => parseInt(rating))
+          .includes(song.resource.attributes.personalRating ?? 0),
     )
     .filter(
       (song) =>
