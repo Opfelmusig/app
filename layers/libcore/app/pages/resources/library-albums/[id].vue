@@ -25,15 +25,14 @@
               :fallback-id="album.extras.artistId"
             />
             <div class="size-1 shrink-0 rounded-full bg-accented first:hidden" />
-            <span class="truncate">
+            <span v-if="album.attributes.releaseDate" class="truncate">
               Released
-              <AMReleaseDate
-                v-if="album.attributes.releaseDate"
-                :release-date="album.attributes.releaseDate"
-                date-style="long"
-              />
+              <AMReleaseDate :release-date="album.attributes.releaseDate" date-style="long" />
             </span>
-            <div class="size-1 shrink-0 rounded-full bg-accented first:hidden" />
+            <div
+              v-if="album.attributes.releaseDate"
+              class="size-1 shrink-0 rounded-full bg-accented first:hidden"
+            />
             <span class="truncate">
               {{ album.attributes.genreNames.join(", ") }}
             </span>
