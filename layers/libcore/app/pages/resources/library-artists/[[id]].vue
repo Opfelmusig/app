@@ -17,7 +17,7 @@
         <NuxtLink
           v-for="artist in artists"
           :key="artist.key"
-          class="group flex h-14 gap-2 border-b border-default p-2 last:border-b-0 hover:bg-raised route:bg-muted/40 [&:active:not(:has(.no-active:active))]:bg-muted/60"
+          class="group flex h-14 items-center gap-2 border-b border-default px-2 last:border-b-0 hover:bg-raised route:bg-muted/40 [&:active:not(:has(.no-active:active))]:bg-muted/60"
           :to="rawResourceLink('library-artists', artist.resource.id)"
         >
           <AMArtworkWrapper
