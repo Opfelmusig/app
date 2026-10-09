@@ -2,7 +2,11 @@
   <div class="flex size-full overflow-hidden">
     <div class="relative flex w-80 shrink-0 flex-col overflow-hidden overflow-y-auto">
       <header class="flex items-center gap-2 border-b border-default p-2">
-        <OMButtonSecondary icon="lucide:arrow-up-down" />
+        <OMButtonSecondary
+          icon="lucide:arrow-up-down"
+          :active="descending"
+          @click="descending = !descending"
+        />
         <OMButtonSecondary fill icon="lucide:filter" />
         <UInput
           variant="soft"
@@ -15,7 +19,7 @@
       </header>
       <div class="flex cursor-pointer flex-col text-sm select-none">
         <NuxtLink
-          v-for="artist in artists"
+          v-for="artist in sortedArtists"
           :key="artist.key"
           class="group flex h-14 items-center gap-2 border-b border-default px-2 last:border-b-0 hover:bg-raised route:bg-muted/40 [&:active:not(:has(.no-active:active))]:bg-muted/60"
           :to="rawResourceLink('library-artists', artist.resource.id)"
@@ -98,6 +102,12 @@ import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: artists } = useLibraryList(DbListId.Artists);
+
+const descending = ref(false);
+
+const sortedArtists = computed(() =>
+  descending.value ? artists.value?.toReversed() : artists.value,
+);
 
 const id = useRouteParams<string | undefined>("id");
 
