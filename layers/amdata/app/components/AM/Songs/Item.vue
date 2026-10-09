@@ -1,21 +1,24 @@
 <template>
   <OMTableRow>
-    <OMTableData v-if="albumMode">
-      <div class="flex justify-center text-muted">
-        <span class="truncate text-center tabular-nums">
-          {{ song.resource.attributes.trackNumber }}
-        </span>
-      </div>
-    </OMTableData>
-    <OMTableSimple v-else>
+    <OMTableSimple>
       <AMArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
         :resource="song.resource"
         size="sm"
-        color="muted"
+        :color="albumMode ? undefined : 'muted'"
       >
-        <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-        <UIcon v-else :name="resourceIcon(song.resource.type)" :class="iconClass" />
+        <div v-if="albumMode" class="flex size-full items-center justify-center text-muted">
+          <span class="truncate text-center tabular-nums">
+            {{ song.resource.attributes.trackNumber }}
+          </span>
+        </div>
+        <template v-else>
+          <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
+          <UIcon v-else :name="resourceIcon(song.resource.type)" :class="iconClass" />
+        </template>
+        <AMArtworkOverlay>
+          <OMIcon name="lucide:play" :class="iconClass" filled />
+        </AMArtworkOverlay>
       </AMArtworkWrapper>
     </OMTableSimple>
     <OMTableData>
