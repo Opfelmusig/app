@@ -7,7 +7,16 @@
           :active="descending"
           @click="descending = !descending"
         />
-        <OMButtonSecondary fill icon="lucide:filter" />
+        <AMControlsFilters :active="filtersChanged" @reset="resetFilters">
+          <AMControlsFiltersItem
+            v-model="selectedRatings"
+            label="Rating"
+            :items="songRatingFilter"
+          />
+          <AMControlsFiltersSection label="Artist">
+            <UCheckbox v-model="hasCatalog" label="Has catalog" />
+          </AMControlsFiltersSection>
+        </AMControlsFilters>
         <UInput
           variant="soft"
           color="neutral"
@@ -19,7 +28,7 @@
       </header>
       <div class="flex cursor-pointer flex-col text-sm select-none">
         <NuxtLink
-          v-for="artist in sortedArtists"
+          v-for="artist in displayedArtists"
           :key="artist.key"
           class="group flex h-14 items-center gap-2 border-b border-default px-2 last:border-b-0 hover:bg-raised route:bg-muted/40 [&:active:not(:has(.no-active:active))]:bg-muted/60"
           :to="rawResourceLink('library-artists', artist.resource.id)"
@@ -48,7 +57,7 @@
         </NuxtLink>
       </div>
       <AMFooter>
-        <AMFooterCount :count="artists?.length ?? 0" singular="artist" />
+        <AMFooterCount :count="displayedArtists.length" singular="artist" />
       </AMFooter>
     </div>
     <USeparator orientation="vertical" />
@@ -97,17 +106,36 @@
 </template>
 
 <script lang="ts" setup>
+import { songRatingFilter } from "#layers/amdata/app/lib/filters";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
+import type { SongFilterRating } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: artists } = useLibraryList(DbListId.Artists);
 
 const descending = ref(false);
+const selectedRatings = ref<SongFilterRating[]>([]);
+const hasCatalog = ref(false);
+const filtersChanged = computed(() => selectedRatings.value.length > 0 || hasCatalog.value);
 
-const sortedArtists = computed(() =>
-  descending.value ? artists.value?.toReversed() : artists.value,
-);
+function resetFilters() {
+  selectedRatings.value = [];
+  hasCatalog.value = false;
+}
+
+const displayedArtists = computed(() => {
+  const selectedRatingValues = selectedRatings.value.map(Number);
+  const filteredArtists = (artists.value ?? []).filter((artist) => {
+    const rating = artist.resource.attributes.personalRating ?? 0;
+    if (selectedRatingValues.length > 0 && !selectedRatingValues.includes(rating)) return false;
+    if (hasCatalog.value && !artist.resource.extras.catalogId) return false;
+
+    return true;
+  });
+
+  return descending.value ? filteredArtists.toReversed() : filteredArtists;
+});
 
 const id = useRouteParams<string | undefined>("id");
 
