@@ -1,7 +1,7 @@
 <template>
-  <OMTableRow no-hover>
+  <OMTableRow no-hover small>
     <td class="border-b border-default px-4 text-start whitespace-nowrap text-dimmed tabular-nums">
-      <span> Disc {{ disc }} </span>
+      <slot />
     </td>
     <OMTableData :colspan="(columns?.length ?? 0) + 2" />
   </OMTableRow>
@@ -11,7 +11,6 @@
 import type { SongColumns } from "#layers/amdata/app/types/songs";
 
 defineProps<{
-  disc: number;
-  columns?: SongColumns[];
+  columns: SongColumns[];
 }>();
 </script>

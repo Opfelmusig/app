@@ -84,7 +84,7 @@ import type { AmSong, SongColumns } from "#layers/amdata/app/types/songs";
 
 defineProps<{
   song: AmListResource<AmSong>;
-  columns?: SongColumns[];
+  columns: SongColumns[];
   albumMode?: boolean;
 }>();
 </script>

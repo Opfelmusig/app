@@ -75,7 +75,9 @@
         </div>
       </div>
     </header>
-    <AMSongs :songs="displayedTracks" :columns album-mode :album-sort="!sortChanged" />
+    <AMSongsWrapper :columns>
+      <AMSongs :songs="displayedTracks" :columns album-mode :album-sort="!sortChanged" />
+    </AMSongsWrapper>
     <AMFooter>
       <span>
         <AMFooterCount :count="displayedTracks?.length ?? 0" singular="song" />,

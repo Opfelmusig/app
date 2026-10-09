@@ -97,7 +97,23 @@
         </div>
       </div>
     </header>
-    <AMSongs :songs="displayedTracks" :columns />
+    <AMSongsWrapper :columns>
+      <OMTableStatus v-if="isPending" :columns>
+        <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+        <span>Loading</span>
+      </OMTableStatus>
+      <OMTableStatus v-else-if="error" error :columns>
+        <UIcon name="lucide:x" class="size-4" />
+        <span>{{ error.message }}</span>
+      </OMTableStatus>
+      <OMTableStatus v-else-if="tracks?.length === 0" :columns>
+        This playlist is empty
+      </OMTableStatus>
+      <OMTableStatus v-else-if="displayedTracks.length === 0" :columns>
+        No tracks found
+      </OMTableStatus>
+      <AMSongs v-else :songs="displayedTracks" :columns />
+    </AMSongsWrapper>
     <AMFooter>
       <span>
         <AMFooterCount :count="displayedTracks?.length ?? 0" singular="song" />,
@@ -125,7 +141,7 @@ const { data: playlist } = useLibraryQuery({
   key: () => ["playlist", id.value],
   query: () => library.client.getPlaylist(id.value),
 });
-const { data: tracks } = useLibraryList(() => playlistTracksListId(id.value));
+const { data: tracks, isPending, error } = useLibraryList(() => playlistTracksListId(id.value));
 
 const { columns, reset, columnsChanged } = useColumns(
   () => playlistTracksListId(toValue(id)),

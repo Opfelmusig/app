@@ -39,7 +39,9 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
-    <AMSongs :songs="displayedSongs" :columns />
+    <AMSongsWrapper :columns>
+      <AMSongs :songs="displayedSongs" :columns />
+    </AMSongsWrapper>
     <AMFooter>
       <span>
         <AMFooterCount :count="displayedSongs?.length ?? 0" singular="album" />,
