@@ -8,7 +8,7 @@
         :color="albumMode ? undefined : 'muted'"
       >
         <div v-if="albumMode" class="flex size-full items-center justify-center text-muted">
-          <span class="truncate text-center tabular-nums">
+          <span class="truncate text-center tabular-nums group-hover:opacity-0">
             {{ song.resource.attributes.trackNumber }}
           </span>
         </div>
@@ -16,7 +16,7 @@
           <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
           <UIcon v-else :name="resourceIcon(song.resource.type)" :class="iconClass" />
         </template>
-        <AMArtworkOverlay>
+        <AMArtworkOverlay :transparent="albumMode">
           <OMIcon name="lucide:play" :class="iconClass" filled />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
