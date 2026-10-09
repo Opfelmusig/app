@@ -5,7 +5,6 @@ export type SortingDirection = "asc" | "desc";
 
 export const songSortingBase: SortingItem<SongSort>[] = [
   { label: "Title", value: "title" },
-  { label: "Album", value: "album" },
   { label: "Artist", value: "artist" },
   { label: "Year", value: "year" },
   { label: "Length", value: "length" },
@@ -16,6 +15,7 @@ export const defaultSongSorting: SortingItem<SongSort>[] = [
     label: "Default",
     value: "default",
   },
+  { label: "Album", value: "album" },
   ...songSortingBase,
 ];
 
@@ -32,5 +32,6 @@ export const librarySongSorting: SortingItem<SongSort>[] = [
     label: "Date Added",
     value: "default",
   },
+  { label: "Album", value: "album" },
   ...songSortingBase,
 ];
