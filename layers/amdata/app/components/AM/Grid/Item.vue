@@ -11,6 +11,10 @@
       >
         <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
         <UIcon v-else :name="resourceIcon(resource.type)" :class="iconClass" />
+        <AMArtworkOverlay alignment="bottom">
+          <AMArtworkOverlayButton icon="lucide:play" filled />
+          <AMArtworkOverlayButton icon="lucide:ellipsis" />
+        </AMArtworkOverlay>
       </AMArtworkWrapper>
     </NuxtLink>
     <div class="flex w-full min-w-0 flex-col">

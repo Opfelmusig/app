@@ -10,7 +10,7 @@ defineProps<{
 }>();
 
 const overlay = cva(
-  "absolute inset-0 flex size-full bg-muted/60 text-highlighted opacity-0 select-none group-hover:opacity-100",
+  "absolute inset-0 flex size-full bg-muted/40 p-2 text-highlighted opacity-0 select-none group-hover:opacity-100",
   {
     variants: {
       alignment: {
