@@ -10,6 +10,7 @@
       />
       <OMButtonSecondary fill icon="lucide:filter" />
       <UInput
+        v-model="search"
         variant="soft"
         color="neutral"
         icon="lucide:search"
@@ -32,6 +33,8 @@ import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: albums } = useLibraryList(DbListId.Albums);
+const search = ref("");
+const searchedAlbums = useSearchableAlbums(albums, search);
 
 const {
   sortBy,
@@ -41,6 +44,6 @@ const {
 } = useSorting<AlbumSort>(() => DbListId.Albums, "default");
 
 const displayedAlbums = computed(() => {
-  return sortAlbums(albums.value ?? [], sortBy.value, direction.value);
+  return sortAlbums(searchedAlbums.value, sortBy.value, direction.value);
 });
 </script>

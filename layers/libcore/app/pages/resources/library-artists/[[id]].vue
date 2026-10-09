@@ -18,6 +18,7 @@
           </AMControlsFiltersSection>
         </AMControlsFilters>
         <UInput
+          v-model="search"
           variant="soft"
           color="neutral"
           icon="lucide:search"
@@ -113,6 +114,8 @@ import type { SongFilterRating } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: artists } = useLibraryList(DbListId.Artists);
+const search = ref("");
+const searchedArtists = useSearchableArtists(artists, search);
 
 const descending = ref(false);
 const selectedRatings = ref<SongFilterRating[]>([]);
@@ -126,15 +129,21 @@ function resetFilters() {
 
 const displayedArtists = computed(() => {
   const selectedRatingValues = selectedRatings.value.map(Number);
-  const filteredArtists = (artists.value ?? []).filter((artist) => {
+  const filteredArtists = searchedArtists.value.filter((artist) => {
     const rating = artist.resource.attributes.personalRating ?? 0;
     if (selectedRatingValues.length > 0 && !selectedRatingValues.includes(rating)) return false;
-    if (hasCatalog.value && !artist.resource.extras.catalogId) return false;
+    if (
+      hasCatalog.value &&
+      (artist.resource.type !== "library-artists" || !artist.resource.extras.catalogId)
+    )
+      return false;
 
     return true;
   });
 
-  return descending.value ? filteredArtists.toReversed() : filteredArtists;
+  const sortedArtists = filteredArtists.toSorted((left, right) => left.position - right.position);
+
+  return descending.value ? sortedArtists.toReversed() : sortedArtists;
 });
 
 const id = useRouteParams<string | undefined>("id");
