@@ -88,7 +88,7 @@
         </span>
       </span>
 
-      <LibraryFooterLink :resource="album" />
+      <AMFooterLink :resource="album" />
     </AMFooter>
   </PageWrapper>
 </template>

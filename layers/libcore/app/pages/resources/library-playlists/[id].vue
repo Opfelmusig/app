@@ -110,7 +110,7 @@
         </span>
       </span>
 
-      <LibraryFooterLink :resource="playlist" />
+      <AMFooterLink :resource="playlist" />
     </AMFooter>
   </PageWrapper>
 </template>

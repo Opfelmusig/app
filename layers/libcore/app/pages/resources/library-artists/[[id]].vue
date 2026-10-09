@@ -90,7 +90,7 @@
       <AMFooter>
         <AMFooterCount :count="currentArtistAlbums?.length ?? 0" singular="album" />
 
-        <LibraryFooterLink :resource="currentArtist" />
+        <AMFooterLink :resource="currentArtist" />
       </AMFooter>
     </PageWrapper>
   </div>
