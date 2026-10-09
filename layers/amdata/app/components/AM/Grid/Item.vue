@@ -11,7 +11,7 @@
       >
         <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
         <UIcon v-else :name="resourceIcon(resource.type)" :class="iconClass" />
-        <AMArtworkOverlay alignment="bottom">
+        <AMArtworkOverlay v-if="resource.type !== 'library-playlist-folders'" alignment="bottom">
           <AMArtworkOverlayButton icon="lucide:play" filled />
           <AMArtworkOverlayButton icon="lucide:ellipsis" />
         </AMArtworkOverlay>

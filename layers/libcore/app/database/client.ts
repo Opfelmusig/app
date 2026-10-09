@@ -178,9 +178,23 @@ export class LibraryClient {
   async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
     const songs = await this.resourcesByType("library-songs")
       .filter((song) => song.extras.albumId === id)
-      .toArray();
+      .sortBy("attributes.name");
 
     return this.map(songs);
+  }
+
+  async getFolderChildren(
+    id: string,
+  ): Promise<AmListResource<AmLibraryPlaylist | AmLibraryPlaylistFolder>[]> {
+    const folders = await this.resourcesByType("library-playlist-folders")
+      .filter((song) => song.extras.parentId === id)
+      .toArray();
+
+    const playlists = await this.resourcesByType("library-playlists")
+      .filter((song) => song.extras.parentId === id)
+      .sortBy("attributes.name");
+
+    return this.map([...folders, ...playlists]);
   }
 
   async getGenres() {
