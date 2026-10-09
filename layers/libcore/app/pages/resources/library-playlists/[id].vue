@@ -122,11 +122,14 @@ import { defaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
-const library = useLibrary();
 const id = useRouteParams<string>("id");
 
-const { data: playlist } = useLibraryPlaylist(id);
-const { data: tracks } = useLibraryPlaylistTracks(id);
+const library = useLibrary();
+const { data: playlist } = useLibraryQuery({
+  key: () => ["playlist", id.value],
+  query: () => library.client.getPlaylist(id.value),
+});
+const { data: tracks } = useLibraryList(() => playlistTracksListId(id.value));
 
 const { columns, reset, columnsChanged } = useColumns(
   () => playlistTracksListId(toValue(id)),

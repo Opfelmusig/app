@@ -104,8 +104,14 @@ import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 const library = useLibrary();
 const id = useRouteParams<string>("id");
 
-const { data: album } = useLibraryAlbum(id);
-const { data: tracks } = useLibraryAlbumTracks(id);
+const { data: album } = useLibraryQuery({
+  key: () => ["album", id.value],
+  query: () => library.client.getAlbum(id.value),
+});
+const { data: tracks } = useLibraryQuery({
+  key: () => ["albums", id.value, "tracks"],
+  query: () => library.client.getAlbumTracks(id.value),
+});
 
 const { columns, reset, columnsChanged } = useColumns(
   () => playlistTracksListId(toValue(id)),

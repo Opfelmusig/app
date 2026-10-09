@@ -101,8 +101,17 @@ const { data: artists } = useLibraryList(DbListId.Artists);
 
 const id = useRouteParams<string | undefined>("id");
 
-const { data: currentArtist } = useLibraryArtist(id);
-const { data: currentArtistAlbums } = useLibraryArtistAlbums(id);
+const library = useLibrary();
+const { data: currentArtist } = useLibraryQuery({
+  key: () => ["artist", id.value ?? null],
+  query: () => library.client.getArtist(id.value!),
+  enabled: id,
+});
+const { data: currentArtistAlbums } = useLibraryQuery({
+  key: () => ["artist", id.value ?? null, "albums"],
+  query: () => library.client.getArtistAlbums(id.value!),
+  enabled: id,
+});
 
 const {
   sortBy,

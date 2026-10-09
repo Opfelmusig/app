@@ -60,10 +60,18 @@ import { useFuse } from "@vueuse/integrations/useFuse.js";
 import { defaultAlbumSorting } from "#layers/amdata/app/lib/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
 
-const { data: genres } = useLibraryGenres();
+const library = useLibrary();
+const { data: genres } = useLibraryQuery({
+  key: ["genres"],
+  query: () => library.client.getGenres(),
+});
 
 const name = useRouteParams<string | undefined>("name");
-const { data: currentGenreAlbums } = useLibraryGenreAlbums(name);
+const { data: currentGenreAlbums } = useLibraryQuery({
+  key: () => ["genre", name.value ?? null, "albums"],
+  query: () => library.client.getGenreAlbums(name.value!),
+  enabled: name,
+});
 
 const search = ref("");
 

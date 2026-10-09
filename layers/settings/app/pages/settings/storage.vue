@@ -79,8 +79,11 @@ async function openDataDirectory() {
   }
 }
 
-const { data: stats } = useLibraryStats();
-const { sync, state, progress, error } = useLibrary();
+const { sync, state, progress, error, client } = useLibrary();
+const { data: stats } = useLibraryQuery({
+  key: ["stats"],
+  query: () => client.stats(),
+});
 
 const badgeColor = (done: boolean): BadgeProps["color"] =>
   progress.state === "idle" ? "primary" : done ? "success" : "warning";

@@ -1,5 +1,6 @@
 import { LibraryClient } from "#layers/libcore/app/database/client";
 import { LibraryDatabase } from "#layers/libcore/app/database/dexie";
+import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { refreshArtworks } from "#layers/libcore/app/lib/refreshArtworks";
 import { refreshPlaylist } from "#layers/libcore/app/lib/refreshPlaylist";
 import { syncAppleMusicLibrary } from "#layers/libcore/app/lib/sync";
@@ -293,7 +294,10 @@ export default defineNuxtPlugin({
 
     async function refreshAndInvalidatePlaylist(id: string) {
       await refreshPlaylist(id, db, opfelmusig);
-      await queryCache.invalidateQueries({ key: ["libcore", "playlist", id] });
+      await Promise.all([
+        queryCache.invalidateQueries({ key: ["libcore", "playlist", id] }),
+        queryCache.invalidateQueries({ key: ["libcore", "list", playlistTracksListId(id)] }),
+      ]);
     }
 
     return {
