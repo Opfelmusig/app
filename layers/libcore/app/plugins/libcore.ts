@@ -64,7 +64,6 @@ export default defineNuxtPlugin({
     const hasFailed = computed(
       () => !state.ready && !state.initializing && !state.syncing && !!error.value,
     );
-    const isLoading = computed(() => !state.ready && !hasFailed.value);
 
     function resetProgress() {
       progress.state = "idle";
@@ -308,7 +307,6 @@ export default defineNuxtPlugin({
           state: readonly(state),
           progress: readonly(progress),
           error: readonly(error),
-          isLoading,
           hasFailed,
           refreshPlaylist: refreshAndInvalidatePlaylist,
         },

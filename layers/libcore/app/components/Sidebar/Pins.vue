@@ -20,12 +20,7 @@
         <SidebarItemLabel>{{ pin.resource.attributes.name }}</SidebarItemLabel>
       </SidebarItemWrapper>
     </template>
-    <SidebarItemIcon
-      v-else-if="isLoading || asyncStatus === 'loading'"
-      icon="lucide:loader-circle"
-      spin
-      variant="disabled"
-    >
+    <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
       Loading Pins
     </SidebarItemIcon>
   </div>
@@ -34,6 +29,5 @@
 <script lang="ts" setup>
 import { DbListId } from "#layers/libcore/app/database/types";
 
-const { isLoading } = useLibrary();
-const { data, asyncStatus } = useLibraryList(DbListId.Pins);
+const { data, isPending } = useLibraryList(DbListId.Pins);
 </script>

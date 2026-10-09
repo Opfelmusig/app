@@ -28,12 +28,7 @@
         {{ overflow }} More
       </SidebarItemIcon>
     </template>
-    <SidebarItemIcon
-      v-else-if="isLoading || asyncStatus === 'loading'"
-      icon="lucide:loader-circle"
-      spin
-      variant="disabled"
-    >
+    <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
       Loading Playlists
     </SidebarItemIcon>
 
@@ -42,8 +37,8 @@
 </template>
 
 <script lang="ts" setup>
-const { isLoading, client } = useLibrary();
-const { data, asyncStatus, error } = useLibraryQuery({
+const { client } = useLibrary();
+const { data, isPending, error } = useLibraryQuery({
   key: ["tree"],
   query: () => client.getFolderTree(),
 });
