@@ -1,7 +1,7 @@
 <template>
   <PageWrapper>
     <header class="flex gap-4 p-4">
-      <ArtworkWrapper
+      <AMArtworkWrapper
         v-slot="{ artwork, iconClass, imageSize }"
         :resource="playlist"
         color="muted"
@@ -12,11 +12,11 @@
           variant="square"
         >
           <template #fallback>
-            <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+            <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
             <UIcon v-else :name="resourceIcon('playlists')" :class="iconClass" />
           </template>
         </MediaEditorialVideo>
-      </ArtworkWrapper>
+      </AMArtworkWrapper>
       <div v-if="playlist" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
           <h2>{{ playlist.attributes.name }}</h2>

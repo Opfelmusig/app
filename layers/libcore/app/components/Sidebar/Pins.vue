@@ -9,14 +9,14 @@
         :key="pin.resource.id"
         :to="resourceLink(pin.resource)"
       >
-        <ArtworkWrapper
+        <AMArtworkWrapper
           v-slot="{ iconClass, imageSize, artwork }"
           :resource="pin.resource"
           size="xs"
         >
-          <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+          <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
           <UIcon v-else :name="resourceIcon(pin.resource.type)" :class="iconClass" />
-        </ArtworkWrapper>
+        </AMArtworkWrapper>
         <SidebarItemLabel>{{ pin.resource.attributes.name }}</SidebarItemLabel>
       </SidebarItemWrapper>
     </template>

@@ -8,15 +8,15 @@
       </div>
     </OMTableData>
     <OMTableSimple v-else>
-      <ArtworkWrapper
+      <AMArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
         :resource="song.resource"
         size="sm"
         color="muted"
       >
-        <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+        <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
         <UIcon v-else :name="resourceIcon(song.resource.type)" :class="iconClass" />
-      </ArtworkWrapper>
+      </AMArtworkWrapper>
     </OMTableSimple>
     <OMTableData>
       <div class="flex items-center gap-2">

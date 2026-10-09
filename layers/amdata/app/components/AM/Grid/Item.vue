@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
     <NuxtLink class="w-full" :to="resourceLink(resource)">
-      <ArtworkWrapper
+      <AMArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
         :resource="resource.type === 'library-playlist-folders' ? undefined : resource"
         size="lg"
@@ -9,9 +9,9 @@
         :class="resource.type !== 'library-artists' ? 'rounded-2xl' : ''"
         color="muted"
       >
-        <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+        <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
         <UIcon v-else :name="resourceIcon(resource.type)" :class="iconClass" />
-      </ArtworkWrapper>
+      </AMArtworkWrapper>
     </NuxtLink>
     <div class="flex w-full min-w-0 flex-col">
       <NuxtLink :to="resourceLink(resource)" class="flex items-center gap-2">

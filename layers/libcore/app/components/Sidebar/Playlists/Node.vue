@@ -1,9 +1,9 @@
 <template>
   <SidebarItemWrapper :to="resourceLink(node)" :inset>
-    <ArtworkWrapper v-slot="{ iconClass, imageSize, artwork }" :resource="node" size="xs">
-      <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+    <AMArtworkWrapper v-slot="{ iconClass, imageSize, artwork }" :resource="node" size="xs">
+      <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
       <UIcon v-else :name="resourceIcon(node.type)" :class="iconClass" />
-    </ArtworkWrapper>
+    </AMArtworkWrapper>
     <SidebarItemLabel>{{ node.attributes.name }}</SidebarItemLabel>
     <SidebarItemStar v-if="node.attributes.personalRating === 1" />
   </SidebarItemWrapper>

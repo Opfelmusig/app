@@ -4,15 +4,15 @@
   </template>
   <template v-else>
     <SidebarItemWrapper to="/me" no-right-padding>
-      <ArtworkWrapper
+      <AMArtworkWrapper
         v-slot="{ artwork, iconClass, imageSize }"
         :resource="profile"
         color="muted"
         size="xs"
       >
-        <ArtworkImage v-if="artwork" :width="imageSize" :artwork />
+        <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
         <UIcon v-else name="lucide:user-x" :class="iconClass" />
-      </ArtworkWrapper>
+      </AMArtworkWrapper>
       <SidebarItemLabel>{{ profile.attributes?.name }}</SidebarItemLabel>
     </SidebarItemWrapper>
   </template>
