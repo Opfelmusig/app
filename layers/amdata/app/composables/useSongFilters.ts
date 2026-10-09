@@ -6,19 +6,37 @@ export default function useSongFilters() {
   const selectedRatings = ref<SongFilterRating[]>([]);
   const selectedContentRatings = ref<ContentRating[]>([]);
   const inLibrary = ref(false);
+  const isUploaded = ref(false);
 
   const changed = computed(
     () =>
       selectedRatings.value.length > 0 ||
       selectedContentRatings.value.length > 0 ||
-      inLibrary.value,
+      inLibrary.value ||
+      isUploaded.value,
   );
 
   function reset() {
     selectedRatings.value = [];
     selectedContentRatings.value = [];
     inLibrary.value = false;
+    isUploaded.value = false;
   }
 
-  return { selectedRatings, selectedContentRatings, inLibrary, changed, reset };
+  const filters = computed<SongFilters>(() => ({
+    personalRating: selectedRatings.value,
+    contentRating: selectedContentRatings.value,
+    inLibrary: inLibrary.value,
+    isUploaded: isUploaded.value,
+  }));
+
+  return {
+    filters,
+    selectedRatings,
+    selectedContentRatings,
+    inLibrary,
+    isUploaded,
+    changed,
+    reset,
+  };
 }

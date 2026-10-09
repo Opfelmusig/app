@@ -6,7 +6,7 @@ export type FilterItem<T> = { label: string; value: T };
 
 export const songRatingFilter: FilterItem<SongFilterRating>[] = [
   { label: "Favorited", value: "1" },
-  { label: "Suggest Less", value: "-1" },
+  { label: "Suggest less", value: "-1" },
   { label: "No rating", value: "0" },
 ];
 

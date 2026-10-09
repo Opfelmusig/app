@@ -87,6 +87,9 @@
               label="Content Rating"
               :items="songContentRatingFilter"
             />
+            <AMControlsFiltersSection label="Type">
+              <UCheckbox v-model="isUploaded" label="Is uploaded" />
+            </AMControlsFiltersSection>
           </AMControlsFilters>
           <AMControlsColumns
             v-model="columns"
@@ -137,15 +140,17 @@ const {
   reset: resetSorting,
 } = useSorting<SongSort>(() => playlistTracksListId(toValue(id)), "default");
 
-const { selectedRatings, selectedContentRatings, changed, reset: resetFilters } = useSongFilters();
+const {
+  filters,
+  selectedRatings,
+  selectedContentRatings,
+  isUploaded,
+  changed,
+  reset: resetFilters,
+} = useSongFilters();
 
 const displayedTracks = computed(() => {
-  const filteredSongs = filterSongs(
-    tracks.value ?? [],
-    selectedRatings.value,
-    selectedContentRatings.value,
-    false,
-  );
+  const filteredSongs = filterSongs(tracks.value ?? [], filters.value);
 
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
