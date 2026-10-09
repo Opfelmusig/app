@@ -16,7 +16,7 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
-    <LibraryGrid :items="albums" />
+    <AMGrid :items="albums" show-artists />
     <AMFooter>
       <AMFooterCount :count="albums?.length ?? 0" singular="album" />
     </AMFooter>

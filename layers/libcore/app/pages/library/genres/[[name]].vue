@@ -43,14 +43,7 @@
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </header>
-      <LibraryGridWrapper>
-        <LibraryGridItem
-          v-for="album in currentGenreAlbums"
-          :key="album.id"
-          :resource="album"
-          show-year
-        />
-      </LibraryGridWrapper>
+      <AMGrid :items="currentGenreAlbums" show-artists />
       <AMFooter>
         <AMFooterCount :count="currentGenreAlbums?.length ?? 0" singular="album" />
       </AMFooter>

@@ -1,7 +1,13 @@
 <template>
-  <LibraryGridWrapper>
-    <LibraryGridItem v-for="item in items" :key="item.key" :resource="item.resource" show-artists />
-  </LibraryGridWrapper>
+  <AMGridWrapper>
+    <AMGridItem
+      v-for="item in items"
+      :key="item.key"
+      :resource="item.resource"
+      :show-artists
+      :show-year
+    />
+  </AMGridWrapper>
 </template>
 
 <script lang="ts" setup>
@@ -12,5 +18,7 @@ import type { AmListResource } from "#layers/amdata/app/types/resources";
 
 defineProps<{
   items?: AmListResource<AmLibraryAlbum | AmLibraryPlaylist | AmLibraryArtist>[];
+  showArtists?: boolean;
+  showYear?: boolean;
 }>();
 </script>

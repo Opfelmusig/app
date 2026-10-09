@@ -3,7 +3,7 @@ import type { Collection } from "dexie";
 
 import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
+import type { AmListResource, AmResource } from "#layers/amdata/app/types/resources";
 import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
@@ -155,11 +155,24 @@ export class LibraryClient {
     return results.filter((result) => result !== undefined) as DbListResourceByList<L>[];
   }
 
-  getArtistAlbums(id: string) {
-    return this.resourcesByType("library-albums")
+  map<T extends AmResource>(resources: T[]): AmListResource<T>[] {
+    return resources.map(
+      (resource, i) =>
+        ({
+          key: resource.id,
+          position: i,
+          resource: resource,
+        }) satisfies AmListResource<T>,
+    );
+  }
+
+  async getArtistAlbums(id: string) {
+    const albums = await this.resourcesByType("library-albums")
       .filter((album) => album.extras.artistId === id)
       .reverse()
       .sortBy("extras.dateAdded");
+
+    return this.map(albums);
   }
 
   async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
@@ -167,14 +180,7 @@ export class LibraryClient {
       .filter((song) => song.extras.albumId === id)
       .toArray();
 
-    return songs.map(
-      (song, i) =>
-        ({
-          key: song.id,
-          position: i,
-          resource: song,
-        }) satisfies AmListResource<AmLibrarySong>,
-    );
+    return this.map(songs);
   }
 
   async getGenres() {
@@ -185,10 +191,12 @@ export class LibraryClient {
       .sort((a, b) => a.localeCompare(b));
   }
 
-  getGenreAlbums(genre: string) {
-    return this.resourcesByType("library-albums")
+  async getGenreAlbums(genre: string) {
+    const albums = await this.resourcesByType("library-albums")
       .filter((album) => album.attributes.genreNames.includes(genre))
       .reverse()
       .sortBy("extras.dateAdded");
+
+    return this.map(albums);
   }
 }

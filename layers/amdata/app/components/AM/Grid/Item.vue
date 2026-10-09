@@ -3,7 +3,7 @@
     <NuxtLink class="w-full" :to="resourceLink(resource)">
       <ArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
-        :resource="resource"
+        :resource="resource.type === 'library-playlist-folders' ? undefined : resource"
         size="lg"
         class="aspect-square h-auto w-full"
         :class="resource.type !== 'library-artists' ? 'rounded-2xl' : ''"
@@ -19,7 +19,11 @@
           {{ resource.attributes.name }}
         </span>
         <OMIcon
-          v-if="resource.attributes.personalRating === 1"
+          v-if="
+            resource.type !== 'social-profiles' &&
+            resource.type !== 'library-playlist-folders' &&
+            resource.attributes.personalRating === 1
+          "
           name="lucide:star"
           filled
           class="size-3 shrink-0 text-primary"
@@ -34,15 +38,21 @@
         </OMExplicit>
       </NuxtLink>
       <template v-if="showArtists">
-        <span v-if="resource.type === 'library-albums'" class="truncate text-sm text-muted">
+        <span
+          v-if="resource.type === 'library-albums' || resource.type === 'albums'"
+          class="truncate text-sm text-muted"
+        >
           <AMLinks
             :links="resource.attributes.artists"
             type="artists"
             :fallback-name="resource.attributes.artistName"
-            :fallback-id="resource.extras.artistId"
+            :fallback-id="resource.type === 'library-albums' ? resource.extras.artistId : undefined"
           />
         </span>
-        <span v-else-if="resource.type === 'library-playlists'" class="truncate text-sm text-muted">
+        <span
+          v-else-if="resource.type === 'library-playlists' || resource.type === 'playlists'"
+          class="truncate text-sm text-muted"
+        >
           <span v-if="resource.attributes.curatorName" class="truncate">
             <NuxtLink
               v-if="resource.attributes.curatorSocialHandle"
@@ -58,7 +68,11 @@
         </span>
       </template>
       <span
-        v-if="showYear && resource.type === 'library-albums' && resource.attributes.releaseDate"
+        v-if="
+          showYear &&
+          (resource.type === 'library-albums' || resource.type === 'albums') &&
+          resource.attributes.releaseDate
+        "
         class="truncate text-sm text-muted"
       >
         <NuxtTime
@@ -72,13 +86,14 @@
 </template>
 
 <script lang="ts" setup>
-import { AMLinks } from "#components";
-import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
-import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmAlbum } from "#layers/amdata/app/types/albums";
+import type { AmArtist } from "#layers/amdata/app/types/artists";
+import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
+import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 
 defineProps<{
-  resource: AmLibraryAlbum | AmLibraryPlaylist | AmLibraryArtist;
+  resource: AmAlbum | AmPlaylist | AmArtist | AmLibraryPlaylistFolder | AmSocialProfile; // station
   showArtists?: boolean;
   showYear?: boolean;
 }>();
