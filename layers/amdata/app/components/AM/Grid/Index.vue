@@ -1,12 +1,13 @@
 <template>
   <AMGridWrapper>
-    <AMGridItem
-      v-for="item in items"
-      :key="item.key"
-      :resource="item.resource"
-      :show-artists
-      :show-year
-    />
+    <template v-for="item in items" :key="item.key">
+      <AMGridItem
+        v-if="item.resource.attributes.name"
+        :resource="item.resource"
+        :show-artists
+        :show-year
+      />
+    </template>
   </AMGridWrapper>
 </template>
 
