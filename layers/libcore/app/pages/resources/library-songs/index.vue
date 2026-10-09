@@ -54,6 +54,7 @@
 <script lang="ts" setup>
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
 import { songContentRatingFilter, songRatingFilter } from "#layers/amdata/app/lib/filters";
+import { songSearchKeys } from "#layers/amdata/app/lib/search";
 import { librarySongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongColumns, SongSort } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
@@ -82,7 +83,7 @@ const {
 } = useSongFilters();
 
 const search = ref("");
-const searchedSongs = useSearchableSongs(songs, search);
+const searchedSongs = useSearch(songs, search, songSearchKeys);
 
 const displayedSongs = computed(() => {
   const filteredSongs = filterSongs(searchedSongs.value, filters.value);

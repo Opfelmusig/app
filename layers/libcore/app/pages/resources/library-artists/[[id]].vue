@@ -108,6 +108,7 @@
 
 <script lang="ts" setup>
 import { songRatingFilter } from "#layers/amdata/app/lib/filters";
+import { artistSearchKeys } from "#layers/amdata/app/lib/search";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import type { SongFilterRating } from "#layers/amdata/app/types/songs";
@@ -115,7 +116,7 @@ import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: artists } = useLibraryList(DbListId.Artists);
 const search = ref("");
-const searchedArtists = useSearchableArtists(artists, search);
+const searchedArtists = useSearch(artists, search, artistSearchKeys);
 
 const descending = ref(false);
 const selectedRatings = ref<SongFilterRating[]>([]);
@@ -132,11 +133,7 @@ const displayedArtists = computed(() => {
   const filteredArtists = searchedArtists.value.filter((artist) => {
     const rating = artist.resource.attributes.personalRating ?? 0;
     if (selectedRatingValues.length > 0 && !selectedRatingValues.includes(rating)) return false;
-    if (
-      hasCatalog.value &&
-      (artist.resource.type !== "library-artists" || !artist.resource.extras.catalogId)
-    )
-      return false;
+    if (hasCatalog.value && !artist.resource.extras.catalogId) return false;
 
     return true;
   });

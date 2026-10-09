@@ -28,13 +28,14 @@
 </template>
 
 <script lang="ts" setup>
+import { albumSearchKeys } from "#layers/amdata/app/lib/search";
 import { libraryAlbumSorting } from "#layers/amdata/app/lib/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: albums } = useLibraryList(DbListId.Albums);
 const search = ref("");
-const searchedAlbums = useSearchableAlbums(albums, search);
+const searchedAlbums = useSearch(albums, search, albumSearchKeys);
 
 const {
   sortBy,
