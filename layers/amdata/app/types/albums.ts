@@ -36,3 +36,5 @@ export interface AmLibraryAlbum extends AmResourceBase {
 }
 
 export type AmAlbum = AmCatalogAlbum | AmLibraryAlbum;
+
+export type AlbumSort = "default" | "title" | "artist" | "year";

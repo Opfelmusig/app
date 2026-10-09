@@ -1,3 +1,4 @@
+import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 
 export type SortingItem<T> = { label: string; value: T };
@@ -34,4 +35,35 @@ export const librarySongSorting: SortingItem<SongSort>[] = [
   },
   { label: "Album", value: "album" },
   ...songSortingBase,
+];
+
+export const albumSortingBase: SortingItem<AlbumSort>[] = [
+  { label: "Title", value: "title" },
+  { label: "Year", value: "year" },
+];
+
+export const defaultAlbumSorting: SortingItem<AlbumSort>[] = [
+  {
+    label: "Default",
+    value: "default",
+  },
+  { label: "Artist", value: "artist" },
+  ...albumSortingBase,
+];
+
+export const artistAlbumSorting: SortingItem<AlbumSort>[] = [
+  {
+    label: "Default",
+    value: "default",
+  },
+  ...albumSortingBase,
+];
+
+export const libraryAlbumSorting: SortingItem<AlbumSort>[] = [
+  {
+    label: "Date Added",
+    value: "default",
+  },
+  { label: "Artist", value: "artist" },
+  ...albumSortingBase,
 ];

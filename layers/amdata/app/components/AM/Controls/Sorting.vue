@@ -5,7 +5,7 @@
         v-for="direction in directions"
         :key="direction"
         :variant="directionModel === direction ? 'soft' : 'ghost'"
-        :leading-icon="direction === 'asc' ? 'lucide:chevron-down' : 'lucide:chevron-up'"
+        :leading-icon="direction === 'asc' ? 'lucide:chevron-up' : 'lucide:chevron-down'"
         class="w-full justify-center rounded-sm first:rounded-tl-lg last:rounded-tr-lg"
         color="neutral"
         :ui="{ leadingIcon: 'size-4' }"

@@ -71,14 +71,20 @@
           />
         </div>
         <div class="flex items-center gap-2">
-          <OMButtonSecondary icon="lucide:arrow-up-down" />
+          <AMControlsSorting
+            v-model="sortBy"
+            v-model:direction="direction"
+            :items="artistAlbumSorting"
+            :active="sortChanged"
+            @reset="resetSorting"
+          />
           <OMButtonSecondary fill icon="lucide:filter" />
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </header>
-      <AMGrid :items="currentArtistAlbums" show-year />
+      <AMGrid :items="displayedAlbums" show-year />
       <AMFooter>
-        <AMFooterCount :count="currentArtistAlbums?.length ?? 0" singular="album" />
+        <AMFooterCount :count="displayedAlbums?.length ?? 0" singular="album" />
 
         <AMFooterLink :resource="currentArtist" />
       </AMFooter>
@@ -87,6 +93,8 @@
 </template>
 
 <script lang="ts" setup>
+import { artistAlbumSorting } from "#layers/amdata/app/lib/sorting";
+import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: artists } = useLibraryList(DbListId.Artists);
@@ -95,4 +103,15 @@ const id = useRouteParams<string | undefined>("id");
 
 const { data: currentArtist } = useLibraryArtist(id);
 const { data: currentArtistAlbums } = useLibraryArtistAlbums(id);
+
+const {
+  sortBy,
+  direction,
+  sortChanged,
+  reset: resetSorting,
+} = useSorting<AlbumSort>(() => `artist:${id.value}:albums`, "title");
+
+const displayedAlbums = computed(() => {
+  return sortAlbums(currentArtistAlbums.value ?? [], sortBy.value, direction.value);
+});
 </script>

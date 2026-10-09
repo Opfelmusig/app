@@ -17,7 +17,7 @@ export default function useSorting<T extends string>(
     persistent,
   );
 
-  const sortChanged = computed(() => sortBy.value !== "default" || direction.value !== "asc");
+  const sortChanged = computed(() => sortBy.value !== defaultSort || direction.value !== "asc");
 
   function reset() {
     sortBy.value = defaultSort;

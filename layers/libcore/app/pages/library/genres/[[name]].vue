@@ -35,14 +35,20 @@
           </h2>
         </div>
         <div class="flex items-center gap-2">
-          <OMButtonSecondary icon="lucide:arrow-up-down" />
+          <AMControlsSorting
+            v-model="sortBy"
+            v-model:direction="direction"
+            :items="defaultAlbumSorting"
+            :active="sortChanged"
+            @reset="resetSorting"
+          />
           <OMButtonSecondary fill icon="lucide:filter" />
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </header>
-      <AMGrid :items="currentGenreAlbums" show-artists />
+      <AMGrid :items="displayedAlbums" show-artists />
       <AMFooter>
-        <AMFooterCount :count="currentGenreAlbums?.length ?? 0" singular="album" />
+        <AMFooterCount :count="displayedAlbums?.length ?? 0" singular="album" />
       </AMFooter>
     </PageWrapper>
   </div>
@@ -50,6 +56,9 @@
 
 <script lang="ts" setup>
 import { useFuse } from "@vueuse/integrations/useFuse.js";
+
+import { defaultAlbumSorting } from "#layers/amdata/app/lib/sorting";
+import type { AlbumSort } from "#layers/amdata/app/types/albums";
 
 const { data: genres } = useLibraryGenres();
 
@@ -67,5 +76,16 @@ const { results: searchedGenres } = useFuse(search, () => genres.value ?? [], {
 
 const displayedGenres = computed(() => {
   return searchedGenres.value.map((entry) => entry.item);
+});
+
+const {
+  sortBy,
+  direction,
+  sortChanged,
+  reset: resetSorting,
+} = useSorting<AlbumSort>(() => `genre:${name.value}:albums`, "title");
+
+const displayedAlbums = computed(() => {
+  return sortAlbums(currentGenreAlbums.value ?? [], sortBy.value, direction.value);
 });
 </script>
