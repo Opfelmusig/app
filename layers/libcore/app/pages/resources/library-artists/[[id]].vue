@@ -71,9 +71,6 @@
           />
         </div>
         <div class="flex items-center gap-2">
-          <OMButtonPlay />
-          <OMButtonSecondary icon="lucide:shuffle" />
-          <OMButtonSeparator />
           <OMButtonSecondary icon="lucide:arrow-up-down" />
           <OMButtonSecondary fill icon="lucide:filter" />
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />

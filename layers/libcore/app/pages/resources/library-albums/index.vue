@@ -1,9 +1,6 @@
 <template>
   <PageWrapper>
     <header class="flex items-center gap-2 p-4">
-      <OMButtonPlay />
-      <OMButtonSecondary icon="lucide:shuffle" />
-      <OMButtonSeparator />
       <OMButtonSecondary icon="lucide:arrow-up-down" />
       <OMButtonSecondary fill icon="lucide:filter" />
       <UInput
