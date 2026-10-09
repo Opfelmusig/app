@@ -40,8 +40,6 @@ export default function sortSongs(
         return compare(left.artistName, right.artistName);
       case "album":
         return compare(left.albumName, right.albumName);
-      case "genre":
-        return compare(left.genreNames.join(", "), right.genreNames.join(", "));
       case "year":
         return (year(left.releaseDate) - year(right.releaseDate)) * direction;
       case "length":

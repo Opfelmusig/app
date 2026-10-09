@@ -48,7 +48,6 @@ export type SongSort =
   | "title"
   | "artist"
   | "album"
-  | "genre"
   | "year"
   | "length";
 export type SongFilterRating = `${RatingValue | 0}`;

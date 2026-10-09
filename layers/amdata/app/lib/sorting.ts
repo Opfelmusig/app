@@ -7,7 +7,6 @@ export const songSortingBase: SortingItem<SongSort>[] = [
   { label: "Title", value: "title" },
   { label: "Album", value: "album" },
   { label: "Artist", value: "artist" },
-  { label: "Genre", value: "genre" },
   { label: "Year", value: "year" },
   { label: "Length", value: "length" },
 ];
