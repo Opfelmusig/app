@@ -10,7 +10,7 @@ export type LibraryAlbumTemplate = ResourceTemplateOf<
     artists: ResourceTemplateOf<"library-artists">;
     catalog: ResourceTemplateOf<
       "albums",
-      never,
+      "contentRating",
       "personalRating" | "editorialVideo",
       {
         artists: ResourceTemplateOf<"artists", "name">;
@@ -36,7 +36,7 @@ export function parseLibraryAlbum(resource: LibraryAlbumTemplate): AmLibraryAlbu
       genreNames: attributes.genreNames,
       artwork: attributes.artwork,
       releaseDate: attributes.releaseDate,
-      contentRating: attributes.contentRating,
+      contentRating: attributes.contentRating ?? catalog?.attributes?.contentRating,
       editorialVideo: catalog?.attributes?.editorialVideo,
       personalRating: catalog?.attributes?.personalRating,
 

@@ -60,7 +60,7 @@ export const albumsScopes = defineScopes({
     },
   },
   albums: {
-    fields: ["name"],
+    fields: ["contentRating"],
     extend: ["editorialVideo", "personalRating"],
     relationships: {
       artists: "include",
