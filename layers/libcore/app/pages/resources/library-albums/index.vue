@@ -8,7 +8,17 @@
         :active="sortChanged"
         @reset="resetSorting"
       />
-      <OMButtonSecondary fill icon="lucide:filter" />
+      <AMControlsFilters :active="changed" @reset="resetFilters">
+        <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
+        <AMControlsFiltersItem
+          v-model="selectedContentRatings"
+          label="Content Rating"
+          :items="contentRatingFilter"
+        />
+        <AMControlsFiltersSection label="Type">
+          <UCheckbox v-model="isUploaded" label="Is uploaded" />
+        </AMControlsFiltersSection>
+      </AMControlsFilters>
       <UInput
         v-model="search"
         variant="soft"
@@ -28,6 +38,7 @@
 </template>
 
 <script lang="ts" setup>
+import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/filters";
 import { albumSearchKeys } from "#layers/amdata/app/lib/search";
 import { libraryAlbumSorting } from "#layers/amdata/app/lib/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
@@ -44,7 +55,18 @@ const {
   reset: resetSorting,
 } = useSorting<AlbumSort>(() => DbListId.Albums, "default");
 
+const {
+  filters,
+  selectedRatings,
+  selectedContentRatings,
+  isUploaded,
+  changed,
+  reset: resetFilters,
+} = useFilters();
+
 const displayedAlbums = computed(() => {
-  return sortAlbums(searchedAlbums.value, sortBy.value, direction.value);
+  const filteredAlbums = filterResources(searchedAlbums.value, filters.value);
+
+  return sortAlbums(filteredAlbums, sortBy.value, direction.value);
 });
 </script>

@@ -50,4 +50,3 @@ export type SongSort =
   | "album"
   | "year"
   | "length";
-export type SongFilterRating = `${RatingValue | 0}`;

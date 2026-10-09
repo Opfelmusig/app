@@ -8,11 +8,7 @@
           @click="descending = !descending"
         />
         <AMControlsFilters :active="filtersChanged" @reset="resetFilters">
-          <AMControlsFiltersItem
-            v-model="selectedRatings"
-            label="Rating"
-            :items="songRatingFilter"
-          />
+          <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
           <AMControlsFiltersSection label="Artist">
             <UCheckbox v-model="hasCatalog" label="Has catalog" />
           </AMControlsFiltersSection>
@@ -107,11 +103,10 @@
 </template>
 
 <script lang="ts" setup>
-import { songRatingFilter } from "#layers/amdata/app/lib/filters";
+import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/filters";
 import { artistSearchKeys } from "#layers/amdata/app/lib/search";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
-import type { SongFilterRating } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: artists } = useLibraryList(DbListId.Artists);
@@ -119,7 +114,7 @@ const search = ref("");
 const searchedArtists = useSearch(artists, search, artistSearchKeys);
 
 const descending = ref(false);
-const selectedRatings = ref<SongFilterRating[]>([]);
+const selectedRatings = ref<FilterRating[]>([]);
 const hasCatalog = ref(false);
 const filtersChanged = computed(() => selectedRatings.value.length > 0 || hasCatalog.value);
 

@@ -1,9 +1,9 @@
 import type { ContentRating } from "@opfelmusig/lib/types";
 
-import type { SongFilterRating } from "#layers/amdata/app/types/songs";
+import type { FilterRating, ResourceFilters } from "#layers/amdata/app/lib/filters";
 
-export default function useSongFilters() {
-  const selectedRatings = ref<SongFilterRating[]>([]);
+export default function useFilters() {
+  const selectedRatings = ref<FilterRating[]>([]);
   const selectedContentRatings = ref<ContentRating[]>([]);
   const inLibrary = ref(false);
   const isUploaded = ref(false);
@@ -23,7 +23,7 @@ export default function useSongFilters() {
     isUploaded.value = false;
   }
 
-  const filters = computed<SongFilters>(() => ({
+  const filters = computed<ResourceFilters>(() => ({
     personalRating: selectedRatings.value,
     contentRating: selectedContentRatings.value,
     inLibrary: inLibrary.value,

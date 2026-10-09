@@ -11,12 +11,12 @@
         :active="sortChanged"
         @reset="resetSorting"
       />
-      <AMControlsFilters :active="changed" @click="resetFilters">
-        <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="songRatingFilter" />
+      <AMControlsFilters :active="changed" @reset="resetFilters">
+        <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
         <AMControlsFiltersItem
           v-model="selectedContentRatings"
           label="Content Rating"
-          :items="songContentRatingFilter"
+          :items="contentRatingFilter"
         />
         <AMControlsFiltersSection label="Type">
           <UCheckbox v-model="isUploaded" label="Is uploaded" />
@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
-import { songContentRatingFilter, songRatingFilter } from "#layers/amdata/app/lib/filters";
+import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/filters";
 import { songSearchKeys } from "#layers/amdata/app/lib/search";
 import { librarySongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongColumns, SongSort } from "#layers/amdata/app/types/songs";
@@ -80,13 +80,13 @@ const {
   isUploaded,
   changed,
   reset: resetFilters,
-} = useSongFilters();
+} = useFilters();
 
 const search = ref("");
 const searchedSongs = useSearch(songs, search, songSearchKeys);
 
 const displayedSongs = computed(() => {
-  const filteredSongs = filterSongs(searchedSongs.value, filters.value);
+  const filteredSongs = filterResources(searchedSongs.value, filters.value);
 
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
