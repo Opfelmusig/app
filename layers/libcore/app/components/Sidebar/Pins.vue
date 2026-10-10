@@ -11,7 +11,7 @@
       >
         <AMArtworkWrapper v-slot="{ iconClass, imageSize, artwork }" :resource="pin" size="xs">
           <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-          <UIcon v-else :name="resourceIcon(pin.resource.type)" :class="iconClass" />
+          <UIcon v-else :name="resourceIcon(pin.resourceType)" :class="iconClass" />
         </AMArtworkWrapper>
         <SidebarItemLabel>{{ pin.resource.attributes.name }}</SidebarItemLabel>
       </SidebarItemWrapper>

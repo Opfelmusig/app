@@ -14,7 +14,7 @@
         </div>
         <template v-else>
           <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-          <UIcon v-else :name="resourceIcon(song.resource.type)" :class="iconClass" />
+          <UIcon v-else :name="resourceIcon(song.resourceType)" :class="iconClass" />
         </template>
         <AMArtworkOverlay :transparent="albumMode">
           <OMIcon name="lucide:play" :class="iconClass" filled />
@@ -34,7 +34,7 @@
         />
         <div class="ml-auto flex gap-2">
           <OMExplicit v-if="song.resource.attributes.contentRating === 'explicit'" />
-          <OMDownloaded v-if="song.resource.type === 'songs' && song.resource.extras.libraryId" />
+          <OMDownloaded v-if="song.resourceType === 'songs' && song.resource.extras.libraryId" />
         </div>
       </div>
     </OMTableData>
@@ -44,7 +44,7 @@
         type="albums"
         :fallback-name="song.resource.attributes.albumName"
         :fallback-id="
-          song.resource.type === 'library-songs' ? song.resource.extras.albumId : undefined
+          song.resourceType === 'library-songs' ? song.resource.extras.albumId : undefined
         "
       />
     </OMTableData>
@@ -54,7 +54,7 @@
         type="artists"
         :fallback-name="song.resource.attributes.artistName"
         :fallback-id="
-          song.resource.type === 'library-songs' ? song.resource.extras.artistId : undefined
+          song.resourceType === 'library-songs' ? song.resource.extras.artistId : undefined
         "
       />
     </OMTableData>

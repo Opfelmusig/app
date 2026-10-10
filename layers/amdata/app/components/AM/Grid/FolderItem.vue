@@ -23,11 +23,11 @@
               color="muted"
             >
               <AMArtworkImage v-if="childArtwork" :width="childImageSize" :artwork="childArtwork" />
-              <UIcon v-else :name="resourceIcon(child.resource.type)" :class="childIconClass" />
+              <UIcon v-else :name="resourceIcon(child.resourceType)" :class="childIconClass" />
             </AMArtworkWrapper>
           </div>
         </template>
-        <UIcon v-else :name="resourceIcon(resource.resource.type)" :class="iconClass" />
+        <UIcon v-else :name="resourceIcon(resource.resourceType)" :class="iconClass" />
         <AMArtworkOverlay alignment="bottom">
           <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
         </AMArtworkOverlay>

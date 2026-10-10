@@ -9,7 +9,7 @@
         color="muted"
       >
         <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-        <UIcon v-else :name="resourceIcon(resource.resource.type)" :class="iconClass" />
+        <UIcon v-else :name="resourceIcon(resource.resourceType)" :class="iconClass" />
         <AMArtworkOverlay alignment="bottom">
           <AMArtworkOverlayButton icon="lucide:play" filled />
           <AMArtworkOverlayButton icon="lucide:ellipsis" />
@@ -23,7 +23,7 @@
         </span>
         <OMIcon
           v-if="
-            resource.resource.type !== 'social-profiles' &&
+            resource.resourceType !== 'social-profiles' &&
             resource.resource.attributes.personalRating === 1
           "
           name="lucide:star"
@@ -32,7 +32,7 @@
         />
         <OMExplicit
           v-if="
-            resource.resource.type === 'library-albums' &&
+            resource.resourceType === 'library-albums' &&
             resource.resource.attributes.contentRating === 'explicit'
           "
           class="ml-auto"
@@ -42,7 +42,7 @@
       </NuxtLink>
       <template v-if="showArtists">
         <span
-          v-if="resource.resource.type === 'library-albums' || resource.resource.type === 'albums'"
+          v-if="resource.resourceType === 'library-albums' || resource.resourceType === 'albums'"
           class="truncate text-sm text-muted"
         >
           <AMLinks
@@ -50,7 +50,7 @@
             type="artists"
             :fallback-name="resource.resource.attributes.artistName"
             :fallback-id="
-              resource.resource.type === 'library-albums'
+              resource.resourceType === 'library-albums'
                 ? resource.resource.extras.artistId
                 : undefined
             "
@@ -58,7 +58,7 @@
         </span>
         <span
           v-else-if="
-            resource.resource.type === 'library-playlists' || resource.resource.type === 'playlists'
+            resource.resourceType === 'library-playlists' || resource.resourceType === 'playlists'
           "
           class="truncate text-sm text-muted"
         >
@@ -79,7 +79,7 @@
       <span
         v-if="
           showYear &&
-          (resource.resource.type === 'library-albums' || resource.resource.type === 'albums') &&
+          (resource.resourceType === 'library-albums' || resource.resourceType === 'albums') &&
           resource.resource.attributes.releaseDate
         "
         class="truncate text-sm text-muted"

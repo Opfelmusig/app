@@ -37,7 +37,7 @@
             color="muted"
           >
             <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-            <UIcon v-else :name="resourceIcon(artist.resource.type)" :class="iconClass" />
+            <UIcon v-else :name="resourceIcon(artist.resourceType)" :class="iconClass" />
           </AMArtworkWrapper>
           <div class="flex w-full min-w-0 items-center gap-2 overflow-hidden">
             <span class="truncate">
