@@ -76,7 +76,15 @@
       </div>
     </header>
     <AMSongsWrapper :columns>
-      <AMSongs :songs="displayedTracks" :columns album-mode :album-sort="!sortChanged" />
+      <AMSongsStatus
+        :columns
+        :is-pending="tracksPending"
+        :error="tracksError"
+        :total="tracks?.length"
+        :songs="displayedTracks"
+      >
+        <AMSongs :songs="displayedTracks" :columns album-mode :album-sort="!sortChanged" />
+      </AMSongsStatus>
     </AMSongsWrapper>
     <AMFooter>
       <span>
@@ -105,7 +113,11 @@ const { data: album } = useLibraryQuery({
   key: () => ["album", id.value],
   query: () => library.client.getAlbum(id.value),
 });
-const { data: tracks } = useLibraryQuery({
+const {
+  data: tracks,
+  isPending: tracksPending,
+  error: tracksError,
+} = useLibraryQuery({
   key: () => ["albums", id.value, "tracks"],
   query: () => library.client.getAlbumTracks(id.value),
 });

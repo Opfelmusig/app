@@ -40,7 +40,15 @@
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <AMSongsWrapper :columns>
-      <AMSongs :songs="displayedSongs" :columns />
+      <AMSongsStatus
+        :columns
+        :is-pending="songsPending"
+        :error="songsError"
+        :total="songs?.length"
+        :songs="displayedSongs"
+      >
+        <AMSongs :songs="displayedSongs" :columns />
+      </AMSongsStatus>
     </AMSongsWrapper>
     <AMFooter>
       <span>
@@ -61,7 +69,7 @@ import { librarySongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongColumns, SongSort } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
 
-const { data: songs } = useLibraryList(DbListId.Songs);
+const { data: songs, isPending: songsPending, error: songsError } = useLibraryList(DbListId.Songs);
 
 const { columns, reset, columnsChanged } = useColumns<SongColumns>(
   DbListId.Songs,
