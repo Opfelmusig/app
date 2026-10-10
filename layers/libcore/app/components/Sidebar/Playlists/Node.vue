@@ -1,6 +1,6 @@
 <template>
   <SidebarItemWrapper :to="resourceLink(node)" :inset>
-    <AMArtworkWrapper :resource="node" size="xs">
+    <AMArtworkWrapper :resource="node" context="small">
       <AMArtworkImage />
       <AMArtworkPlaceholder />
     </AMArtworkWrapper>

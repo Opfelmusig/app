@@ -1,7 +1,7 @@
 <template>
   <PageWrapper>
     <header class="flex gap-4 p-4">
-      <AMArtworkWrapper :resource="playlist" color="muted" size="lg">
+      <AMArtworkWrapper :resource="playlist" context="header" color="muted">
         <MediaEditorialVideo
           :editorial-video="playlist?.attributes.editorialVideo"
           variant="square"

@@ -1,7 +1,7 @@
 <template>
   <PageWrapper>
     <header class="flex gap-4 p-4">
-      <AMArtworkWrapper :resource="album" color="muted" size="lg">
+      <AMArtworkWrapper :resource="album" context="header" color="muted">
         <MediaEditorialVideo :editorial-video="album?.attributes.editorialVideo" variant="square">
           <template #fallback>
             <AMArtworkImage />

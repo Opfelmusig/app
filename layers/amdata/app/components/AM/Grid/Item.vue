@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
     <NuxtLink class="w-full" :to="resourceLink(resource.resource)">
-      <AMArtworkWrapper :resource size="lg" class="aspect-square h-auto w-full" color="muted">
+      <AMArtworkWrapper :resource context="grid" color="muted">
         <AMArtworkImage />
         <AMArtworkPlaceholder />
         <AMArtworkOverlay alignment="bottom">

@@ -1,5 +1,5 @@
 <template>
-  <div :class="cn(variants({ size, color, round }), props.class)">
+  <div :class="cn(variants({ context, color }), props.class, round && 'rounded-full')">
     <slot :icon-class :image-size :artwork />
   </div>
 </template>
@@ -16,19 +16,16 @@ import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmSong } from "#layers/amdata/app/types/songs";
 
 const variants = cva(
-  "group relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl select-none",
+  "group relative flex aspect-square shrink-0 items-center justify-center overflow-hidden select-none",
   {
     variants: {
-      size: {
-        xs: "size-5 rounded-md",
-        sm: "size-9 rounded-lg",
-        md: "size-12 rounded-xl",
-        lg: "size-40 rounded-3xl",
-        xl: "size-64 rounded-4xl",
-        "2xl": "size-96 rounded-4xl",
-      },
-      round: {
-        true: "rounded-full",
+      context: {
+        header: "size-40 rounded-3xl",
+        grid: "w-full rounded-3xl",
+        list: "size-9 rounded-lg",
+        small: "size-5 rounded-md",
+        "folder-preview": "w-full rounded-xl",
+        account: "size-12 rounded-xl",
       },
       color: {
         error: "bg-error/20 text-error",
@@ -36,16 +33,13 @@ const variants = cva(
         loading: "animate-pulse bg-elevated text-muted",
       },
     },
-    defaultVariants: {
-      round: false,
-    },
   },
 );
 
 type Resources = AmSong | AmAlbum | AmArtist | AmPlaylist | AmSocialProfile;
 
 const props = defineProps<{
-  size?: VariantProps<typeof variants>["size"];
+  context: NonNullable<VariantProps<typeof variants>["context"]>;
   color?: VariantProps<typeof variants>["color"];
   round?: boolean;
   class?: string;
@@ -68,29 +62,30 @@ const round = computed(() => isRoundedResource.value || props.round);
 const artwork = computed(() => props.artwork ?? resource.value?.attributes.artwork);
 const icon = computed(() => resourceIcon(resource.value?.type));
 
-const imageSize = computed(() => {
-  if (!props.size) return 96 * 2;
+const imageSize = computed(
+  () =>
+    ({
+      header: 320,
+      grid: 520,
+      list: 72,
+      small: 40,
+      "folder-preview": 224,
+      account: 96,
+    })[props.context],
+);
 
-  if (props.size === "xs") return 20 * 2;
-  if (props.size === "sm") return 40 * 2;
-  if (props.size === "md") return 48 * 2;
-  if (props.size === "lg") return 160 * 2;
-  if (props.size === "xl") return 265 * 2;
-  if (props.size === "2xl") return 512 * 2;
-  else return 1024;
-});
-
-const iconClass = computed(() => {
-  if (!props.size) return cn("size-12");
-
-  if (props.size === "xs") return cn("size-3");
-  if (props.size === "sm") return cn("size-4");
-  if (props.size === "md") return cn("size-6");
-  if (props.size === "lg") return cn("size-20");
-  if (props.size === "xl") return cn("size-32");
-  if (props.size === "2xl") return cn("size-48");
-  else return cn("size-20");
-});
+const iconClass = computed(() =>
+  cn(
+    {
+      header: "size-20",
+      grid: "size-20",
+      list: "size-4",
+      small: "size-3",
+      "folder-preview": "size-6",
+      account: "size-6",
+    }[props.context],
+  ),
+);
 
 provide(artworkContextKey, { artwork, imageSize, iconClass, icon });
 </script>

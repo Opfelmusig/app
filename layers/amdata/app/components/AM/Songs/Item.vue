@@ -4,7 +4,7 @@
       <AMArtworkWrapper
         v-slot="{ iconClass }"
         :resource="song"
-        size="sm"
+        context="list"
         :color="albumMode ? undefined : 'muted'"
       >
         <div v-if="albumMode" class="flex size-full items-center justify-center text-muted">

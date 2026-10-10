@@ -9,7 +9,7 @@
         :key="pin.resource.id"
         :to="resourceLink(pin.resource)"
       >
-        <AMArtworkWrapper :resource="pin" size="xs">
+        <AMArtworkWrapper :resource="pin" context="small">
           <AMArtworkImage />
           <AMArtworkPlaceholder />
         </AMArtworkWrapper>
