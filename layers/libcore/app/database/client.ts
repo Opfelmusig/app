@@ -144,7 +144,7 @@ export class LibraryClient {
         const resource = await this.db.resources.get(entry.resourceId);
         return resource && allowedTypes.includes(resource.type)
           ? ({
-              key: entry.id,
+              key: `${entry.listId}:${entry.position}:${resource.id}`,
               type: "list-resources",
               position: entry.position,
               resourceType: resource.type,
@@ -157,11 +157,11 @@ export class LibraryClient {
     return results.filter((result) => result !== undefined) as DbListResourceByList<L>[];
   }
 
-  map<T extends AmResource>(resources: T[]): AmListResource<T>[] {
+  map<T extends AmResource>(resources: T[], listName: string): AmListResource<T>[] {
     return resources.map(
       (resource, i) =>
         ({
-          key: resource.id,
+          key: `${listName}:${i}:${resource.id}`,
           type: "list-resources",
           position: i,
           resourceType: resource.type,
@@ -176,7 +176,7 @@ export class LibraryClient {
       .reverse()
       .sortBy("extras.dateAdded");
 
-    return this.map(albums);
+    return this.map(albums, `library-artist:${id}`);
   }
 
   async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
@@ -184,7 +184,7 @@ export class LibraryClient {
       .filter((song) => song.extras.albumId === id)
       .sortBy("attributes.name");
 
-    return this.map(songs);
+    return this.map(songs, `library-album:${id}`);
   }
 
   async getFolderChildren(
@@ -198,7 +198,7 @@ export class LibraryClient {
       .filter((song) => song.extras.parentId === id)
       .sortBy("attributes.name");
 
-    return this.map([...folders, ...playlists]);
+    return this.map([...folders, ...playlists], `library-playlist-folder:${id}`);
   }
 
   async getFolderPreview(id: string): Promise<AmListResource<AmLibraryPlaylist>[]> {
@@ -206,7 +206,7 @@ export class LibraryClient {
       .filter((song) => song.extras.parentId === id)
       .sortBy("attributes.name");
 
-    return this.map(playlists.slice(0, 4));
+    return this.map(playlists.slice(0, 4), `library-playlist-folder:${id}:preview`);
   }
 
   async getGenres() {
@@ -223,6 +223,6 @@ export class LibraryClient {
       .reverse()
       .sortBy("extras.dateAdded");
 
-    return this.map(albums);
+    return this.map(albums, `library-genre:${genre}`);
   }
 }
