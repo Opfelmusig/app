@@ -12,6 +12,7 @@
         </h2>
       </div>
     </header>
+    <USeparator />
     <AMGridWrapper>
       <AMGridStatus :is-pending="childrenPending" :error="childrenError" :resources="children">
         <AMGrid :items="children" />

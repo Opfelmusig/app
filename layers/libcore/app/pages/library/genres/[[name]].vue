@@ -51,6 +51,7 @@
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </header>
+      <USeparator />
       <AMGridWrapper>
         <AMGridStatus
           :is-pending="currentGenreAlbumsPending"

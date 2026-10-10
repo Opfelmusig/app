@@ -30,6 +30,7 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
+    <USeparator />
     <AMGridWrapper>
       <AMGridStatus :is-pending :error :total="albums?.length" :resources="displayedAlbums">
         <AMGrid :items="displayedAlbums" show-artists />

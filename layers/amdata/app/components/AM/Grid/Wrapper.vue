@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="w-full min-w-0 border-t border-default p-4">
+  <div ref="container" class="w-full min-w-0 p-4">
     <div class="grid w-full gap-4" :style="gridStyle">
       <slot />
     </div>

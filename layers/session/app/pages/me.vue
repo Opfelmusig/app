@@ -33,10 +33,11 @@
         <span class="flex items-center gap-2 text-muted"> @{{ profile.attributes.handle }} </span>
       </div>
     </header>
+    <USeparator />
+    <div class="px-4 pt-4">
+      <h2>Shared Playlists</h2>
+    </div>
     <AMGridWrapper>
-      <div class="col-span-full">
-        <h2>Shared Playlists</h2>
-      </div>
       <AMGridStatus
         :is-pending="false"
         :error="null"
