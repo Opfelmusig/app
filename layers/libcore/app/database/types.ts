@@ -14,7 +14,7 @@ export enum DbListId {
   PlaylistFolders = "playlist-folders",
 }
 
-export type DbPlaylistTracksListId = `playlist:${string}:tracks`;
+export type DbPlaylistTracksListId = `library-playlists:${string}`;
 export type DbListIdentifier = DbListId | DbPlaylistTracksListId;
 
 export interface DbLibraryState {

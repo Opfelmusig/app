@@ -176,7 +176,7 @@ export class LibraryClient {
       .reverse()
       .sortBy("extras.dateAdded");
 
-    return this.map(albums, `library-artist:${id}`);
+    return this.map(albums, `library-artists:${id}`);
   }
 
   async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
@@ -184,7 +184,7 @@ export class LibraryClient {
       .filter((song) => song.extras.albumId === id)
       .sortBy("attributes.name");
 
-    return this.map(songs, `library-album:${id}`);
+    return this.map(songs, `library-albums:${id}`);
   }
 
   async getFolderChildren(
@@ -198,7 +198,7 @@ export class LibraryClient {
       .filter((song) => song.extras.parentId === id)
       .sortBy("attributes.name");
 
-    return this.map([...folders, ...playlists], `library-playlist-folder:${id}`);
+    return this.map([...folders, ...playlists], `library-playlist-folders:${id}`);
   }
 
   async getFolderPreview(id: string): Promise<AmListResource<AmLibraryPlaylist>[]> {
@@ -206,7 +206,7 @@ export class LibraryClient {
       .filter((song) => song.extras.parentId === id)
       .sortBy("attributes.name");
 
-    return this.map(playlists.slice(0, 4), `library-playlist-folder:${id}:preview`);
+    return this.map(playlists.slice(0, 4), `library-playlist-folders:${id}:preview`);
   }
 
   async getGenres() {
