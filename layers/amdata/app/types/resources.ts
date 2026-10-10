@@ -25,9 +25,12 @@ export type AmResource =
   | AmLibraryPlaylistFolder
   | AmSocialProfile;
 
-export interface AmListResource<TResource extends AmResource> {
-  key: string;
-  type: "list-resources";
-  position: number;
-  resource: TResource;
-}
+export type AmListResource<TResource extends AmResource> = TResource extends AmResource
+  ? {
+      key: string;
+      type: "list-resources";
+      position: number;
+      resourceType: TResource["type"];
+      resource: TResource;
+    }
+  : never;

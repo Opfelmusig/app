@@ -1,6 +1,6 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
-    <NuxtLink class="w-full" :to="resourceLink(resource)">
+    <NuxtLink class="w-full" :to="resourceLink(resource.resource)">
       <AMArtworkWrapper
         v-slot="{ iconClass }"
         size="lg"
@@ -27,15 +27,15 @@
             </AMArtworkWrapper>
           </div>
         </template>
-        <UIcon v-else :name="resourceIcon(resource.type)" :class="iconClass" />
+        <UIcon v-else :name="resourceIcon(resource.resource.type)" :class="iconClass" />
         <AMArtworkOverlay alignment="bottom">
           <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
     </NuxtLink>
     <div class="flex w-full min-w-0 flex-col">
-      <NuxtLink :to="resourceLink(resource)" class="flex items-center gap-2 truncate">
-        {{ resource.attributes.name }}
+      <NuxtLink :to="resourceLink(resource.resource)" class="flex items-center gap-2 truncate">
+        {{ resource.resource.attributes.name }}
       </NuxtLink>
     </div>
   </div>
@@ -43,14 +43,15 @@
 
 <script lang="ts" setup>
 import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
 
 const props = defineProps<{
-  resource: AmLibraryPlaylistFolder;
+  resource: AmListResource<AmLibraryPlaylistFolder>;
 }>();
 
 const library = useLibrary();
 const { data: children } = useLibraryQuery({
-  key: () => ["folders", props.resource.id, "children"],
-  query: () => library.client.getFolderPreview(props.resource.id),
+  key: () => ["folders", props.resource.resource.id, "children"],
+  query: () => library.client.getFolderPreview(props.resource.resource.id),
 });
 </script>

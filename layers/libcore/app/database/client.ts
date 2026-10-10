@@ -147,8 +147,9 @@ export class LibraryClient {
               key: entry.id,
               type: "list-resources",
               position: entry.position,
+              resourceType: resource.type,
               resource,
-            } satisfies AmListResource<DbResource>)
+            } as AmListResource<DbResource>)
           : undefined;
       }),
     );
@@ -163,8 +164,9 @@ export class LibraryClient {
           key: resource.id,
           type: "list-resources",
           position: i,
+          resourceType: resource.type,
           resource: resource,
-        }) satisfies AmListResource<T>,
+        }) as AmListResource<T>,
     );
   }
 
