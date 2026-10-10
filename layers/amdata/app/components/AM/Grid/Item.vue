@@ -3,37 +3,14 @@
     <NuxtLink class="w-full" :to="resourceLink(resource)">
       <AMArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
-        :resource="resource.type === 'library-playlist-folders' ? undefined : resource"
+        :resource
         size="lg"
         class="aspect-square h-auto w-full"
-        :class="resource.type !== 'library-artists' ? 'rounded-2xl' : ''"
         color="muted"
       >
-        <template v-if="resource.type === 'library-playlist-folders' && displayChildren?.length">
-          <div class="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-3 p-3">
-            <AMArtworkWrapper
-              v-for="child in displayChildren"
-              :key="child.key"
-              v-slot="{
-                iconClass: childIconClass,
-                imageSize: childImageSize,
-                artwork: childArtwork,
-              }"
-              :resource="child.resource"
-              class="aspect-square h-auto w-full rounded-lg border"
-              :class="child.resource.attributes.artwork ? 'border-transparent' : 'border-muted'"
-              color="muted"
-            >
-              <AMArtworkImage v-if="childArtwork" :width="childImageSize" :artwork="childArtwork" />
-              <UIcon v-else :name="resourceIcon(child.resource.type)" :class="childIconClass" />
-            </AMArtworkWrapper>
-          </div>
-        </template>
-        <template v-else>
-          <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-          <UIcon v-else :name="resourceIcon(resource.type)" :class="iconClass" />
-        </template>
-        <AMArtworkOverlay v-if="resource.type !== 'library-playlist-folders'" alignment="bottom">
+        <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
+        <UIcon v-else :name="resourceIcon(resource.type)" :class="iconClass" />
+        <AMArtworkOverlay alignment="bottom">
           <AMArtworkOverlayButton icon="lucide:play" filled />
           <AMArtworkOverlayButton icon="lucide:ellipsis" />
         </AMArtworkOverlay>
@@ -45,11 +22,7 @@
           {{ resource.attributes.name }}
         </span>
         <OMIcon
-          v-if="
-            resource.type !== 'social-profiles' &&
-            resource.type !== 'library-playlist-folders' &&
-            resource.attributes.personalRating === 1
-          "
+          v-if="resource.type !== 'social-profiles' && resource.attributes.personalRating === 1"
           name="lucide:star"
           filled
           class="size-3 shrink-0 text-primary"
@@ -114,30 +87,12 @@
 <script lang="ts" setup>
 import type { AmAlbum } from "#layers/amdata/app/types/albums";
 import type { AmArtist } from "#layers/amdata/app/types/artists";
-import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
-import type { AmLibraryPlaylist, AmPlaylist } from "#layers/amdata/app/types/playlists";
+import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
 
-const props = defineProps<{
-  resource: AmAlbum | AmPlaylist | AmArtist | AmLibraryPlaylistFolder | AmSocialProfile; // station
+defineProps<{
+  resource: AmAlbum | AmPlaylist | AmArtist | AmSocialProfile; // station
   showArtists?: boolean;
   showYear?: boolean;
 }>();
-
-const library = useLibrary();
-const { data: children } = useLibraryQuery({
-  key: () => ["folders", props.resource.id, "children"],
-  query: () => library.client.getFolderChildren(props.resource.id),
-  enabled: props.resource.type === "library-playlist-folders",
-});
-
-const displayChildren = computed(() =>
-  children.value
-    ?.filter(
-      (child): child is AmListResource<AmLibraryPlaylist> =>
-        child.resource.type === "library-playlists",
-    )
-    .slice(0, 4),
-);
 </script>

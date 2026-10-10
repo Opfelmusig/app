@@ -197,6 +197,14 @@ export class LibraryClient {
     return this.map([...folders, ...playlists]);
   }
 
+  async getFolderPreview(id: string): Promise<AmListResource<AmLibraryPlaylist>[]> {
+    const playlists = await this.resourcesByType("library-playlists")
+      .filter((song) => song.extras.parentId === id)
+      .sortBy("attributes.name");
+
+    return this.map(playlists.slice(0, 4));
+  }
+
   async getGenres() {
     const albums = await this.resourcesByType("library-albums").toArray();
 
