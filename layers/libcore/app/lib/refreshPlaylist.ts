@@ -5,7 +5,7 @@ import { parseResource } from "#layers/amdata/app/lib/parse";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import { createEmptyLibrary } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
-import { addSongs } from "#layers/libcore/app/lib/prepare/songs";
+import { addResources } from "#layers/libcore/app/lib/prepare/resources";
 import { playlistsScopes, songsScopes } from "#layers/libcore/app/lib/scopes";
 
 export async function refreshPlaylist(id: string, db: LibraryDatabase, client: OpfelMusigClient) {
@@ -50,7 +50,7 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   const prepared = createEmptyLibrary();
 
   const listId = playlistTracksListId(id);
-  addSongs(prepared, songs, listId);
+  addResources(prepared, songs, listId);
 
   log.info("Fetched playlist tracks", {
     id,
