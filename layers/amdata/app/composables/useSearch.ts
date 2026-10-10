@@ -4,7 +4,7 @@ import type { FuseOptionKey } from "fuse.js";
 export default function useSearch<T>(
   items: MaybeRefOrGetter<T[] | undefined>,
   search: MaybeRefOrGetter<string>,
-  keys: FuseOptionKey<T>[],
+  keys: FuseOptionKey<T>[] = [],
 ) {
   const { results } = useFuse(search, () => toValue(items) ?? [], {
     matchAllWhenSearchEmpty: true,
