@@ -1,15 +1,9 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
     <NuxtLink class="w-full" :to="resourceLink(resource.resource)">
-      <AMArtworkWrapper
-        v-slot="{ iconClass, imageSize, artwork }"
-        :resource
-        size="lg"
-        class="aspect-square h-auto w-full"
-        color="muted"
-      >
-        <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-        <UIcon v-else :name="resourceIcon(resource.resourceType)" :class="iconClass" />
+      <AMArtworkWrapper :resource size="lg" class="aspect-square h-auto w-full" color="muted">
+        <AMArtworkImage />
+        <AMArtworkPlaceholder />
         <AMArtworkOverlay alignment="bottom">
           <AMArtworkOverlayButton icon="lucide:play" filled />
           <AMArtworkOverlayButton icon="lucide:ellipsis" />

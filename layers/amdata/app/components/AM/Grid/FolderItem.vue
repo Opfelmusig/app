@@ -1,33 +1,23 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
     <NuxtLink class="w-full" :to="resourceLink(resource.resource)">
-      <AMArtworkWrapper
-        v-slot="{ iconClass }"
-        size="lg"
-        class="aspect-square h-auto w-full"
-        color="muted"
-      >
+      <AMArtworkWrapper size="lg" class="aspect-square h-auto w-full" color="muted">
         <template v-if="children?.length">
           <div class="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-3 p-3">
             <AMArtworkWrapper
               v-for="child in children"
               :key="child.key"
-              v-slot="{
-                iconClass: childIconClass,
-                imageSize: childImageSize,
-                artwork: childArtwork,
-              }"
               :resource="child"
               class="aspect-square h-auto w-full rounded-lg border"
               :class="child.resource.attributes.artwork ? 'border-transparent' : 'border-muted'"
               color="muted"
             >
-              <AMArtworkImage v-if="childArtwork" :width="childImageSize" :artwork="childArtwork" />
-              <UIcon v-else :name="resourceIcon(child.resourceType)" :class="childIconClass" />
+              <AMArtworkImage />
+              <AMArtworkPlaceholder />
             </AMArtworkWrapper>
           </div>
         </template>
-        <UIcon v-else :name="resourceIcon(resource.resourceType)" :class="iconClass" />
+        <AMArtworkPlaceholder v-else :name="resourceIcon(resource.resourceType)" />
         <AMArtworkOverlay alignment="bottom">
           <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
         </AMArtworkOverlay>

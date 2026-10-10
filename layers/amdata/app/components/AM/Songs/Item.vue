@@ -2,7 +2,7 @@
   <OMTableRow>
     <OMTableSimple>
       <AMArtworkWrapper
-        v-slot="{ iconClass, imageSize, artwork }"
+        v-slot="{ iconClass }"
         :resource="song"
         size="sm"
         :color="albumMode ? undefined : 'muted'"
@@ -13,8 +13,8 @@
           </span>
         </div>
         <template v-else>
-          <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-          <UIcon v-else :name="resourceIcon(song.resourceType)" :class="iconClass" />
+          <AMArtworkImage />
+          <AMArtworkPlaceholder />
         </template>
         <AMArtworkOverlay :transparent="albumMode">
           <OMIcon name="lucide:play" :class="iconClass" filled />

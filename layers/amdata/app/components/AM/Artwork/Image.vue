@@ -22,8 +22,13 @@ const props = defineProps<{
   class?: string;
 }>();
 
-const imageSrc = computed(() => getArtworkUrl(props.src ?? props.artwork, { width: props.width }));
-const imageExpiresAt = computed(() => getArtworkExpiresAt(props.src ?? props.artwork));
+const { artwork: contextArtwork, imageSize } = useArtworkContext();
+
+const imageSource = computed(() => props.src ?? props.artwork ?? contextArtwork.value);
+const imageSrc = computed(() =>
+  getArtworkUrl(imageSource.value, { width: props.width ?? imageSize.value }),
+);
+const imageExpiresAt = computed(() => getArtworkExpiresAt(imageSource.value));
 const imageExpired = computed(() =>
   imageExpiresAt.value ? Date.now() > imageExpiresAt.value.getTime() : false,
 );

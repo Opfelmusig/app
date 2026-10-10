@@ -2,14 +2,9 @@
   <SettingsWrapper>
     <SettingsSection>
       <div class="flex items-center gap-3">
-        <AMArtworkWrapper
-          v-slot="{ artwork, iconClass, imageSize }"
-          :resource="profile"
-          color="muted"
-          size="md"
-        >
-          <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-          <UIcon v-else name="lucide:user" :class="iconClass" />
+        <AMArtworkWrapper :resource="profile" color="muted" size="md">
+          <AMArtworkImage />
+          <AMArtworkPlaceholder />
         </AMArtworkWrapper>
 
         <div class="min-w-0 flex-1">

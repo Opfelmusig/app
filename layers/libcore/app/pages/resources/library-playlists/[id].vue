@@ -1,19 +1,14 @@
 <template>
   <PageWrapper>
     <header class="flex gap-4 p-4">
-      <AMArtworkWrapper
-        v-slot="{ artwork, iconClass, imageSize }"
-        :resource="playlist"
-        color="muted"
-        size="lg"
-      >
+      <AMArtworkWrapper :resource="playlist" color="muted" size="lg">
         <MediaEditorialVideo
           :editorial-video="playlist?.attributes.editorialVideo"
           variant="square"
         >
           <template #fallback>
-            <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-            <UIcon v-else :name="resourceIcon('playlists')" :class="iconClass" />
+            <AMArtworkImage />
+            <AMArtworkPlaceholder />
           </template>
         </MediaEditorialVideo>
       </AMArtworkWrapper>

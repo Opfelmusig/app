@@ -30,14 +30,9 @@
           class="group flex h-14 items-center gap-2 border-b border-default px-2 last:border-b-0 hover:bg-raised route:bg-muted/40 [&:active:not(:has(.no-active:active))]:bg-muted/60"
           :to="rawResourceLink('library-artists', artist.resource.id)"
         >
-          <AMArtworkWrapper
-            v-slot="{ iconClass, imageSize, artwork }"
-            :resource="artist"
-            size="sm"
-            color="muted"
-          >
-            <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-            <UIcon v-else :name="resourceIcon(artist.resourceType)" :class="iconClass" />
+          <AMArtworkWrapper :resource="artist" size="sm" color="muted">
+            <AMArtworkImage />
+            <AMArtworkPlaceholder />
           </AMArtworkWrapper>
           <div class="flex w-full min-w-0 items-center gap-2 overflow-hidden">
             <span class="truncate">
@@ -61,14 +56,9 @@
     <PageWrapper v-if="id">
       <header class="flex flex-col gap-4 p-4">
         <div class="flex min-w-0 items-center gap-2">
-          <AMArtworkWrapper
-            v-slot="{ iconClass, imageSize, artwork }"
-            :resource="currentArtist"
-            size="sm"
-            color="muted"
-          >
-            <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
-            <UIcon v-else :name="resourceIcon('artists')" :class="iconClass" />
+          <AMArtworkWrapper :resource="currentArtist" size="sm" color="muted">
+            <AMArtworkImage />
+            <AMArtworkPlaceholder />
           </AMArtworkWrapper>
           <h2 class="truncate">
             {{ currentArtist?.attributes.name ?? "Not Found" }}

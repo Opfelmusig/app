@@ -7,6 +7,7 @@
 <script lang="ts" setup>
 import type { Artwork } from "@opfelmusig/lib/types";
 
+import { artworkContextKey } from "#layers/amdata/app/lib/artwork";
 import type { AmAlbum } from "#layers/amdata/app/types/albums";
 import type { AmArtist } from "#layers/amdata/app/types/artists";
 import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
@@ -65,6 +66,7 @@ const isRoundedResource = computed(
 const round = computed(() => isRoundedResource.value || props.round);
 
 const artwork = computed(() => props.artwork ?? resource.value?.attributes.artwork);
+const icon = computed(() => resourceIcon(resource.value?.type));
 
 const imageSize = computed(() => {
   if (!props.size) return 96 * 2;
@@ -89,4 +91,6 @@ const iconClass = computed(() => {
   if (props.size === "2xl") return cn("size-48");
   else return cn("size-20");
 });
+
+provide(artworkContextKey, { artwork, imageSize, iconClass, icon });
 </script>
