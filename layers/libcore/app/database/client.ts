@@ -3,8 +3,9 @@ import type { Collection } from "dexie";
 
 import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmListResource, AmResource } from "#layers/amdata/app/types/resources";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
+import { createListResource, createListResources } from "#layers/amdata/app/utils/listResources";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,
@@ -12,7 +13,6 @@ import {
   type DbListResourceByList,
   type DbResourceType,
   type DbResourceByType,
-  type DbResource,
 } from "#layers/libcore/app/database/types";
 
 function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceType[] {
@@ -143,31 +143,12 @@ export class LibraryClient {
       entries.map(async (entry) => {
         const resource = await this.db.resources.get(entry.resourceId);
         return resource && allowedTypes.includes(resource.type)
-          ? ({
-              key: `${entry.listId}:${entry.position}:${resource.id}`,
-              type: "list-resources",
-              position: entry.position,
-              resourceType: resource.type,
-              resource,
-            } as AmListResource<DbResource>)
+          ? createListResource(resource, entry.listId, entry.position)
           : undefined;
       }),
     );
 
     return results.filter((result) => result !== undefined) as DbListResourceByList<L>[];
-  }
-
-  map<T extends AmResource>(resources: T[], listName: string): AmListResource<T>[] {
-    return resources.map(
-      (resource, i) =>
-        ({
-          key: `${listName}:${i}:${resource.id}`,
-          type: "list-resources",
-          position: i,
-          resourceType: resource.type,
-          resource: resource,
-        }) as AmListResource<T>,
-    );
   }
 
   async getArtistAlbums(id: string) {
@@ -176,7 +157,7 @@ export class LibraryClient {
       .reverse()
       .sortBy("extras.dateAdded");
 
-    return this.map(albums, `library-artists:${id}`);
+    return createListResources(albums, `library-artists:${id}`);
   }
 
   async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
@@ -184,7 +165,7 @@ export class LibraryClient {
       .filter((song) => song.extras.albumId === id)
       .sortBy("attributes.name");
 
-    return this.map(songs, `library-albums:${id}`);
+    return createListResources(songs, `library-albums:${id}`);
   }
 
   async getFolderChildren(
@@ -198,7 +179,7 @@ export class LibraryClient {
       .filter((song) => song.extras.parentId === id)
       .sortBy("attributes.name");
 
-    return this.map([...folders, ...playlists], `library-playlist-folders:${id}`);
+    return createListResources([...folders, ...playlists], `library-playlist-folders:${id}`);
   }
 
   async getFolderPreview(id: string): Promise<AmListResource<AmLibraryPlaylist>[]> {
@@ -206,7 +187,7 @@ export class LibraryClient {
       .filter((song) => song.extras.parentId === id)
       .sortBy("attributes.name");
 
-    return this.map(playlists.slice(0, 4), `library-playlist-folders:${id}:preview`);
+    return createListResources(playlists.slice(0, 4), `library-playlist-folders:${id}:preview`);
   }
 
   async getGenres() {
@@ -223,6 +204,6 @@ export class LibraryClient {
       .reverse()
       .sortBy("extras.dateAdded");
 
-    return this.map(albums, `library-genre:${genre}`);
+    return createListResources(albums, `library-genre:${genre}`);
   }
 }

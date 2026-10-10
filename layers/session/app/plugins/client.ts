@@ -8,6 +8,7 @@ import { parseResource } from "#layers/amdata/app/lib/parse";
 import type { AmCatalogPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
+import { createListResources } from "#layers/amdata/app/utils/listResources";
 import { getAppleMusicDeveloperToken } from "#layers/session/app/lib/getAppleMusicDeveloperToken";
 import { profileScope } from "#layers/session/app/lib/profileScope";
 
@@ -122,15 +123,10 @@ export default defineNuxtPlugin({
 
       if (!profile.value) throw new Error("Profile not found");
 
-      sharedPlaylists.value = (userProfile?.relationships?.["shared-playlists"].data ?? []).map(
-        (playlist, position) => ({
-          key: `shared-playlists:${position}:${playlist.id}`,
-          type: "list-resources",
-          position,
-          resourceType: playlist.type,
-          resource: parseResource(playlist),
-        }),
+      const playlists = (userProfile?.relationships?.["shared-playlists"].data ?? []).map(
+        (playlist) => parseResource(playlist),
       );
+      sharedPlaylists.value = createListResources(playlists, "shared-playlists");
 
       tokenValid.value = true;
 
