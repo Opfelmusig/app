@@ -1,0 +1,21 @@
+<template>
+  <PageWrapper class="gap-2 p-4">
+    <h1>This Resource was not found</h1>
+    <span class="flex items-center gap-2 text-muted">
+      Resource of type
+      <span class="inline-flex items-center gap-2 rounded-md bg-muted px-2 py-1 capitalize">
+        <UIcon :name="resourceIcon(type)" class="size-4" />
+        {{ type.replace("-", " ") }}
+      </span>
+      does not exist or is not implemented.
+    </span>
+  </PageWrapper>
+</template>
+
+<script lang="ts" setup>
+import type { AmResource } from "#layers/amdata/app/types/resources";
+
+const type = useRouteParams<AmResource["type"]>("type");
+
+useHead({ title: "Not Found" });
+</script>
