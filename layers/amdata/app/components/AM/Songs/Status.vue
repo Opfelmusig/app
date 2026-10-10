@@ -1,4 +1,5 @@
 <template>
+  <slot v-if="songs && songs?.length > 0" />
   <OMTableStatus v-if="isPending">
     <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
     <span>Loading</span>
@@ -11,7 +12,6 @@
   <OMTableStatus v-else-if="songs === undefined || songs?.length === 0">
     No songs found
   </OMTableStatus>
-  <slot v-else />
 </template>
 
 <script lang="ts" setup>
