@@ -14,7 +14,7 @@
     </header>
     <AMGrid :items="children" />
     <AMFooter>
-      <AMFooterCount :count="children?.length ?? 0" singular="playlist" />
+      <AMFooterCount :count="children?.length singular="playlist" />
     </AMFooter>
   </PageWrapper>
 </template>

@@ -94,7 +94,7 @@
       </header>
       <AMGrid :items="displayedAlbums" show-year />
       <AMFooter>
-        <AMFooterCount :count="displayedAlbums?.length ?? 0" singular="album" />
+        <AMFooterCount :count="displayedAlbums?.length" singular="album" />
 
         <AMFooterLink :resource="currentArtist" />
       </AMFooter>

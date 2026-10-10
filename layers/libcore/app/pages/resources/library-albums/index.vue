@@ -32,7 +32,7 @@
     </header>
     <AMGrid :items="displayedAlbums" show-artists />
     <AMFooter>
-      <AMFooterCount :count="displayedAlbums?.length ?? 0" singular="album" />
+      <AMFooterCount :count="displayedAlbums?.length" singular="album" />
     </AMFooter>
   </PageWrapper>
 </template>

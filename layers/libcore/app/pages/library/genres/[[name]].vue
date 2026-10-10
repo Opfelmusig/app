@@ -28,7 +28,7 @@
         </NuxtLink>
       </div>
       <AMFooter>
-        <AMFooterCount :count="sortedGenres?.length ?? 0" singular="genre" />
+        <AMFooterCount :count="sortedGenres?.length" singular="genre" />
       </AMFooter>
     </div>
     <USeparator orientation="vertical" />
@@ -53,7 +53,7 @@
       </header>
       <AMGrid :items="displayedAlbums" show-artists />
       <AMFooter>
-        <AMFooterCount :count="displayedAlbums?.length ?? 0" singular="album" />
+        <AMFooterCount :count="displayedAlbums?.length" singular="album" />
       </AMFooter>
     </PageWrapper>
   </div>

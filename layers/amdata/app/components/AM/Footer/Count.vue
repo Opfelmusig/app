@@ -1,5 +1,5 @@
 <template>
-  <span v-if="count && singular"> {{ count }} {{ count === 1 ? singular : pluralText }} </span>
+  <span v-if="singular"> {{ count }} {{ count === 1 ? singular : pluralText }} </span>
 </template>
 
 <script lang="ts" setup>
