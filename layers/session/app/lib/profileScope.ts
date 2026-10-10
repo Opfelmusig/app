@@ -8,6 +8,20 @@ export const profileScope = defineScopes({
       "social-profile": "include",
     },
   },
+  playlists: {
+    fields: [
+      "name",
+      "artwork",
+      "description",
+      "curatorName",
+      "curatorSocialHandle",
+      "lastModifiedDate",
+    ],
+    extend: ["editorialVideo", "personalRating"],
+    relationships: {
+      library: "relate",
+    },
+  },
 });
 
 export type UserProfile = ScopedResourceOf<"personal-social-profiles", typeof profileScope>;

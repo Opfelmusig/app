@@ -33,9 +33,25 @@
         <span class="flex items-center gap-2 text-muted"> @{{ profile.attributes.handle }} </span>
       </div>
     </header>
+    <AMGridWrapper>
+      <div class="col-span-full">
+        <h2>Shared Playlists</h2>
+      </div>
+      <AMGridStatus
+        :is-pending="false"
+        :error="null"
+        :total="sharedPlaylists?.length"
+        :resources="sharedPlaylists"
+      >
+        <AMGrid :items="sharedPlaylists" />
+      </AMGridStatus>
+    </AMGridWrapper>
+    <AMFooter>
+      <AMFooterCount :count="sharedPlaylists?.length" singular="playlist" />
+    </AMFooter>
   </PageWrapper>
 </template>
 
 <script lang="ts" setup>
-const { profile } = useAuth();
+const { profile, sharedPlaylists } = useAuth();
 </script>

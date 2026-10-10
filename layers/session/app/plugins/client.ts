@@ -5,7 +5,9 @@ import { fetch } from "@tauri-apps/plugin-http";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
 
 import { parseResource } from "#layers/amdata/app/lib/parse";
+import type { AmCatalogPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
 import { getAppleMusicDeveloperToken } from "#layers/session/app/lib/getAppleMusicDeveloperToken";
 import { profileScope } from "#layers/session/app/lib/profileScope";
 
@@ -66,6 +68,7 @@ export default defineNuxtPlugin({
 
     const storefront = ref<Storefront>();
     const profile = ref<AmSocialProfile>();
+    const sharedPlaylists = ref<AmListResource<AmCatalogPlaylist>[]>();
 
     const client = new OpfelMusigClient({
       developerToken: async () => {
@@ -114,9 +117,20 @@ export default defineNuxtPlugin({
         settingsStore.language = storefront.value?.attributes?.defaultLanguageTag;
       }
 
-      profile.value = parseResource(profileData.data[0]);
+      const userProfile = profileData.data[0];
+      profile.value = parseResource(userProfile);
 
       if (!profile.value) throw new Error("Profile not found");
+
+      sharedPlaylists.value = (userProfile?.relationships?.["shared-playlists"].data ?? []).map(
+        (playlist, position) => ({
+          key: `shared-playlists:${position}:${playlist.id}`,
+          type: "list-resources",
+          position,
+          resourceType: playlist.type,
+          resource: parseResource(playlist),
+        }),
+      );
 
       tokenValid.value = true;
 
@@ -153,6 +167,7 @@ export default defineNuxtPlugin({
       settingsStore.language = undefined;
       tokenValid.value = false;
       profile.value = undefined;
+      sharedPlaylists.value = undefined;
 
       await nuxtApp.callHook("auth:logout");
 
@@ -179,6 +194,9 @@ export default defineNuxtPlugin({
         auth: {
           valid: readonly(tokenValid),
           profile: readonly(profile) as Readonly<Ref<AmSocialProfile>>,
+          sharedPlaylists: readonly(sharedPlaylists) as Readonly<
+            Ref<AmListResource<AmCatalogPlaylist>[]>
+          >,
           storefront: readonly(storefront),
           login,
           logout,
