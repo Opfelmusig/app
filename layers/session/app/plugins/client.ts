@@ -178,7 +178,7 @@ export default defineNuxtPlugin({
         client,
         auth: {
           valid: readonly(tokenValid),
-          profile: readonly(profile),
+          profile: readonly(profile) as Readonly<Ref<AmSocialProfile>>,
           storefront: readonly(storefront),
           login,
           logout,

@@ -21,11 +21,12 @@ const variants = cva(
     variants: {
       context: {
         header: "size-40 rounded-3xl",
+        profile: "size-24",
         grid: "w-full rounded-3xl",
         list: "size-9 rounded-lg",
         small: "size-5 rounded-md",
         "folder-preview": "w-full rounded-xl",
-        account: "size-12 rounded-xl",
+        account: "size-12",
       },
       color: {
         error: "bg-error/20 text-error",
@@ -66,6 +67,7 @@ const imageSize = computed(
   () =>
     ({
       header: 320,
+      profile: 192,
       grid: 520,
       list: 72,
       small: 40,
@@ -78,6 +80,7 @@ const iconClass = computed(() =>
   cn(
     {
       header: "size-20",
+      profile: "size-12",
       grid: "size-20",
       list: "size-4",
       small: "size-3",
