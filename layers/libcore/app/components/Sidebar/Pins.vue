@@ -9,11 +9,7 @@
         :key="pin.resource.id"
         :to="resourceLink(pin.resource)"
       >
-        <AMArtworkWrapper
-          v-slot="{ iconClass, imageSize, artwork }"
-          :resource="pin.resource"
-          size="xs"
-        >
+        <AMArtworkWrapper v-slot="{ iconClass, imageSize, artwork }" :resource="pin" size="xs">
           <AMArtworkImage v-if="artwork" :width="imageSize" :artwork />
           <UIcon v-else :name="resourceIcon(pin.resource.type)" :class="iconClass" />
         </AMArtworkWrapper>

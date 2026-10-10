@@ -17,7 +17,7 @@
                 imageSize: childImageSize,
                 artwork: childArtwork,
               }"
-              :resource="child.resource"
+              :resource="child"
               class="aspect-square h-auto w-full rounded-lg border"
               :class="child.resource.attributes.artwork ? 'border-transparent' : 'border-muted'"
               color="muted"

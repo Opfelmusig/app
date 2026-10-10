@@ -145,6 +145,7 @@ export class LibraryClient {
         return resource && allowedTypes.includes(resource.type)
           ? ({
               key: entry.id,
+              type: "list-resources",
               position: entry.position,
               resource,
             } satisfies AmListResource<DbResource>)
@@ -160,6 +161,7 @@ export class LibraryClient {
       (resource, i) =>
         ({
           key: resource.id,
+          type: "list-resources",
           position: i,
           resource: resource,
         }) satisfies AmListResource<T>,

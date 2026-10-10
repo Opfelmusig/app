@@ -32,7 +32,7 @@
         >
           <AMArtworkWrapper
             v-slot="{ iconClass, imageSize, artwork }"
-            :resource="artist.resource"
+            :resource="artist"
             size="sm"
             color="muted"
           >

@@ -11,6 +11,7 @@ import type { AmAlbum } from "#layers/amdata/app/types/albums";
 import type { AmArtist } from "#layers/amdata/app/types/artists";
 import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
+import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmSong } from "#layers/amdata/app/types/songs";
 
 const variants = cva(
@@ -40,24 +41,30 @@ const variants = cva(
   },
 );
 
+type Resources = AmSong | AmAlbum | AmArtist | AmPlaylist | AmSocialProfile;
+
 const props = defineProps<{
   size?: VariantProps<typeof variants>["size"];
   color?: VariantProps<typeof variants>["color"];
   round?: boolean;
   class?: string;
-  resource?: AmSong | AmAlbum | AmArtist | AmPlaylist | AmSocialProfile | null;
+  resource?: Resources | AmListResource<Resources>;
   artwork?: Artwork;
 }>();
 
+const resource = computed(() =>
+  props.resource?.type === "list-resources" ? props.resource.resource : props.resource,
+);
+
 const isRoundedResource = computed(
   () =>
-    props.resource?.type === "library-artists" ||
-    props.resource?.type === "artists" ||
-    props.resource?.type === "social-profiles",
+    resource.value?.type === "library-artists" ||
+    resource.value?.type === "artists" ||
+    resource.value?.type === "social-profiles",
 );
 const round = computed(() => isRoundedResource.value || props.round);
 
-const artwork = computed(() => props.artwork ?? props.resource?.attributes.artwork);
+const artwork = computed(() => props.artwork ?? resource.value?.attributes.artwork);
 
 const imageSize = computed(() => {
   if (!props.size) return 96 * 2;

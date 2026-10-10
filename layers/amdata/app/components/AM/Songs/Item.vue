@@ -3,7 +3,7 @@
     <OMTableSimple>
       <AMArtworkWrapper
         v-slot="{ iconClass, imageSize, artwork }"
-        :resource="song.resource"
+        :resource="song"
         size="sm"
         :color="albumMode ? undefined : 'muted'"
       >

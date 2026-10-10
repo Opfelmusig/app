@@ -27,6 +27,7 @@ export type AmResource =
 
 export interface AmListResource<TResource extends AmResource> {
   key: string;
+  type: "list-resources";
   position: number;
   resource: TResource;
 }
