@@ -28,6 +28,9 @@
           </div>
         </template>
         <UIcon v-else :name="resourceIcon(resource.type)" :class="iconClass" />
+        <AMArtworkOverlay alignment="bottom">
+          <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
+        </AMArtworkOverlay>
       </AMArtworkWrapper>
     </NuxtLink>
     <div class="flex w-full min-w-0 flex-col">
