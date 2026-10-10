@@ -116,7 +116,7 @@
     </AMSongsWrapper>
     <AMFooter>
       <span>
-        <AMFooterCount :count="displayedTracks?.length singular="song" />,
+        <AMFooterCount :count="displayedTracks?.length" singular="song" />,
         <span>
           {{ tracksDuration(displayedTracks) }}
         </span>
