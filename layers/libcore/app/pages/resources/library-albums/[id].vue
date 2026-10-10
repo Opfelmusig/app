@@ -97,7 +97,6 @@ import { songColumns } from "#layers/amdata/app/lib/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/filters";
 import { defaultSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
-import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 const library = useLibrary();
 const id = useRouteParams<string>("id");
@@ -112,7 +111,7 @@ const { data: tracks } = useLibraryQuery({
 });
 
 const { columns, reset, columnsChanged } = useColumns(
-  () => playlistTracksListId(toValue(id)),
+  () => `album:${id.value}`,
   ["artist", "length"],
 );
 
@@ -121,7 +120,7 @@ const {
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<SongSort>(() => playlistTracksListId(toValue(id)), "default");
+} = useSorting<SongSort>(() => `album:${id.value}`, "default");
 
 const {
   filters,
@@ -137,18 +136,4 @@ const displayedTracks = computed(() => {
 
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
-
-const { mutate: refreshPlaylist } = useMutation({
-  mutation: (playlistId: string) => library.refreshPlaylist(playlistId),
-});
-
-watch(
-  [id, () => library.state.ready],
-  ([playlistId, ready]) => {
-    if (ready && playlistId) {
-      refreshPlaylist(playlistId);
-    }
-  },
-  { immediate: true },
-);
 </script>
