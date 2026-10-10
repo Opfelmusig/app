@@ -12,7 +12,11 @@
         </h2>
       </div>
     </header>
-    <AMGrid :items="children" />
+    <AMGridWrapper>
+      <AMGridStatus :is-pending="childrenPending" :error="childrenError" :resources="children">
+        <AMGrid :items="children" />
+      </AMGridStatus>
+    </AMGridWrapper>
     <AMFooter>
       <AMFooterCount :count="children?.length" singular="playlist" />
     </AMFooter>
@@ -29,7 +33,11 @@ const { data: folder } = useLibraryQuery({
   key: () => ["folders", id.value],
   query: () => library.client.getFolder(id.value),
 });
-const { data: children } = useLibraryQuery({
+const {
+  data: children,
+  isPending: childrenPending,
+  error: childrenError,
+} = useLibraryQuery({
   key: () => ["folders", id.value, "children"],
   query: () => library.client.getFolderChildren(id.value),
 });

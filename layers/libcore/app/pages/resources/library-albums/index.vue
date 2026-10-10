@@ -30,7 +30,11 @@
       />
       <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
     </header>
-    <AMGrid :items="displayedAlbums" show-artists />
+    <AMGridWrapper>
+      <AMGridStatus :is-pending :error :total="albums?.length" :resources="displayedAlbums">
+        <AMGrid :items="displayedAlbums" show-artists />
+      </AMGridStatus>
+    </AMGridWrapper>
     <AMFooter>
       <AMFooterCount :count="displayedAlbums?.length" singular="album" />
     </AMFooter>
@@ -44,7 +48,7 @@ import { libraryAlbumSorting } from "#layers/amdata/app/lib/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 
-const { data: albums } = useLibraryList(DbListId.Albums);
+const { data: albums, isPending, error } = useLibraryList(DbListId.Albums);
 const search = ref("");
 const searchedAlbums = useSearch(albums, search, albumSearchKeys);
 

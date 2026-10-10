@@ -51,7 +51,16 @@
           <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </header>
-      <AMGrid :items="displayedAlbums" show-artists />
+      <AMGridWrapper>
+        <AMGridStatus
+          :is-pending="currentGenreAlbumsPending"
+          :error="currentGenreAlbumsError"
+          :total="currentGenreAlbums?.length"
+          :resources="displayedAlbums"
+        >
+          <AMGrid :items="displayedAlbums" show-artists />
+        </AMGridStatus>
+      </AMGridWrapper>
       <AMFooter>
         <AMFooterCount :count="displayedAlbums?.length" singular="album" />
       </AMFooter>
@@ -70,7 +79,11 @@ const { data: genres } = useLibraryQuery({
 });
 
 const name = useRouteParams<string | undefined>("name");
-const { data: currentGenreAlbums } = useLibraryQuery({
+const {
+  data: currentGenreAlbums,
+  isPending: currentGenreAlbumsPending,
+  error: currentGenreAlbumsError,
+} = useLibraryQuery({
   key: () => ["genre", name.value ?? null, "albums"],
   query: () => library.client.getGenreAlbums(name.value!),
   enabled: name,

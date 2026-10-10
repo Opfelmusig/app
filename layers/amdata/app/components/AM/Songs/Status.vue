@@ -7,7 +7,7 @@
     <UIcon name="lucide:x" class="size-4" />
     <span>{{ error.message }}</span>
   </OMTableStatus>
-  <OMTableStatus v-else-if="total === 0"> This list is empty </OMTableStatus>
+  <OMTableStatus v-else-if="total === 0 && songs?.length === 0"> This list is empty </OMTableStatus>
   <OMTableStatus v-else-if="songs === undefined || songs?.length === 0">
     No songs found
   </OMTableStatus>
