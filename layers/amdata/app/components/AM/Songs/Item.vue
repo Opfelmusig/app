@@ -38,7 +38,7 @@
         </div>
       </div>
     </OMTableData>
-    <OMTableData v-if="columns?.includes('album')" class="text-muted">
+    <OMTableData v-if="columns.includes('album')" class="text-muted">
       <AMLinks
         :links="song.resource.attributes.albums"
         type="albums"
@@ -48,7 +48,7 @@
         "
       />
     </OMTableData>
-    <OMTableData v-if="columns?.includes('artist')" class="text-muted">
+    <OMTableData v-if="columns.includes('artist')" class="text-muted">
       <AMLinks
         :links="song.resource.attributes.artists"
         type="artists"
@@ -58,17 +58,17 @@
         "
       />
     </OMTableData>
-    <OMTableData v-if="columns?.includes('genre')" class="text-muted">
+    <OMTableData v-if="columns.includes('genre')" class="text-muted">
       {{ song.resource.attributes.genreNames.join(", ") }}
     </OMTableData>
-    <OMTableData v-if="columns?.includes('year')" class="text-muted tabular-nums">
+    <OMTableData v-if="columns.includes('year')" class="text-muted tabular-nums">
       <NuxtTime
         v-if="song.resource.attributes.releaseDate"
         :datetime="song.resource.attributes.releaseDate"
         year="numeric"
       />
     </OMTableData>
-    <OMTableData v-if="columns?.includes('length')" class="text-end text-muted tabular-nums">
+    <OMTableData v-if="columns.includes('length')" class="text-end text-muted tabular-nums">
       {{ msToHMS(song.resource.attributes.durationInMillis) }}
     </OMTableData>
     <OMTableSimple class="pl-1">
@@ -79,7 +79,6 @@
 
 <script lang="ts" setup>
 import { AMLinks } from "#components";
-import { tableColumnsKey } from "#layers/amdata/app/lib/columns";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmSong } from "#layers/amdata/app/types/songs";
 
@@ -88,5 +87,5 @@ defineProps<{
   albumMode?: boolean;
 }>();
 
-const columns = inject(tableColumnsKey);
+const columns = useTableColumns();
 </script>
