@@ -20,7 +20,8 @@
                 artwork: childArtwork,
               }"
               :resource="child.resource"
-              class="aspect-square h-auto w-full rounded-lg border border-muted"
+              class="aspect-square h-auto w-full rounded-lg border"
+              :class="child.resource.attributes.artwork ? 'border-transparent' : 'border-muted'"
               color="muted"
             >
               <AMArtworkImage v-if="childArtwork" :width="childImageSize" :artwork="childArtwork" />
