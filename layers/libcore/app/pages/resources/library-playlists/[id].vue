@@ -99,13 +99,12 @@
     </header>
     <AMSongsWrapper :columns>
       <AMSongsStatus
-        :columns
         :is-pending="tracksPending"
         :error="tracksError"
         :total="tracks?.length"
         :songs="displayedTracks"
       >
-        <AMSongs :songs="displayedTracks" :columns />
+        <AMSongs :songs="displayedTracks" />
       </AMSongsStatus>
     </AMSongsWrapper>
     <AMFooter>

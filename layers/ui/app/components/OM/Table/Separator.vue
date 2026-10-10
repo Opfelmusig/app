@@ -8,9 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { SongColumns } from "#layers/amdata/app/types/songs";
+import { tableColumnsKey } from "#layers/amdata/app/lib/columns";
 
-defineProps<{
-  columns: SongColumns[];
-}>();
+const columns = inject(tableColumnsKey);
 </script>

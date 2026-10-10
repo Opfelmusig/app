@@ -79,12 +79,14 @@
 
 <script lang="ts" setup>
 import { AMLinks } from "#components";
+import { tableColumnsKey } from "#layers/amdata/app/lib/columns";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmSong, SongColumns } from "#layers/amdata/app/types/songs";
+import type { AmSong } from "#layers/amdata/app/types/songs";
 
 defineProps<{
   song: AmListResource<AmSong>;
-  columns: SongColumns[];
   albumMode?: boolean;
 }>();
+
+const columns = inject(tableColumnsKey);
 </script>

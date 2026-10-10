@@ -1,20 +1,19 @@
 <template>
   <template v-if="!albumMode || discs.length <= 1 || !albumSort">
-    <AMSongsItem v-for="song in songs" :key="song.key" :song :columns :album-mode />
+    <AMSongsItem v-for="song in songs" :key="song.key" :song :album-mode />
   </template>
   <template v-for="disc in discs" v-else :key="disc.number">
-    <AMSongsSeparator :columns>Disc {{ disc.number }}</AMSongsSeparator>
-    <AMSongsItem v-for="song in disc.songs" :key="song.key" :song :columns :album-mode />
+    <OMTableSeparator>Disc {{ disc.number }}</OMTableSeparator>
+    <AMSongsItem v-for="song in disc.songs" :key="song.key" :song :album-mode />
   </template>
 </template>
 
 <script lang="ts" setup>
 import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmSong, SongColumns } from "#layers/amdata/app/types/songs";
+import type { AmSong } from "#layers/amdata/app/types/songs";
 
 const props = defineProps<{
   songs?: AmListResource<AmSong>[];
-  columns: SongColumns[];
   albumMode?: boolean;
   albumSort?: boolean;
 }>();

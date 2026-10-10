@@ -1,5 +1,7 @@
 import type { SongColumns } from "#layers/amdata/app/types/songs";
 
+export const tableColumnsKey: InjectionKey<ComputedRef<SongColumns[]>> = Symbol("table-columns");
+
 export type ColumnItem<T> = { label: string; value: T };
 
 export const defaultSongColumns: SongColumns[] = ["album", "artist", "length"];
