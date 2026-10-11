@@ -14,6 +14,11 @@
       class="flex h-full w-full flex-col overflow-hidden overflow-y-auto rounded-2xl border border-default bg-default"
     >
       <template v-if="currentQueue.length > 0">
+        <PanelHeader
+          v-if="queueStore.context && queueStore.isShuffeling"
+          title="Continue Playing"
+          :context="queueStore.context"
+        />
         <AMSongsWrapper :columns="[]">
           <AMSongs :songs="upNext" @play="(i) => queueStore.playIndex(i + overshoot)" />
         </AMSongsWrapper>
@@ -28,11 +33,12 @@
           />
         </AMSongsWrapper>
       </template>
-      <template
+      <div
         v-if="
           (currentQueue.length <= 0 || !queueStore.isShuffeling) &&
           queueStore.contextQueue.length <= 0
         "
+        class="flex size-full items-center justify-center text-muted"
       >
         Nothing in the queue
       </div>
