@@ -5,7 +5,7 @@ import type { AmSong } from "#layers/amdata/app/types/songs";
 
 export type QueueTrack = AmListResource<AmSong>;
 
-export type QueueContext = AmAlbum | AmPlaylist; // stations
+export type QueueContext = AmAlbum | AmPlaylist | string; // stations
 
 export interface CreateQueue {
   tracks: QueueTrack[];
@@ -13,7 +13,7 @@ export interface CreateQueue {
 }
 
 export interface CreateQueueContext extends CreateQueue {
-  context: AmAlbum | AmPlaylist;
+  context: QueueContext;
 }
 
 export interface QueueEntry {

@@ -105,9 +105,10 @@ const queueStore = useQueueStore();
 function play(index: number = 0) {
   if (displayedSongs.value.length === 0) return;
 
-  queueStore.playQueue({
+  queueStore.playContext({
     index,
     tracks: displayedSongs.value,
+    context: "Library Songs",
   });
 }
 </script>
