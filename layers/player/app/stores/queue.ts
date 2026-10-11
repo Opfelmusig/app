@@ -46,9 +46,13 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   function playContext(createContext: CreateQueueContext, shouldShuffle: boolean = false) {
     queue.value = [];
     contextQueue.value = [];
+    index.value = null;
 
     context.value = createContext.context;
     contextQueue.value = createQueueFromTracks(createContext.tracks);
+
+    if (shouldShuffle) shuffle();
+    else resetShuffle();
 
     if (contextQueue.value.length === 0) {
       index.value = null;
@@ -57,9 +61,6 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
     } else {
       index.value = 0;
     }
-
-    if (shouldShuffle) shuffle();
-    else resetShuffle();
   }
 
   function playStation(_station: unknown) {
