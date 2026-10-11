@@ -28,8 +28,16 @@
           />
         </AMSongsWrapper>
       </template>
-      <AMFooter>
-        <span v-if="count > 0 && queueStore.isLooping">
+      <template
+        v-if="
+          (currentQueue.length <= 0 || !queueStore.isShuffeling) &&
+          queueStore.contextQueue.length <= 0
+        "
+      >
+        <PanelHeader title="Nothing in the queue" :context="queueStore.context" />
+      </template>
+      <AMFooter v-if="count > 0 && queueStore.isLooping">
+        <span>
           Repeating
           <AMFooterCount singular="song" :count />
         </span>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col p-2 px-3">
+  <div class="flex flex-col p-3 px-4">
     <div class="text-default">{{ title }}</div>
     <span v-if="context" class="text-xs text-muted">
       <span v-if="typeof context === 'string'">
