@@ -1,10 +1,22 @@
 <template>
   <template v-if="!albumMode || discs.length <= 1 || !albumSort">
-    <AMSongsItem v-for="song in songs" :key="song.key" :song :album-mode />
+    <AMSongsItem
+      v-for="(song, i) in songs"
+      :key="song.key"
+      :song
+      :album-mode
+      @play="$emit('play', i)"
+    />
   </template>
   <template v-for="disc in discs" v-else :key="disc.number">
     <OMTableSeparator>Disc {{ disc.number }}</OMTableSeparator>
-    <AMSongsItem v-for="song in disc.songs" :key="song.key" :song :album-mode />
+    <AMSongsItem
+      v-for="(song, i) in disc.songs"
+      :key="song.key"
+      :song
+      :album-mode
+      @play="$emit('play', i)"
+    />
   </template>
 </template>
 
@@ -35,4 +47,8 @@ const discs = computed(() => {
 
   return groups;
 });
+
+defineEmits<{
+  (e: "play", index: number): void;
+}>();
 </script>

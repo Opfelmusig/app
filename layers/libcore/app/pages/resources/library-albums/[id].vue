@@ -77,7 +77,7 @@
         :total="tracks?.length"
         :songs="displayedTracks"
       >
-        <AMSongs :songs="displayedTracks" album-mode :album-sort="!sortChanged" />
+        <AMSongs :songs="displayedTracks" album-mode :album-sort="!sortChanged" @play="play" />
       </AMSongsStatus>
     </AMSongsWrapper>
     <AMFooter>
@@ -142,4 +142,16 @@ const displayedTracks = computed(() => {
 
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
+
+const queueStore = useQueueStore();
+
+function play(index: number = 0) {
+  if (!album.value || displayedTracks.value.length === 0) return;
+
+  queueStore.playContext({
+    index,
+    context: album.value,
+    tracks: displayedTracks.value,
+  });
+}
 </script>

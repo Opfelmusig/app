@@ -56,7 +56,7 @@
           </p>
         </div>
         <div class="flex items-center gap-2">
-          <OMButtonPlay />
+          <OMButtonPlay @click="play" />
           <OMButtonSecondary icon="lucide:shuffle" />
           <OMButtonSecondary
             fill
@@ -99,7 +99,7 @@
         :total="tracks?.length"
         :songs="displayedTracks"
       >
-        <AMSongs :songs="displayedTracks" />
+        <AMSongs :songs="displayedTracks" @play="play" />
       </AMSongsStatus>
     </AMSongsWrapper>
     <AMFooter>
@@ -161,6 +161,18 @@ const displayedTracks = computed(() => {
 
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
+
+const queueStore = useQueueStore();
+
+function play(index: number = 0) {
+  if (!playlist.value || displayedTracks.value.length === 0) return;
+
+  queueStore.playContext({
+    index,
+    context: playlist.value,
+    tracks: displayedTracks.value,
+  });
+}
 
 const { mutate: refreshPlaylist } = useMutation({
   mutation: (playlistId: string) => library.refreshPlaylist(playlistId),

@@ -1,5 +1,5 @@
 <template>
-  <OMTableRow>
+  <OMTableRow @dblclick="$emit('play')">
     <OMTableSimple>
       <AMArtworkWrapper
         v-slot="{ iconClass }"
@@ -16,7 +16,7 @@
           <AMArtworkImage />
           <AMArtworkPlaceholder />
         </template>
-        <AMArtworkOverlay :transparent="albumMode">
+        <AMArtworkOverlay :transparent="albumMode" @click="$emit('play')">
           <OMIcon name="lucide:play" :class="iconClass" filled />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
@@ -88,4 +88,8 @@ defineProps<{
 }>();
 
 const columns = useTableColumns();
+
+defineEmits<{
+  (e: "play"): void;
+}>();
 </script>

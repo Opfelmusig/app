@@ -12,6 +12,7 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   const contextQueue = ref<QueueEntry[]>([]);
   const index = ref<number | null>(null);
   const isLooping = ref<boolean>(true);
+  const isShuffeling = ref<boolean>(true);
 
   const combinedLength = computed(() => queue.value.length + contextQueue.value.length);
   const inContext = computed(
@@ -144,5 +145,6 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
     append,
     jumpToIndex: playIndex,
     isLooping,
+    isShuffeling,
   };
 });
