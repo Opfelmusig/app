@@ -7,16 +7,31 @@
         context="list"
         :color="albumMode ? undefined : 'muted'"
       >
-        <div v-if="albumMode" class="flex size-full items-center justify-center text-muted">
+        <div
+          v-if="albumMode && !isActive"
+          class="flex size-full items-center justify-center text-muted"
+        >
           <span class="truncate text-center tabular-nums group-hover:opacity-0">
             {{ song.resource.attributes.trackNumber }}
           </span>
         </div>
+        <div
+          v-else-if="albumMode"
+          class="absolute inset-0 flex items-center justify-center bg-muted/50"
+        >
+          <OMVisualizer />
+        </div>
         <template v-else>
           <AMArtworkImage />
+          <div
+            v-if="isActive"
+            class="absolute inset-0 flex items-center justify-center bg-muted/50"
+          >
+            <OMVisualizer />
+          </div>
           <AMArtworkPlaceholder />
         </template>
-        <AMArtworkOverlay :transparent="albumMode" @click="$emit('play')">
+        <AMArtworkOverlay v-if="!isActive" :transparent="albumMode" @click="$emit('play')">
           <OMIcon name="lucide:play" :class="iconClass" filled />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
@@ -82,7 +97,7 @@ import { AMLinks } from "#components";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmSong } from "#layers/amdata/app/types/songs";
 
-defineProps<{
+const props = defineProps<{
   song: AmListResource<AmSong>;
   albumMode?: boolean;
 }>();
@@ -92,4 +107,8 @@ const columns = useTableColumns();
 defineEmits<{
   (e: "play"): void;
 }>();
+
+const queueStore = useQueueStore();
+
+const isActive = computed(() => queueStore.current?.entry.key === props.song.key);
 </script>
