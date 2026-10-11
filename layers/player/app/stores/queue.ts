@@ -4,7 +4,7 @@ import type {
   QueueContext,
   QueueEntry,
   QueueTrack,
-} from "~~/layers/queue/app/types/queue";
+} from "~~/layers/player/app/types/queue";
 
 export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   const queue = ref<QueueEntry[]>([]);
