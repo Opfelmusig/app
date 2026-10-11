@@ -24,6 +24,14 @@
         </template>
       </USplitter>
     </div>
+    <Transition
+      enter-active-class="transition-transform"
+      enter-from-class="translate-x-full"
+      leave-active-class="transition-transform"
+      leave-to-class="translate-x-full"
+    >
+      <Panel v-if="settingsStore.isPanelOpen" />
+    </Transition>
     <Player />
   </main>
 </template>
@@ -45,4 +53,5 @@ const panels: SplitterItem[] = [
 ];
 
 const { splitter: _splitter, reset } = useSidebar();
+const settingsStore = useSettingsStore();
 </script>
