@@ -11,11 +11,11 @@
   <template v-for="disc in discs" v-else :key="disc.number">
     <OMTableSeparator>Disc {{ disc.number }}</OMTableSeparator>
     <AMSongsItem
-      v-for="(song, i) in disc.songs"
-      :key="song.key"
-      :song
+      v-for="song in disc.songs"
+      :key="song.item.key"
+      :song="song.item"
       :album-mode
-      @play="$emit('play', i)"
+      @play="$emit('play', song.index)"
     />
   </template>
 </template>
@@ -31,8 +31,9 @@ const props = defineProps<{
 }>();
 
 const discs = computed(() => {
-  const groups: { number: number; songs: AmListResource<AmSong>[] }[] = [];
+  const groups: { number: number; songs: { item: AmListResource<AmSong>; index: number }[] }[] = [];
 
+  let i = 0;
   for (const song of props.songs ?? []) {
     const disc = song.resource.attributes.discNumber ?? 1;
     let group = groups.find((group) => group.number === disc);
@@ -42,7 +43,7 @@ const discs = computed(() => {
       groups.push(group);
     }
 
-    group.songs.push(song);
+    group.songs.push({ item: song, index: i++ });
   }
 
   return groups;
