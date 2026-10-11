@@ -17,6 +17,7 @@ export default async function getTracks(resource: AmLibraryAlbum | AmLibraryPlay
       const listId = playlistTracksListId(resource.id);
       const { sortBy, direction } = getSavedSorting(listId, "default");
 
+      await library.refreshPlaylist(resource.id);
       const tracks = await library.client.getListResources(listId);
       return sortSongs(tracks, sortBy, direction);
     }
