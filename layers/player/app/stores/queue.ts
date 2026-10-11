@@ -91,17 +91,53 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
     else if (index.value < 0) index.value = 0;
   }
 
-  function clearQueue() {
-    // clear queue after index
+  function clearQueue() {}
+  function clearContext() {}
+
+  function playIndex(nextIndex: number) {
+    if (nextIndex < 0 || nextIndex >= combinedLength.value) return;
+
+    index.value = nextIndex;
   }
-  function clearContext() {
-    // clear context after index
-    // move the rest to queue
-    // discard context if needed
+
+  function deleteIndex(targetIndex: number) {
+    if (index.value !== null && targetIndex <= index.value) return;
+
+    const entries = isShuffeling.value
+      ? shuffledQueue.value
+      : [...queue.value, ...contextQueue.value];
+
+    const id = entries[targetIndex]?.id;
+
+    queue.value = queue.value.filter((entry) => entry.id !== id);
+    contextQueue.value = contextQueue.value.filter((entry) => entry.id !== id);
+    shuffledQueue.value = shuffledQueue.value.filter((entry) => entry.id !== id);
   }
-  function playIndex(_index: number) {}
-  function deleteIndex(_index: number) {}
-  function moveIndex(_index: number, _newIndex: number) {}
+
+  function moveIndex(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return;
+
+    if (index.value !== null && (fromIndex <= index.value || toIndex <= index.value)) return;
+
+    if (isShuffeling.value) {
+      const [entry] = shuffledQueue.value.splice(fromIndex, 1);
+      shuffledQueue.value.splice(toIndex, 0, entry!);
+      return;
+    }
+
+    const queueLength = queue.value.length;
+    const fromQueue = fromIndex < queueLength;
+    const toQueue = toIndex < queueLength;
+
+    const source = fromQueue ? queue.value : contextQueue.value;
+    const sourceIndex = fromQueue ? fromIndex : fromIndex - queueLength;
+    const [entry] = source.splice(sourceIndex, 1);
+
+    const target = toQueue ? queue.value : contextQueue.value;
+    const targetIndex = toQueue ? toIndex : toIndex - queue.value.length;
+
+    if (entry) target.splice(targetIndex, 0, entry);
+  }
 
   function shuffleList(entries: QueueEntry[]): QueueEntry[] {
     for (let i = entries.length - 1; i > 0; i--) {
@@ -149,7 +185,7 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   }
 
   const current = computed(() => {
-    if (index.value === null || !Number.isInteger(index.value)) return null;
+    if (index.value === null) return null;
 
     if (isShuffeling.value) return shuffledQueue.value[index.value] ?? null;
 
