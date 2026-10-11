@@ -30,6 +30,14 @@
             Reload
           </button>
           <button
+            type="button"
+            class="cursor-pointer rounded-md bg-red-400 px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
+            :disabled="loggingOut"
+            @click="logout"
+          >
+            {{ loggingOut ? "Logging out..." : "Log out" }}
+          </button>
+          <button
             v-if="state && sync && !state.initializing"
             type="button"
             class="cursor-pointer rounded-md bg-yellow-400 px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
@@ -55,6 +63,9 @@
 </template>
 
 <script setup lang="ts">
+import { appDataDir, join } from "@tauri-apps/api/path";
+import { Stronghold } from "@tauri-apps/plugin-stronghold";
+
 const error = useError();
 
 const isDev = import.meta.dev;
@@ -81,6 +92,27 @@ const stack = computed(() => {
 
 function reload() {
   window.location.reload();
+}
+
+const loggingOut = ref(false);
+
+async function logout() {
+  if (loggingOut.value) return;
+
+  loggingOut.value = true;
+
+  try {
+    const vaultPath = await join(await appDataDir(), "auth.hold");
+    const stronghold = await Stronghold.load(vaultPath, "opfelmusig:auth");
+    const client = await stronghold.loadClient("auth").catch(() => stronghold.createClient("auth"));
+
+    await client.getStore().remove("apple-music:user-token");
+    await stronghold.save();
+
+    reload();
+  } finally {
+    loggingOut.value = false;
+  }
 }
 
 const { sync, state } = useLibrary() ?? {};
