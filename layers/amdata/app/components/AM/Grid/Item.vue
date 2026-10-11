@@ -5,8 +5,14 @@
         <AMArtworkImage />
         <AMArtworkPlaceholder />
         <AMArtworkOverlay alignment="bottom">
-          <AMArtworkOverlayButton icon="lucide:play" filled />
-          <AMArtworkOverlayButton icon="lucide:ellipsis" />
+          <AMArtworkOverlayButton
+            v-if="playableResource"
+            :icon="isPending ? 'lucide:loader-circle' : 'lucide:play'"
+            :filled="!isPending"
+            :disabled="isPending"
+            @click="play(playableResource)"
+          />
+          <AMArtworkOverlayButton icon="lucide:ellipsis" label="More options" class="ml-auto" />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
     </NuxtLink>
@@ -92,9 +98,21 @@ import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
 
-defineProps<{
+const props = defineProps<{
   resource: AmListResource<AmAlbum | AmPlaylist | AmArtist | AmSocialProfile>; // station
   showArtists?: boolean;
   showYear?: boolean;
 }>();
+
+const playableResource = computed(() => {
+  const resource = props.resource.resource;
+  if (resource.type === "library-albums" || resource.type === "library-playlists") return resource;
+
+  return null;
+});
+
+const { play, pendingResource } = useResourceTracksPlayback();
+const isPending = computed(
+  () => pendingResource.value === `${props.resource.resourceType}:${props.resource.resource.id}`,
+);
 </script>
