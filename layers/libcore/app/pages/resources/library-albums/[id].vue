@@ -95,9 +95,9 @@
 
 <script lang="ts" setup>
 import { AMLinks, AMReleaseDate } from "#components";
-import { songColumns } from "#layers/amdata/app/lib/columns";
-import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/filters";
-import { albumSongSorting } from "#layers/amdata/app/lib/sorting";
+import { songColumns } from "#layers/amdata/app/lib/controls/columns";
+import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
+import { albumSongSorting } from "#layers/amdata/app/lib/controls/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 
 const library = useLibrary();

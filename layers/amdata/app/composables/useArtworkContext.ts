@@ -1,4 +1,4 @@
-import { artworkContextKey } from "#layers/amdata/app/lib/artwork";
+import { artworkContextKey } from "#layers/amdata/app/lib/contexts/artwork";
 
 export default function useArtworkContext() {
   const context = inject(artworkContextKey);

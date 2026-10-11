@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import type { RadioGroupProps } from "@nuxt/ui";
 
-import type { SortingDirection } from "#layers/amdata/app/lib/sorting";
+import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
 
 const directions = ["asc", "desc"] as const;
 

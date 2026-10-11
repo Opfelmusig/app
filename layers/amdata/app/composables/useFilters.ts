@@ -1,6 +1,6 @@
 import type { ContentRating } from "@opfelmusig/lib/types";
 
-import type { FilterRating, ResourceFilters } from "#layers/amdata/app/lib/filters";
+import type { FilterRating, ResourceFilters } from "#layers/amdata/app/lib/controls/filters";
 
 export default function useFilters() {
   const selectedRatings = ref<FilterRating[]>([]);

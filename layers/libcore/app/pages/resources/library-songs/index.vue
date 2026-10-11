@@ -61,10 +61,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/columns";
-import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/filters";
-import { songSearchKeys } from "#layers/amdata/app/lib/search";
-import { librarySongSorting } from "#layers/amdata/app/lib/sorting";
+import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
+import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
+import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
+import { librarySongSorting } from "#layers/amdata/app/lib/controls/sorting";
 import type { SongColumns, SongSort } from "#layers/amdata/app/types/songs";
 import { DbListId } from "#layers/libcore/app/database/types";
 

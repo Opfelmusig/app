@@ -1,4 +1,4 @@
-import type { SortingDirection } from "#layers/amdata/app/lib/sorting";
+import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmSong, SongSort } from "#layers/amdata/app/types/songs";
 

@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defaultAlbumSorting } from "#layers/amdata/app/lib/sorting";
+import { defaultAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
 
 const library = useLibrary();

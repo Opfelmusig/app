@@ -1,39 +1,45 @@
-import { parseLibraryAlbum, type AlbumTemplate } from "#layers/amdata/app/lib/albums";
-import { parseLibraryArtist, type ArtistTemplate } from "#layers/amdata/app/lib/artists";
+import {
+  parseLibraryAlbum,
+  type LibraryAlbumTemplate,
+} from "#layers/amdata/app/lib/parsers/albums";
+import {
+  parseLibraryArtist,
+  type LibraryArtistTemplate,
+} from "#layers/amdata/app/lib/parsers/artists";
 import {
   parseLibraryPlaylistFolder,
   type LibraryPlaylistFolderTemplate,
-} from "#layers/amdata/app/lib/folders";
+} from "#layers/amdata/app/lib/parsers/folders";
 import {
   parseCatalogPlaylist,
   parseLibraryPlaylist,
   type PlaylistTemplate,
-} from "#layers/amdata/app/lib/playlists";
-import { parseProfile, type ProfileTemplate } from "#layers/amdata/app/lib/profiles";
+} from "#layers/amdata/app/lib/parsers/playlists";
+import { parseProfile, type ProfileTemplate } from "#layers/amdata/app/lib/parsers/profiles";
 import {
   parseCatalogSong,
   parseLibrarySong,
   type SongTemplate,
-} from "#layers/amdata/app/lib/songs";
+} from "#layers/amdata/app/lib/parsers/songs";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmResource } from "#layers/amdata/app/types/resources";
 
-export type Templates =
+export type ResourceTemplate =
   | SongTemplate
-  | AlbumTemplate
-  | ArtistTemplate
+  | LibraryAlbumTemplate
+  | LibraryArtistTemplate
   | PlaylistTemplate
   | ProfileTemplate
   | LibraryPlaylistFolderTemplate;
 
-type ParsedResource<T extends Templates> = T extends { type: "personal-social-profiles" }
+type ParsedResource<T extends ResourceTemplate> = T extends { type: "personal-social-profiles" }
   ? AmSocialProfile
   : Extract<AmResource, { type: T["type"] }>;
-export function parseResource<T extends Templates>(resource: T): ParsedResource<T>;
-export function parseResource<T extends Templates>(
+export function parseResource<T extends ResourceTemplate>(resource: T): ParsedResource<T>;
+export function parseResource<T extends ResourceTemplate>(
   resource: T | undefined,
 ): ParsedResource<T> | undefined;
-export function parseResource(resource: Templates | undefined): AmResource | undefined {
+export function parseResource(resource: ResourceTemplate | undefined): AmResource | undefined {
   if (resource === undefined) return undefined;
 
   switch (resource.type) {

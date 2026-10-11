@@ -4,7 +4,7 @@ import { appDataDir, join } from "@tauri-apps/api/path";
 import { fetch } from "@tauri-apps/plugin-http";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
 
-import { parseResource } from "#layers/amdata/app/lib/parse";
+import { parseResource } from "#layers/amdata/app/lib/parsers";
 import type { AmCatalogPlaylist } from "#layers/amdata/app/types/playlists";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmListResource } from "#layers/amdata/app/types/resources";

@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { tableColumnsKey } from "#layers/amdata/app/lib/columns";
+import { tableColumnsKey } from "#layers/amdata/app/lib/contexts/columns";
 import type { SongColumns } from "#layers/amdata/app/types/songs";
 
 const props = defineProps<{

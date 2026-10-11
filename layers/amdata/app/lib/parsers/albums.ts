@@ -1,5 +1,6 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
+import { parseCatalogLinks } from "#layers/amdata/app/lib/parsers/helpers";
 import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
 
 export type LibraryAlbumTemplate = ResourceTemplateOf<
@@ -40,11 +41,7 @@ export function parseLibraryAlbum(resource: LibraryAlbumTemplate): AmLibraryAlbu
       editorialVideo: catalog?.attributes?.editorialVideo,
       personalRating: catalog?.attributes?.personalRating,
 
-      artists:
-        catalog?.relationships?.artists.data.map((artist) => ({
-          id: artist.id,
-          name: artist.attributes?.name ?? "Unknown",
-        })) ?? [],
+      artists: parseCatalogLinks(catalog?.relationships?.artists.data),
     },
 
     extras: {
@@ -54,5 +51,3 @@ export function parseLibraryAlbum(resource: LibraryAlbumTemplate): AmLibraryAlbu
     },
   };
 }
-
-export type AlbumTemplate = LibraryAlbumTemplate;

@@ -1,6 +1,6 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import type { CatalogPlaylistTemplate } from "#layers/amdata/app/lib/playlists";
+import type { CatalogPlaylistTemplate } from "#layers/amdata/app/lib/parsers/playlists";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 
 export type SocialProfileTemplate = ResourceTemplateOf<

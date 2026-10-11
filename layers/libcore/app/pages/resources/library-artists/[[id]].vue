@@ -93,9 +93,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/filters";
-import { artistSearchKeys } from "#layers/amdata/app/lib/search";
-import { artistAlbumSorting } from "#layers/amdata/app/lib/sorting";
+import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/controls/filters";
+import { artistSearchKeys } from "#layers/amdata/app/lib/controls/search";
+import { artistAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
 import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 

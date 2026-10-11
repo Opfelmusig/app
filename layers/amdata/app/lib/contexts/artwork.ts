@@ -1,4 +1,5 @@
 import type { Artwork } from "@opfelmusig/lib/types";
+import type { ComputedRef, InjectionKey } from "vue";
 
 export interface ArtworkContext {
   artwork: ComputedRef<Artwork | undefined>;

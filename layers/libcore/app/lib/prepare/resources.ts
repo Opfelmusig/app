@@ -1,9 +1,9 @@
-import { parseResource, type Templates } from "#layers/amdata/app/lib/parse";
+import { parseResource, type ResourceTemplate } from "#layers/amdata/app/lib/parsers";
 import type { DbResourceType } from "#layers/libcore/app/database/types";
 import { addListResource } from "#layers/libcore/app/lib/prepare/helpers";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
-type LibraryResourceTemplate = Extract<Templates, { type: DbResourceType }>;
+type LibraryResourceTemplate = Extract<ResourceTemplate, { type: DbResourceType }>;
 
 export function addResources(
   target: AppleMusicLibrary,

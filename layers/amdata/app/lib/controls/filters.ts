@@ -1,6 +1,7 @@
 import type { ContentRating, RatingValue } from "@opfelmusig/lib/types";
 
-export type FilterItem<T> = { label: string; value: T };
+import type { ControlOption } from "#layers/amdata/app/lib/controls/types";
+
 export type FilterRating = `${RatingValue | 0}`;
 
 export interface ResourceFilters {
@@ -10,13 +11,13 @@ export interface ResourceFilters {
   isUploaded: boolean;
 }
 
-export const ratingFilter: FilterItem<FilterRating>[] = [
+export const ratingFilter: ControlOption<FilterRating>[] = [
   { label: "Favorited", value: "1" },
   { label: "Suggest less", value: "-1" },
   { label: "No rating", value: "0" },
 ];
 
-export const contentRatingFilter: FilterItem<ContentRating>[] = [
+export const contentRatingFilter: ControlOption<ContentRating>[] = [
   { label: "Explicit", value: "explicit" },
   { label: "Clean", value: "clean" },
 ];

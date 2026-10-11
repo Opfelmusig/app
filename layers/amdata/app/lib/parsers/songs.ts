@@ -1,9 +1,9 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
+import { parseCatalogLinks } from "#layers/amdata/app/lib/parsers/helpers";
 import type { AmCatalogSong, AmLibrarySong } from "#layers/amdata/app/types/songs";
 
-export type LibrarySongTemplate = ResourceTemplateOf<
-  "library-songs",
+type SongAttributeKeys =
   | "name"
   | "albumName"
   | "artistName"
@@ -13,7 +13,11 @@ export type LibrarySongTemplate = ResourceTemplateOf<
   | "releaseDate"
   | "discNumber"
   | "trackNumber"
-  | "contentRating",
+  | "contentRating";
+
+export type LibrarySongTemplate = ResourceTemplateOf<
+  "library-songs",
+  SongAttributeKeys,
   never,
   {
     albums: ResourceTemplateOf<"library-albums">;
@@ -55,16 +59,8 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
       contentRating: attributes.contentRating,
       personalRating: catalog?.attributes?.personalRating,
 
-      albums:
-        catalog?.relationships?.albums.data.map((album) => ({
-          id: album.id,
-          name: album.attributes?.name ?? "Unknown",
-        })) ?? [],
-      artists:
-        catalog?.relationships?.artists.data.map((artist) => ({
-          id: artist.id,
-          name: artist.attributes?.name ?? "Unknown",
-        })) ?? [],
+      albums: parseCatalogLinks(catalog?.relationships?.albums.data),
+      artists: parseCatalogLinks(catalog?.relationships?.artists.data),
     },
 
     extras: {
@@ -77,16 +73,7 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
 
 export type CatalogSongTemplate = ResourceTemplateOf<
   "songs",
-  | "name"
-  | "albumName"
-  | "artistName"
-  | "artwork"
-  | "durationInMillis"
-  | "genreNames"
-  | "releaseDate"
-  | "discNumber"
-  | "trackNumber"
-  | "contentRating",
+  SongAttributeKeys,
   "personalRating",
   {
     albums: ResourceTemplateOf<"albums", "name">;
@@ -115,16 +102,8 @@ export function parseCatalogSong(resource: CatalogSongTemplate): AmCatalogSong {
       releaseDate: attributes.releaseDate,
       contentRating: attributes.contentRating,
       personalRating: attributes.personalRating,
-      albums:
-        resource.relationships?.albums.data.map((album) => ({
-          id: album.id,
-          name: album.attributes?.name ?? "Unknown",
-        })) ?? [],
-      artists:
-        resource.relationships?.artists.data.map((artist) => ({
-          id: artist.id,
-          name: artist.attributes?.name ?? "Unknown",
-        })) ?? [],
+      albums: parseCatalogLinks(resource.relationships?.albums.data),
+      artists: parseCatalogLinks(resource.relationships?.artists.data),
     },
     extras: {
       libraryId: resource.relationships?.library.data[0]?.id,
