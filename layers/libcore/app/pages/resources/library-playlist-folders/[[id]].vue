@@ -10,6 +10,7 @@
         <h2 class="truncate">
           {{ folder?.attributes.name ?? "Playlists" }}
         </h2>
+        <OMButtonTertiary v-if="folder" icon="lucide:ellipsis" class="ml-auto" />
       </div>
     </header>
     <USeparator />
