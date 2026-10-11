@@ -10,7 +10,11 @@ import {
   type PlaylistTemplate,
 } from "#layers/amdata/app/lib/playlists";
 import { parseProfile, type ProfileTemplate } from "#layers/amdata/app/lib/profiles";
-import { parseLibrarySong, type SongTemplate } from "#layers/amdata/app/lib/songs";
+import {
+  parseCatalogSong,
+  parseLibrarySong,
+  type SongTemplate,
+} from "#layers/amdata/app/lib/songs";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmResource } from "#layers/amdata/app/types/resources";
 
@@ -33,6 +37,8 @@ export function parseResource(resource: Templates | undefined): AmResource | und
   if (resource === undefined) return undefined;
 
   switch (resource.type) {
+    case "songs":
+      return parseCatalogSong(resource);
     case "library-songs":
       return parseLibrarySong(resource);
     case "library-albums":
