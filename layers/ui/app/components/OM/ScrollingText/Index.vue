@@ -34,7 +34,7 @@ const track = useTemplateRef("track");
 const content = useTemplateRef("content");
 
 const gap = 16;
-const speed = 30;
+const speed = 40;
 const delay = 2000;
 const overflowing = ref(false);
 const active = computed(() => overflowing.value);

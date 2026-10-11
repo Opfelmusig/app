@@ -24,6 +24,7 @@
         </template>
       </USplitter>
     </div>
+    <Player />
   </main>
 </template>
 
