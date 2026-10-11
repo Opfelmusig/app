@@ -1,17 +1,17 @@
 <template>
   <SettingsWrapper>
-    <SettingsConfig no-label label="Sync Library" description="This can take a while." :error>
+    <SettingsConfig no-label label="Sync library" description="This can take a while." :error>
       <UButton
         color="warning"
         variant="soft"
         icon="lucide:folder-sync"
-        label="Sync Now"
+        label="Sync now"
         :disabled="state.initializing"
         :loading="state.syncing"
         @click="sync"
       />
     </SettingsConfig>
-    <SettingsConfig no-label label="Last Synced">
+    <SettingsConfig no-label label="Last synced">
       <span class="text-muted">
         <UBadge variant="soft" :color="lastSyncedAtBadgeColor">
           <NuxtTime

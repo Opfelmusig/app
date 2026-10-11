@@ -4,7 +4,7 @@
       <SettingsToggle
         v-model="settingsStore.system.automaticUpdateChecks"
         label="Automatic update checks"
-        description="Check for updates when Öpfelmusig starts and in intervals."
+        description="Check for updates when Öpfelmusig starts and at regular intervals."
         :disabled="isDev"
       />
     </SettingsSection>

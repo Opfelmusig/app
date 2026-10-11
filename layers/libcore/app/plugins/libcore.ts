@@ -85,7 +85,7 @@ export default defineNuxtPlugin({
           if (cause instanceof Error) {
             error.value = cause;
           } else {
-            error.value = new Error("Unknown Error");
+            error.value = new Error("Unknown error");
           }
         })
         .finally(() => {
@@ -196,7 +196,7 @@ export default defineNuxtPlugin({
         if (cause instanceof Error) {
           error.value = cause;
         } else {
-          error.value = new Error("Unknown Error");
+          error.value = new Error("Unknown error");
         }
 
         throw cause;

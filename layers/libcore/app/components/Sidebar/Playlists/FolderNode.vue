@@ -14,7 +14,7 @@
         icon="lucide:x"
         variant="disabled"
       >
-        Empty Folder
+        Empty folder
       </SidebarItemIcon>
 
       <template v-for="child in children" :key="child.item.id">

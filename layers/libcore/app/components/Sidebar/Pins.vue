@@ -1,7 +1,7 @@
 <template>
   <div class="flex w-full flex-col gap-1">
     <SidebarItemIcon v-if="data?.length === 0" icon="lucide:pin-off" variant="disabled">
-      No Pins
+      No pins
     </SidebarItemIcon>
     <template v-else-if="data">
       <SidebarItemWrapper
@@ -17,7 +17,7 @@
       </SidebarItemWrapper>
     </template>
     <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
-      Loading Pins
+      Loading pins
     </SidebarItemIcon>
   </div>
 </template>

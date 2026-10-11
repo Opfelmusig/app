@@ -31,7 +31,7 @@
           <NuxtLink to="/settings/storage">
             <TitlebarBadge
               v-if="state.syncing"
-              :label="`Syncing Library (${progress.songs.count} songs)`"
+              :label="`Syncing library (${progress.songs.count} ${progress.songs.count === 1 ? 'song' : 'songs'})`"
               class="cursor-pointer"
               color="secondary"
               variant="soft"

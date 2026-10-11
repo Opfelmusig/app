@@ -35,7 +35,7 @@
     </header>
     <USeparator />
     <div class="px-4 pt-4">
-      <h2>Shared Playlists</h2>
+      <h2>Shared playlists</h2>
     </div>
     <AMGridWrapper>
       <AMGridStatus

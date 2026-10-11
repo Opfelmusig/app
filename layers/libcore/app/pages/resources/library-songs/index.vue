@@ -15,11 +15,11 @@
         <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
         <AMControlsFiltersItem
           v-model="selectedContentRatings"
-          label="Content Rating"
+          label="Content rating"
           :items="contentRatingFilter"
         />
         <AMControlsFiltersSection label="Type">
-          <UCheckbox v-model="isUploaded" label="Is uploaded" />
+          <UCheckbox v-model="isUploaded" label="Uploaded" />
         </AMControlsFiltersSection>
       </AMControlsFilters>
       <AMControlsColumns
@@ -37,7 +37,7 @@
         class="shrink-0"
         :ui="{ base: 'h-9 rounded-xl' }"
       />
-      <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
+      <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <AMSongsWrapper :columns>
       <AMSongsStatus
@@ -51,7 +51,7 @@
     </AMSongsWrapper>
     <AMFooter>
       <span>
-        <AMFooterCount :count="displayedSongs?.length" singular="album" />,
+        <AMFooterCount :count="displayedSongs?.length" singular="song" />,
         <span>
           {{ tracksDuration(displayedSongs) }}
         </span>
@@ -109,7 +109,7 @@ function play(index: number = 0, shuffle: boolean = false) {
     {
       index,
       tracks: displayedSongs.value,
-      context: "Library Songs",
+      context: "Library songs",
     },
     shuffle,
   );

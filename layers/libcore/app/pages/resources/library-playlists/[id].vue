@@ -75,11 +75,11 @@
             <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
             <AMControlsFiltersItem
               v-model="selectedContentRatings"
-              label="Content Rating"
+              label="Content rating"
               :items="contentRatingFilter"
             />
             <AMControlsFiltersSection label="Type">
-              <UCheckbox v-model="isUploaded" label="Is uploaded" />
+              <UCheckbox v-model="isUploaded" label="Uploaded" />
             </AMControlsFiltersSection>
           </AMControlsFilters>
           <AMControlsColumns
@@ -88,7 +88,7 @@
             :active="columnsChanged"
             @reset="reset"
           />
-          <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
+          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </div>
     </header>

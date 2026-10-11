@@ -1,18 +1,18 @@
 <template>
   <div class="flex w-full flex-col gap-1">
     <SidebarItemIcon to="/resources/library-playlist-folders" icon="lucide:layout-grid">
-      All Playlists
+      All playlists
     </SidebarItemIcon>
-    <SidebarItemWrapper v-if="favoritsPlaylist" :to="resourceLink(favoritsPlaylist)">
+    <SidebarItemWrapper v-if="favoritesPlaylist" :to="resourceLink(favoritesPlaylist)">
       <div
         class="flex aspect-square size-5 shrink-0 items-center justify-center overflow-hidden rounded-md text-muted select-none"
       >
         <UIcon name="lucide:square-star" class="size-4" />
       </div>
-      <SidebarItemLabel>{{ favoritsPlaylist.attributes.name }}</SidebarItemLabel>
+      <SidebarItemLabel>{{ favoritesPlaylist.attributes.name }}</SidebarItemLabel>
     </SidebarItemWrapper>
     <SidebarItemIcon v-if="children?.length === 0" icon="lucide:list-music" variant="disabled">
-      No Playlists
+      No playlists
     </SidebarItemIcon>
     <template v-else-if="children">
       <template v-for="child in children" :key="child.item.id">
@@ -25,11 +25,11 @@
         icon="lucide:ellipsis"
         to="/resources/library-playlist-folders"
       >
-        {{ overflow }} More
+        {{ overflow }} more
       </SidebarItemIcon>
     </template>
     <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
-      Loading Playlists
+      Loading playlists
     </SidebarItemIcon>
 
     {{ error }}
@@ -43,7 +43,7 @@ const { data, isPending, error } = useLibraryQuery({
   query: () => client.getFolderTree(),
 });
 
-const favoritsPlaylist = computed(() =>
+const favoritesPlaylist = computed(() =>
   data.value
     ?.map((child) => child.item)
     .filter((item) => item.type === "library-playlists")

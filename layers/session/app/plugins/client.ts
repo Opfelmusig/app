@@ -82,7 +82,7 @@ export default defineNuxtPlugin({
 
         const { data } = await developerToken.refresh(true);
 
-        log.info("Apple Music Developer Token refreshed");
+        log.info("Apple Music developer token refreshed");
 
         return data;
       },

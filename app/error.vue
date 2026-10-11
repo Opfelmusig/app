@@ -36,7 +36,7 @@
             :disabled="state.syncing"
             @click="sync"
           >
-            {{ state.syncing ? "Syncing..." : "Sync Library" }}
+            {{ state.syncing ? "Syncing..." : "Sync library" }}
           </button>
         </div>
       </main>

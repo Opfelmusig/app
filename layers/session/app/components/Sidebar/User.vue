@@ -1,6 +1,6 @@
 <template>
   <template v-if="!profile">
-    <SidebarItemIcon icon="lucide:user-x" to="/me"> Profile not Found </SidebarItemIcon>
+    <SidebarItemIcon icon="lucide:user-x" to="/me"> Profile not found </SidebarItemIcon>
   </template>
   <template v-else>
     <SidebarItemWrapper to="/me" no-right-padding>

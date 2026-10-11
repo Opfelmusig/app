@@ -8,7 +8,7 @@ const tokenPattern = /"(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)"/;
 const log = logger.withTag("auth:devtoken");
 
 export async function getAppleMusicDeveloperToken() {
-  log.info("Apple Music Developer Token discovery started");
+  log.info("Apple Music developer token discovery started");
 
   const mainPageBody = await fetchText(appleMusicUrl, "main page");
 
@@ -21,7 +21,7 @@ export async function getAppleMusicDeveloperToken() {
     throw new Error("Apple Music index script not found");
   }
 
-  let lastError: unknown = new Error("Apple Music Developer Token not found");
+  let lastError: unknown = new Error("Apple Music developer token not found");
 
   for (const indexJsPath of indexJsPaths) {
     log.info("Apple Music index script fetch started", { path: indexJsPath });
@@ -30,12 +30,12 @@ export async function getAppleMusicDeveloperToken() {
       const jsFileBody = await fetchText(`${appleMusicUrl}${indexJsPath}`, "JS file");
       const token = jsFileBody.match(tokenPattern)?.[1];
       if (!token) {
-        lastError = new Error("Apple Music Developer Token not found");
-        log.warn("Apple Music Developer Token not found in index script", { path: indexJsPath });
+        lastError = new Error("Apple Music developer token not found");
+        log.warn("Apple Music developer token not found in index script", { path: indexJsPath });
         continue;
       }
 
-      log.info("Apple Music Developer Token discovered");
+      log.info("Apple Music developer token discovered");
 
       return token;
     } catch (cause) {
@@ -44,7 +44,7 @@ export async function getAppleMusicDeveloperToken() {
     }
   }
 
-  log.error("Apple Music Developer Token discovery failed");
+  log.error("Apple Music developer token discovery failed");
   throw lastError;
 }
 

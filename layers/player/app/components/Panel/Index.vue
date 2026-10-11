@@ -15,8 +15,8 @@
     >
       <template v-if="currentQueue.length > 0">
         <PanelHeader
-          v-if="queueStore.context && queueStore.isShuffeling"
-          title="Continue Playing"
+          v-if="queueStore.context && queueStore.isShuffling"
+          title="Continue playing"
           :context="queueStore.context"
         />
         <AMSongsWrapper :columns="[]">
@@ -24,14 +24,17 @@
           <OMTableStatus v-if="upNext.length > maxSongs">
             <div class="flex items-center gap-2">
               <OMIcon name="lucide:layout-grid" class="size-4" filled />
-              <span>{{ upNext.length - maxSongs }} more songs</span>
+              <span
+                >{{ upNext.length - maxSongs }} more
+                {{ upNext.length - maxSongs === 1 ? "song" : "songs" }}</span
+              >
             </div>
           </OMTableStatus>
         </AMSongsWrapper>
       </template>
-      <template v-if="!queueStore.isShuffeling && queueStore.contextQueue.length > 0">
+      <template v-if="!queueStore.isShuffling && queueStore.contextQueue.length > 0">
         <USeparator class="first:hidden" />
-        <PanelHeader title="Continue Playing" :context="queueStore.context" />
+        <PanelHeader title="Continue playing" :context="queueStore.context" />
         <AMSongsWrapper :columns="[]">
           <AMSongs
             :songs="visibleUpNextContext"
@@ -40,14 +43,17 @@
           <OMTableStatus v-if="upNextContext.length > maxSongs">
             <div class="flex items-center gap-2">
               <OMIcon name="lucide:layout-grid" class="size-4" filled />
-              <span>{{ upNextContext.length - maxSongs }} more songs</span>
+              <span
+                >{{ upNextContext.length - maxSongs }} more
+                {{ upNextContext.length - maxSongs === 1 ? "song" : "songs" }}</span
+              >
             </div>
           </OMTableStatus>
         </AMSongsWrapper>
       </template>
       <div
         v-if="
-          (currentQueue.length <= 0 || !queueStore.isShuffeling) &&
+          (currentQueue.length <= 0 || !queueStore.isShuffling) &&
           queueStore.contextQueue.length <= 0
         "
         class="flex size-full items-center justify-center text-muted"
@@ -85,7 +91,7 @@ const queueStore = useQueueStore();
 const maxSongs = 50;
 
 const currentQueue = computed(() => {
-  if (queueStore.isShuffeling) return queueStore.shuffledQueue.map((e) => e.entry);
+  if (queueStore.isShuffling) return queueStore.shuffledQueue.map((e) => e.entry);
   else return queueStore.queue.map((e) => e.entry);
 });
 
@@ -101,6 +107,6 @@ const visibleUpNextContext = computed(() => upNextContext.value.slice(0, maxSong
 const overshootContext = computed(() => queueStore.queue.length + contextStart.value);
 
 const count = computed(
-  () => currentQueue.value.length + (queueStore.isShuffeling ? 0 : queueStore.contextQueue.length),
+  () => currentQueue.value.length + (queueStore.isShuffling ? 0 : queueStore.contextQueue.length),
 );
 </script>

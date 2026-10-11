@@ -10,7 +10,7 @@
         <AMControlsFilters :active="filtersChanged" @reset="resetFilters">
           <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
           <AMControlsFiltersSection label="Artist">
-            <UCheckbox v-model="hasCatalog" label="Has catalog" />
+            <UCheckbox v-model="hasCatalog" label="Available in the catalog" />
           </AMControlsFiltersSection>
         </AMControlsFilters>
         <UInput
@@ -21,7 +21,7 @@
           placeholder="Search..."
           :ui="{ base: 'h-9 rounded-xl' }"
         />
-        <OMButtonTeritary icon="lucide:ellipsis" />
+        <OMButtonTertiary icon="lucide:ellipsis" />
       </header>
       <div class="flex cursor-pointer flex-col text-sm select-none">
         <NuxtLink
@@ -40,7 +40,7 @@
             </span>
             <OMStar v-if="artist.resource.attributes.personalRating === 1" />
           </div>
-          <OMButtonTeritary icon="lucide:ellipsis" class="no-active text-muted" @click.prevent />
+          <OMButtonTertiary icon="lucide:ellipsis" class="no-active text-muted" @click.prevent />
         </NuxtLink>
       </div>
       <AMFooter>
@@ -56,7 +56,7 @@
             <AMArtworkPlaceholder />
           </AMArtworkWrapper>
           <h2 class="truncate">
-            {{ currentArtist?.attributes.name ?? "Not Found" }}
+            {{ currentArtist?.attributes.name ?? "Not found" }}
           </h2>
           <OMStar v-if="currentArtist?.attributes.personalRating === 1" large />
         </div>
@@ -69,7 +69,7 @@
             @reset="resetSorting"
           />
           <OMButtonSecondary fill icon="lucide:filter" />
-          <OMButtonTeritary icon="lucide:ellipsis" class="ml-auto" />
+          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </header>
       <USeparator />

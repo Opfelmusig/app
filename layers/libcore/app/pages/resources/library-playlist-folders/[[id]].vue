@@ -4,7 +4,7 @@
       <div class="flex h-9 min-w-0 items-center gap-2">
         <UTooltip :content="{ side: 'bottom' }" arrow text="Go to parent folder">
           <NuxtLink :to="rawResourceLink('library-playlist-folders', folder?.extras.parentId)">
-            <OMButtonTeritary icon="lucide:arrow-up-left" :disabled="!folder" />
+            <OMButtonTertiary icon="lucide:arrow-up-left" :disabled="!folder" />
           </NuxtLink>
         </UTooltip>
         <h2 class="truncate">

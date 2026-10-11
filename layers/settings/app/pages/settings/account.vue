@@ -42,7 +42,7 @@
       no-label
       icon="lucide:languages"
       label="Apple Music language"
-      description="Reload to apply. Affects Apple Music data only."
+      description="Reload to apply changes. This affects only Apple Music data."
     >
       <USelect v-model="settingsStore.language" :items="options" class="w-50" />
     </SettingsConfig>

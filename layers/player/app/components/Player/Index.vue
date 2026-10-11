@@ -70,7 +70,7 @@
             mode="svg"
             name="lucide:shuffle"
             class="size-4"
-            :class="queueStore.isShuffeling ? 'text-primary' : 'text-muted'"
+            :class="queueStore.isShuffling ? 'text-primary' : 'text-muted'"
           />
         </div>
         <div

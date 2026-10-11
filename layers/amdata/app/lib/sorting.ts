@@ -30,7 +30,7 @@ export const albumSongSorting: SortingItem<SongSort>[] = [
 
 export const librarySongSorting: SortingItem<SongSort>[] = [
   {
-    label: "Date Added",
+    label: "Date added",
     value: "default",
   },
   { label: "Album", value: "album" },
@@ -61,7 +61,7 @@ export const artistAlbumSorting: SortingItem<AlbumSort>[] = [
 
 export const libraryAlbumSorting: SortingItem<AlbumSort>[] = [
   {
-    label: "Date Added",
+    label: "Date added",
     value: "default",
   },
   { label: "Artist", value: "artist" },

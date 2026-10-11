@@ -20,10 +20,10 @@
           Widgets
         </SidebarItemIcon>
       </SidebarSection>
-      <SidebarSection label="Help & Data">
-        <SidebarItemIcon icon="lucide:info" to="/settings/about">Updates & About</SidebarItemIcon>
+      <SidebarSection label="Help & data">
+        <SidebarItemIcon icon="lucide:info" to="/settings/about">Updates & about</SidebarItemIcon>
         <SidebarItemIcon icon="lucide:database" to="/settings/storage">
-          Storage & Library
+          Storage & library
         </SidebarItemIcon>
         <SidebarItemIcon icon="lucide:keyboard" to="/settings/shortcuts">Shortcuts</SidebarItemIcon>
       </SidebarSection>

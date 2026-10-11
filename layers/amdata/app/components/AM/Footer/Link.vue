@@ -1,6 +1,6 @@
 <template>
   <NuxtLink v-if="link" :to="link" class="flex items-center gap-1 hover:underline">
-    <span>Open Catalog</span>
+    <span>Open in catalog</span>
     <UIcon name="lucide:arrow-up-right" class="size-3 text-dimmed" />
   </NuxtLink>
 </template>

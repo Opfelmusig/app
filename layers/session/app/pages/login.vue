@@ -2,8 +2,8 @@
   <main class="flex size-full items-center justify-center" data-tauri-drag-region>
     <div class="flex max-w-full flex-col gap-4" data-tauri-drag-region>
       <UFormField
-        label="User Token"
-        help="Copy it from one of the Apple Music website requests."
+        label="User token"
+        help="Copy the token from a request made by the Apple Music website."
         class="w-100 max-w-full"
       >
         <UInput
@@ -16,14 +16,14 @@
       </UFormField>
       <span v-if="error" class="text-sm text-error">{{ error }}</span>
       <UButton variant="soft" :loading class="justify-center" size="lg" @click="submit">
-        Login
+        Log in
       </UButton>
     </div>
   </main>
 </template>
 
 <script lang="ts" setup>
-useHead({ title: "Login" });
+useHead({ title: "Log in" });
 
 const token = ref("");
 const error = ref<string>();
@@ -37,7 +37,7 @@ const submit = async () => {
   error.value = undefined;
 
   if (!token.value) {
-    error.value = "Please provide a token";
+    error.value = "Please provide a token.";
     return;
   }
 
@@ -47,9 +47,9 @@ const submit = async () => {
     await $auth.login(token.value);
   } catch (ex) {
     if (isAuthError(ex)) {
-      error.value = "Invalid User Token";
+      error.value = "Invalid user token";
     } else {
-      error.value = "Unknown Error";
+      error.value = "Unknown error";
     }
   } finally {
     loading.value = false;

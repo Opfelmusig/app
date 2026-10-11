@@ -31,7 +31,7 @@ export interface UseScrollShadowOptions {
    */
   offset?: MaybeRefOrGetter<number>;
   /**
-   * The scroll direction to apply shadows.
+   * The scroll direction in which to apply shadows.
    * @defaultValue 'vertical'
    */
   orientation?: MaybeRefOrGetter<"vertical" | "horizontal">;
@@ -100,7 +100,7 @@ export function useCustomScrollShadow(
   });
 
   const isOverflowing = computed(() => {
-    // Read arrivedState to establish reactive dependency on scroll events
+    // Read arrivedState to establish a reactive dependency on scroll events.
     void (arrivedState.top, arrivedState.bottom, arrivedState.left, arrivedState.right);
 
     const el = toValue(element);

@@ -82,7 +82,7 @@
       {{ msToHMS(song.resource.attributes.durationInMillis) }}
     </OMTableData>
     <OMTableSimple class="pl-1">
-      <OMButtonTeritary icon="lucide:ellipsis" class="text-muted" />
+      <OMButtonTertiary icon="lucide:ellipsis" class="text-muted" />
     </OMTableSimple>
   </OMTableRow>
 </template>
