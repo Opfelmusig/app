@@ -7,12 +7,12 @@
         <AMArtworkOverlay alignment="bottom">
           <AMArtworkOverlayButton
             v-if="playableResource"
-            :icon="isPending ? 'lucide:loader-circle' : 'lucide:play'"
-            :filled="!isPending"
-            :disabled="isPending"
+            icon="lucide:play"
+            :loading="isPending"
+            filled
             @click="play(playableResource)"
           />
-          <AMArtworkOverlayButton icon="lucide:ellipsis" label="More options" class="ml-auto" />
+          <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
     </NuxtLink>
