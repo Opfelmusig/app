@@ -15,14 +15,11 @@
         <span class="truncate">
           {{ resource.resource.attributes.name }}
         </span>
-        <OMIcon
+        <OMStar
           v-if="
             resource.resourceType !== 'social-profiles' &&
             resource.resource.attributes.personalRating === 1
           "
-          name="lucide:star"
-          filled
-          class="size-3 shrink-0 text-primary"
         />
         <OMExplicit
           v-if="

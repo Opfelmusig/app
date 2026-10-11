@@ -41,12 +41,7 @@
         <span class="truncate">
           {{ song.resource.attributes.name }}
         </span>
-        <OMIcon
-          v-if="song.resource.attributes.personalRating === 1"
-          name="lucide:star"
-          filled
-          class="size-3 shrink-0 text-primary"
-        />
+        <OMStar v-if="song.resource.attributes.personalRating === 1" />
         <div class="ml-auto flex gap-2 empty:hidden">
           <OMExplicit v-if="song.resource.attributes.contentRating === 'explicit'" />
           <OMDownloaded v-if="song.resourceType === 'songs' && song.resource.extras.libraryId" />

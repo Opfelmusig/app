@@ -38,12 +38,7 @@
             <span class="truncate">
               {{ artist.resource.attributes.name }}
             </span>
-            <OMIcon
-              v-if="artist.resource.attributes.personalRating === 1"
-              name="lucide:star"
-              filled
-              class="size-3 shrink-0 text-primary"
-            />
+            <OMStar v-if="artist.resource.attributes.personalRating === 1" />
           </div>
           <OMButtonTeritary icon="lucide:ellipsis" class="no-active text-muted" @click.prevent />
         </NuxtLink>
@@ -63,12 +58,7 @@
           <h2 class="truncate">
             {{ currentArtist?.attributes.name ?? "Not Found" }}
           </h2>
-          <OMIcon
-            v-if="currentArtist?.attributes.personalRating === 1"
-            name="lucide:star"
-            filled
-            class="size-4 shrink-0 text-primary"
-          />
+          <OMStar v-if="currentArtist?.attributes.personalRating === 1" large />
         </div>
         <div class="flex items-center gap-2">
           <AMControlsSorting
