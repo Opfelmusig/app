@@ -34,8 +34,8 @@
           queueStore.contextQueue.length <= 0
         "
       >
-        <PanelHeader title="Nothing in the queue" :context="queueStore.context" />
-      </template>
+        Nothing in the queue
+      </div>
       <AMFooter v-if="count > 0 && queueStore.isLooping">
         <div class="flex items-center gap-2 text-sm text-muted">
           <UIcon name="lucide:shuffle" class="size-3.5" />
