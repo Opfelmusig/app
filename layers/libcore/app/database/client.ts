@@ -163,7 +163,7 @@ export class LibraryClient {
   async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
     const songs = await this.resourcesByType("library-songs")
       .filter((song) => song.extras.albumId === id)
-      .sortBy("attributes.name");
+      .toArray();
 
     return createListResources(songs, `library-albums:${id}`);
   }

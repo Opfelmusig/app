@@ -126,7 +126,7 @@ const {
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<SongSort>(() => `album:${id.value}`, "default");
+} = useSorting<SongSort>(() => `album:${id.value}`, "discAndTrackNumber");
 
 const {
   filters,
