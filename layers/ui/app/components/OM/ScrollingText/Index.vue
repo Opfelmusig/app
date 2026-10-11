@@ -2,26 +2,14 @@
   <span
     ref="viewport"
     :class="cn('block w-full min-w-0 overflow-hidden', active && 'scrolling-text')"
-    :data-tauri-drag-region="drag"
     @pointerenter="onPointerEnter"
     @pointerleave="onPointerLeave"
   >
-    <span
-      ref="track"
-      class="flex w-max whitespace-nowrap"
-      :style="{ gap: `${gap}px` }"
-      :data-tauri-drag-region="drag"
-    >
-      <span ref="content" class="block w-max min-w-max shrink-0" :data-tauri-drag-region="drag">
+    <span ref="track" class="flex w-max whitespace-nowrap" :style="{ gap: `${gap}px` }">
+      <span ref="content" class="block w-max min-w-max shrink-0">
         <slot />
       </span>
-      <span
-        v-if="overflowing"
-        inert
-        aria-hidden="true"
-        class="block w-max min-w-max shrink-0"
-        :data-tauri-drag-region="drag"
-      >
+      <span v-if="overflowing" inert aria-hidden="true" class="block w-max min-w-max shrink-0">
         <slot />
       </span>
     </span>
@@ -44,10 +32,6 @@ let hovered = false;
 let frame: number | undefined;
 let distance = 0;
 let shouldRestart = false;
-
-defineProps<{
-  drag?: boolean;
-}>();
 
 const unregister = group.register({
   getTravelDuration: () => (active.value ? (distance / speed) * 1000 : 0),
@@ -91,16 +75,15 @@ function maskKeyframes(travelMs: number, delayMs: number, duration: number): Key
     ];
   }
 
-  const fadeMs = Math.min(200, delayMs, travelMs / 2);
+  const oldTextGoneMs = travelMs - (gap / speed) * 1000;
+  const fadeMs = Math.min(200, delayMs, oldTextGoneMs / 2);
+  const gapOffset = oldTextGoneMs / duration;
 
   return [
     { "--scrolling-text-left-opacity": "1", offset: 0 },
     { "--scrolling-text-left-opacity": "0", offset: fadeMs / duration },
-    { "--scrolling-text-left-opacity": "0", offset: travelMs / duration },
-    {
-      "--scrolling-text-left-opacity": "1",
-      offset: (travelMs + fadeMs) / duration,
-    },
+    { "--scrolling-text-left-opacity": "0", offset: gapOffset },
+    { "--scrolling-text-left-opacity": "1", offset: gapOffset },
     { "--scrolling-text-left-opacity": "1", offset: 1 },
   ];
 }
