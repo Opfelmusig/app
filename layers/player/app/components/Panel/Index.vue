@@ -1,8 +1,8 @@
 <template>
   <div
     ref="_el"
-    class="fixed top-9 right-0 bottom-14.25 z-50 shrink-0 overflow-hidden p-2 transition-transform select-none"
-    :style="{ width: `${size}px` }"
+    class="fixed top-9.25 right-0 bottom-14.25 z-50 shrink-0 overflow-hidden pl-4 transition-transform select-none"
+    :style="{ width: `${size + 16}px` }"
   >
     <div
       class="absolute inset-y-2 left-0 w-2 cursor-ew-resize touch-none"
@@ -11,7 +11,7 @@
       @dblclick="onDoubleClick"
     />
     <div
-      class="flex h-full w-full flex-col overflow-hidden overflow-y-auto rounded-2xl border border-default bg-default"
+      class="flex h-full w-full flex-col overflow-hidden overflow-y-auto border-l border-default bg-default shadow-xl"
     >
       <template v-if="currentQueue.length > 0">
         <PanelHeader
