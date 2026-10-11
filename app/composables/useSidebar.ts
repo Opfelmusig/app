@@ -9,6 +9,7 @@ const splitter = shallowRef<SplitterInstance | null>(null);
 export function useSidebar() {
   const panel = computed(() => splitter.value?.panelsRef[0]);
   const isCollapsed = computed(() => panel.value?.isCollapsed ?? false);
+  const width = computed(() => panel.value?.getSize());
 
   function toggle() {
     if (panel.value) {
@@ -24,5 +25,5 @@ export function useSidebar() {
     }
   }
 
-  return { splitter, isCollapsed, toggle, reset };
+  return { splitter, isCollapsed, toggle, reset, width };
 }

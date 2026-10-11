@@ -2,7 +2,10 @@
   <div
     class="relative flex h-14.25 w-full shrink-0 items-center gap-2 overflow-hidden border-t border-default bg-muted/20 p-2 whitespace-nowrap select-none"
   >
-    <div class="flex w-full max-w-60.75 min-w-0 items-center gap-2">
+    <div
+      class="flex w-full min-w-0 items-center gap-2"
+      :style="{ maxWidth: `${width ? width - 16 : 244}px` }"
+    >
       <AMArtworkWrapper v-slot="{ iconClass }" :resource context="player" color="muted">
         <AMArtworkImage />
         <AMArtworkPlaceholder />
@@ -112,4 +115,6 @@
 const queueStore = useQueueStore();
 
 const resource = computed(() => queueStore.current?.entry.resource);
+
+const { width } = useSidebar();
 </script>
