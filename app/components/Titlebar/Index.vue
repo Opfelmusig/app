@@ -63,6 +63,11 @@
           <USeparator orientation="vertical" class="h-4 shrink-0" />
         </template>
         <TitlebarAction icon="lucide:terminal" small @click="openDevTools" />
+        <TitlebarAction
+          :icon="settingsStore.isPanelOpen ? 'lucide:panel-right-close' : 'lucide:panel-right-open'"
+          small-icon
+          @click="settingsStore.isPanelOpen = !settingsStore.isPanelOpen"
+        />
         <USeparator v-if="!isMacos" orientation="vertical" class="h-4 shrink-0" />
       </div>
     </div>
@@ -76,6 +81,7 @@ import { invoke } from "@tauri-apps/api/core";
 const { isCollapsed, toggle } = useSidebar();
 const { canGoBack, canGoForward, goBack, goForward, reload } = useNavigation();
 const { state, progress } = useLibrary();
+const settingsStore = useSettingsStore();
 
 const layout = useLayout();
 

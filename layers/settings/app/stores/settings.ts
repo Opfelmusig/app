@@ -7,6 +7,8 @@ export const useSettingsStore = defineStore(
   () => {
     const language = ref<string | undefined>();
 
+    const isPanelOpen = ref(true);
+
     const sidebarSections = reactive<SidebarSections>({
       library: {},
       pins: {},
@@ -28,6 +30,7 @@ export const useSettingsStore = defineStore(
       sidebarSections,
       system,
       player,
+      isPanelOpen,
     };
   },
   {
