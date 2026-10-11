@@ -47,7 +47,7 @@
           filled
           class="size-3 shrink-0 text-primary"
         />
-        <div class="ml-auto flex gap-2">
+        <div class="ml-auto flex gap-2 empty:hidden">
           <OMExplicit v-if="song.resource.attributes.contentRating === 'explicit'" />
           <OMDownloaded v-if="song.resourceType === 'songs' && song.resource.extras.libraryId" />
         </div>
