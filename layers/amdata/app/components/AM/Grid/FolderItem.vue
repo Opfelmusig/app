@@ -42,7 +42,7 @@ const props = defineProps<{
 
 const library = useLibrary();
 const { data: children } = useLibraryQuery({
-  key: () => ["folders", props.resource.resource.id, "children"],
+  key: () => ["folders", props.resource.resource.id, "preview"],
   query: () => library.client.getFolderPreview(props.resource.resource.id),
 });
 </script>
