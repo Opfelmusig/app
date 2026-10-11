@@ -37,10 +37,10 @@
         <PanelHeader title="Nothing in the queue" :context="queueStore.context" />
       </template>
       <AMFooter v-if="count > 0 && queueStore.isLooping">
-        <span>
-          Repeating
-          <AMFooterCount singular="song" :count />
-        </span>
+        <div class="flex items-center gap-2 text-sm text-muted">
+          <UIcon name="lucide:shuffle" class="size-3.5" />
+          Repeating songs
+        </div>
       </AMFooter>
     </div>
   </div>
