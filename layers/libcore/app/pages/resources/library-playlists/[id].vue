@@ -57,7 +57,7 @@
         </div>
         <div class="flex items-center gap-2">
           <OMButtonPlay @click="play" />
-          <OMButtonSecondary icon="lucide:shuffle" />
+          <OMButtonSecondary icon="lucide:shuffle" @click="play(0, true)" />
           <OMButtonSecondary
             fill
             icon="lucide:star"
@@ -164,14 +164,17 @@ const displayedTracks = computed(() => {
 
 const queueStore = useQueueStore();
 
-function play(index: number = 0) {
+function play(index: number = 0, shuffle: boolean = false) {
   if (!playlist.value || displayedTracks.value.length === 0) return;
 
-  queueStore.playContext({
-    index,
-    context: playlist.value,
-    tracks: displayedTracks.value,
-  });
+  queueStore.playContext(
+    {
+      index,
+      context: playlist.value,
+      tracks: displayedTracks.value,
+    },
+    shuffle,
+  );
 }
 
 const { mutate: refreshPlaylist } = useMutation({

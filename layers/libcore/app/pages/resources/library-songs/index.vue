@@ -1,8 +1,8 @@
 <template>
   <PageWrapper>
     <header class="flex items-center gap-2 p-4">
-      <OMButtonPlay />
-      <OMButtonSecondary icon="lucide:shuffle" />
+      <OMButtonPlay @click="play" />
+      <OMButtonSecondary icon="lucide:shuffle" @click="play(0, true)" />
       <OMButtonSeparator />
       <AMControlsSorting
         v-model="sortBy"
@@ -102,13 +102,16 @@ const displayedSongs = computed(() => {
 
 const queueStore = useQueueStore();
 
-function play(index: number = 0) {
+function play(index: number = 0, shuffle: boolean = false) {
   if (displayedSongs.value.length === 0) return;
 
-  queueStore.playContext({
-    index,
-    tracks: displayedSongs.value,
-    context: "Library Songs",
-  });
+  queueStore.playContext(
+    {
+      index,
+      tracks: displayedSongs.value,
+      context: "Library Songs",
+    },
+    shuffle,
+  );
 }
 </script>
