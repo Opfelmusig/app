@@ -45,7 +45,7 @@
           <AMControlsSorting
             v-model="sortBy"
             v-model:direction="direction"
-            :items="defaultSongSorting"
+            :items="albumSongSorting"
             :active="sortChanged"
             @reset="resetSorting"
           />
@@ -97,7 +97,7 @@
 import { AMLinks, AMReleaseDate } from "#components";
 import { songColumns } from "#layers/amdata/app/lib/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/filters";
-import { defaultSongSorting } from "#layers/amdata/app/lib/sorting";
+import { albumSongSorting } from "#layers/amdata/app/lib/sorting";
 import type { SongSort } from "#layers/amdata/app/types/songs";
 
 const library = useLibrary();
