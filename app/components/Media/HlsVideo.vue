@@ -6,7 +6,7 @@
     preload="metadata"
     loop
     muted
-    :autoplay="!paused"
+    :autoplay="active && !paused"
     class="size-full object-cover select-none"
     @canplay="syncPlayback"
   />
@@ -23,11 +23,12 @@ const props = defineProps<{
 }>();
 
 const video = ref<HTMLVideoElement | null>(null);
+const active = ref(true);
 
 function syncPlayback() {
   if (!video.value) return;
 
-  if (props.paused) {
+  if (!active.value || props.paused) {
     video.value.pause();
   } else {
     video.value.play().catch(() => undefined);
@@ -41,6 +42,18 @@ watch(
 
 let hls: HlsType | null = null;
 let supportsNativeHls = false;
+
+onDeactivated(() => {
+  active.value = false;
+  video.value?.pause();
+  hls?.stopLoad();
+});
+
+onActivated(() => {
+  active.value = true;
+  hls?.startLoad();
+  syncPlayback();
+});
 
 function loadSource(src: string) {
   if (!video.value) return;
