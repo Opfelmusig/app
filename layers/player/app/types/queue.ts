@@ -7,12 +7,9 @@ export type QueueTrack = AmListResource<AmSong>;
 
 export type QueueContext = AmAlbum | AmPlaylist | string; // stations
 
-export interface CreateQueue {
+export interface CreateQueueContext {
   tracks: QueueTrack[];
   index: number;
-}
-
-export interface CreateQueueContext extends CreateQueue {
   context: QueueContext;
 }
 

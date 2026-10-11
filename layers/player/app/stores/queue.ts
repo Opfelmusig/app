@@ -1,5 +1,4 @@
 import type {
-  CreateQueue,
   CreateQueueContext,
   QueueContext,
   QueueEntry,
@@ -10,6 +9,7 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   const queue = ref<QueueEntry[]>([]);
   const context = ref<QueueContext | null>(null);
   const contextQueue = ref<QueueEntry[]>([]);
+  const shuffledQueue = ref<QueueEntry[]>([]);
   const index = ref<number | null>(null);
   const isLooping = ref<boolean>(true);
   const isShuffeling = ref<boolean>(false);
@@ -17,12 +17,13 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   const combinedLength = computed(() => queue.value.length + contextQueue.value.length);
   const inContext = computed(
     () =>
+      !isShuffeling.value &&
       index.value !== null &&
       index.value >= queue.value.length &&
       index.value < combinedLength.value,
   );
   const contextIndex = computed(() => {
-    if (index.value === null) return null;
+    if (index.value === null || isShuffeling.value) return null;
 
     const contextIndex = index.value - queue.value.length;
     if (inContext.value && contextIndex >= 0) return contextIndex;
@@ -42,7 +43,7 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
     }));
   }
 
-  function playContext(createContext: CreateQueueContext) {
+  function playContext(createContext: CreateQueueContext, shouldShuffle: boolean = false) {
     queue.value = [];
     contextQueue.value = [];
 
@@ -56,22 +57,9 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
     } else {
       index.value = 0;
     }
-  }
 
-  function playQueue(createQueue: CreateQueue) {
-    queue.value = [];
-    contextQueue.value = [];
-    context.value = null;
-
-    queue.value = createQueueFromTracks(createQueue.tracks);
-
-    if (queue.value.length === 0) {
-      index.value = null;
-    } else if (createQueue.index >= 0 && createQueue.index < queue.value.length) {
-      index.value = createQueue.index;
-    } else {
-      index.value = 0;
-    }
+    if (shouldShuffle) shuffle();
+    else resetShuffle();
   }
 
   function playStation(_station: unknown) {
@@ -79,10 +67,10 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
     // fetch next song
     // if "next" fetch next song
   }
-  function playNext(_track: QueueTrack) {
+  function playNext(_tracks: QueueTrack[]) {
     // if in context split context at index and put before to queue and after back in context
   }
-  function append(_track: QueueTrack) {
+  function playAfter(_tracks: QueueTrack[]) {
     // only if in queue and there already is a track
   }
 
@@ -106,19 +94,64 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   function clearQueue() {
     // clear queue after index
   }
-
   function clearContext() {
     // clear context after index
     // move the rest to queue
     // discard context if needed
   }
+  function playIndex(_index: number) {}
+  function deleteIndex(_index: number) {}
+  function moveIndex(_index: number, _newIndex: number) {}
 
-  function playIndex(_index: number) {
-    // jump to index
+  function shuffleList(entries: QueueEntry[]): QueueEntry[] {
+    for (let i = entries.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [entries[i], entries[j]] = [entries[j]!, entries[i]!];
+    }
+
+    return entries;
+  }
+
+  function shuffle() {
+    const entries = [...queue.value, ...contextQueue.value];
+    const start = index.value === null ? 0 : index.value + 1;
+
+    shuffledQueue.value = [...entries.slice(0, start), ...shuffleList(entries.slice(start))];
+
+    isShuffeling.value = true;
+  }
+
+  function unshuffle() {
+    const id = current.value?.id;
+
+    const queueIndex = queue.value.findIndex((entry) => entry.id === id);
+    const contextIndex = contextQueue.value.findIndex((entry) => entry.id === id);
+
+    if (queueIndex >= 0) {
+      index.value = queueIndex;
+    } else if (contextIndex >= 0) {
+      index.value = queue.value.length + contextIndex;
+    } else {
+      index.value = null;
+    }
+
+    resetShuffle();
+  }
+
+  function resetShuffle() {
+    isShuffeling.value = false;
+    shuffledQueue.value = [];
+  }
+
+  function toggleShuffle() {
+    if (isShuffeling.value) unshuffle();
+    else shuffle();
   }
 
   const current = computed(() => {
     if (index.value === null || !Number.isInteger(index.value)) return null;
+
+    if (isShuffeling.value) return shuffledQueue.value[index.value] ?? null;
 
     if (!inContext.value) return queue.value[index.value] ?? null;
 
@@ -129,22 +162,25 @@ export const useQueueStore = defineStore("opfelmusig:queue-store", () => {
   return {
     queue: computed(() => shallowReadonly(queue.value)),
     contextQueue: computed(() => shallowReadonly(contextQueue.value)),
+    shuffledQueue: computed(() => shallowReadonly(shuffledQueue.value)),
     context: shallowReadonly(context),
     contextIndex,
     index: readonly(index),
     current,
     inContext,
     playContext,
-    playQueue,
     playStation,
     next,
     previous,
     clearQueue,
     clearContext,
     playNext,
-    append,
-    jumpToIndex: playIndex,
+    playAfter,
+    playIndex,
+    deleteIndex,
+    moveIndex,
     isLooping,
-    isShuffeling,
+    isShuffeling: readonly(isShuffeling),
+    toggleShuffle,
   };
 });

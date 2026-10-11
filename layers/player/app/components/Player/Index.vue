@@ -64,7 +64,7 @@
         <div class="mr-1 h-8 w-px shrink-0 grow-0 rounded-full bg-border" />
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
-          @click="queueStore.isShuffeling = !queueStore.isShuffeling"
+          @click="queueStore.toggleShuffle"
         >
           <UIcon
             mode="svg"
