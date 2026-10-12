@@ -1,4 +1,8 @@
+mod drm;
 mod logging;
+mod playback;
+
+pub use drm::run_host as run_widevine_host;
 
 use tauri::{AppHandle, Manager};
 use tauri_plugin_window_state::StateFlags;
@@ -13,6 +17,8 @@ pub fn run() {
         .plugin(tauri_plugin_prevent_default::debug())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_dialog::init())
+        .manage(playback::NativePlayback::default())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
@@ -25,7 +31,11 @@ pub fn run() {
                 )
                 .build(),
         )
-        .invoke_handler(tauri::generate_handler![native_open_devtools])
+        .invoke_handler(tauri::generate_handler![
+            native_open_devtools,
+            playback::native_playback_play,
+            playback::native_playback_control
+        ])
         .setup(|app| {
             let app_data_dir = app
                 .path()

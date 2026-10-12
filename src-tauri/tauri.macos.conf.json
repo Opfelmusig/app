@@ -28,6 +28,7 @@
   },
   "bundle": {
     "macOS": {
+      "entitlements": "entitlements.plist",
       "dmg": {
         "background": "./dmg/background.jpg",
         "windowSize": {

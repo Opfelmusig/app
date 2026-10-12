@@ -1,0 +1,325 @@
+//! A decoding worker feeds small PCM packets to Rodio. The device callback only consumes
+//! prepared samples; downloads, seeking and CDM calls never run on that callback.
+use super::{stream::Media, Control, PlayRequest, PlaybackEvent, PlaybackStatus};
+use anyhow::{ensure, Result};
+use rodio::{
+    buffer::SamplesBuffer, ChannelCount, Decoder, DeviceSinkBuilder, Player, SampleRate, Source,
+};
+use std::{
+    sync::{
+        atomic::{AtomicU64, Ordering},
+        Arc, Mutex,
+    },
+    time::Duration,
+};
+use tokio_util::sync::CancellationToken;
+
+const PACKET_FRAMES: usize = 2048;
+const QUEUED_PACKETS: usize = 12;
+
+struct Clock {
+    start: f64,
+    samples: Arc<AtomicU64>,
+    frequency: u64,
+}
+struct Controls {
+    paused: bool,
+    volume: f32,
+    target: f64,
+    sink: Option<Arc<Player>>,
+    clock: Option<Clock>,
+    status: PlaybackStatus,
+    error: Option<String>,
+}
+
+pub struct Session {
+    pub id: String,
+    pub cancel: CancellationToken,
+    epoch: Arc<AtomicU64>,
+    duration: f64,
+    controls: Mutex<Controls>,
+    media: Mutex<Option<Media>>,
+}
+
+impl Session {
+    pub fn new(request: &PlayRequest) -> Self {
+        Self {
+            id: request.id.clone(),
+            cancel: CancellationToken::new(),
+            epoch: Arc::new(AtomicU64::new(0)),
+            duration: request.duration,
+            media: Mutex::new(None),
+            controls: Mutex::new(Controls {
+                paused: request.paused,
+                volume: request.volume.clamp(0.0, 1.0),
+                target: 0.0,
+                sink: None,
+                clock: None,
+                status: PlaybackStatus::Loading,
+                error: None,
+            }),
+        }
+    }
+
+    pub fn stop(&self) {
+        self.cancel.cancel();
+        let mut controls = self.controls.lock().unwrap();
+        if let Some(sink) = controls.sink.take() {
+            sink.stop();
+        }
+        controls.status = PlaybackStatus::Stopped;
+        if let Some(media) = self.media.lock().unwrap().take() {
+            media.wake();
+        }
+    }
+
+    pub fn fail(&self, error: String) {
+        if self.cancel.is_cancelled() {
+            return;
+        }
+        let mut controls = self.controls.lock().unwrap();
+        if let Some(sink) = controls.sink.take() {
+            sink.stop();
+        }
+        controls.status = PlaybackStatus::Error;
+        controls.error = Some(error);
+        self.cancel.cancel();
+        if let Some(media) = self.media.lock().unwrap().take() {
+            media.wake();
+        }
+    }
+
+    pub fn event(&self) -> PlaybackEvent {
+        let controls = self.controls.lock().unwrap();
+        let position = controls.clock.as_ref().map_or(controls.target, |clock| {
+            clock.start + clock.samples.load(Ordering::Relaxed) as f64 / clock.frequency as f64
+        });
+        PlaybackEvent {
+            id: self.id.clone(),
+            status: controls.status,
+            position: if self.duration > 0.0 {
+                position.min(self.duration)
+            } else {
+                position
+            },
+            duration: self.duration,
+            error: controls.error.clone(),
+            paused: controls.paused,
+        }
+    }
+
+    pub fn control(&self, command: Control) -> Result<(), String> {
+        if matches!(command, Control::Stop) {
+            self.stop();
+            return Ok(());
+        }
+        let mut controls = self.controls.lock().unwrap();
+        match command {
+            Control::Pause | Control::Resume => {
+                controls.paused = matches!(command, Control::Pause);
+                if let Some(sink) = &controls.sink {
+                    if controls.paused {
+                        sink.pause();
+                    } else {
+                        sink.play();
+                    }
+                    controls.status = if controls.paused {
+                        PlaybackStatus::Paused
+                    } else {
+                        PlaybackStatus::Playing
+                    };
+                }
+            }
+            Control::Volume(volume) => {
+                if !volume.is_finite() {
+                    return Err("Invalid volume".into());
+                }
+                controls.volume = volume.clamp(0.0, 1.0);
+                if let Some(sink) = &controls.sink {
+                    sink.set_volume(controls.volume);
+                }
+            }
+            Control::Seek(seconds) => {
+                if !seconds.is_finite() || seconds < 0.0 {
+                    return Err("Invalid seek position".into());
+                }
+                controls.target = if self.duration > 0.0 {
+                    seconds.min(self.duration)
+                } else {
+                    seconds
+                };
+                controls.clock = None;
+                controls.status = PlaybackStatus::Loading;
+                if let Some(sink) = controls.sink.take() {
+                    sink.stop();
+                }
+                self.epoch.fetch_add(1, Ordering::Release);
+                if let Some(media) = self.media.lock().unwrap().as_ref() {
+                    media.wake();
+                }
+            }
+            Control::Stop => unreachable!(),
+        }
+        Ok(())
+    }
+}
+
+pub fn run(session: Arc<Session>, media: Media) {
+    *session.media.lock().unwrap() = Some(media.clone());
+    let result = decode(&session, &media);
+    if let Err(error) = result {
+        session.fail(error.to_string());
+    }
+}
+
+fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
+    let weak = Arc::downgrade(session);
+    let mut output = DeviceSinkBuilder::from_default_device()?
+        .with_error_callback(move |error| {
+            if matches!(error, rodio::cpal::StreamError::BufferUnderrun) {
+                return;
+            }
+            if let Some(session) = weak.upgrade() {
+                session.fail(format!("Audio output failed: {error}"));
+            }
+        })
+        .open_sink_or_fallback()?;
+    output.log_on_drop(false);
+    while !session.cancel.is_cancelled() {
+        let epoch = session.epoch.load(Ordering::Acquire);
+        let at = session.controls.lock().unwrap().target;
+        let opening = (|| -> Result<_> {
+            let (reader, skip) = media.reader(at, session.epoch.clone(), epoch)?;
+            let decoder = Decoder::builder()
+                .with_data(reader)
+                .with_seekable(false)
+                .build()?;
+            let channels = decoder.channels();
+            let rate = decoder.sample_rate();
+            // Apple's CENC encode omits an edit list. Its encoder priming is 2112 frames.
+            let skip = if media.protected() {
+                if at == 0.0 {
+                    2112.0 / rate.get() as f64
+                } else {
+                    skip
+                }
+            } else {
+                at
+            };
+            let source = decoder.skip_duration(Duration::from_secs_f64(skip));
+            let source: Box<dyn Source<Item = f32> + Send> = if session.duration > 0.0 {
+                Box::new(
+                    source.take_duration(Duration::from_secs_f64((session.duration - at).max(0.0))),
+                )
+            } else {
+                Box::new(source)
+            };
+            Ok((source, channels, rate))
+        })();
+        if session.cancel.is_cancelled() {
+            break;
+        }
+        if session.epoch.load(Ordering::Acquire) != epoch {
+            continue;
+        }
+        let (mut source, channels, rate) = opening?;
+        let sink = Arc::new(Player::connect_new(output.mixer()));
+        let played = Arc::new(AtomicU64::new(0));
+        {
+            let mut controls = session.controls.lock().unwrap();
+            if session.epoch.load(Ordering::Acquire) != epoch {
+                continue;
+            }
+            sink.set_volume(controls.volume);
+            if controls.paused {
+                sink.pause();
+            }
+            controls.sink = Some(sink.clone());
+            controls.clock = Some(Clock {
+                start: at,
+                samples: played.clone(),
+                frequency: u64::from(channels.get()) * u64::from(rate.get()),
+            });
+            controls.status = if controls.paused {
+                PlaybackStatus::Paused
+            } else {
+                PlaybackStatus::Playing
+            };
+        }
+        loop {
+            if session.cancel.is_cancelled() || session.epoch.load(Ordering::Acquire) != epoch {
+                sink.stop();
+                break;
+            }
+            if sink.len() >= QUEUED_PACKETS {
+                std::thread::sleep(Duration::from_millis(10));
+                continue;
+            }
+            let samples: Vec<f32> = source
+                .by_ref()
+                .take(PACKET_FRAMES * channels.get() as usize)
+                .collect();
+            if session.cancel.is_cancelled() || session.epoch.load(Ordering::Acquire) != epoch {
+                sink.stop();
+                break;
+            }
+            if samples.is_empty() {
+                ensure!(
+                    media.error().is_none(),
+                    "{}",
+                    media.error().unwrap_or_default()
+                );
+                while !sink.empty()
+                    && !session.cancel.is_cancelled()
+                    && session.epoch.load(Ordering::Acquire) == epoch
+                {
+                    std::thread::sleep(Duration::from_millis(10));
+                }
+                let mut controls = session.controls.lock().unwrap();
+                if !session.cancel.is_cancelled() && session.epoch.load(Ordering::Acquire) == epoch
+                {
+                    controls.status = PlaybackStatus::Ended;
+                    return Ok(());
+                }
+                break;
+            }
+            // Recheck under the same lock controls use, so a seek cannot be followed by an
+            // append of stale audio into a stopped player.
+            let _controls = session.controls.lock().unwrap();
+            if session.epoch.load(Ordering::Acquire) == epoch && !session.cancel.is_cancelled() {
+                sink.append(Packet {
+                    input: SamplesBuffer::new(channels, rate, samples),
+                    played: played.clone(),
+                });
+            }
+        }
+    }
+    Ok(())
+}
+
+struct Packet {
+    input: SamplesBuffer,
+    played: Arc<AtomicU64>,
+}
+impl Iterator for Packet {
+    type Item = f32;
+    fn next(&mut self) -> Option<f32> {
+        let sample = self.input.next()?;
+        self.played.fetch_add(1, Ordering::Relaxed);
+        Some(sample)
+    }
+}
+impl Source for Packet {
+    fn current_span_len(&self) -> Option<usize> {
+        self.input.current_span_len()
+    }
+    fn channels(&self) -> ChannelCount {
+        self.input.channels()
+    }
+    fn sample_rate(&self) -> SampleRate {
+        self.input.sample_rate()
+    }
+    fn total_duration(&self) -> Option<Duration> {
+        self.input.total_duration()
+    }
+}

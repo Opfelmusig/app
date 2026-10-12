@@ -81,8 +81,21 @@
         </div>
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
+          @click="playbackStore.toggle"
+          @keydown.enter="playbackStore.toggle"
+          @keydown.space.prevent="playbackStore.toggle"
         >
-          <OMIcon name="lucide:play" filled class="size-4 text-muted" />
+          <OMIcon
+            :name="
+              playbackStore.pending
+                ? 'lucide:loader-circle'
+                : playbackStore.paused
+                  ? 'lucide:play'
+                  : 'lucide:pause'
+            "
+            :filled="!playbackStore.pending"
+            :class="playbackStore.pending ? 'size-4 animate-spin text-muted' : 'size-4 text-muted'"
+          />
         </div>
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
@@ -103,9 +116,18 @@
         </div>
       </div>
       <div class="flex w-full items-center gap-4 text-xs text-muted tabular-nums">
-        <span>{{ msToHMS(0 * 1000) }}</span>
-        <USlider :step="0.01" :disabled="!resource" class="w-full py-2" />
-        <span>{{ msToHMS(resource?.attributes.durationInMillis ?? 0 * 1000) }}</span>
+        <span>{{ msToHMS((seekPosition ?? playbackStore.position) * 1000) }}</span>
+        <USlider
+          :model-value="seekPosition ?? playbackStore.position"
+          :min="0"
+          :max="playbackStore.duration || 1"
+          :step="0.1"
+          :disabled="!resource || !playbackStore.duration"
+          class="w-full py-2"
+          @update:model-value="seekPosition = $event ?? null"
+          @change="commitSeek"
+        />
+        <span>{{ msToHMS(playbackStore.duration * 1000) }}</span>
       </div>
     </div>
   </div>
@@ -113,6 +135,20 @@
 
 <script lang="ts" setup>
 const queueStore = useQueueStore();
+const playbackStore = usePlaybackStore();
+const seekPosition = ref<number | null>(null);
+
+function commitSeek() {
+  if (seekPosition.value !== null) playbackStore.seek(seekPosition.value);
+  seekPosition.value = null;
+}
+
+watch(
+  () => queueStore.current?.id,
+  () => {
+    seekPosition.value = null;
+  },
+);
 
 const resource = computed(() => queueStore.current?.entry.resource);
 
