@@ -21,6 +21,11 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const queueStore = useQueueStore();
   const volumeStore = useVolumeStore();
   const log = logger.withTag("player");
+  const savedPosition = useLocalStorage(
+    "opfelmusig:playback:position",
+    { id: "", position: 0 },
+    { writeDefaults: false, flush: "sync" },
+  );
 
   const pending = ref(false);
   const isPlaying = ref(false);
@@ -76,6 +81,8 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   async function load(initiallyPaused = false) {
     const current = queueStore.current;
     if (!current) return stop();
+    const resumeAt =
+      initiallyPaused && savedPosition.value.id === current.id ? savedPosition.value.position : 0;
     clearSeekLoading();
     const resource = current.entry.resource;
     const id = crypto.randomUUID();
@@ -87,6 +94,8 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     paused.value = initiallyPaused;
     clock.reset();
     duration.value = resource.attributes.durationInMillis / 1000;
+    savedPosition.value = { id: current.id, position: 0 };
+    if (resumeAt > 0) seek(resumeAt);
 
     const events = new Channel<PlaybackEvent>();
     events.onmessage = (event) => {
@@ -103,6 +112,12 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       paused.value = event.paused;
       duration.value = event.duration;
       clock.sync(event.position, isPlaying.value && !paused.value);
+      if (
+        event.status !== "playing" ||
+        Math.abs(event.position - savedPosition.value.position) >= 1
+      ) {
+        savedPosition.value.position = event.position;
+      }
       if (event.status === "ended") {
         stop();
         queueStore.next();
@@ -151,6 +166,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     if (!Number.isFinite(seconds) || !activeId) return;
     const target = Math.max(0, Math.min(seconds, duration.value));
     clock.reset(target);
+    savedPosition.value.position = target;
     isPlaying.value = false;
     const value = { position: target, revision: ++seekRevision };
     clearSeekLoading();
