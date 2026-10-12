@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-const { isPlaying } = { isPlaying: true }; // use playback
+const { isPlaying } = usePlaybackStore();
 </script>
 
 <style>
