@@ -32,19 +32,11 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   let nativeId: string | undefined;
   let seekRevision = 0;
   let started = false;
-  let queuedSeek: { position: number; revision: number } | undefined;
   let seekLoadingTimer: ReturnType<typeof setTimeout> | undefined;
 
   function clearSeekLoading() {
     clearTimeout(seekLoadingTimer);
     seekLoadingTimer = undefined;
-  }
-
-  function stopNative(id: string | undefined) {
-    if (!id) return;
-    void invoke("native_playback_control", { id, command: { action: "stop" } }).catch((cause) =>
-      log.error("Could not stop native playback", { cause }),
-    );
   }
 
   function failed(id: string, cause: unknown) {
@@ -57,24 +49,23 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     toast.add({ title: "Unable to play", description: String(cause), color: "error" });
   }
 
-  async function control(command: PlaybackControl) {
-    const id = activeId;
+  async function control(command: PlaybackControl, id = activeId) {
     if (!id) return;
     try {
       await invoke("native_playback_control", { id, command });
     } catch (cause) {
-      failed(id, cause);
+      if (command.action === "stop") log.error("Could not stop native playback", { cause });
+      else failed(id, cause);
     }
   }
 
   function stop() {
     clearSeekLoading();
-    stopNative(nativeId);
+    if (nativeId) void control({ action: "stop" }, nativeId);
     nativeId = undefined;
     activeId = undefined;
     seekRevision = 0;
     started = false;
-    queuedSeek = undefined;
     pending.value = false;
     isPlaying.value = false;
     paused.value = true;
@@ -91,7 +82,6 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     activeId = id;
     seekRevision = 0;
     started = false;
-    queuedSeek = undefined;
     pending.value = true;
     isPlaying.value = false;
     paused.value = initiallyPaused;
@@ -136,19 +126,17 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         },
         events,
       });
-      if (activeId !== id) stopNative(id);
-      else {
-        started = true;
-        if (queuedSeek) {
-          void control({ action: "seek", value: queuedSeek });
-          queuedSeek = undefined;
-        }
+      if (activeId !== id) return void control({ action: "stop" }, id);
+      started = true;
+      if (seekRevision > 0) {
+        void control({
+          action: "seek",
+          value: { position: position.value, revision: seekRevision },
+        });
       }
     } catch (cause) {
       failed(id, cause);
-      if (activeId === id) {
-        stop();
-      }
+      if (activeId === id) stop();
     }
   }
 
@@ -173,7 +161,6 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       }, 150);
     }
     if (started) void control({ action: "seek", value });
-    else queuedSeek = value;
   }
 
   function previous() {
