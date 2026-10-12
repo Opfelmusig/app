@@ -1,6 +1,6 @@
 <template>
   <PanelWrapper>
-    <div class="flex w-full items-center justify-between gap-2 p-2 text-white">
+    <div class="flex w-full items-center justify-between gap-2 p-2 text-muted">
       <div
         class="flex size-8 shrink-0 items-center justify-center rounded-md hover:bg-inverted/10 hover:backdrop-blur-md"
         @click="settingsStore.panel.isOpen = false"
@@ -25,7 +25,28 @@
       </div>
     </div>
 
-    <PanelQueue />
+    <div class="relative flex size-full min-h-0 overflow-hidden">
+      <Transition
+        enter-active-class="transition-opacity"
+        enter-from-class="opacity-0"
+        leave-active-class="transition-opacity"
+        leave-to-class="opacity-0"
+      >
+        <div v-show="settingsStore.panel.page === 'lyrics'" class="absolute inset-0">
+          <PanelLyrics />
+        </div>
+      </Transition>
+      <Transition
+        enter-active-class="transition-opacity"
+        enter-from-class="opacity-0"
+        leave-active-class="transition-opacity"
+        leave-to-class="opacity-0"
+      >
+        <div v-show="settingsStore.panel.page === 'queue'" class="absolute inset-0">
+          <PanelQueue />
+        </div>
+      </Transition>
+    </div>
   </PanelWrapper>
 </template>
 

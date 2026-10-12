@@ -11,7 +11,7 @@
       @dblclick="onDoubleClick"
     />
     <div
-      class="flex h-full w-full flex-col overflow-hidden overflow-y-auto border-l border-default bg-default shadow-xl"
+      class="flex size-full flex-col overflow-hidden border-l border-default bg-default shadow-xl"
     >
       <slot />
     </div>
