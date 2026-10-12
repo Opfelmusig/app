@@ -65,10 +65,12 @@
         </template>
         <TitlebarAction icon="lucide:terminal" small @click="openDevTools" />
         <TitlebarAction
-          :icon="settingsStore.isPanelOpen ? 'lucide:panel-right-close' : 'lucide:panel-right-open'"
+          :icon="
+            settingsStore.panel.isOpen ? 'lucide:panel-right-close' : 'lucide:panel-right-open'
+          "
           small-icon
-          :active="settingsStore.isPanelOpen"
-          @click="settingsStore.isPanelOpen = !settingsStore.isPanelOpen"
+          :active="settingsStore.panel.isOpen"
+          @click="settingsStore.panel.isOpen = !settingsStore.panel.isOpen"
         />
         <USeparator v-if="!isMacos" orientation="vertical" class="h-4 shrink-0" />
       </div>

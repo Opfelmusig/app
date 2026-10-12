@@ -30,7 +30,7 @@
       leave-active-class="transition-transform"
       leave-to-class="translate-x-full"
     >
-      <Panel v-if="settingsStore.isPanelOpen" />
+      <Panel v-if="settingsStore.panel.isOpen" />
     </Transition>
     <Player />
   </main>

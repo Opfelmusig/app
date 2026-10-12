@@ -7,7 +7,10 @@ export const useSettingsStore = defineStore(
   () => {
     const language = ref<string | undefined>();
 
-    const isPanelOpen = ref(true);
+    const panel = reactive({
+      isOpen: true,
+      page: "queue" as "queue" | "lyrics",
+    });
 
     const sidebarSections = reactive<SidebarSections>({
       library: {},
@@ -30,7 +33,7 @@ export const useSettingsStore = defineStore(
       sidebarSections,
       system,
       player,
-      isPanelOpen,
+      panel,
     };
   },
   {
