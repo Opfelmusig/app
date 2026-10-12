@@ -14,7 +14,7 @@
 import { getArtworkExpiresAt, getArtworkUrl } from "@opfelmusig/lib/helpers";
 import type { Artwork } from "@opfelmusig/lib/types";
 
-import { artworkContextKey } from "#layers/amdata/app/lib/contexts/artwork";
+import { artworkContextKey, type ArtworkContext } from "#layers/amdata/app/lib/contexts/artwork";
 
 const props = defineProps<{
   artwork?: Artwork;
@@ -24,7 +24,8 @@ const props = defineProps<{
   class?: string;
 }>();
 
-const context = inject(artworkContextKey);
+const context: ArtworkContext | undefined =
+  props.artwork || props.src ? undefined : inject(artworkContextKey);
 
 const imageSource = computed(() => props.src ?? props.artwork ?? context?.artwork.value);
 const imageSrc = computed(() =>

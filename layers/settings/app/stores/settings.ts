@@ -13,7 +13,7 @@ export const useSettingsStore = defineStore(
     });
 
     const immersive = reactive({
-      isOpen: true,
+      isOpen: false,
       page: null as "queue" | "lyrics" | null,
     });
 
