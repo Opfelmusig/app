@@ -33,7 +33,7 @@
         leave-to-class="opacity-0"
       >
         <div v-show="settingsStore.panel.page === 'lyrics'" class="absolute inset-0">
-          <PanelLyrics />
+          <Lyrics />
         </div>
       </Transition>
       <Transition

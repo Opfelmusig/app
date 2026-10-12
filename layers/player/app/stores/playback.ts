@@ -25,8 +25,9 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const pending = ref(false);
   const isPlaying = ref(false);
   const paused = ref(true);
-  const position = ref(0);
   const duration = ref(0);
+  const clock = usePlaybackClock(duration);
+  const { position } = clock;
   let activeId: string | undefined;
   let nativeId: string | undefined;
   let seekRevision = 0;
@@ -51,6 +52,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     clearSeekLoading();
     pending.value = false;
     isPlaying.value = false;
+    clock.reset(position.value);
     log.error("Native playback failed", { cause });
     toast.add({ title: "Unable to play", description: String(cause), color: "error" });
   }
@@ -76,7 +78,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     pending.value = false;
     isPlaying.value = false;
     paused.value = true;
-    position.value = 0;
+    clock.reset();
     duration.value = 0;
   }
 
@@ -93,7 +95,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     pending.value = true;
     isPlaying.value = false;
     paused.value = initiallyPaused;
-    position.value = 0;
+    clock.reset();
     duration.value = resource.attributes.durationInMillis / 1000;
 
     const events = new Channel<PlaybackEvent>();
@@ -109,8 +111,8 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       pending.value = event.status === "loading" && (event.seekRevision === 0 || pending.value);
       isPlaying.value = event.status === "playing";
       paused.value = event.paused;
-      position.value = event.position;
       duration.value = event.duration;
+      clock.sync(event.position, isPlaying.value && !paused.value);
       if (event.status === "ended") {
         stop();
         queueStore.next();
@@ -153,13 +155,14 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   function toggle() {
     if (!activeId) return void load();
     paused.value = !paused.value;
+    if (paused.value) clock.reset(position.value);
     void control({ action: paused.value ? "pause" : "resume" });
   }
 
   function seek(seconds: number) {
     if (!Number.isFinite(seconds) || !activeId) return;
     const target = Math.max(0, Math.min(seconds, duration.value));
-    position.value = target;
+    clock.reset(target);
     isPlaying.value = false;
     const value = { position: target, revision: ++seekRevision };
     clearSeekLoading();

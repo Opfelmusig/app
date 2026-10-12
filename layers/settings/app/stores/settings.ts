@@ -22,6 +22,11 @@ export const useSettingsStore = defineStore(
       animatedArtwork: true,
     });
 
+    const lyrics = reactive({
+      showTransliteration: false,
+      showTranslation: false,
+    });
+
     const system = reactive({
       hideTitlebarControls: false,
       automaticUpdateChecks: true,
@@ -33,6 +38,7 @@ export const useSettingsStore = defineStore(
       sidebarSections,
       system,
       player,
+      lyrics,
       panel,
     };
   },

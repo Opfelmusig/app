@@ -35,6 +35,8 @@ export interface UseScrollShadowOptions {
    * @defaultValue 'vertical'
    */
   orientation?: MaybeRefOrGetter<"vertical" | "horizontal">;
+  /** Whether attribute changes trigger overflow measurements. */
+  observeAttributes?: boolean;
 }
 
 export function useCustomScrollShadow(
@@ -49,7 +51,7 @@ export function useCustomScrollShadow(
   useMutationObserver(element, measure, {
     childList: true,
     subtree: true,
-    attributes: true,
+    attributes: options.observeAttributes ?? true,
     characterData: true,
   });
 
