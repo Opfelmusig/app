@@ -26,12 +26,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function getAssets(playbackSong: PlaybackSong) {
-    return (
-      playbackSong.assets.find((a) => a.flavor === "28:ctrp256") ??
-      playbackSong.assets.find((a) => a.flavor?.startsWith("28:ctr")) ??
-      playbackSong.assets.find((a) => a.flavor?.includes("256")) ??
-      playbackSong.assets[0]
-    );
+    return playbackSong.assets.find((a) => a.flavor === "28:ctrp256");
   }
 
   watch(
