@@ -14,6 +14,8 @@
 import { getArtworkExpiresAt, getArtworkUrl } from "@opfelmusig/lib/helpers";
 import type { Artwork } from "@opfelmusig/lib/types";
 
+import { artworkContextKey } from "#layers/amdata/app/lib/contexts/artwork";
+
 const props = defineProps<{
   artwork?: Artwork;
   src?: string;
@@ -22,11 +24,11 @@ const props = defineProps<{
   class?: string;
 }>();
 
-const { artwork: contextArtwork, imageSize } = useArtworkContext();
+const context = inject(artworkContextKey);
 
-const imageSource = computed(() => props.src ?? props.artwork ?? contextArtwork.value);
+const imageSource = computed(() => props.src ?? props.artwork ?? context?.artwork.value);
 const imageSrc = computed(() =>
-  getArtworkUrl(imageSource.value, { width: props.width ?? imageSize.value }),
+  getArtworkUrl(imageSource.value, { width: props.width ?? context?.imageSize.value }),
 );
 const imageExpiresAt = computed(() => getArtworkExpiresAt(imageSource.value));
 const imageExpired = computed(() =>
