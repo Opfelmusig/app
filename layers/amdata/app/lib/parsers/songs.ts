@@ -27,8 +27,8 @@ export type LibrarySongTemplate = ResourceTemplateOf<
       never,
       "personalRating",
       {
-        albums: ResourceTemplateOf<"albums", "name">;
-        artists: ResourceTemplateOf<"artists", "name">;
+        albums: ResourceTemplateOf<"albums", "name", "editorialVideo">;
+        artists: ResourceTemplateOf<"artists", "name", "editorialVideo">;
       }
     >;
   }
@@ -36,6 +36,7 @@ export type LibrarySongTemplate = ResourceTemplateOf<
 
 export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
   const catalog = resource.relationships?.catalog.data[0];
+  const catalogAlbums = catalog?.relationships?.albums.data;
   const album = resource.relationships?.albums.data[0];
   const artist = resource.relationships?.artists.data[0];
   const attributes = resource.attributes;
@@ -58,8 +59,9 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
       releaseDate: attributes.releaseDate,
       contentRating: attributes.contentRating,
       personalRating: catalog?.attributes?.personalRating,
+      editorialVideo: catalogAlbums?.map((a) => a.attributes?.editorialVideo).find((e) => !!e),
 
-      albums: parseCatalogLinks(catalog?.relationships?.albums.data),
+      albums: parseCatalogLinks(catalogAlbums),
       artists: parseCatalogLinks(catalog?.relationships?.artists.data),
     },
 
@@ -76,7 +78,7 @@ export type CatalogSongTemplate = ResourceTemplateOf<
   SongAttributeKeys,
   "personalRating",
   {
-    albums: ResourceTemplateOf<"albums", "name">;
+    albums: ResourceTemplateOf<"albums", "name", "editorialVideo">;
     artists: ResourceTemplateOf<"artists", "name">;
     library: ResourceTemplateOf<"library-songs">;
   }
@@ -84,6 +86,7 @@ export type CatalogSongTemplate = ResourceTemplateOf<
 
 export function parseCatalogSong(resource: CatalogSongTemplate): AmCatalogSong {
   const attributes = resource.attributes;
+  const albums = resource.relationships?.albums.data;
 
   if (!attributes) throw new Error(`Invalid Apple Music song: ${resource.id}: missing attributes`);
 
@@ -102,7 +105,9 @@ export function parseCatalogSong(resource: CatalogSongTemplate): AmCatalogSong {
       releaseDate: attributes.releaseDate,
       contentRating: attributes.contentRating,
       personalRating: attributes.personalRating,
-      albums: parseCatalogLinks(resource.relationships?.albums.data),
+      editorialVideo: albums?.map((a) => a.attributes?.editorialVideo).find((e) => !!e),
+
+      albums: parseCatalogLinks(albums),
       artists: parseCatalogLinks(resource.relationships?.artists.data),
     },
     extras: {
