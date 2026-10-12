@@ -1,5 +1,5 @@
 <template>
-  <div class="z-10 flex size-full flex-col overflow-hidden overflow-y-auto">
+  <div class="z-10 flex size-full flex-col overflow-hidden overflow-y-auto border-t border-default">
     <template v-if="currentQueue.length > 0">
       <PanelHeader
         v-if="queueStore.context && queueStore.isShuffling"

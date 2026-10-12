@@ -19,6 +19,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const toast = useToast();
   const auth = useAuth();
   const queueStore = useQueueStore();
+  const historyStore = useHistoryStore();
   const volumeStore = useVolumeStore();
   const log = logger.withTag("player");
   const savedPosition = useLocalStorage(
@@ -98,6 +99,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     if (resumeAt > 0) seek(resumeAt);
 
     const events = new Channel<PlaybackEvent>();
+    let recorded = false;
     events.onmessage = (event) => {
       if (event.id !== activeId) return;
       if (event.status === "error") {
@@ -110,6 +112,10 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       pending.value = event.status === "loading" && (event.seekRevision === 0 || pending.value);
       isPlaying.value = event.status === "playing";
       paused.value = event.paused;
+      if (!recorded && isPlaying.value && !paused.value) {
+        recorded = true;
+        historyStore.record(current.entry);
+      }
       duration.value = event.duration;
       clock.sync(event.position, isPlaying.value && !paused.value);
       if (
