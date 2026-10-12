@@ -32,6 +32,14 @@
     >
       <Panel v-if="settingsStore.panel.isOpen" />
     </Transition>
+    <Transition
+      enter-active-class="transition-transform duration-400"
+      enter-from-class="translate-y-full"
+      leave-active-class="transition-transform duration-400"
+      leave-to-class="translate-y-full"
+    >
+      <Immersive v-if="settingsStore.immersive.isOpen" />
+    </Transition>
     <Player />
   </main>
 </template>

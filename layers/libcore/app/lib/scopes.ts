@@ -35,7 +35,7 @@ export const songsScopes = defineScopes({
   },
   albums: {
     fields: ["name"],
-    extend: ["editorialArtwork"],
+    extend: ["editorialVideo"],
   },
   artists: {
     fields: ["name"],
