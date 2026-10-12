@@ -12,6 +12,11 @@ export const useSettingsStore = defineStore(
       page: "queue" as "queue" | "lyrics",
     });
 
+    const immersive = reactive({
+      isOpen: true,
+      page: null as "queue" | "lyrics" | null,
+    });
+
     const sidebarSections = reactive<SidebarSections>({
       library: {},
       pins: {},
@@ -40,9 +45,12 @@ export const useSettingsStore = defineStore(
       player,
       lyrics,
       panel,
+      immersive,
     };
   },
   {
-    persist: true,
+    persist: {
+      omit: ["immersive.isOpen"],
+    },
   },
 );

@@ -68,6 +68,11 @@ export default defineNuxtPlugin({
           config: { meta: { group: "Player", name: "Restart track" } },
         },
         {
+          keys: "i",
+          run: () => (settingsStore.immersive.isOpen = !settingsStore.immersive.isOpen),
+          config: { meta: { group: "Player", name: "Toggle immersive mode" } },
+        },
+        {
           keys: "l",
           run: () => togglePanel("lyrics"),
           config: { meta: { group: "Player", name: "Toggle lyrics sidebar" } },
