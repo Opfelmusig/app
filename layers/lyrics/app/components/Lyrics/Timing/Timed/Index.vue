@@ -64,6 +64,8 @@ const setLineRef = (key: string, el: Element | ComponentPublicInstance | null) =
 
 const PADDING = 24;
 const SCROLL_DURATION_MS = 400;
+const SCROLL_STAGGER_MS = 40;
+const SCROLL_STAGGER_DECAY = 0.8;
 const USER_IDLE_MS = 5000;
 
 const scrollTargetKey = computed(() => {
@@ -86,12 +88,27 @@ const scrollTargetKey = computed(() => {
 
 const autoscrollPaused = ref(false);
 let resumeTimer: ReturnType<typeof setTimeout> | null = null;
+const scrollAnimations = new Set<Animation>();
 let scrollFrame: number | null = null;
 let hasScrolled = false;
 
 const stopScroll = () => {
   if (scrollFrame !== null) cancelAnimationFrame(scrollFrame);
   scrollFrame = null;
+  const container = containerEl.value;
+  const effect = scrollAnimations.values().next().value?.effect;
+  const anchor =
+    effect instanceof KeyframeEffect && effect.target instanceof HTMLElement ? effect.target : null;
+  const anchorTop = anchor?.getBoundingClientRect().top;
+
+  for (const animation of scrollAnimations) animation.cancel();
+  scrollAnimations.clear();
+
+  if (container) {
+    const offset =
+      anchor && anchorTop !== undefined ? anchor.getBoundingClientRect().top - anchorTop : 0;
+    container.scrollTo({ top: container.scrollTop + offset, behavior: "instant" });
+  }
 };
 
 const pauseAutoscroll = () => {
@@ -125,29 +142,64 @@ const scrollToTarget = (behavior: "smooth" | "instant" = "smooth") => {
   const targetTop = getScrollTargetTop(container, key);
   if (targetTop === null) return;
 
-  stopScroll();
-
-  const startTop = container.scrollTop;
-  const distance = targetTop - startTop;
-  if (behavior === "instant" || !hasScrolled || Math.abs(distance) < 1) {
+  if (behavior === "instant" || !hasScrolled) {
+    stopScroll();
     container.scrollTop = targetTop;
     hasScrolled = true;
     return;
   }
+  const distance = targetTop - container.scrollTop;
+  if (Math.abs(distance) < 1) return;
 
-  const startTime = performance.now();
+  if (distance < 0 || distance >= container.clientHeight) {
+    stopScroll();
+    const startTop = container.scrollTop;
+    const startTime = performance.now();
 
-  const update = (time: number) => {
-    const progress = Math.min(1, (time - startTime) / SCROLL_DURATION_MS);
-    const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+    const update = (time: number) => {
+      const progress = Math.min(1, (time - startTime) / SCROLL_DURATION_MS);
+      const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      container.scrollTop = startTop + (targetTop - startTop) * eased;
 
-    container.scrollTop = startTop + distance * eased;
+      if (progress < 1) scrollFrame = requestAnimationFrame(update);
+      else scrollFrame = null;
+    };
 
-    if (progress < 1) scrollFrame = requestAnimationFrame(update);
-    else scrollFrame = null;
-  };
+    scrollFrame = requestAnimationFrame(update);
+    return;
+  }
 
-  scrollFrame = requestAnimationFrame(update);
+  // Capture visual positions before cancelling an unfinished scroll.
+  const rows = Array.from(container.children)
+    .filter((element): element is HTMLElement => element instanceof HTMLElement)
+    .map((element) => ({ element, bounds: element.getBoundingClientRect() }));
+  const viewport = container.getBoundingClientRect();
+
+  stopScroll();
+  container.scrollTop = targetTop;
+
+  let delay = 0;
+  let stagger = SCROLL_STAGGER_MS;
+  for (const { element, bounds } of rows) {
+    const target = element.getBoundingClientRect();
+    const wasVisible = bounds.bottom > viewport.top && bounds.top < viewport.bottom;
+    const isVisible = target.bottom > viewport.top && target.top < viewport.bottom;
+    if (!wasVisible && !isVisible) continue;
+
+    const animation = element.animate(
+      [{ transform: `translateY(${bounds.top - target.top}px)` }, { transform: "translateY(0)" }],
+      {
+        duration: SCROLL_DURATION_MS,
+        delay,
+        easing: "cubic-bezier(0.65, 0, 0.35, 1)",
+        fill: "backwards",
+      },
+    );
+    scrollAnimations.add(animation);
+    animation.onfinish = () => scrollAnimations.delete(animation);
+    delay += stagger;
+    stagger *= SCROLL_STAGGER_DECAY;
+  }
 };
 
 watch(
