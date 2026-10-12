@@ -102,6 +102,7 @@ impl Session {
             } else {
                 position
             },
+            seek_revision: self.epoch.load(Ordering::Acquire),
             duration: self.duration,
             error: controls.error.clone(),
             paused: controls.paused,
@@ -139,9 +140,15 @@ impl Session {
                     sink.set_volume(controls.volume);
                 }
             }
-            Control::Seek(seconds) => {
+            Control::Seek {
+                position: seconds,
+                revision,
+            } => {
                 if !seconds.is_finite() || seconds < 0.0 {
                     return Err("Invalid seek position".into());
+                }
+                if revision <= self.epoch.load(Ordering::Acquire) {
+                    return Ok(());
                 }
                 controls.target = if self.duration > 0.0 {
                     seconds.min(self.duration)
@@ -153,7 +160,7 @@ impl Session {
                 if let Some(sink) = controls.sink.take() {
                     sink.stop();
                 }
-                self.epoch.fetch_add(1, Ordering::Release);
+                self.epoch.store(revision, Ordering::Release);
                 if let Some(media) = self.media.lock().unwrap().as_ref() {
                     media.wake();
                 }
@@ -279,7 +286,13 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
                 if !session.cancel.is_cancelled() && session.epoch.load(Ordering::Acquire) == epoch
                 {
                     controls.status = PlaybackStatus::Ended;
-                    return Ok(());
+                }
+                drop(controls);
+                // Keep the decoder worker available if a seek races the end notification.
+                while !session.cancel.is_cancelled()
+                    && session.epoch.load(Ordering::Acquire) == epoch
+                {
+                    std::thread::sleep(Duration::from_millis(10));
                 }
                 break;
             }

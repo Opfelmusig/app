@@ -40,6 +40,7 @@ pub struct PlaybackEvent {
     id: String,
     status: PlaybackStatus,
     position: f64,
+    seek_revision: u64,
     duration: f64,
     error: Option<String>,
     paused: bool,
@@ -50,7 +51,7 @@ pub struct PlaybackEvent {
 pub enum Control {
     Pause,
     Resume,
-    Seek(f64),
+    Seek { position: f64, revision: u64 },
     Volume(f32),
     Stop,
 }
@@ -80,7 +81,7 @@ pub fn native_playback_play(
         .name("playback-events".into())
         .spawn(move || loop {
             let event = reporting.event();
-            let terminal = matches!(event.status, PlaybackStatus::Ended | PlaybackStatus::Error);
+            let terminal = matches!(event.status, PlaybackStatus::Error);
             if reporting.cancel.is_cancelled() && !terminal {
                 break;
             }

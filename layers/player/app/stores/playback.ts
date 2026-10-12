@@ -4,6 +4,7 @@ interface PlaybackEvent {
   id: string;
   status: "loading" | "playing" | "paused" | "ended" | "error" | "stopped";
   position: number;
+  seekRevision: number;
   duration: number;
   paused: boolean;
   error?: string;
@@ -11,7 +12,8 @@ interface PlaybackEvent {
 
 type PlaybackControl =
   | { action: "pause" | "resume" | "stop" }
-  | { action: "seek" | "volume"; value: number };
+  | { action: "volume"; value: number }
+  | { action: "seek"; value: { position: number; revision: number } };
 
 export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const toast = useToast();
@@ -27,6 +29,9 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const duration = ref(0);
   let activeId: string | undefined;
   let nativeId: string | undefined;
+  let seekRevision = 0;
+  let started = false;
+  let queuedSeek: { position: number; revision: number } | undefined;
 
   function stopNative(id: string | undefined) {
     if (!id) return;
@@ -57,6 +62,9 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     stopNative(nativeId);
     nativeId = undefined;
     activeId = undefined;
+    seekRevision = 0;
+    started = false;
+    queuedSeek = undefined;
     pending.value = false;
     isPlaying.value = false;
     paused.value = true;
@@ -70,6 +78,9 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     const resource = current.entry.resource;
     const id = crypto.randomUUID();
     activeId = id;
+    seekRevision = 0;
+    started = false;
+    queuedSeek = undefined;
     pending.value = true;
     isPlaying.value = false;
     paused.value = initiallyPaused;
@@ -79,15 +90,18 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     const events = new Channel<PlaybackEvent>();
     events.onmessage = (event) => {
       if (event.id !== activeId) return;
+      if (event.status === "error") {
+        failed(id, event.error ?? "Native playback failed");
+        stop();
+        return;
+      }
+      if (event.seekRevision < seekRevision) return;
       pending.value = event.status === "loading";
       isPlaying.value = event.status === "playing";
       paused.value = event.paused;
       position.value = event.position;
       duration.value = event.duration;
-      if (event.status === "error") {
-        failed(id, event.error ?? "Native playback failed");
-        stop();
-      } else if (event.status === "ended") {
+      if (event.status === "ended") {
         stop();
         queueStore.next();
         // A one-track looping queue keeps the same entry, so its watcher does not run.
@@ -112,6 +126,13 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         events,
       });
       if (activeId !== id) stopNative(id);
+      else {
+        started = true;
+        if (queuedSeek) {
+          void control({ action: "seek", value: queuedSeek });
+          queuedSeek = undefined;
+        }
+      }
     } catch (cause) {
       failed(id, cause);
       if (activeId === id) {
@@ -127,8 +148,19 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function seek(seconds: number) {
-    if (!Number.isFinite(seconds)) return;
-    void control({ action: "seek", value: Math.max(0, Math.min(seconds, duration.value)) });
+    if (!Number.isFinite(seconds) || !activeId) return;
+    const target = Math.max(0, Math.min(seconds, duration.value));
+    position.value = target;
+    pending.value = true;
+    isPlaying.value = false;
+    const value = { position: target, revision: ++seekRevision };
+    if (started) void control({ action: "seek", value });
+    else queuedSeek = value;
+  }
+
+  function previous() {
+    if (position.value > 5) seek(0);
+    else queueStore.previous();
   }
 
   let restoring = true;
@@ -148,5 +180,5 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   useNuxtApp().hook("auth:logout", stop);
   onScopeDispose(stop);
 
-  return { pending, isPlaying, paused, position, duration, toggle, seek };
+  return { pending, isPlaying, paused, position, duration, toggle, seek, previous };
 });
