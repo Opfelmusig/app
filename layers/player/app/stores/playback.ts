@@ -159,7 +159,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function previous() {
-    if (position.value > 5) seek(0);
+    if (position.value > 5 || (queueStore.index === 0 && !queueStore.isLooping)) seek(0);
     else queueStore.previous();
   }
 
