@@ -4,13 +4,13 @@
       v-for="i in 4"
       :key="i"
       :class="cn(`bar-${i} w-0.75 rounded-full bg-inverted`)"
-      :style="{ animationPlayState: isPlaying ? 'running' : 'paused' }"
+      :style="{ animationPlayState: playbackStore.isPlaying ? 'running' : 'paused' }"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-const { isPlaying } = usePlaybackStore();
+const playbackStore = usePlaybackStore();
 </script>
 
 <style>
