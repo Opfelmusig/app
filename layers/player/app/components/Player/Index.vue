@@ -4,7 +4,7 @@
   >
     <div
       class="flex w-full min-w-0 items-center gap-2"
-      :style="{ maxWidth: `${width ? width - 16 : 244}px` }"
+      :style="{ maxWidth: `${width && !isCollapsed ? width - 16 : 244}px` }"
     >
       <AMArtworkWrapper v-slot="{ iconClass }" :resource context="player" color="muted">
         <AMArtworkImage />
@@ -152,5 +152,5 @@ watch(
 
 const resource = computed(() => queueStore.current?.entry.resource);
 
-const { width } = useSidebar();
+const { width, isCollapsed } = useSidebar();
 </script>
