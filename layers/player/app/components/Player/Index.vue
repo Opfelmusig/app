@@ -18,7 +18,7 @@
           <OMScrollingText class="text-sm">
             <div class="flex items-center gap-2">
               <span>{{ resource.attributes.name }}</span>
-              <ResourceStar v-if="resource.attributes.personalRating === 1" class="mb-1 size-2.5" />
+              <OMStar v-if="resource.attributes.personalRating === 1" />
             </div>
           </OMScrollingText>
           <OMScrollingText
