@@ -19,7 +19,12 @@
           v-else-if="albumMode"
           class="absolute inset-0 flex items-center justify-center bg-muted/50"
         >
-          <OMVisualizer />
+          <OMIcon
+            v-if="playbackStore.pending"
+            name="lucide:loader-circle"
+            class="size-4 animate-spin text-highlighted [&>path]:stroke-3"
+          />
+          <OMVisualizer v-else />
         </div>
         <template v-else>
           <AMArtworkImage />
@@ -27,7 +32,12 @@
             v-if="isActive"
             class="absolute inset-0 flex items-center justify-center bg-muted/50"
           >
-            <OMVisualizer />
+            <OMIcon
+              v-if="playbackStore.pending"
+              name="lucide:loader-circle"
+              class="size-4 animate-spin text-highlighted [&>path]:stroke-3"
+            />
+            <OMVisualizer v-else />
           </div>
           <AMArtworkPlaceholder />
         </template>
@@ -104,6 +114,7 @@ defineEmits<{
 }>();
 
 const queueStore = useQueueStore();
+const playbackStore = usePlaybackStore();
 
 const isActive = computed(() => queueStore.current?.entry.key === props.song.key);
 </script>
