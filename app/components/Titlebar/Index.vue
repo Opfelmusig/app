@@ -49,6 +49,7 @@
           <div class="mr-2 flex w-40 shrink-0 items-center gap-2">
             <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
             <USlider
+              v-model="volumeStore.volume"
               :min="0"
               :max="1"
               :step="0.01"
@@ -82,9 +83,10 @@ import { invoke } from "@tauri-apps/api/core";
 const { isCollapsed, toggle } = useSidebar();
 const { canGoBack, canGoForward, goBack, goForward, reload } = useNavigation();
 const { state, progress } = useLibrary();
-const settingsStore = useSettingsStore();
-
 const layout = useLayout();
+
+const settingsStore = useSettingsStore();
+const volumeStore = useVolumeStore();
 
 async function openDevTools() {
   await invoke("native_open_devtools");
