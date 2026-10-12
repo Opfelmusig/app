@@ -1,5 +1,6 @@
 mod drm;
 mod logging;
+mod media;
 mod playback;
 
 pub use drm::run_host as run_widevine_host;
@@ -33,10 +34,12 @@ pub fn run() {
         )
         .invoke_handler(tauri::generate_handler![
             native_open_devtools,
+            media::native_media_listen,
             playback::native_playback_play,
             playback::native_playback_control
         ])
         .setup(|app| {
+            app.manage(media::NativeMediaSession::new(app.handle()));
             let app_data_dir = app
                 .path()
                 .app_data_dir()

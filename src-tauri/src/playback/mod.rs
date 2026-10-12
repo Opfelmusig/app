@@ -5,7 +5,9 @@ mod stream;
 
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
-use tauri::{ipc::Channel, AppHandle, State};
+use tauri::{ipc::Channel, AppHandle, Manager, State};
+
+use crate::media;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -18,9 +20,10 @@ pub struct PlayRequest {
     pub duration: f64,
     pub volume: f32,
     pub paused: bool,
+    pub metadata: media::NativeMediaMetadata,
 }
 
-#[derive(Clone, Copy, Serialize)]
+#[derive(Clone, Copy, PartialEq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum PlaybackStatus {
     Loading,
@@ -62,6 +65,7 @@ pub fn native_playback_play(
     state: State<'_, NativePlayback>,
     request: PlayRequest,
     events: Channel<PlaybackEvent>,
+    media: State<'_, media::NativeMediaSession>,
 ) -> Result<(), String> {
     if !request.duration.is_finite() || request.duration < 0.0 || !request.volume.is_finite() {
         return Err("Invalid playback duration or volume".into());
@@ -73,11 +77,16 @@ pub fn native_playback_play(
             previous.stop();
         }
     }
+    if let Err(cause) = media::set_metadata(&media, &request.metadata, request.duration) {
+        log::warn!("Could not update system media metadata: {cause}");
+    }
     let reporting = session.clone();
+    let reporting_app = app.clone();
     std::thread::Builder::new()
         .name("playback-events".into())
         .spawn(move || {
             let mut update = u64::MAX;
+            let mut media_key = None;
             loop {
                 let (next_update, event) = reporting.next_event(update);
                 update = next_update;
@@ -85,8 +94,31 @@ pub fn native_playback_play(
                 if reporting.cancel.is_cancelled() && !terminal {
                     break;
                 }
+                let key = (
+                    event.status,
+                    event.paused,
+                    event.position.floor() as u64,
+                    event.seek_revision,
+                );
+                if media_key != Some(key) {
+                    media_key = Some(key);
+                    update_media(
+                        &reporting_app,
+                        &reporting,
+                        event.status,
+                        event.position,
+                        event.paused,
+                    );
+                }
                 if events.send(event).is_err() {
                     reporting.stop();
+                    update_media(
+                        &reporting_app,
+                        &reporting,
+                        PlaybackStatus::Stopped,
+                        0.0,
+                        true,
+                    );
                     break;
                 }
                 if terminal {
@@ -122,15 +154,48 @@ pub fn native_playback_control(
     state: State<'_, NativePlayback>,
     id: String,
     command: Control,
+    media: State<'_, media::NativeMediaSession>,
 ) -> Result<(), String> {
     let mut current = state.0.lock().unwrap();
     if let Some(session) = current.as_ref().filter(|session| session.id == id) {
         if matches!(command, Control::Stop) {
             let session = current.take().unwrap();
             session.stop();
+            if let Err(cause) = media::clear(&media) {
+                log::warn!("Could not clear system media controls: {cause}");
+            }
         } else {
             session.control(command)?;
         }
     }
     Ok(())
+}
+
+fn update_media(
+    app: &AppHandle,
+    session: &Arc<player::Session>,
+    status: PlaybackStatus,
+    position: f64,
+    paused: bool,
+) {
+    let handle = app.clone();
+    let session = session.clone();
+    let _ = app.run_on_main_thread(move || {
+        let playback = handle.state::<NativePlayback>();
+        let current = playback.0.lock().unwrap();
+        if current
+            .as_ref()
+            .is_some_and(|current| Arc::ptr_eq(current, &session))
+        {
+            let media = handle.state::<media::NativeMediaSession>();
+            let result = if session.cancel.is_cancelled() {
+                media::clear(&media)
+            } else {
+                media::set_playback(&media, status, position, paused)
+            };
+            if let Err(cause) = result {
+                log::warn!("Could not update system media controls: {cause}");
+            }
+        }
+    });
 }

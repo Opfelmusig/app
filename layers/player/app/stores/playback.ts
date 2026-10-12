@@ -1,4 +1,11 @@
+import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 import { Channel, invoke } from "@tauri-apps/api/core";
+
+type MediaEvent =
+  | { event: "play" | "pause" | "toggle" | "next" | "previous" | "stop" }
+  | { event: "seekBy"; data: { seconds: number } }
+  | { event: "setPosition"; data: { position: number } }
+  | { event: "setVolume"; data: { volume: number } };
 
 interface PlaybackEvent {
   id: string;
@@ -125,9 +132,9 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         savedPosition.value.position = event.position;
       }
       if (event.status === "ended") {
-        stop();
         queueStore.next();
-        if (queueStore.current?.id === current.id) load();
+        if (!queueStore.current) stop();
+        else if (queueStore.current.id === current.id) void load();
       }
     };
 
@@ -144,6 +151,12 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
           duration: duration.value,
           volume: volumeStore.output,
           paused: paused.value,
+          metadata: {
+            title: resource.attributes.name,
+            artist: resource.attributes.artistName,
+            album: resource.attributes.albumName,
+            coverUrl: getArtworkUrl(resource.attributes.artwork, { width: 512 }),
+          },
         },
         events,
       });
@@ -189,6 +202,41 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     if (position.value > 5 || (queueStore.index === 0 && !queueStore.isLooping)) seek(0);
     else queueStore.previous();
   }
+
+  const mediaEvents = new Channel<MediaEvent>((event) => {
+    switch (event.event) {
+      case "play":
+        if (paused.value) toggle();
+        break;
+      case "pause":
+        if (!paused.value) toggle();
+        break;
+      case "toggle":
+        toggle();
+        break;
+      case "next":
+        queueStore.next();
+        break;
+      case "previous":
+        previous();
+        break;
+      case "stop":
+        stop();
+        break;
+      case "seekBy":
+        seek(position.value + event.data.seconds);
+        break;
+      case "setPosition":
+        seek(event.data.position);
+        break;
+      case "setVolume":
+        volumeStore.volume = event.data.volume;
+        break;
+    }
+  });
+  void invoke("native_media_listen", { events: mediaEvents }).catch((cause) =>
+    log.warn("Could not register system media controls", { cause }),
+  );
 
   let restoring = true;
   watch(
