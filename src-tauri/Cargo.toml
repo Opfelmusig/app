@@ -23,6 +23,7 @@ dirs = "6"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
 rodio = { version = "0.22", default-features = false, features = ["playback", "symphonia-aac", "symphonia-isomp4", "mp3"] }
 sha2 = "0.10"
+souvlaki = { path = "patches/souvlaki", default-features = false, features = ["use_zbus"] }
 tokio = { version = "1", features = ["macros", "sync", "time"] }
 tokio-util = "0.7"
 zip = { version = "8.6", default-features = false, features = ["deflate"] }
