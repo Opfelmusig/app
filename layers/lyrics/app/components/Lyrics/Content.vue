@@ -4,15 +4,17 @@
       <LyricsTimingNone v-if="lyrics.timing === 'none'" :lyrics />
       <LyricsTimingTimed v-else :lyrics :progress @seek="seek" />
     </template>
-    <div v-if="pending" :class="statusClass()">
-      <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
-      <span>Loading</span>
+    <div v-else class="flex size-full items-center justify-center overflow-hidden">
+      <div v-if="pending" :class="statusClass()">
+        <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+        <span>Loading</span>
+      </div>
+      <div v-else-if="error" :class="statusClass({ color: 'error' })">
+        <UIcon name="lucide:x" class="size-4" />
+        <span>{{ error.message }}</span>
+      </div>
+      <div v-else-if="!lyrics" :class="statusClass()">No lyrics found</div>
     </div>
-    <div v-else-if="error" :class="statusClass({ color: 'error' })">
-      <UIcon name="lucide:x" class="size-4" />
-      <span>{{ error.message }}</span>
-    </div>
-    <div v-else-if="!lyrics" :class="statusClass()">No lyrics found</div>
   </div>
 </template>
 
