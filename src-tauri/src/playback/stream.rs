@@ -189,9 +189,7 @@ impl Media {
                 buffer.error.as_deref().unwrap_or_default()
             );
             let ready = if buffer.protected {
-                buffer.header > 0
-                    && !buffer.fragments.is_empty()
-                    && (buffer.bytes.len() >= buffer.header + PREROLL || buffer.done)
+                buffer.header > 0 && !buffer.fragments.is_empty()
             } else {
                 buffer.bytes.len() >= PREROLL || buffer.done
             };

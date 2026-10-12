@@ -5,7 +5,7 @@ use anyhow::{ensure, Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine};
 use reqwest::{Client, RequestBuilder};
 use serde::Deserialize;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use tauri::AppHandle;
 use tokio_util::sync::CancellationToken;
 
@@ -13,6 +13,7 @@ const PLAYBACK: &str = "https://play.music.apple.com/WebObjects/MZPlay.woa/wa/we
 const LICENSE: &str =
     "https://play.itunes.apple.com/WebObjects/MZPlay.woa/wa/acquireWebPlaybackLicense";
 const AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15";
+static HTTP: tokio::sync::OnceCell<Client> = tokio::sync::OnceCell::const_new();
 
 #[derive(Deserialize)]
 struct PlaybackResponse {
@@ -50,12 +51,17 @@ pub struct Prepared {
     pub media: Media,
 }
 
-pub fn client() -> Result<Client> {
-    Ok(Client::builder()
-        .user_agent(AGENT)
-        .connect_timeout(Duration::from_secs(10))
-        .read_timeout(Duration::from_secs(20))
-        .build()?)
+async fn client() -> Result<Client> {
+    let client = HTTP
+        .get_or_try_init(|| async {
+            Client::builder()
+                .user_agent(AGENT)
+                .connect_timeout(Duration::from_secs(10))
+                .read_timeout(Duration::from_secs(20))
+                .build()
+        })
+        .await?;
+    Ok(client.clone())
 }
 
 fn authenticated(http: &Client, url: &str, request: &PlayRequest) -> RequestBuilder {
@@ -73,7 +79,8 @@ pub async fn prepare(
     request: &PlayRequest,
     cancel: CancellationToken,
 ) -> Result<Prepared> {
-    let http = client()?;
+    let started = Instant::now();
+    let http = client().await?;
     let mut body = serde_json::Map::new();
     if let Some(id) = &request.catalog_id {
         body.insert(
@@ -147,72 +154,101 @@ pub async fn prepare(
         (asset.url.clone(), None)
     };
     ensure!(!cancel.is_cancelled(), "Playback cancelled");
-    let response = http
-        .get(&url)
-        .send()
-        .await
-        .map_err(|error| error.without_url())?;
-    ensure!(
-        response.status().is_success(),
-        "Audio download failed ({})",
-        response.status()
+    log::debug!(
+        "Playback {}: source resolved in {} ms",
+        request.id,
+        started.elapsed().as_millis()
     );
-    let media = Media::start(response, protected, cancel.clone());
-    if let Some((uri, key_id)) = key {
-        // The media body keeps arriving while the CDM is opened and licensed.
-        let path = drm::ensure(app, &http).await?;
-        ensure!(!cancel.is_cancelled(), "Playback cancelled");
-        let (cdm, challenge) = tauri::async_runtime::spawn_blocking(move || -> Result<_> {
-            let cdm = Cdm::open(&path)?;
-            let challenge = cdm.challenge(&drm::pssh(&key_id))?;
-            Ok((cdm, challenge))
-        })
-        .await??;
-        let license_url = song.license.as_deref().unwrap_or(LICENSE);
-        let endpoint = reqwest::Url::parse(license_url)?;
-        ensure!(
-            endpoint.scheme() == "https"
-                && endpoint
-                    .host_str()
-                    .is_some_and(|host| host.ends_with(".apple.com")),
-            "Invalid Apple licence endpoint"
-        );
-        let adam_id = match &song.id {
-            serde_json::Value::String(id) => id.clone(),
-            serde_json::Value::Number(id) => id.to_string(),
-            _ => anyhow::bail!("Apple returned no playback song ID"),
-        };
-        let envelope = serde_json::json!({ "challenge": STANDARD.encode(challenge), "key-system": "com.widevine.alpha",
-            "uri": uri, "adamId": adam_id, "isLibrary": request.library_id.is_some(), "user-initiated": true });
-        let response = authenticated(&http, license_url, request)
-            .json(&envelope)
+    let media_request = async {
+        let response = http
+            .get(&url)
             .send()
             .await
             .map_err(|error| error.without_url())?;
         ensure!(
             response.status().is_success(),
-            "Apple licence request failed ({})",
+            "Audio download failed ({})",
             response.status()
         );
-        let answer: LicenseResponse = response.json().await?;
-        ensure!(
-            answer.error_code.or(answer.status).unwrap_or(0) == 0,
-            "Apple refused the playback licence"
+        log::debug!(
+            "Playback {}: media response at {} ms",
+            request.id,
+            started.elapsed().as_millis()
         );
-        let license = STANDARD.decode(
-            answer
-                .license
-                .context("Apple returned no playback licence")?,
-        )?;
-        let cdm = tauri::async_runtime::spawn_blocking(move || -> Result<_> {
-            cdm.accept(&license)?;
-            Ok(cdm)
-        })
-        .await??;
+        Ok::<_, anyhow::Error>(Media::start(response, protected, cancel.clone()))
+    };
+    let licensing = async {
+        if let Some((uri, key_id)) = key {
+            let path = drm::ensure(app, &http).await?;
+            ensure!(!cancel.is_cancelled(), "Playback cancelled");
+            let (cdm, challenge) = tauri::async_runtime::spawn_blocking(move || -> Result<_> {
+                let cdm = Cdm::open(&path)?;
+                let challenge = cdm.challenge(&drm::pssh(&key_id))?;
+                Ok((cdm, challenge))
+            })
+            .await??;
+            let license_url = song.license.as_deref().unwrap_or(LICENSE);
+            let endpoint = reqwest::Url::parse(license_url)?;
+            ensure!(
+                endpoint.scheme() == "https"
+                    && endpoint
+                        .host_str()
+                        .is_some_and(|host| host.ends_with(".apple.com")),
+                "Invalid Apple licence endpoint"
+            );
+            let adam_id = match &song.id {
+                serde_json::Value::String(id) => id.clone(),
+                serde_json::Value::Number(id) => id.to_string(),
+                _ => anyhow::bail!("Apple returned no playback song ID"),
+            };
+            let envelope = serde_json::json!({ "challenge": STANDARD.encode(challenge), "key-system": "com.widevine.alpha",
+            "uri": uri, "adamId": adam_id, "isLibrary": request.library_id.is_some(), "user-initiated": true });
+            let response = authenticated(&http, license_url, request)
+                .json(&envelope)
+                .send()
+                .await
+                .map_err(|error| error.without_url())?;
+            ensure!(
+                response.status().is_success(),
+                "Apple licence request failed ({})",
+                response.status()
+            );
+            let answer: LicenseResponse = response.json().await?;
+            ensure!(
+                answer.error_code.or(answer.status).unwrap_or(0) == 0,
+                "Apple refused the playback licence"
+            );
+            let license = STANDARD.decode(
+                answer
+                    .license
+                    .context("Apple returned no playback licence")?,
+            )?;
+            let cdm = tauri::async_runtime::spawn_blocking(move || -> Result<_> {
+                cdm.accept(&license)?;
+                Ok(cdm)
+            })
+            .await??;
+            log::debug!(
+                "Playback {}: licence ready at {} ms",
+                request.id,
+                started.elapsed().as_millis()
+            );
+            Ok::<_, anyhow::Error>(Some((cdm, key_id)))
+        } else {
+            Ok(None)
+        }
+    };
+    let (media, license) = tokio::try_join!(media_request, licensing)?;
+    if let Some((cdm, key_id)) = license {
         media.license(cdm, key_id);
     }
     let priming = media.clone();
     tauri::async_runtime::spawn_blocking(move || priming.prime()).await??;
+    log::debug!(
+        "Playback {}: prepared in {} ms",
+        request.id,
+        started.elapsed().as_millis()
+    );
     Ok(Prepared { media })
 }
 
