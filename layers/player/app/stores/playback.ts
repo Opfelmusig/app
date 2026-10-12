@@ -74,7 +74,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
 
   function stop() {
     clearSeekLoading();
-    if (nativeId) void control({ action: "stop" }, nativeId);
+    if (nativeId) control({ action: "stop" }, nativeId);
     nativeId = undefined;
     activeId = undefined;
     seekRevision = 0;
@@ -134,7 +134,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       if (event.status === "ended") {
         queueStore.next();
         if (!queueStore.current) stop();
-        else if (queueStore.current.id === current.id) void load();
+        else if (queueStore.current.id === current.id) load();
       }
     };
 
@@ -160,10 +160,10 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         },
         events,
       });
-      if (activeId !== id) return void control({ action: "stop" }, id);
+      if (activeId !== id) return control({ action: "stop" }, id);
       started = true;
       if (seekRevision > 0) {
-        void control({
+        control({
           action: "seek",
           value: { position: position.value, revision: seekRevision },
         });
@@ -175,10 +175,10 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function toggle() {
-    if (!activeId) return void load();
+    if (!activeId) return load();
     paused.value = !paused.value;
     if (paused.value) clock.reset(position.value);
-    void control({ action: paused.value ? "pause" : "resume" });
+    control({ action: paused.value ? "pause" : "resume" });
   }
 
   function seek(seconds: number) {
@@ -195,7 +195,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         if (activeId === id && seekRevision === value.revision) pending.value = true;
       }, 150);
     }
-    if (started) void control({ action: "seek", value });
+    if (started) control({ action: "seek", value });
   }
 
   function previous() {
@@ -234,7 +234,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         break;
     }
   });
-  void invoke("native_media_listen", { events: mediaEvents }).catch((cause) =>
+  invoke("native_media_listen", { events: mediaEvents }).catch((cause) =>
     log.warn("Could not register system media controls", { cause }),
   );
 
@@ -242,14 +242,14 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   watch(
     () => queueStore.current?.id,
     () => {
-      void load(restoring);
+      load(restoring);
       restoring = false;
     },
     { immediate: true },
   );
   watchThrottled(
     () => volumeStore.output,
-    (value) => void control({ action: "volume", value }),
+    (value) => control({ action: "volume", value }),
     { throttle: 80 },
   );
   useNuxtApp().hook("auth:logout", stop);

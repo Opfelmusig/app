@@ -19,7 +19,7 @@ const tauriReporter: ConsolaReporter = {
 
     const write = getTauriLogger(log.level);
 
-    void write(formatLog(log)).catch((cause) => {
+    write(formatLog(log)).catch((cause) => {
       console.error("Could not write log through Tauri", cause);
     });
   },

@@ -169,7 +169,6 @@ const scrollToTarget = (behavior: "smooth" | "instant" = "smooth") => {
     return;
   }
 
-  // Capture visual positions before cancelling an unfinished scroll.
   const rows = Array.from(container.children)
     .filter((element): element is HTMLElement => element instanceof HTMLElement)
     .map((element) => ({ element, bounds: element.getBoundingClientRect() }));
