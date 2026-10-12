@@ -172,6 +172,13 @@ export default defineNuxtPlugin({
       await navigateTo("/login");
     }
 
+    async function getPlaybackCredentials() {
+      const developer = developerToken.data.value ?? (await developerToken.refresh(true)).data;
+      const user = token.value;
+      if (!developer || !user) throw new Error("Apple Music authentication is required");
+      return { developerToken: developer, userToken: user };
+    }
+
     try {
       await prepareClient();
     } catch (cause) {
@@ -194,6 +201,7 @@ export default defineNuxtPlugin({
             Ref<AmListResource<AmCatalogPlaylist>[]>
           >,
           storefront: readonly(storefront),
+          getPlaybackCredentials,
           login,
           logout,
         },
