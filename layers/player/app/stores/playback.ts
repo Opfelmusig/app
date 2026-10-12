@@ -32,6 +32,12 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   let seekRevision = 0;
   let started = false;
   let queuedSeek: { position: number; revision: number } | undefined;
+  let seekLoadingTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function clearSeekLoading() {
+    clearTimeout(seekLoadingTimer);
+    seekLoadingTimer = undefined;
+  }
 
   function stopNative(id: string | undefined) {
     if (!id) return;
@@ -42,6 +48,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
 
   function failed(id: string, cause: unknown) {
     if (activeId !== id) return;
+    clearSeekLoading();
     pending.value = false;
     isPlaying.value = false;
     log.error("Native playback failed", { cause });
@@ -59,6 +66,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function stop() {
+    clearSeekLoading();
     stopNative(nativeId);
     nativeId = undefined;
     activeId = undefined;
@@ -75,6 +83,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   async function load(initiallyPaused = false) {
     const current = queueStore.current;
     if (!current) return stop();
+    clearSeekLoading();
     const resource = current.entry.resource;
     const id = crypto.randomUUID();
     activeId = id;
@@ -96,7 +105,8 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         return;
       }
       if (event.seekRevision < seekRevision) return;
-      pending.value = event.status === "loading";
+      if (event.status !== "loading") clearSeekLoading();
+      pending.value = event.status === "loading" && (event.seekRevision === 0 || pending.value);
       isPlaying.value = event.status === "playing";
       paused.value = event.paused;
       position.value = event.position;
@@ -104,8 +114,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       if (event.status === "ended") {
         stop();
         queueStore.next();
-        // A one-track looping queue keeps the same entry, so its watcher does not run.
-        if (queueStore.current?.id === current.id) void load();
+        if (queueStore.current?.id === current.id) load();
       }
     };
 
@@ -151,9 +160,15 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     if (!Number.isFinite(seconds) || !activeId) return;
     const target = Math.max(0, Math.min(seconds, duration.value));
     position.value = target;
-    pending.value = true;
     isPlaying.value = false;
     const value = { position: target, revision: ++seekRevision };
+    clearSeekLoading();
+    if (!pending.value) {
+      const id = activeId;
+      seekLoadingTimer = setTimeout(() => {
+        if (activeId === id && seekRevision === value.revision) pending.value = true;
+      }, 150);
+    }
     if (started) void control({ action: "seek", value });
     else queuedSeek = value;
   }

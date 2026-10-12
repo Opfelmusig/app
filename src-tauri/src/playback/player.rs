@@ -8,7 +8,7 @@ use rodio::{
 use std::{
     sync::{
         atomic::{AtomicU64, Ordering},
-        Arc, Mutex,
+        Arc, Condvar, Mutex,
     },
     time::Duration,
 };
@@ -23,6 +23,7 @@ struct Clock {
     frequency: u64,
 }
 struct Controls {
+    update: u64,
     paused: bool,
     volume: f32,
     target: f64,
@@ -38,6 +39,7 @@ pub struct Session {
     epoch: Arc<AtomicU64>,
     duration: f64,
     controls: Mutex<Controls>,
+    changed: Condvar,
     media: Mutex<Option<Media>>,
 }
 
@@ -49,7 +51,9 @@ impl Session {
             epoch: Arc::new(AtomicU64::new(0)),
             duration: request.duration,
             media: Mutex::new(None),
+            changed: Condvar::new(),
             controls: Mutex::new(Controls {
+                update: 0,
                 paused: request.paused,
                 volume: request.volume.clamp(0.0, 1.0),
                 target: 0.0,
@@ -68,6 +72,7 @@ impl Session {
             sink.stop();
         }
         controls.status = PlaybackStatus::Stopped;
+        self.notify(&mut controls);
         if let Some(media) = self.media.lock().unwrap().take() {
             media.wake();
         }
@@ -84,29 +89,46 @@ impl Session {
         controls.status = PlaybackStatus::Error;
         controls.error = Some(error);
         self.cancel.cancel();
+        self.notify(&mut controls);
         if let Some(media) = self.media.lock().unwrap().take() {
             media.wake();
         }
     }
 
-    pub fn event(&self) -> PlaybackEvent {
+    fn notify(&self, controls: &mut Controls) {
+        controls.update = controls.update.wrapping_add(1);
+        self.changed.notify_one();
+    }
+
+    /// State transitions wake the reporter immediately; only position updates use a timer.
+    pub fn next_event(&self, previous: u64) -> (u64, PlaybackEvent) {
         let controls = self.controls.lock().unwrap();
+        let controls = self
+            .changed
+            .wait_timeout_while(controls, Duration::from_millis(250), |controls| {
+                controls.update == previous && !self.cancel.is_cancelled()
+            })
+            .unwrap()
+            .0;
         let position = controls.clock.as_ref().map_or(controls.target, |clock| {
             clock.start + clock.samples.load(Ordering::Relaxed) as f64 / clock.frequency as f64
         });
-        PlaybackEvent {
-            id: self.id.clone(),
-            status: controls.status,
-            position: if self.duration > 0.0 {
-                position.min(self.duration)
-            } else {
-                position
+        (
+            controls.update,
+            PlaybackEvent {
+                id: self.id.clone(),
+                status: controls.status,
+                position: if self.duration > 0.0 {
+                    position.min(self.duration)
+                } else {
+                    position
+                },
+                seek_revision: self.epoch.load(Ordering::Acquire),
+                duration: self.duration,
+                error: controls.error.clone(),
+                paused: controls.paused,
             },
-            seek_revision: self.epoch.load(Ordering::Acquire),
-            duration: self.duration,
-            error: controls.error.clone(),
-            paused: controls.paused,
-        }
+        )
     }
 
     pub fn control(&self, command: Control) -> Result<(), String> {
@@ -130,6 +152,7 @@ impl Session {
                         PlaybackStatus::Playing
                     };
                 }
+                self.notify(&mut controls);
             }
             Control::Volume(volume) => {
                 if !volume.is_finite() {
@@ -161,6 +184,7 @@ impl Session {
                     sink.stop();
                 }
                 self.epoch.store(revision, Ordering::Release);
+                self.notify(&mut controls);
                 if let Some(media) = self.media.lock().unwrap().as_ref() {
                     media.wake();
                 }
@@ -197,21 +221,28 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
         let at = session.controls.lock().unwrap().target;
         let opening = (|| -> Result<_> {
             let (reader, skip) = media.reader(at, session.epoch.clone(), epoch)?;
-            let decoder = Decoder::builder()
+            let protected = media.protected();
+            let mut builder = Decoder::builder()
                 .with_data(reader)
-                .with_seekable(false)
-                .build()?;
+                .with_seekable(!protected);
+            if let Some(length) = media.byte_len() {
+                builder = builder.with_byte_len(length);
+            }
+            let mut decoder = builder.build()?;
+            if !protected && at > 0.0 {
+                decoder.try_seek(Duration::from_secs_f64(at))?;
+            }
             let channels = decoder.channels();
             let rate = decoder.sample_rate();
             // Apple's CENC encode omits an edit list. Its encoder priming is 2112 frames.
-            let skip = if media.protected() {
+            let skip = if protected {
                 if at == 0.0 {
                     2112.0 / rate.get() as f64
                 } else {
                     skip
                 }
             } else {
-                at
+                0.0
             };
             let source = decoder.skip_duration(Duration::from_secs_f64(skip));
             let source: Box<dyn Source<Item = f32> + Send> = if session.duration > 0.0 {
@@ -252,6 +283,7 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
             } else {
                 PlaybackStatus::Playing
             };
+            session.notify(&mut controls);
         }
         loop {
             if session.cancel.is_cancelled() || session.epoch.load(Ordering::Acquire) != epoch {
@@ -286,6 +318,7 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
                 if !session.cancel.is_cancelled() && session.epoch.load(Ordering::Acquire) == epoch
                 {
                     controls.status = PlaybackStatus::Ended;
+                    session.notify(&mut controls);
                 }
                 drop(controls);
                 // Keep the decoder worker available if a seek races the end notification.

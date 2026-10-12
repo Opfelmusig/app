@@ -4,10 +4,7 @@ mod player;
 mod stream;
 
 use serde::{Deserialize, Serialize};
-use std::{
-    sync::{Arc, Mutex},
-    time::Duration,
-};
+use std::sync::{Arc, Mutex};
 use tauri::{ipc::Channel, AppHandle, State};
 
 #[derive(Deserialize)]
@@ -79,20 +76,23 @@ pub fn native_playback_play(
     let reporting = session.clone();
     std::thread::Builder::new()
         .name("playback-events".into())
-        .spawn(move || loop {
-            let event = reporting.event();
-            let terminal = matches!(event.status, PlaybackStatus::Error);
-            if reporting.cancel.is_cancelled() && !terminal {
-                break;
+        .spawn(move || {
+            let mut update = u64::MAX;
+            loop {
+                let (next_update, event) = reporting.next_event(update);
+                update = next_update;
+                let terminal = matches!(event.status, PlaybackStatus::Error);
+                if reporting.cancel.is_cancelled() && !terminal {
+                    break;
+                }
+                if events.send(event).is_err() {
+                    reporting.stop();
+                    break;
+                }
+                if terminal {
+                    break;
+                }
             }
-            if events.send(event).is_err() {
-                reporting.stop();
-                break;
-            }
-            if terminal {
-                break;
-            }
-            std::thread::sleep(Duration::from_millis(250));
         })
         .map_err(|error| error.to_string())?;
     tauri::async_runtime::spawn(async move {

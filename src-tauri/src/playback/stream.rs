@@ -18,6 +18,7 @@ const PREROLL: usize = 256 * 1024;
 
 struct Buffer {
     bytes: Vec<u8>,
+    byte_len: Option<u64>,
     scanned: usize,
     header: usize,
     track: Option<Track>,
@@ -112,6 +113,7 @@ impl Media {
         let media = Self(Arc::new(Shared {
             buffer: Mutex::new(Buffer {
                 bytes: Vec::new(),
+                byte_len: response.content_length(),
                 scanned: 0,
                 header: 0,
                 track: None,
@@ -144,6 +146,7 @@ impl Media {
                     }
                     Some(Ok(None)) => {
                         buffer.done = true;
+                        buffer.byte_len = Some(buffer.bytes.len() as u64);
                         if protected && buffer.scanned != buffer.bytes.len() {
                             buffer.error = Some("Truncated protected audio".into());
                         }
@@ -256,6 +259,14 @@ impl Media {
     pub fn protected(&self) -> bool {
         self.0.buffer.lock().unwrap().protected
     }
+    pub fn byte_len(&self) -> Option<u64> {
+        let buffer = self.0.buffer.lock().unwrap();
+        if buffer.protected {
+            None
+        } else {
+            buffer.byte_len
+        }
+    }
     pub fn error(&self) -> Option<String> {
         self.0.buffer.lock().unwrap().error.clone()
     }
@@ -330,10 +341,34 @@ impl Seek for Reader {
         let position = match seek {
             SeekFrom::Start(at) => i128::from(at),
             SeekFrom::Current(delta) => self.position as i128 + i128::from(delta),
-            // Decoder tail probes must not wait for the entire network response.
             SeekFrom::End(delta) => {
-                let buffer = self.media.0.buffer.lock().unwrap();
-                (buffer.bytes.len() - self.graft + self.header) as i128 + i128::from(delta)
+                let mut buffer = self.media.0.buffer.lock().unwrap();
+                // Plain files use the stable HTTP length, never the currently downloaded
+                // prefix. Fragmented protected streams remain forward-only to the decoder.
+                let length = loop {
+                    if self.media.0.cancel.is_cancelled()
+                        || self.epoch.load(Ordering::Acquire) != self.expected
+                    {
+                        return Err(io::Error::other("Playback interrupted"));
+                    }
+                    if let Some(error) = &buffer.error {
+                        return Err(io::Error::other(error.clone()));
+                    }
+                    if buffer.protected || buffer.done {
+                        break buffer.bytes.len() as u64;
+                    }
+                    if let Some(length) = buffer.byte_len {
+                        break length;
+                    }
+                    buffer = self
+                        .media
+                        .0
+                        .changed
+                        .wait_timeout(buffer, Duration::from_millis(100))
+                        .unwrap()
+                        .0;
+                };
+                i128::from(length) - self.graft as i128 + self.header as i128 + i128::from(delta)
             }
         };
         self.position =
