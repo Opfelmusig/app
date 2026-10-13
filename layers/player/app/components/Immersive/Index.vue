@@ -43,13 +43,16 @@
       class="fixed inset-0 z-30 flex flex-col rounded-xl border-4 border-bg"
       data-tauri-drag-region
     >
-      <div class="group relative flex h-13 w-full flex-col">
+      <div class="group relative flex h-13 w-full flex-col" data-tauri-drag-region>
         <div
           class="flex h-0 w-full items-end overflow-hidden bg-default px-0.5 text-muted transition-[height] group-hover:h-8"
           data-tauri-drag-region
         >
-          <div class="flex h-8 w-full shrink-0 items-center justify-end gap-1.5 pb-1">
-            <div class="mr-2 flex w-40 shrink-0 items-center gap-2">
+          <div
+            class="flex h-8 w-full shrink-0 items-center justify-end gap-1.5 pb-1"
+            data-tauri-drag-region
+          >
+            <div class="mr-2 flex w-40 shrink-0 items-center gap-2" data-tauri-drag-region>
               <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
               <USlider
                 v-model="volumeStore.volume"
@@ -65,7 +68,11 @@
               <UIcon name="lucide:volume-2" class="ml-1 size-3.5 shrink-0" />
             </div>
             <USeparator orientation="vertical" class="h-4 shrink-0" />
-            <div class="flex gap-1.5" :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''">
+            <div
+              class="flex gap-1.5"
+              :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''"
+              data-tauri-drag-region
+            >
               <ImmersiveButton icon="lucide:list" @click="togglePage('queue')" />
               <ImmersiveButton
                 icon="lucide:message-square-quote"
@@ -76,18 +83,13 @@
             </div>
           </div>
         </div>
-        <div class="flex h-3.5 justify-between">
+        <div class="flex h-3.5 justify-between" data-tauri-drag-region>
           <div class="flex size-3.5 items-start justify-start overflow-hidden">
             <div class="size-full shrink-0 rounded-tl-[14px] outline-16 outline-neutral-900" />
           </div>
           <div class="flex size-3.5 items-start justify-end overflow-hidden">
             <div class="size-full shrink-0 rounded-tr-[14px] outline-16 outline-neutral-900" />
           </div>
-        </div>
-        <div class="pointer-events-none absolute top-2 z-40 flex w-full items-end justify-center">
-          <div
-            class="h-1.5 w-10 rounded-full border border-default/50 bg-white opacity-50 transition-all group-hover:scale-y-0 group-hover:opacity-0"
-          />
         </div>
       </div>
     </div>
