@@ -6,7 +6,11 @@
       </Transition>
     </div>
 
-    <div class="pointer-events-none fixed inset-1 top-9 z-20 overflow-hidden rounded-xl">
+    <div
+      class="pointer-events-none fixed inset-1 top-9 z-20 overflow-hidden rounded-xl"
+      @load.capture="revealArtwork"
+      @loadeddata.capture="revealArtwork"
+    >
       <div
         v-if="resource?.attributes.editorialVideo || resource?.attributes.artwork"
         class="relative flex size-full justify-center"
@@ -219,6 +223,17 @@ const settingsStore = useSettingsStore();
 const volumeStore = useVolumeStore();
 const playbackStore = usePlaybackStore();
 const seekPosition = ref<number | null>(null);
+
+function revealArtwork(event: Event) {
+  const media = event.target;
+  if (!(media instanceof HTMLImageElement || media instanceof HTMLVideoElement)) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  media.animate([{ opacity: 0 }, { opacity: 1 }], {
+    duration: 500,
+    easing: "ease-out",
+  });
+}
 
 function commitSeek() {
   if (seekPosition.value !== null) playbackStore.seek(seekPosition.value);
