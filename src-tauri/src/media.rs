@@ -54,6 +54,19 @@ impl NativeMediaSession {
         }
     }
 
+    pub fn dispatch(&self, event: NativeMediaEvent) -> Result<(), String> {
+        let events = self
+            .events
+            .lock()
+            .map_err(|_| "Playback controls are unavailable.".to_string())?;
+
+        if let Some(channel) = events.as_ref() {
+            channel.send(event).map_err(|cause| cause.to_string())?;
+        }
+
+        Ok(())
+    }
+
     fn with_controls(
         &self,
         action: impl FnOnce(&mut MediaControls) -> Result<(), souvlaki::Error>,

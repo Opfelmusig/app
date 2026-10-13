@@ -5,6 +5,8 @@ use tauri::{
 };
 use tauri_plugin_opener::OpenerExt;
 
+use crate::media::{NativeMediaEvent, NativeMediaSession};
+
 pub struct TrayState {
     minimize_to_tray: AtomicBool,
 }
@@ -46,7 +48,13 @@ pub fn handle_window_event(window: &Window, event: &WindowEvent) {
 pub fn setup(app: &AppHandle) -> tauri::Result<()> {
     let menu = MenuBuilder::new(app)
         .text("tray-open", "Open Öpfelmusig")
+        .separator()
+        .text("tray-play", "Toggle Playback")
+        .text("tray-previous", "Previous Track")
+        .text("tray-next", "Next Track")
+        .separator()
         .text("tray-logs", "Open Log Folder")
+        .text("tray-devtools", "Open DevTools")
         .separator()
         .text("tray-quit", "Quit Öpfelmusig")
         .build()?;
@@ -57,6 +65,15 @@ pub fn setup(app: &AppHandle) -> tauri::Result<()> {
         .show_menu_on_left_click(true)
         .on_menu_event(|app, event| match event.id().as_ref() {
             "tray-open" => crate::focus_main_window(app),
+            "tray-previous" => dispatch_playback(app, NativeMediaEvent::Previous),
+            "tray-play" => dispatch_playback(app, NativeMediaEvent::Toggle),
+            "tray-next" => dispatch_playback(app, NativeMediaEvent::Next),
+            "tray-devtools" => {
+                crate::focus_main_window(app);
+                if let Some(window) = app.get_webview_window("main") {
+                    window.open_devtools();
+                }
+            }
             "tray-logs" => {
                 if let Err(cause) = open_log_folder(app) {
                     log::error!("Could not open log folder: {cause}");
@@ -79,6 +96,12 @@ pub fn setup(app: &AppHandle) -> tauri::Result<()> {
 
     tray.build(app)?;
     Ok(())
+}
+
+fn dispatch_playback(app: &AppHandle, event: NativeMediaEvent) {
+    if let Err(cause) = app.state::<NativeMediaSession>().dispatch(event) {
+        log::error!("Could not dispatch tray playback action: {cause}");
+    }
 }
 
 fn open_log_folder(app: &AppHandle) -> anyhow::Result<()> {

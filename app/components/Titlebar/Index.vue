@@ -70,7 +70,6 @@
           small-icon
           @click="settingsStore.isOpen = true"
         />
-        <TitlebarAction icon="lucide:terminal" small @click="openDevTools" />
         <TitlebarAction
           :icon="
             settingsStore.panel.isOpen ? 'lucide:panel-right-close' : 'lucide:panel-right-open'
@@ -87,8 +86,6 @@
 </template>
 
 <script lang="ts" setup>
-import { invoke } from "@tauri-apps/api/core";
-
 const { isCollapsed, toggle } = useSidebar();
 const { canGoBack, canGoForward, goBack, goForward, reload } = useNavigation();
 const { state, progress } = useLibrary();
@@ -100,9 +97,5 @@ const volumeStore = useVolumeStore();
 function openStorage() {
   settingsStore.page = "storage";
   settingsStore.isOpen = true;
-}
-
-async function openDevTools() {
-  await invoke("native_open_devtools");
 }
 </script>

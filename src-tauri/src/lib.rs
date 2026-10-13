@@ -50,7 +50,6 @@ pub fn run() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
-            native_open_devtools,
             tray::native_set_minimize_to_tray,
             discord::native_discord_set_presence,
             media::native_media_listen,
@@ -96,9 +95,4 @@ pub fn focus_main_window(app: &AppHandle) {
         let _ = window.unminimize();
         let _ = window.set_focus();
     }
-}
-
-#[tauri::command]
-fn native_open_devtools(window: tauri::WebviewWindow) {
-    window.open_devtools();
 }
