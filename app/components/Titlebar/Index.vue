@@ -28,16 +28,15 @@
           text="This may take a minute. You can keep browsing the catalog while your library syncs."
           arrow
         >
-          <NuxtLink to="/settings/storage">
+          <button v-if="state.syncing && layout === 'default'" type="button" @click="openStorage">
             <TitlebarBadge
-              v-if="state.syncing"
               :label="`Syncing library (${progress.songs.count} ${progress.songs.count === 1 ? 'song' : 'songs'})`"
               class="cursor-pointer"
               color="secondary"
               variant="soft"
               loading
             />
-          </NuxtLink>
+          </button>
         </UTooltip>
       </div>
       <div
@@ -63,6 +62,14 @@
           </div>
           <USeparator orientation="vertical" class="h-4 shrink-0" />
         </template>
+        <TitlebarAction
+          v-if="layout === 'default'"
+          icon="lucide:settings"
+          aria-label="Open settings"
+          :active="settingsStore.isOpen"
+          small-icon
+          @click="settingsStore.isOpen = true"
+        />
         <TitlebarAction icon="lucide:terminal" small @click="openDevTools" />
         <TitlebarAction
           :icon="
@@ -89,6 +96,11 @@ const layout = useLayout();
 
 const settingsStore = useSettingsStore();
 const volumeStore = useVolumeStore();
+
+function openStorage() {
+  settingsStore.page = "storage";
+  settingsStore.isOpen = true;
+}
 
 async function openDevTools() {
   await invoke("native_open_devtools");

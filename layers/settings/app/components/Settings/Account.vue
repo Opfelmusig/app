@@ -44,7 +44,7 @@
       label="Apple Music language"
       description="Reload to apply changes. This affects only Apple Music data."
     >
-      <USelect v-model="settingsStore.language" :items="options" class="w-50" />
+      <USelect v-model="settingsStore.language" :items="options" :portal="false" class="w-50" />
     </SettingsConfig>
   </SettingsWrapper>
 </template>

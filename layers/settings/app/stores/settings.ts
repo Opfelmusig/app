@@ -2,9 +2,22 @@ type SidebarSectionTypes = "library" | "pins" | "playlists";
 type SidebarSectionConfig = { collapsed?: boolean; hidden?: boolean };
 type SidebarSections = Record<SidebarSectionTypes, SidebarSectionConfig>;
 
+export type SettingsPage =
+  | "general"
+  | "account"
+  | "player"
+  | "playback"
+  | "widgets"
+  | "about"
+  | "storage"
+  | "shortcuts";
+
 export const useSettingsStore = defineStore(
   "opfelmusig:settings-store",
   () => {
+    const isOpen = ref(false);
+    const page = ref<SettingsPage>("general");
+
     const language = ref<string | undefined>();
 
     const panel = reactive({
@@ -39,6 +52,8 @@ export const useSettingsStore = defineStore(
     });
 
     return {
+      isOpen,
+      page,
       language,
       sidebarSections,
       system,
@@ -50,7 +65,7 @@ export const useSettingsStore = defineStore(
   },
   {
     persist: {
-      omit: ["immersive.isOpen"],
+      omit: ["isOpen", "immersive.isOpen"],
     },
   },
 );

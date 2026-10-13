@@ -41,6 +41,7 @@
       <Immersive v-if="settingsStore.immersive.isOpen" />
     </Transition>
     <Player />
+    <Settings />
   </main>
 </template>
 

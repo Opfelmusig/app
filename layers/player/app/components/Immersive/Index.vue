@@ -83,6 +83,13 @@
                 small-icon
                 @click="togglePage('lyrics')"
               />
+              <ImmersiveButton
+                icon="lucide:settings"
+                aria-label="Open settings"
+                :active="settingsStore.isOpen"
+                small-icon
+                @click="settingsStore.isOpen = true"
+              />
               <ImmersiveButton icon="lucide:x" @click="settingsStore.immersive.isOpen = false" />
             </div>
           </div>

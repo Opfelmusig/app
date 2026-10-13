@@ -8,7 +8,6 @@
       <SidebarItemIcon icon="lucide:search" to="/search">Search</SidebarItemIcon>
       <SidebarItemIcon icon="lucide:house" to="/">Home</SidebarItemIcon>
       <SidebarItemIcon icon="lucide:list-video" to="/history">History</SidebarItemIcon>
-      <SidebarItemIcon icon="lucide:settings" to="/settings">Settings</SidebarItemIcon>
       <SidebarSection
         v-if="!settingsStore.sidebarSections.pins.hidden"
         v-model="settingsStore.sidebarSections.pins.collapsed"

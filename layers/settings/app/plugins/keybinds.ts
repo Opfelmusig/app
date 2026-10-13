@@ -97,12 +97,23 @@ export default defineNuxtPlugin({
           config: { meta: { group: "Lyrics", name: "Toggle lyrics transliteration" } },
         },
         {
+          keys: "ctrl-cmd+comma",
+          run: () => (settingsStore.isOpen = true),
+          config: {
+            ignoreIfEditable: false,
+            meta: { group: "Application", name: "Open settings" },
+          },
+        },
+        {
           keys: "escape",
           run() {
-            if (settingsStore.immersive.isOpen) settingsStore.immersive.isOpen = false;
+            if (settingsStore.isOpen) settingsStore.isOpen = false;
+            else if (settingsStore.immersive.isOpen) settingsStore.immersive.isOpen = false;
             else if (settingsStore.panel.isOpen) settingsStore.panel.isOpen = false;
           },
-          config: { meta: { group: "Lyrics", name: "Toggle lyrics transliteration" } },
+          config: {
+            meta: { group: "Application", name: "Close current overlay" },
+          },
         },
       ],
       {

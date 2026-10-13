@@ -1,0 +1,3 @@
+<template>
+  <SettingsWrapper />
+</template>

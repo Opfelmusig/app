@@ -1,50 +1,69 @@
 <template>
   <div
-    class="bg-raised relative flex size-full shrink-0 flex-col overflow-hidden whitespace-nowrap select-none"
+    class="relative flex size-full shrink-0 flex-col overflow-hidden bg-raised px-2 pb-2 whitespace-normal select-none"
   >
-    <div :class="cn(sidebarPage({ active: !isSettings }))">
-      <SidebarDefault />
+    <div
+      ref="scroll-area"
+      :style="style"
+      class="scrollbar-hide flex h-full flex-col gap-1 overflow-hidden overflow-y-auto py-2"
+    >
+      <SidebarItemIcon icon="lucide:search" to="/search">Search</SidebarItemIcon>
+      <SidebarItemIcon icon="lucide:house" to="/">Home</SidebarItemIcon>
+      <SidebarItemIcon icon="lucide:list-video" to="/history">History</SidebarItemIcon>
+      <SidebarSection
+        v-if="!settingsStore.sidebarSections.pins.hidden"
+        v-model="settingsStore.sidebarSections.pins.collapsed"
+        label="Pins"
+        collapsible
+      >
+        <SidebarPins />
+      </SidebarSection>
+      <SidebarSection
+        v-if="!settingsStore.sidebarSections.library.hidden"
+        v-model="settingsStore.sidebarSections.library.collapsed"
+        label="Library"
+        collapsible
+      >
+        <SidebarItemIcon icon="lucide:music-2" to="/resources/library-songs">Songs</SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:disc" to="/resources/library-albums">Albums</SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:mic-vocal" to="/resources/library-artists">
+          Artists
+        </SidebarItemIcon>
+        <SidebarItemIcon icon="lucide:guitar" to="/library/genres">Genres</SidebarItemIcon>
+        <SidebarItemIcon
+          v-if="isCollapsed || settingsStore.sidebarSections.playlists.hidden"
+          to="/resources/library-playlist-folders"
+          icon="lucide:list-music"
+        >
+          Playlists
+        </SidebarItemIcon>
+      </SidebarSection>
+      <SidebarSection
+        v-if="!isCollapsed && !settingsStore.sidebarSections.playlists.hidden"
+        v-model="settingsStore.sidebarSections.playlists.collapsed"
+        label="Playlists"
+        collapsible
+      >
+        <SidebarPlaylists />
+      </SidebarSection>
     </div>
-    <div :class="cn(sidebarPage({ active: isSettings, direction: 'right' }))">
-      <SidebarSettings />
+    <div class="flex flex-col gap-2">
+      <SidebarBorder />
+      <div class="flex flex-col">
+        <SidebarUser />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-const route = useRoute();
-const isSettings = computed(
-  () => route.path === "/settings" || route.path.startsWith("/settings/"),
-);
+const settingsStore = useSettingsStore();
 
-const sidebarPage = cva(
-  "absolute size-full px-2 transition-all duration-250 ease-[cubic-bezier(0.34,1.4,0.7,1)]",
-  {
-    variants: {
-      active: {
-        false: "pointer-events-none scale-x-50 opacity-0 blur-md",
-      },
-      direction: {
-        left: "",
-        right: "",
-      },
-    },
-    compoundVariants: [
-      {
-        active: false,
-        direction: "left",
-        class: "origin-left -translate-x-25",
-      },
-      {
-        active: false,
-        direction: "right",
-        class: "origin-right translate-x-25",
-      },
-    ],
-    defaultVariants: {
-      active: true,
-      direction: "left",
-    },
-  },
-);
+const { isCollapsed } = useSidebar();
+
+const scrollArea = useTemplateRef("scroll-area");
+const { style } = useCustomScrollShadow(scrollArea, {
+  orientation: "vertical",
+  offset: 4,
+});
 </script>
