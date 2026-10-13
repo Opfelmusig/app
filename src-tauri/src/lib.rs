@@ -5,7 +5,7 @@ mod playback;
 
 pub use drm::run_host as run_widevine_host;
 
-use tauri::{AppHandle, Manager};
+use tauri::{webview::PageLoadEvent, AppHandle, Manager};
 use tauri_plugin_window_state::StateFlags;
 
 pub fn run() {
@@ -20,6 +20,17 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_dialog::init())
         .manage(playback::NativePlayback::default())
+        .on_page_load(|webview, payload| {
+            if webview.label() != "main" || payload.event() != PageLoadEvent::Started {
+                return;
+            }
+            webview.state::<playback::NativePlayback>().stop();
+            if let Some(media) = webview.try_state::<media::NativeMediaSession>() {
+                if let Err(cause) = media::reset(&media) {
+                    log::warn!("Could not reset system media controls on page load: {cause}");
+                }
+            }
+        })
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())

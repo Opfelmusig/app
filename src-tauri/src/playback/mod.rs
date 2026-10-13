@@ -59,6 +59,14 @@ pub enum Control {
 #[derive(Default)]
 pub struct NativePlayback(Mutex<Option<Arc<player::Session>>>);
 
+impl NativePlayback {
+    pub fn stop(&self) {
+        if let Some(session) = self.0.lock().unwrap().take() {
+            session.stop();
+        }
+    }
+}
+
 #[tauri::command]
 pub fn native_playback_play(
     app: AppHandle,
@@ -110,6 +118,14 @@ pub fn native_playback_play(
                         event.paused,
                     );
                 }
+                let playback = reporting_app.state::<NativePlayback>();
+                let current = playback.0.lock().unwrap();
+                if !current
+                    .as_ref()
+                    .is_some_and(|current| Arc::ptr_eq(current, &reporting))
+                {
+                    break;
+                }
                 if events.send(event).is_err() {
                     reporting.stop();
                     update_media(
@@ -121,6 +137,7 @@ pub fn native_playback_play(
                     );
                     break;
                 }
+                drop(current);
                 if terminal {
                     break;
                 }

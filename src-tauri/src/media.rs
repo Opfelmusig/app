@@ -107,8 +107,10 @@ fn create_controls(
                 _ => return,
             };
 
-            if let Some(channel) = events.lock().ok().and_then(|events| events.clone()) {
-                let _ = channel.send(event);
+            if let Ok(events) = events.lock() {
+                if let Some(channel) = events.as_ref() {
+                    let _ = channel.send(event);
+                }
             }
         })
         .map_err(|cause| cause.to_string())?;
@@ -195,4 +197,13 @@ pub fn clear(media: &NativeMediaSession) -> Result<(), String> {
         controls.set_playback(MediaPlayback::Stopped)?;
         controls.set_metadata(MediaMetadata::default())
     })
+}
+
+pub fn reset(media: &NativeMediaSession) -> Result<(), String> {
+    media
+        .events
+        .lock()
+        .map_err(|_| "OS media controls are unavailable.".to_string())?
+        .take();
+    clear(media)
 }
