@@ -67,6 +67,8 @@ export default defineNuxtConfig({
         "dexie",
         "hls.js",
         "vue-collapsed",
+        "motion-v",
+        "node-vibrant/browser",
       ],
     },
   },
