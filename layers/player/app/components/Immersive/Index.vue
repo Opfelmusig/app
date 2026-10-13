@@ -45,7 +45,7 @@
     >
       <div class="group relative flex h-13 w-full flex-col" data-tauri-drag-region>
         <div
-          class="flex h-8 w-full items-end overflow-hidden bg-default px-0.5 text-muted transition-[height]"
+          class="flex h-8 w-full items-end overflow-hidden bg-default px-0.5 text-muted shadow-2xl transition-[height]"
           data-tauri-drag-region
         >
           <div
@@ -83,14 +83,14 @@
             </div>
           </div>
         </div>
-        <div class="flex h-3.5 justify-between" data-tauri-drag-region>
+        <div class="z-10 flex h-3.5 justify-between" data-tauri-drag-region>
           <ImmersiveReverseRadius position="tl" :size="14" />
           <ImmersiveReverseRadius position="tr" :size="14" />
         </div>
       </div>
       <div v-if="resource" class="flex items-end justify-center">
-        <ImmersiveReverseRadius position="br" :size="24" />
-        <div class="flex w-120 flex-col gap-4 rounded-t-4xl bg-default p-4 px-6">
+        <ImmersiveReverseRadius position="br" :size="24" class="z-10" />
+        <div class="flex w-120 flex-col gap-4 rounded-t-4xl bg-default p-4 px-6 shadow-2xl">
           <OMScrollingTextGroup class="flex w-full min-w-0 flex-1 flex-col overflow-hidden">
             <OMScrollingText class="text-xl">
               <div class="flex items-center gap-2">
@@ -205,7 +205,7 @@
             </div>
           </div>
         </div>
-        <ImmersiveReverseRadius position="bl" :size="24" />
+        <ImmersiveReverseRadius position="bl" :size="24" class="z-10" />
       </div>
     </div>
   </div>
