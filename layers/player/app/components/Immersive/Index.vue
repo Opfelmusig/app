@@ -23,9 +23,9 @@
           <MediaEditorialVideo
             :editorial-video="resource?.attributes.editorialVideo"
             variant="square"
-            :paused="!settingsStore.immersive.isOpen"
+            :paused="!settingsStore.immersive.isOpen || settingsStore.immersive.page !== null"
             class="h-full transition-[filter,opacity] [&_img]:object-cover"
-            :class="settingsStore.immersive.page === null ? '' : 'opacity-60 blur-xl'"
+            :class="settingsStore.immersive.page === null ? '' : 'opacity-0'"
           />
         </div>
       </div>
