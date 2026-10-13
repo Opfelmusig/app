@@ -1,7 +1,9 @@
 //! An arriving track held in memory. Decoder reads wait for complete fragments and decrypt
 //! only the samples they touch. Cancellation and seeking wake blocked reads.
-use super::cenc::{self, Fragment, Track};
-use crate::drm::Cdm;
+use super::{
+    cenc::{self, Fragment, Track},
+    license::License,
+};
 use anyhow::{ensure, Context, Result};
 use std::{
     io::{self, Read, Seek, SeekFrom},
@@ -23,8 +25,7 @@ struct Buffer {
     header: usize,
     track: Option<Track>,
     fragments: Vec<Fragment>,
-    cdm: Option<Arc<Cdm>>,
-    key_id: [u8; 16],
+    license: Option<License>,
     protected: bool,
     done: bool,
     error: Option<String>,
@@ -68,7 +69,7 @@ impl Buffer {
         if !self.protected {
             return Ok(());
         }
-        let cdm = self.cdm.as_ref().context("Track has no licence")?;
+        let license = self.license.as_mut().context("Track has no licence")?;
         for fragment in &mut self.fragments {
             if fragment
                 .samples
@@ -82,9 +83,8 @@ impl Buffer {
                     break;
                 }
                 if sample.bytes.end > range.start && !sample.clear {
-                    cdm.decrypt(
+                    license.decrypt(
                         &mut self.bytes[sample.bytes.clone()],
-                        &self.key_id,
                         &sample.iv,
                         &sample.subs,
                     )?;
@@ -118,8 +118,7 @@ impl Media {
                 header: 0,
                 track: None,
                 fragments: Vec::new(),
-                cdm: None,
-                key_id: [0; 16],
+                license: None,
                 protected,
                 done: false,
                 error: None,
@@ -173,10 +172,9 @@ impl Media {
         media
     }
 
-    pub fn license(&self, cdm: Cdm, key_id: [u8; 16]) {
+    pub fn license(&self, license: License) {
         let mut buffer = self.0.buffer.lock().unwrap();
-        buffer.cdm = Some(Arc::new(cdm));
-        buffer.key_id = key_id;
+        buffer.license = Some(license);
     }
 
     pub fn prime(&self) -> Result<()> {

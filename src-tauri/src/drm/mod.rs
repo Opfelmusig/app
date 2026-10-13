@@ -1,7 +1,7 @@
 mod host;
 mod install;
 
-pub use host::{run_host, Cdm};
+pub use host::{run_host, Cdm, MissingKey};
 pub use install::ensure;
 
 /// CENC init data naming a key, not the content key itself.

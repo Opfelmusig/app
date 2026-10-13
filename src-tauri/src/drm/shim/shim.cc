@@ -30,11 +30,13 @@
 
 #include "content_decryption_module.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -68,10 +70,30 @@ class Session {
   virtual Status decrypt(const InputBuffer_2& in, DecryptedBlock* out) = 0;
   virtual void expire(void* context) = 0;
 
+  using Clock = std::chrono::steady_clock;
   void fire_timers() {
-    auto t = timers;
-    timers.clear();
-    for (auto& e : t) expire(e.second);
+    const auto now = Clock::now();
+    std::vector<void*> due;
+    auto timer = timers.begin();
+    while (timer != timers.end()) {
+      if (timer->first <= now) {
+        due.push_back(timer->second);
+        timer = timers.erase(timer);
+      } else {
+        ++timer;
+      }
+    }
+    // Remove due timers before callbacks, which may schedule new timers.
+    for (void* context : due) expire(context);
+  }
+
+  template <class Ready>
+  void wait(Ready ready) {
+    const auto deadline = Clock::now() + std::chrono::seconds(8);
+    while (!ready() && Clock::now() < deadline) {
+      fire_timers();
+      if (!ready()) std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
   }
 
   // captured state
@@ -81,9 +103,11 @@ class Session {
   std::vector<uint8_t> challenge;
   bool rejected = false;
   std::string error;
-  bool keys_changed = false;
+  bool usable = false, expired = false;
+  Time expiration = 0;
+  MessageType message_type = kLicenseRequest;
   bool resolved = false;
-  std::vector<std::pair<int64_t, void*>> timers;
+  std::vector<std::pair<Clock::time_point, void*>> timers;
 };
 
 // Host_11 is Host_10 with ReportMetrics added at the end, so only that one method differs.
@@ -127,7 +151,9 @@ class Host : public Metrics<typename Cdm::Host>, public Session {
 
   // --- cdm::Host_10 / cdm::Host_11 ---
   Buffer* Allocate(uint32_t capacity) override { return new HeapBuffer(capacity); }
-  void SetTimer(int64_t delay_ms, void* context) override { timers.push_back({delay_ms, context}); }
+  void SetTimer(int64_t delay_ms, void* context) override {
+    timers.push_back({Clock::now() + std::chrono::milliseconds(std::max<int64_t>(0, delay_ms)), context});
+  }
   Time GetCurrentWallTime() override {
     using namespace std::chrono;
     return duration<double>(system_clock::now().time_since_epoch()).count();
@@ -141,15 +167,20 @@ class Host : public Metrics<typename Cdm::Host>, public Session {
   void OnRejectPromise(uint32_t, Exception, uint32_t, const char* msg, uint32_t n) override {
     rejected = true; if (msg && n) error.assign(msg, n);
   }
-  void OnSessionMessage(const char*, uint32_t, MessageType, const char* msg, uint32_t n) override {
+  void OnSessionMessage(const char*, uint32_t, MessageType type, const char* msg, uint32_t n) override {
+    message_type = type;
     got_message = true; challenge.assign(reinterpret_cast<const uint8_t*>(msg),
                                          reinterpret_cast<const uint8_t*>(msg) + n);
   }
-  void OnSessionKeysChange(const char*, uint32_t, bool, const KeyInformation*, uint32_t) override {
-    keys_changed = true;
+  void OnSessionKeysChange(const char*, uint32_t, bool, const KeyInformation* keys, uint32_t count) override {
+    usable = false; expired = false;
+    for (uint32_t i = 0; i < count; ++i) {
+      usable |= keys[i].status == kUsable;
+      expired |= keys[i].status == kExpired;
+    }
   }
-  void OnExpirationChange(const char*, uint32_t, Time) override {}
-  void OnSessionClosed(const char*, uint32_t) override {}
+  void OnExpirationChange(const char*, uint32_t, Time time) override { expiration = time; }
+  void OnSessionClosed(const char*, uint32_t) override { usable = false; expired = true; }
   void SendPlatformChallenge(const char*, uint32_t, const char*, uint32_t) override {}
   void EnableOutputProtection(uint32_t) override {}
   void QueryOutputProtectionStatus() override {}
@@ -244,7 +275,7 @@ int ch_open(const char* path) {
   if (!session) return 3;
   g_session = session;
   session->initialize();
-  for (int i = 0; i < 200 && !session->initialized; ++i) session->fire_timers();
+  session->wait([&] { return session->initialized; });
   return session->initialized && session->init_ok ? 0 : 4;
 }
 
@@ -257,9 +288,10 @@ int ch_challenge(const uint8_t* init_data, uint32_t len, uint8_t** out, uint32_t
   if (!s) return 10;
   s->got_message = false; s->rejected = false; s->challenge.clear();
   s->generate(init_data, len);
-  for (int i = 0; i < 500 && !s->got_message && !s->rejected; ++i) s->fire_timers();
+  s->wait([&] { return s->got_message || s->rejected; });
   if (s->rejected) return 11;
   if (!s->got_message) return 12;
+  s->got_message = false;
   *out_len = static_cast<uint32_t>(s->challenge.size());
   if (*out_len == 0) {
     *out = nullptr;
@@ -274,11 +306,43 @@ int ch_challenge(const uint8_t* init_data, uint32_t len, uint8_t** out, uint32_t
 int ch_update(const uint8_t* license, uint32_t len) {
   Session* s = g_session;
   if (!s) return 20;
-  s->keys_changed = false; s->rejected = false;
+  s->rejected = false; s->resolved = false;
   s->update(license, len);
-  for (int i = 0; i < 500 && !s->keys_changed && !s->rejected; ++i) s->fire_timers();
+  s->wait([&] { return s->resolved || s->rejected; });
   if (s->rejected) return 21;
-  return s->keys_changed ? 0 : 22;
+  if (!s->resolved) return 22;
+  return s->usable ? 0 : 23;
+}
+
+// Called on the same host thread during idle time as well as before commands.
+void ch_tick() { if (g_session) g_session->fire_timers(); }
+
+// Sleep until the next timer is due; -1 lets the host block on its command pipe.
+int64_t ch_timer_delay() {
+  if (!g_session || g_session->timers.empty()) return -1;
+  auto next = g_session->timers.front().first;
+  for (const auto& timer : g_session->timers) next = std::min(next, timer.first);
+  const auto remaining = next - Session::Clock::now();
+  if (remaining <= Session::Clock::duration::zero()) return 0;
+  return std::chrono::duration_cast<std::chrono::milliseconds>(remaining).count() + 1;
+}
+
+// One expiration flag followed by an optional licence renewal challenge.
+int ch_status(uint8_t** out, uint32_t* out_len) {
+  Session* s = g_session;
+  if (!s) return 30;
+  const double now = std::chrono::duration<double>(
+      std::chrono::system_clock::now().time_since_epoch()).count();
+  const bool renewal = s->got_message && s->message_type == kLicenseRenewal;
+  *out_len = 1 + (renewal ? static_cast<uint32_t>(s->challenge.size()) : 0);
+  *out = static_cast<uint8_t*>(malloc(*out_len));
+  (*out)[0] = s->expired || (s->expiration > 0 && now >= s->expiration);
+  if (renewal) {
+    memcpy(*out + 1, s->challenge.data(), s->challenge.size());
+    s->got_message = false;
+    s->challenge.clear();
+  }
+  return 0;
 }
 
 // Decrypt one CENC buffer (single-key, key_id from the pssh). Returns cleartext.
@@ -310,6 +374,7 @@ int ch_decrypt(const uint8_t* data, uint32_t data_size,
   class Block : public DecryptedBlock {
    public:
     Buffer* buf = nullptr; int64_t ts = 0;
+    ~Block() override { if (buf) buf->Destroy(); }
     void SetDecryptedBuffer(Buffer* b) override { buf = b; }
     Buffer* DecryptedBuffer() override { return buf; }
     void SetTimestamp(int64_t t) override { ts = t; }
@@ -322,13 +387,11 @@ int ch_decrypt(const uint8_t* data, uint32_t data_size,
   if (!b) return 40;
   *out_len = b->Size();
   if (*out_len == 0) {
-    b->Destroy();
     *out = nullptr;
     return 0;
   }
   *out = static_cast<uint8_t*>(malloc(*out_len));
   memcpy(*out, b->Data(), *out_len);
-  b->Destroy();
   return 0;
 }
 

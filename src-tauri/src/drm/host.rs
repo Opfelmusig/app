@@ -8,7 +8,7 @@ use std::{
     process::{Child, ChildStdin, ChildStdout, Command, Stdio},
     sync::{
         atomic::{AtomicBool, Ordering},
-        Arc, Mutex,
+        mpsc, Arc, Mutex,
     },
     time::{Duration, Instant},
 };
@@ -16,12 +16,16 @@ use std::{
 const HOST_ARG: &str = "--widevine-host";
 const LIMIT: usize = 16 * 1024 * 1024;
 const TIMEOUT: Duration = Duration::from_secs(10);
+const MISSING_KEY: u8 = 33;
 
 extern "C" {
     fn ch_open(path: *const c_char) -> c_int;
     fn ch_load_error() -> *const c_char;
     fn ch_challenge(data: *const u8, len: u32, out: *mut *mut u8, out_len: *mut u32) -> c_int;
     fn ch_update(data: *const u8, len: u32) -> c_int;
+    fn ch_tick();
+    fn ch_timer_delay() -> i64;
+    fn ch_status(out: *mut *mut u8, out_len: *mut u32) -> c_int;
     fn ch_decrypt(
         data: *const u8,
         len: u32,
@@ -35,6 +39,21 @@ extern "C" {
         out_len: *mut u32,
     ) -> c_int;
     fn ch_free(data: *mut u8);
+}
+
+#[derive(Debug)]
+pub struct MissingKey;
+
+impl std::fmt::Display for MissingKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Playback decryption key is unavailable")
+    }
+}
+impl std::error::Error for MissingKey {}
+
+pub struct LicenseStatus {
+    pub expired: bool,
+    pub renewal: Option<Vec<u8>>,
 }
 
 fn read_frame(from: &mut impl Read) -> io::Result<(u8, Vec<u8>)> {
@@ -79,18 +98,48 @@ pub fn run_host() -> bool {
             };
             bail!("{reason}");
         }
-        let mut input = BufReader::new(io::stdin().lock());
+        // Keep every CDM call on this thread. Pipe reads must not prevent timers firing.
+        let (send, receive) = mpsc::sync_channel(1);
+        std::thread::spawn(move || {
+            let mut input = BufReader::new(io::stdin().lock());
+            loop {
+                let frame = read_frame(&mut input);
+                let done = frame.is_err();
+                if send.send(frame).is_err() || done {
+                    break;
+                }
+            }
+        });
         let mut output = BufWriter::new(io::stdout().lock());
         write_frame(&mut output, 0, b"opfelmusig-cdm/1")?;
         loop {
-            let (op, payload) = match read_frame(&mut input) {
-                Ok(frame) => frame,
-                Err(error) if error.kind() == io::ErrorKind::UnexpectedEof => break,
-                Err(error) => return Err(error.into()),
+            unsafe { ch_tick() };
+            let delay = unsafe { ch_timer_delay() };
+            let incoming = if delay < 0 {
+                receive
+                    .recv()
+                    .map_err(|_| mpsc::RecvTimeoutError::Disconnected)
+            } else {
+                receive.recv_timeout(Duration::from_millis(delay as u64))
+            };
+            let (op, payload) = match incoming {
+                Ok(Ok(frame)) => frame,
+                Ok(Err(error)) if error.kind() == io::ErrorKind::UnexpectedEof => break,
+                Ok(Err(error)) => return Err(error.into()),
+                Err(mpsc::RecvTimeoutError::Timeout) => continue,
+                Err(mpsc::RecvTimeoutError::Disconnected) => break,
             };
             match execute(op, &payload) {
                 Ok(bytes) => write_frame(&mut output, 0, &bytes)?,
-                Err(error) => write_frame(&mut output, 1, error.to_string().as_bytes())?,
+                Err(error) => write_frame(
+                    &mut output,
+                    if error.is::<MissingKey>() {
+                        MISSING_KEY
+                    } else {
+                        1
+                    },
+                    error.to_string().as_bytes(),
+                )?,
             }
         }
         Ok(())
@@ -108,6 +157,7 @@ fn execute(op: u8, payload: &[u8]) -> Result<Vec<u8>> {
     let code = match op {
         1 => unsafe { ch_challenge(payload.as_ptr(), payload.len() as u32, &mut out, &mut len) },
         2 => unsafe { ch_update(payload.as_ptr(), payload.len() as u32) },
+        4 => unsafe { ch_status(&mut out, &mut len) },
         3 => {
             ensure!(payload.len() >= 36, "Invalid sample request");
             let iv = &payload[..16];
@@ -141,6 +191,9 @@ fn execute(op: u8, payload: &[u8]) -> Result<Vec<u8>> {
         }
         _ => bail!("Unknown CDM operation"),
     };
+    if code == i32::from(MISSING_KEY) {
+        return Err(MissingKey.into());
+    }
     ensure!(code == 0, "CDM operation failed ({code})");
     let bytes = if len == 0 {
         Vec::new()
@@ -224,6 +277,9 @@ impl Cdm {
         let result = (|| {
             write_frame(&mut pipes.to, op, payload)?;
             let (status, bytes) = read_frame(&mut pipes.from)?;
+            if status == MISSING_KEY {
+                return Err(MissingKey.into());
+            }
             ensure!(status == 0, "{}", String::from_utf8_lossy(&bytes));
             Ok(bytes)
         })();
@@ -236,6 +292,14 @@ impl Cdm {
     }
     pub fn accept(&self, license: &[u8]) -> Result<()> {
         self.call(2, license).map(|_| ())
+    }
+    pub fn license_status(&self) -> Result<LicenseStatus> {
+        let bytes = self.call(4, &[])?;
+        let (&expired, renewal) = bytes.split_first().context("Invalid CDM licence status")?;
+        Ok(LicenseStatus {
+            expired: expired != 0,
+            renewal: (!renewal.is_empty()).then(|| renewal.to_vec()),
+        })
     }
     pub fn decrypt(
         &self,

@@ -1,6 +1,9 @@
 //! Apple-specific requests. DRM hosting, buffering and audio output live in separate modules.
-use super::{stream::Media, PlayRequest};
-use crate::drm::{self, Cdm};
+use super::{
+    license::{License, LicenseSource},
+    stream::Media,
+    PlayRequest,
+};
 use anyhow::{ensure, Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine};
 use reqwest::{Client, RequestBuilder};
@@ -10,8 +13,6 @@ use tauri::AppHandle;
 use tokio_util::sync::CancellationToken;
 
 const PLAYBACK: &str = "https://play.music.apple.com/WebObjects/MZPlay.woa/wa/webPlayback";
-const LICENSE: &str =
-    "https://play.itunes.apple.com/WebObjects/MZPlay.woa/wa/acquireWebPlaybackLicense";
 const AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15";
 static HTTP: tokio::sync::OnceCell<Client> = tokio::sync::OnceCell::const_new();
 
@@ -39,14 +40,6 @@ struct Asset {
     url: String,
     flavor: Option<String>,
 }
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
-struct LicenseResponse {
-    license: Option<String>,
-    error_code: Option<i64>,
-    status: Option<i64>,
-}
-
 pub struct Prepared {
     pub media: Media,
 }
@@ -179,68 +172,32 @@ pub async fn prepare(
     };
     let licensing = async {
         if let Some((uri, key_id)) = key {
-            let path = drm::ensure(app, &http).await?;
-            ensure!(!cancel.is_cancelled(), "Playback cancelled");
-            let (cdm, challenge) = tauri::async_runtime::spawn_blocking(move || -> Result<_> {
-                let cdm = Cdm::open(&path)?;
-                let challenge = cdm.challenge(&drm::pssh(&key_id))?;
-                Ok((cdm, challenge))
-            })
-            .await??;
-            let license_url = song.license.as_deref().unwrap_or(LICENSE);
-            let endpoint = reqwest::Url::parse(license_url)?;
-            ensure!(
-                endpoint.scheme() == "https"
-                    && endpoint
-                        .host_str()
-                        .is_some_and(|host| host.ends_with(".apple.com")),
-                "Invalid Apple licence endpoint"
-            );
-            let adam_id = match &song.id {
-                serde_json::Value::String(id) => id.clone(),
-                serde_json::Value::Number(id) => id.to_string(),
-                _ => anyhow::bail!("Apple returned no playback song ID"),
-            };
-            let envelope = serde_json::json!({ "challenge": STANDARD.encode(challenge), "key-system": "com.widevine.alpha",
-            "uri": uri, "adamId": adam_id, "isLibrary": request.library_id.is_some(), "user-initiated": true });
-            let response = authenticated(&http, license_url, request)
-                .json(&envelope)
-                .send()
-                .await
-                .map_err(|error| error.without_url())?;
-            ensure!(
-                response.status().is_success(),
-                "Apple licence request failed ({})",
-                response.status()
-            );
-            let answer: LicenseResponse = response.json().await?;
-            ensure!(
-                answer.error_code.or(answer.status).unwrap_or(0) == 0,
-                "Apple refused the playback licence"
-            );
-            let license = STANDARD.decode(
-                answer
-                    .license
-                    .context("Apple returned no playback licence")?,
-            )?;
-            let cdm = tauri::async_runtime::spawn_blocking(move || -> Result<_> {
-                cdm.accept(&license)?;
-                Ok(cdm)
-            })
-            .await??;
+            let license = License::acquire(
+                app,
+                http.clone(),
+                request,
+                LicenseSource {
+                    uri,
+                    key_id,
+                    song_id: &song.id,
+                    url: song.license.as_deref(),
+                },
+                cancel.clone(),
+            )
+            .await?;
             log::debug!(
                 "Playback {}: licence ready at {} ms",
                 request.id,
                 started.elapsed().as_millis()
             );
-            Ok::<_, anyhow::Error>(Some((cdm, key_id)))
+            Ok::<_, anyhow::Error>(Some(license))
         } else {
             Ok(None)
         }
     };
     let (media, license) = tokio::try_join!(media_request, licensing)?;
-    if let Some((cdm, key_id)) = license {
-        media.license(cdm, key_id);
+    if let Some(license) = license {
+        media.license(license);
     }
     let priming = media.clone();
     tauri::async_runtime::spawn_blocking(move || priming.prime()).await??;
