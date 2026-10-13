@@ -40,7 +40,7 @@
     </div>
 
     <div
-      class="fixed inset-0 z-30 flex flex-col rounded-xl border-4 border-bg"
+      class="fixed inset-0 z-30 flex flex-col justify-between rounded-xl border-4 border-bg"
       data-tauri-drag-region
     >
       <div class="group relative flex h-13 w-full flex-col" data-tauri-drag-region>
@@ -84,13 +84,128 @@
           </div>
         </div>
         <div class="flex h-3.5 justify-between" data-tauri-drag-region>
-          <div class="flex size-3.5 items-start justify-start overflow-hidden">
-            <div class="size-full shrink-0 rounded-tl-[14px] outline-16 outline-neutral-900" />
+          <ImmersiveReverseRadius position="tl" :size="14" />
+          <ImmersiveReverseRadius position="tr" :size="14" />
+        </div>
+      </div>
+      <div v-if="resource" class="flex items-end justify-center">
+        <ImmersiveReverseRadius position="br" :size="24" />
+        <div class="flex w-120 flex-col gap-4 rounded-t-4xl bg-default p-4 px-6">
+          <OMScrollingTextGroup class="flex w-full min-w-0 flex-1 flex-col overflow-hidden">
+            <OMScrollingText class="text-xl">
+              <div class="flex items-center gap-2">
+                <span>{{ resource.attributes.name }}</span>
+                <OMStar v-if="resource.attributes.personalRating === 1" large />
+              </div>
+            </OMScrollingText>
+            <OMScrollingText
+              v-if="
+                resource.attributes.artists.length ||
+                resource.attributes.artistName ||
+                resource.attributes.albums.length ||
+                resource.attributes.albumName
+              "
+              class="text-muted"
+            >
+              <span class="flex w-max items-center gap-1.5 whitespace-nowrap">
+                <AMLinks
+                  v-if="resource.attributes.artists.length"
+                  :links="resource.attributes.artists"
+                  type="artists"
+                />
+                <span v-else-if="resource.attributes.artistName">
+                  {{ resource.attributes.artistName }}
+                </span>
+                <span
+                  v-if="
+                    (resource.attributes.artists.length || resource.attributes.artistName) &&
+                    (resource.attributes.albums.length || resource.attributes.albumName)
+                  "
+                  class="size-1 min-w-1 shrink-0 rounded-full bg-white/20"
+                />
+                <AMLinks
+                  v-if="resource.attributes.albums.length"
+                  :links="resource.attributes.albums"
+                  type="albums"
+                />
+                <span v-else-if="resource.attributes.albumName">
+                  {{ resource.attributes.albumName }}
+                </span>
+              </span>
+            </OMScrollingText>
+          </OMScrollingTextGroup>
+          <div class="flex w-full items-center gap-4 text-sm text-muted tabular-nums">
+            <span>{{ msToHMS((seekPosition ?? playbackStore.position) * 1000) }}</span>
+            <USlider
+              :model-value="seekPosition ?? playbackStore.position"
+              :min="0"
+              :max="playbackStore.duration || 1"
+              :step="0.1"
+              :disabled="!resource || !playbackStore.duration"
+              class="w-full py-2"
+              size="lg"
+              @update:model-value="seekPosition = $event ?? null"
+              @change="commitSeek"
+            />
+            <span>{{ msToHMS(playbackStore.duration * 1000) }}</span>
           </div>
-          <div class="flex size-3.5 items-start justify-end overflow-hidden">
-            <div class="size-full shrink-0 rounded-tr-[14px] outline-16 outline-neutral-900" />
+          <div class="flex items-center justify-between">
+            <div
+              class="flex size-14 shrink-0 items-center justify-center rounded-full transition-transform hover:bg-muted active:scale-95"
+              @click="queueStore.toggleShuffle"
+            >
+              <UIcon
+                mode="svg"
+                name="lucide:shuffle"
+                class="size-6"
+                :class="queueStore.isShuffling ? 'text-primary' : 'text-muted'"
+              />
+            </div>
+            <div
+              class="flex size-16 shrink-0 items-center justify-center rounded-full transition-transform hover:bg-muted active:scale-95"
+              @click="playbackStore.previous"
+            >
+              <OMIcon mode="svg" name="lucide:skip-back" class="size-8" filled />
+            </div>
+            <div
+              class="flex size-16 shrink-0 items-center justify-center rounded-full transition-transform hover:bg-muted active:scale-95"
+              @click="playbackStore.toggle"
+              @keydown.enter="playbackStore.toggle"
+              @keydown.space.prevent="playbackStore.toggle"
+            >
+              <OMIcon
+                :name="
+                  playbackStore.pending
+                    ? 'lucide:loader-circle'
+                    : playbackStore.paused
+                      ? 'lucide:play'
+                      : 'lucide:pause'
+                "
+                class="size-8"
+                :filled="!playbackStore.pending"
+                :class="playbackStore.pending ? 'animate-spin' : ''"
+              />
+            </div>
+            <div
+              class="flex size-16 shrink-0 items-center justify-center rounded-full transition-transform hover:bg-muted active:scale-95"
+              @click="queueStore.next"
+            >
+              <OMIcon mode="svg" name="lucide:skip-forward" class="size-8" filled />
+            </div>
+            <div
+              class="flex size-14 shrink-0 items-center justify-center rounded-full transition-transform hover:bg-muted active:scale-95"
+              @click="queueStore.isLooping = !queueStore.isLooping"
+            >
+              <UIcon
+                mode="svg"
+                name="lucide:repeat"
+                class="size-6"
+                :class="queueStore.isLooping ? 'text-primary' : 'text-muted'"
+              />
+            </div>
           </div>
         </div>
+        <ImmersiveReverseRadius position="bl" :size="24" />
       </div>
     </div>
   </div>
@@ -102,6 +217,13 @@ import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 const queueStore = useQueueStore();
 const settingsStore = useSettingsStore();
 const volumeStore = useVolumeStore();
+const playbackStore = usePlaybackStore();
+const seekPosition = ref<number | null>(null);
+
+function commitSeek() {
+  if (seekPosition.value !== null) playbackStore.seek(seekPosition.value);
+  seekPosition.value = null;
+}
 
 function togglePage(page: "queue" | "lyrics") {
   const immersive = settingsStore.immersive;
