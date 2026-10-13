@@ -40,10 +40,39 @@
     </div>
 
     <div
-      class="fixed inset-0 z-30 flex flex-col rounded-2xl border-4 border-bg"
+      class="fixed inset-0 z-30 flex flex-col rounded-2xl border-4 border-t-0 border-bg"
       data-tauri-drag-region
     >
-      <div class="h-8 w-full bg-default" data-tauri-drag-region></div>
+      <div
+        class="flex h-9 w-full items-center justify-end gap-1.5 bg-default px-0.5 text-muted"
+        data-tauri-drag-region
+      >
+        <div class="mr-2 flex w-40 shrink-0 items-center gap-2">
+          <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
+          <USlider
+            v-model="volumeStore.volume"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            class="py-3"
+            size="sm"
+            :ui="{
+              range: 'bg-white transition-colors',
+            }"
+          />
+          <UIcon name="lucide:volume-2" class="ml-1 size-3.5 shrink-0" />
+        </div>
+        <USeparator orientation="vertical" class="h-4 shrink-0" />
+        <div class="flex gap-1.5" :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''">
+          <ImmersiveButton icon="lucide:list" @click="togglePage('queue')" />
+          <ImmersiveButton
+            icon="lucide:message-square-quote"
+            small-icon
+            @click="togglePage('lyrics')"
+          />
+          <ImmersiveButton icon="lucide:x" @click="settingsStore.immersive.isOpen = false" />
+        </div>
+      </div>
       <div class="flex h-4 justify-between">
         <div class="flex size-4 items-start justify-start overflow-hidden">
           <div class="size-8 shrink-0 rounded-full outline-16 outline-neutral-900"></div>
@@ -61,6 +90,13 @@ import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 
 const queueStore = useQueueStore();
 const settingsStore = useSettingsStore();
+const volumeStore = useVolumeStore();
+
+function togglePage(page: "queue" | "lyrics") {
+  const immersive = settingsStore.immersive;
+  immersive.isOpen = !immersive.isOpen || immersive.page !== page;
+  immersive.page = page;
+}
 
 const resource = computed(() => queueStore.current?.entry.resource);
 </script>
