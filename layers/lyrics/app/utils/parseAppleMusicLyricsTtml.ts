@@ -38,10 +38,9 @@ export function parseAppleMusicLyricsTtml(xml: string): AppleMusicLyricsDocument
     type: "apple-music-lyrics" as const,
     lang: attribute(root, "lang"),
     durationMs: optionalTime(attribute(body, "dur")),
-    agents: children(metadata, "agent").map((agent) => {
+    agents: children(metadata, "agent").flatMap((agent) => {
       const id = attribute(agent, "id");
-      if (!id) throw new Error("Lyric agent is missing an id");
-      return { id, type: attribute(agent, "type") };
+      return id ? [{ id, type: attribute(agent, "type") }] : [];
     }),
     metadata: parseMetadata(metadata),
   };
@@ -99,7 +98,7 @@ function parseVariants(
   for (const item of children(container, type)) {
     for (const text of children(item, "text")) {
       const key = attribute(text, "for");
-      if (!key) throw new Error(`Lyrics ${type} is missing its line key`);
+      if (!key) continue;
       const lang = attribute(text, "lang") ?? attribute(item, "lang");
       const nodes = flattenText(
         text,
@@ -160,8 +159,6 @@ function lineNodes(element: Element, inheritedAgentIds: string[] | null, timing:
 }
 
 function untimedNode(node: LyricInlineTimedTextNode): LyricUntimedTextNode {
-  if (node.startMs !== null || node.endMs !== null)
-    throw new Error("Unexpected inline lyrics timing");
   return { ...node, startMs: null, endMs: null };
 }
 
@@ -217,31 +214,24 @@ function flattenText(
       if (startMs !== null && endMs !== null) {
         nodes.push({ type: "text", text, ...inherited, startMs, endMs });
       } else {
-        if ((timing === "word" || timing === "syllable") && text.trim()) {
-          throw new Error("Timed lyric text is missing begin or end");
-        }
         nodes.push({ type: "text", text, ...inherited, startMs: null, endMs: null });
       }
       continue;
     }
     if (child.nodeType !== Node.ELEMENT_NODE) continue;
     const span = child as Element;
-    const startMs = timing === "none" ? null : optionalTime(attribute(span, "begin"));
-    const endMs = timing === "none" ? null : optionalTime(attribute(span, "end"));
-    const hasTiming = startMs !== null || endMs !== null;
-    if (timing === "line" && hasTiming) throw new Error("Unexpected inline timing in line lyrics");
-    if (hasTiming && (startMs === null || endMs === null)) {
-      throw new Error("Inline lyrics timing must include begin and end");
-    }
-    if (startMs !== null && endMs !== null && endMs < startMs) {
-      throw new Error("Lyric text ends before it begins");
-    }
+    const inlineTiming = timing !== "none" && timing !== "line";
+    const startMs = inlineTiming
+      ? (optionalTime(attribute(span, "begin")) ?? context.startMs)
+      : null;
+    const endMs = inlineTiming ? (optionalTime(attribute(span, "end")) ?? context.endMs) : null;
+    const validTiming = startMs === null || endMs === null || endMs >= startMs;
     nodes.push(
       ...flattenText(
         span,
         {
-          startMs: startMs ?? context.startMs,
-          endMs: endMs ?? context.endMs,
+          startMs: validTiming ? startMs : context.startMs,
+          endMs: validTiming ? endMs : context.endMs,
           role: attribute(span, "role") ?? context.role,
           agentIds: agentIds(span) ?? context.agentIds,
           lang: attribute(span, "lang") ?? context.lang,
@@ -267,15 +257,19 @@ export function parseTtmlTimeToMs(value: string): number {
 }
 
 function optionalTime(value: string | null): number | null {
-  return value === null ? null : parseTtmlTimeToMs(value);
+  if (value === null) return null;
+  try {
+    return parseTtmlTimeToMs(value);
+  } catch {
+    return null;
+  }
 }
 
 function agentIds(element: Element): string[] | null {
   const value = attribute(element, "agent");
   if (value === null) return null;
   const ids = value.trim().split(/\s+/).filter(Boolean);
-  if (!ids.length) throw new Error("Lyric agent contains no ids");
-  return ids;
+  return ids.length ? ids : null;
 }
 
 function attribute(element: Element, name: string): string | null {
