@@ -96,6 +96,14 @@ export default defineNuxtPlugin({
           },
           config: { meta: { group: "Lyrics", name: "Toggle lyrics transliteration" } },
         },
+        {
+          keys: "escape",
+          run() {
+            if (settingsStore.immersive.isOpen) settingsStore.immersive.isOpen = false;
+            else if (settingsStore.panel.isOpen) settingsStore.panel.isOpen = false;
+          },
+          config: { meta: { group: "Lyrics", name: "Toggle lyrics transliteration" } },
+        },
       ],
       {
         prevent: true,
