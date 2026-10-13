@@ -116,7 +116,8 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       }
       if (event.seekRevision < seekRevision) return;
       if (event.status !== "loading") clearSeekLoading();
-      pending.value = event.status === "loading" && (event.seekRevision === 0 || pending.value);
+      pending.value =
+        event.status === "loading" && (seekLoadingTimer === undefined || pending.value);
       isPlaying.value = event.status === "playing";
       paused.value = event.paused;
       if (!recorded && isPlaying.value && !paused.value) {

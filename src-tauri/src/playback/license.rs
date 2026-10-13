@@ -14,6 +14,7 @@ use tokio_util::sync::CancellationToken;
 
 const LICENSE_URL: &str =
     "https://play.itunes.apple.com/WebObjects/MZPlay.woa/wa/acquireWebPlaybackLicense";
+static LICENSING: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -78,6 +79,11 @@ impl AppleLicense {
     }
 
     async fn open(&self, path: PathBuf, key_id: [u8; 16]) -> Result<Cdm> {
+        let _licensing = self
+            .cancel
+            .run_until_cancelled(LICENSING.lock())
+            .await
+            .context("Playback cancelled")?;
         ensure!(!self.cancel.is_cancelled(), "Playback cancelled");
         let (cdm, challenge) = tauri::async_runtime::spawn_blocking(move || -> Result<_> {
             let cdm = Cdm::open(&path)?;
@@ -171,8 +177,16 @@ impl License {
                 refreshed = true;
             } else if let Some(challenge) = status.renewal {
                 log::debug!("Renewing playback licence");
-                let license = tauri::async_runtime::block_on(self.apple.exchange(challenge))?;
-                self.cdm.accept(&license)?;
+                tauri::async_runtime::block_on(async {
+                    let _licensing = self
+                        .apple
+                        .cancel
+                        .run_until_cancelled(LICENSING.lock())
+                        .await
+                        .context("Playback cancelled")?;
+                    let license = self.apple.exchange(challenge).await?;
+                    self.cdm.accept(&license)
+                })?;
                 refreshed = true;
             }
             self.checked = Instant::now();

@@ -1,6 +1,7 @@
 mod apple;
 mod cenc;
 mod license;
+mod output;
 mod player;
 mod stream;
 

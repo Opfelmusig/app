@@ -66,6 +66,7 @@ class Session {
 
   virtual void initialize() = 0;
   virtual void generate(const uint8_t* init_data, uint32_t len) = 0;
+  virtual void close() = 0;
   virtual void update(const uint8_t* license, uint32_t len) = 0;
   virtual Status decrypt(const InputBuffer_2& in, DecryptedBlock* out) = 0;
   virtual void expire(void* context) = 0;
@@ -108,6 +109,10 @@ class Session {
   MessageType message_type = kLicenseRequest;
   bool resolved = false;
   std::vector<std::pair<Clock::time_point, void*>> timers;
+
+  bool current(const char* sid, uint32_t n) const {
+    return session_id.size() == n && session_id.compare(0, n, sid, n) == 0;
+  }
 };
 
 // Host_11 is Host_10 with ReportMetrics added at the end, so only that one method differs.
@@ -144,6 +149,9 @@ class Host : public Metrics<typename Cdm::Host>, public Session {
     cdm->UpdateSession(2, session_id.c_str(), static_cast<uint32_t>(session_id.size()),
                        license, len);
   }
+  void close() override {
+    cdm->CloseSession(3, session_id.c_str(), static_cast<uint32_t>(session_id.size()));
+  }
   Status decrypt(const InputBuffer_2& in, DecryptedBlock* out) override {
     return cdm->Decrypt(in, out);
   }
@@ -167,20 +175,26 @@ class Host : public Metrics<typename Cdm::Host>, public Session {
   void OnRejectPromise(uint32_t, Exception, uint32_t, const char* msg, uint32_t n) override {
     rejected = true; if (msg && n) error.assign(msg, n);
   }
-  void OnSessionMessage(const char*, uint32_t, MessageType type, const char* msg, uint32_t n) override {
+  void OnSessionMessage(const char* sid, uint32_t sid_len, MessageType type, const char* msg, uint32_t n) override {
+    if (!current(sid, sid_len)) return;
     message_type = type;
     got_message = true; challenge.assign(reinterpret_cast<const uint8_t*>(msg),
                                          reinterpret_cast<const uint8_t*>(msg) + n);
   }
-  void OnSessionKeysChange(const char*, uint32_t, bool, const KeyInformation* keys, uint32_t count) override {
+  void OnSessionKeysChange(const char* sid, uint32_t n, bool, const KeyInformation* keys, uint32_t count) override {
+    if (!current(sid, n)) return;
     usable = false; expired = false;
     for (uint32_t i = 0; i < count; ++i) {
       usable |= keys[i].status == kUsable;
       expired |= keys[i].status == kExpired;
     }
   }
-  void OnExpirationChange(const char*, uint32_t, Time time) override { expiration = time; }
-  void OnSessionClosed(const char*, uint32_t) override { usable = false; expired = true; }
+  void OnExpirationChange(const char* sid, uint32_t n, Time time) override {
+    if (current(sid, n)) expiration = time;
+  }
+  void OnSessionClosed(const char* sid, uint32_t n) override {
+    if (current(sid, n)) { usable = false; expired = true; session_id.clear(); }
+  }
   void SendPlatformChallenge(const char*, uint32_t, const char*, uint32_t) override {}
   void EnableOutputProtection(uint32_t) override {}
   void QueryOutputProtectionStatus() override {}
@@ -286,6 +300,14 @@ const char* ch_load_error() { return g_load_error.c_str(); }
 int ch_challenge(const uint8_t* init_data, uint32_t len, uint8_t** out, uint32_t* out_len) {
   Session* s = g_session;
   if (!s) return 10;
+  if (!s->session_id.empty()) {
+    s->resolved = false; s->rejected = false;
+    s->close();
+    s->wait([&] { return s->resolved || s->rejected; });
+    if (!s->resolved || s->rejected) return 13;
+    s->session_id.clear();
+  }
+  s->usable = false; s->expired = false; s->expiration = 0;
   s->got_message = false; s->rejected = false; s->challenge.clear();
   s->generate(init_data, len);
   s->wait([&] { return s->got_message || s->rejected; });

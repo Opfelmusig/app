@@ -4,7 +4,7 @@ use anyhow::{bail, ensure, Context, Result};
 use std::{
     ffi::{c_char, c_int, CStr, CString},
     io::{self, BufReader, BufWriter, Read, Write},
-    path::Path,
+    path::{Path, PathBuf},
     process::{Child, ChildStdin, ChildStdout, Command, Stdio},
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -16,7 +16,33 @@ use std::{
 const HOST_ARG: &str = "--widevine-host";
 const LIMIT: usize = 16 * 1024 * 1024;
 const TIMEOUT: Duration = Duration::from_secs(10);
+const IDLE_TIMEOUT: Duration = Duration::from_secs(30);
 const MISSING_KEY: u8 = 33;
+
+struct CachedHost {
+    path: PathBuf,
+    host: Arc<Host>,
+    idle: Option<Instant>,
+}
+
+static HOST: Mutex<Option<CachedHost>> = Mutex::new(None);
+
+fn retire_idle_host() {
+    let retired = {
+        let Ok(mut cached) = HOST.try_lock() else {
+            return;
+        };
+        if cached.as_ref().is_some_and(|cached| {
+            Arc::strong_count(&cached.host) == 1
+                && cached.idle.is_some_and(|at| at.elapsed() >= IDLE_TIMEOUT)
+        }) {
+            cached.take()
+        } else {
+            None
+        }
+    };
+    drop(retired);
+}
 
 extern "C" {
     fn ch_open(path: *const c_char) -> c_int;
@@ -212,15 +238,15 @@ struct Pipes {
     to: BufWriter<ChildStdin>,
     from: BufReader<ChildStdout>,
 }
-pub struct Cdm {
+struct Host {
     pipes: Mutex<Pipes>,
     child: Arc<Mutex<Child>>,
     deadline: Arc<Mutex<Option<Instant>>>,
     closed: Arc<AtomicBool>,
 }
 
-impl Cdm {
-    pub fn open(path: &Path) -> Result<Self> {
+impl Host {
+    fn start(path: &Path) -> Result<Self> {
         let mut command = Command::new(std::env::current_exe()?);
         command
             .arg(HOST_ARG)
@@ -255,9 +281,11 @@ impl Cdm {
                         .unwrap()
                         .is_some_and(|at| Instant::now() >= at)
                     {
+                        closed.store(true, Ordering::Release);
                         let _ = child.lock().unwrap().kill();
                         break;
                     }
+                    retire_idle_host();
                     std::thread::sleep(Duration::from_millis(100));
                 }
             })?;
@@ -273,6 +301,10 @@ impl Cdm {
 
     fn call(&self, op: u8, payload: &[u8]) -> Result<Vec<u8>> {
         let mut pipes = self.pipes.lock().unwrap();
+        ensure!(
+            !self.closed.load(Ordering::Acquire),
+            "Widevine host is closed"
+        );
         *self.deadline.lock().unwrap() = Some(Instant::now() + TIMEOUT);
         let result = (|| {
             write_frame(&mut pipes.to, op, payload)?;
@@ -284,17 +316,50 @@ impl Cdm {
             Ok(bytes)
         })();
         *self.deadline.lock().unwrap() = None;
+        if result.as_ref().is_err_and(|error| error.is::<io::Error>()) {
+            self.closed.store(true, Ordering::Release);
+            let _ = self.child.lock().unwrap().kill();
+        }
         result
+    }
+}
+
+pub struct Cdm {
+    host: Arc<Host>,
+}
+
+impl Cdm {
+    pub fn open(path: &Path) -> Result<Self> {
+        let mut cached = HOST.lock().unwrap();
+        if let Some(cached) = cached.as_mut() {
+            if cached.path == path
+                && !cached.host.closed.load(Ordering::Acquire)
+                && cached.host.child.lock().unwrap().try_wait()?.is_none()
+            {
+                cached.idle = None;
+                log::debug!("Reusing Widevine host");
+                return Ok(Self {
+                    host: cached.host.clone(),
+                });
+            }
+        }
+        let host = Arc::new(Host::start(path)?);
+        *cached = Some(CachedHost {
+            path: path.into(),
+            host: host.clone(),
+            idle: None,
+        });
+        Ok(Self { host })
     }
 
     pub fn challenge(&self, init: &[u8]) -> Result<Vec<u8>> {
-        self.call(1, init)
+        self.host.call(1, init)
     }
     pub fn accept(&self, license: &[u8]) -> Result<()> {
-        self.call(2, license).map(|_| ())
+        self.host.call(2, license).map(|_| ())
     }
     pub fn license_status(&self) -> Result<LicenseStatus> {
-        let bytes = self.call(4, &[])?;
+        let bytes = self.host.call(4, &[])?;
         let (&expired, renewal) = bytes.split_first().context("Invalid CDM licence status")?;
         Ok(LicenseStatus {
             expired: expired != 0,
@@ -317,7 +382,7 @@ impl Cdm {
             payload.extend_from_slice(&cipher.to_le_bytes());
         }
         payload.extend_from_slice(sample);
-        let bytes = self.call(3, &payload)?;
+        let bytes = self.host.call(3, &payload)?;
         ensure!(
             bytes.len() == sample.len(),
             "CDM returned the wrong sample size"
@@ -328,6 +393,21 @@ impl Cdm {
 }
 
 impl Drop for Cdm {
+    fn drop(&mut self) {
+        let mut cache = HOST.lock().unwrap();
+        if let Some(cached) = cache.as_mut() {
+            if Arc::ptr_eq(&cached.host, &self.host) && Arc::strong_count(&self.host) == 2 {
+                if self.host.closed.load(Ordering::Acquire) {
+                    cache.take();
+                } else {
+                    cached.idle = Some(Instant::now());
+                }
+            }
+        }
+    }
+}
+
+impl Drop for Host {
     fn drop(&mut self) {
         self.closed.store(true, Ordering::Release);
         if let Ok(mut child) = self.child.lock() {

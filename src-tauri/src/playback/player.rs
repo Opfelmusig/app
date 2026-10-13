@@ -1,10 +1,8 @@
 //! A decoding worker feeds small PCM packets to Rodio. The device callback only consumes
 //! prepared samples; downloads, seeking and CDM calls never run on that callback.
-use super::{stream::Media, Control, PlayRequest, PlaybackEvent, PlaybackStatus};
+use super::{output::Output, stream::Media, Control, PlayRequest, PlaybackEvent, PlaybackStatus};
 use anyhow::{ensure, Result};
-use rodio::{
-    buffer::SamplesBuffer, ChannelCount, Decoder, DeviceSinkBuilder, Player, SampleRate, Source,
-};
+use rodio::{buffer::SamplesBuffer, ChannelCount, Decoder, Player, SampleRate, Source};
 use std::{
     sync::{
         atomic::{AtomicU64, Ordering},
@@ -98,6 +96,26 @@ impl Session {
     fn notify(&self, controls: &mut Controls) {
         controls.update = controls.update.wrapping_add(1);
         self.changed.notify_one();
+    }
+
+    fn recover_output(&self, epoch: u64) {
+        let mut controls = self.controls.lock().unwrap();
+        if self.epoch.load(Ordering::Acquire) != epoch || self.cancel.is_cancelled() {
+            return;
+        }
+        if let Some(clock) = controls.clock.take() {
+            controls.target =
+                clock.start + clock.samples.load(Ordering::Relaxed) as f64 / clock.frequency as f64;
+            if self.duration > 0.0 {
+                controls.target = controls.target.min(self.duration);
+            }
+        }
+        if let Some(sink) = controls.sink.take() {
+            sink.stop();
+        }
+        controls.status = PlaybackStatus::Loading;
+        self.notify(&mut controls);
+        log::info!("Reopening audio output at {:.2}s", controls.target);
     }
 
     /// State transitions wake the reporter immediately; only position updates use a timer.
@@ -204,19 +222,14 @@ pub fn run(session: Arc<Session>, media: Media) {
 }
 
 fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
-    let weak = Arc::downgrade(session);
-    let mut output = DeviceSinkBuilder::from_default_device()?
-        .with_error_callback(move |error| {
-            if matches!(error, rodio::cpal::StreamError::BufferUnderrun) {
-                return;
-            }
-            if let Some(session) = weak.upgrade() {
-                session.fail(format!("Audio output failed: {error}"));
-            }
-        })
-        .open_sink_or_fallback()?;
-    output.log_on_drop(false);
+    let mut output: Option<Output> = None;
     while !session.cancel.is_cancelled() {
+        if output.is_none() {
+            output = Output::wait(&session.cancel);
+            if output.is_none() {
+                break;
+            }
+        }
         let epoch = session.epoch.load(Ordering::Acquire);
         let at = session.controls.lock().unwrap().target;
         let opening = (|| -> Result<_> {
@@ -261,7 +274,7 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
             continue;
         }
         let (mut source, channels, rate) = opening?;
-        let sink = Arc::new(Player::connect_new(output.mixer()));
+        let sink = Arc::new(Player::connect_new(output.as_ref().unwrap().mixer()));
         let played = Arc::new(AtomicU64::new(0));
         {
             let mut controls = session.controls.lock().unwrap();
@@ -290,6 +303,9 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
                 sink.stop();
                 break;
             }
+            if reconnect(session, &mut output, epoch) {
+                break;
+            }
             if sink.len() >= QUEUED_PACKETS {
                 std::thread::sleep(Duration::from_millis(10));
                 continue;
@@ -312,7 +328,13 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
                     && !session.cancel.is_cancelled()
                     && session.epoch.load(Ordering::Acquire) == epoch
                 {
+                    if reconnect(session, &mut output, epoch) {
+                        break;
+                    }
                     std::thread::sleep(Duration::from_millis(10));
+                }
+                if output.is_none() {
+                    break;
                 }
                 let mut controls = session.controls.lock().unwrap();
                 if !session.cancel.is_cancelled() && session.epoch.load(Ordering::Acquire) == epoch
@@ -341,6 +363,16 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
         }
     }
     Ok(())
+}
+
+fn reconnect(session: &Session, output: &mut Option<Output>, epoch: u64) -> bool {
+    if output.as_mut().is_some_and(Output::changed) {
+        session.recover_output(epoch);
+        *output = None;
+        true
+    } else {
+        false
+    }
 }
 
 struct Packet {
