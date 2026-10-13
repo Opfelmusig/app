@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col gap-4">
     <div v-if="title" class="flex flex-col">
-      <h1>{{ title }}</h1>
+      <h2>{{ title }}</h2>
       <p v-if="description" class="text-sm text-muted">{{ description }}</p>
     </div>
 
