@@ -8,7 +8,7 @@
 
     <div class="pointer-events-none fixed inset-0 z-20 overflow-hidden">
       <div
-        v-if="resource?.attributes.editorialVideo"
+        v-if="resource?.attributes.editorialVideo || resource?.attributes.artwork"
         class="relative flex size-full justify-center"
       >
         <MediaEditorialVideo
@@ -16,7 +16,11 @@
           variant="square"
           :paused="!settingsStore.immersive.isOpen"
           class="absolute z-10 h-full w-full mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)] blur-xl transition-[filter,opacity]"
-        />
+        >
+          <template #fallback>
+            <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />
+          </template>
+        </MediaEditorialVideo>
         <div
           class="relative z-20 aspect-square h-full mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)]"
         >
@@ -26,13 +30,13 @@
             :paused="!settingsStore.immersive.isOpen || settingsStore.immersive.page !== null"
             class="h-full transition-[filter,opacity] [&_img]:object-cover"
             :class="settingsStore.immersive.page === null ? '' : 'opacity-0'"
-          />
+          >
+            <template #fallback>
+              <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />
+            </template>
+          </MediaEditorialVideo>
         </div>
       </div>
-      <AMArtworkImage
-        v-else-if="resource?.attributes.artwork"
-        :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })"
-      />
     </div>
 
     <div
