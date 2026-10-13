@@ -15,16 +15,11 @@
         v-if="resource?.attributes.editorialVideo || resource?.attributes.artwork"
         class="relative flex size-full justify-center"
       >
-        <MediaEditorialVideo
-          :editorial-video="resource?.attributes.editorialVideo"
-          variant="square"
-          :paused="!settingsStore.immersive.isOpen"
-          class="absolute z-10 h-full w-full mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)] blur-xl transition-[filter,opacity]"
+        <div
+          class="absolute z-10 flex size-full h-full w-full items-center justify-center overflow-hidden mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)] blur-xl transition-[filter,opacity]"
         >
-          <template #fallback>
-            <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />
-          </template>
-        </MediaEditorialVideo>
+          <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 512 })" />
+        </div>
         <div
           class="relative z-20 aspect-square h-full mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)]"
         >
