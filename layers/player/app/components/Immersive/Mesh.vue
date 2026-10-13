@@ -26,28 +26,28 @@ const layerClass = cn(baseClasses, "will-change-transform");
   background:
     radial-gradient(circle at 20% 22%, var(--vibrant) 0%, transparent 36%),
     radial-gradient(circle at 70% 65%, var(--light-vibrant) 0%, transparent 34%);
-  animation: mesh-drift-a 4s ease-in-out infinite alternate;
+  animation: mesh-drift-a 3s ease-in-out infinite alternate;
 }
 
 .mesh-layer-2 {
   background:
     radial-gradient(circle at 78% 24%, var(--light-muted) 0%, transparent 34%),
     radial-gradient(circle at 30% 74%, var(--muted) 0%, transparent 40%);
-  animation: mesh-drift-b 3s ease-in-out infinite alternate;
+  animation: mesh-drift-b 2s ease-in-out infinite alternate;
 }
 
 .mesh-layer-3 {
   background:
     radial-gradient(circle at 48% 18%, var(--light-vibrant) 0%, transparent 30%),
     radial-gradient(circle at 62% 82%, var(--dark-vibrant) 0%, transparent 38%);
-  animation: mesh-drift-c 6s ease-in-out infinite alternate;
+  animation: mesh-drift-c 4s ease-in-out infinite alternate;
 }
 
 .mesh-layer-4 {
   background:
     radial-gradient(circle at 14% 66%, var(--vibrant) 0%, transparent 34%),
     radial-gradient(circle at 88% 74%, var(--dark-muted) 0%, transparent 36%);
-  animation: mesh-drift-b 7s ease-in-out infinite alternate-reverse;
+  animation: mesh-drift-b 5s ease-in-out infinite alternate-reverse;
 }
 
 @keyframes mesh-drift-a {
