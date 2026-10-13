@@ -43,7 +43,7 @@ const rightAligned = computed(() => {
 });
 
 const lineClass = cva(
-  "flex w-full cursor-pointer flex-col gap-1 transition-all hover:text-highlighted hover:blur-none",
+  "flex w-full cursor-pointer flex-col gap-1 transition-all duration-300 hover:text-highlighted hover:blur-none",
   {
     variants: {
       active: {
