@@ -1,5 +1,5 @@
 <template>
-  <OMTable>
+  <OMTable :reorderable :reorder-ids @reorder="$emit('reorder', $event)">
     <template #header>
       <OMTableHeader class="w-12" />
       <OMTableHeader text="Title" />
@@ -19,10 +19,15 @@
 <script lang="ts" setup>
 import { tableColumnsKey } from "#layers/amdata/app/lib/contexts/columns";
 import type { SongColumns } from "#layers/amdata/app/types/songs";
+import type { TableReorder } from "#layers/ui/app/utils/tableReorder";
 
 const props = defineProps<{
   columns: SongColumns[];
+  reorderable?: boolean;
+  reorderIds?: readonly string[];
 }>();
+
+defineEmits<{ reorder: [move: TableReorder] }>();
 
 provide(
   tableColumnsKey,

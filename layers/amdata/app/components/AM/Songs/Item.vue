@@ -1,5 +1,5 @@
 <template>
-  <OMTableRow @dblclick="$emit('play')">
+  <OMTableRow :reorder-id @dblclick="$emit('play')">
     <OMTableSimple>
       <AMArtworkWrapper
         v-slot="{ iconClass }"
@@ -105,6 +105,7 @@ import type { AmSong } from "#layers/amdata/app/types/songs";
 const props = defineProps<{
   song: AmListResource<AmSong>;
   albumMode?: boolean;
+  reorderId?: string;
 }>();
 
 const columns = useTableColumns();

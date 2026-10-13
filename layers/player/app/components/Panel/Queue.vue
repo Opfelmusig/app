@@ -6,8 +6,20 @@
         title="Continue playing"
         :context="queueStore.context"
       />
-      <AMSongsWrapper :columns="[]">
-        <AMSongs :songs="visibleUpNext" @play="(i) => queueStore.playIndex(i + overshoot)" />
+      <AMSongsWrapper
+        :key="queueStore.isShuffling ? 'shuffled' : 'queue'"
+        :columns="[]"
+        reorderable
+        :reorder-ids="visibleUpNext.map((entry) => entry.id)"
+        @reorder="reorder($event, overshoot)"
+      >
+        <AMSongsItem
+          v-for="(entry, i) in visibleUpNext"
+          :key="entry.id"
+          :song="entry.entry"
+          :reorder-id="entry.id"
+          @play="queueStore.playIndex(i + overshoot)"
+        />
         <OMTableStatus v-if="upNext.length > maxSongs">
           <div class="flex items-center gap-2">
             <OMIcon name="lucide:layout-grid" class="size-4" filled />
@@ -22,10 +34,18 @@
     <template v-if="!queueStore.isShuffling && queueStore.contextQueue.length > 0">
       <USeparator class="first:hidden" />
       <PanelHeader title="Continue playing" :context="queueStore.context" />
-      <AMSongsWrapper :columns="[]">
-        <AMSongs
-          :songs="visibleUpNextContext"
-          @play="(i) => queueStore.playIndex(i + overshootContext)"
+      <AMSongsWrapper
+        :columns="[]"
+        reorderable
+        :reorder-ids="visibleUpNextContext.map((entry) => entry.id)"
+        @reorder="reorder($event, overshootContext)"
+      >
+        <AMSongsItem
+          v-for="(entry, i) in visibleUpNextContext"
+          :key="entry.id"
+          :song="entry.entry"
+          :reorder-id="entry.id"
+          @play="queueStore.playIndex(i + overshootContext)"
         />
         <OMTableStatus v-if="upNextContext.length > maxSongs">
           <div class="flex items-center gap-2">
@@ -56,12 +76,18 @@
 </template>
 
 <script lang="ts" setup>
+import type { TableReorder } from "#layers/ui/app/utils/tableReorder";
+
 const queueStore = useQueueStore();
 const maxSongs = 50;
 
+function reorder({ fromIndex, toIndex }: TableReorder, offset: number) {
+  queueStore.moveIndex(fromIndex + offset, toIndex + offset);
+}
+
 const currentQueue = computed(() => {
-  if (queueStore.isShuffling) return queueStore.shuffledQueue.map((e) => e.entry);
-  else return queueStore.queue.map((e) => e.entry);
+  if (queueStore.isShuffling) return queueStore.shuffledQueue;
+  else return queueStore.queue;
 });
 
 const overshoot = computed(() => (queueStore.index ?? -1) + 1);
@@ -69,9 +95,7 @@ const upNext = computed(() => currentQueue.value.slice(overshoot.value));
 const visibleUpNext = computed(() => upNext.value.slice(0, maxSongs));
 
 const contextStart = computed(() => (queueStore.contextIndex ?? -1) + 1);
-const upNextContext = computed(() =>
-  queueStore.contextQueue.slice(contextStart.value).map((e) => e.entry),
-);
+const upNextContext = computed(() => queueStore.contextQueue.slice(contextStart.value));
 const visibleUpNextContext = computed(() => upNextContext.value.slice(0, maxSongs));
 const overshootContext = computed(() => queueStore.queue.length + contextStart.value);
 
