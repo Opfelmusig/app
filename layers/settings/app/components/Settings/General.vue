@@ -1,5 +1,12 @@
 <template>
   <SettingsWrapper>
+    <SettingsSection title="System">
+      <SettingsToggle
+        v-model="settingsStore.system.minimizeToTray"
+        label="Minimize to tray"
+        description="Keep Öpfelmusig running in the tray when closing the window."
+      />
+    </SettingsSection>
     <SettingsSection title="Sidebar">
       <SettingsToggle v-model="settingsStore.sidebarSections.pins.hidden" label="Hide pins" />
       <SettingsToggle v-model="settingsStore.sidebarSections.library.hidden" label="Hide library" />

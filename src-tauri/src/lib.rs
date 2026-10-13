@@ -3,6 +3,7 @@ mod drm;
 mod logging;
 mod media;
 mod playback;
+mod tray;
 
 pub use drm::run_host as run_widevine_host;
 
@@ -22,6 +23,8 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .manage(playback::NativePlayback::default())
         .manage(discord::NativeDiscordPresence::new())
+        .manage(tray::TrayState::default())
+        .on_window_event(tray::handle_window_event)
         .on_page_load(|webview, payload| {
             if webview.label() != "main" || payload.event() != PageLoadEvent::Started {
                 return;
@@ -48,6 +51,7 @@ pub fn run() {
         )
         .invoke_handler(tauri::generate_handler![
             native_open_devtools,
+            tray::native_set_minimize_to_tray,
             discord::native_discord_set_presence,
             media::native_media_listen,
             playback::native_playback_play,
@@ -72,6 +76,7 @@ pub fn run() {
             app.handle()
                 .plugin(tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build())?;
 
+            tray::setup(app.handle())?;
             focus_main_window(app.handle());
             Ok(())
         })

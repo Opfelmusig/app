@@ -54,6 +54,7 @@ export const useSettingsStore = defineStore(
     });
 
     const system = reactive({
+      minimizeToTray: true,
       hideTitlebarControls: false,
       automaticUpdateChecks: true,
       debugMode: false,
