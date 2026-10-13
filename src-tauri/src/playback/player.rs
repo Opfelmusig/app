@@ -1,11 +1,14 @@
-//! A decoding worker feeds small PCM packets to Rodio. The device callback only consumes
-//! prepared samples; downloads, seeking and CDM calls never run on that callback.
-use super::{output::Output, stream::Media, Control, PlayRequest, PlaybackEvent, PlaybackStatus};
+//! A decoding worker feeds small PCM packets to Rodio. The device callback reads and
+//! processes PCM; downloads, seeking and CDM calls never run on that callback.
+use super::{
+    audio, output::Output, stream::Media, Control, PlayRequest, PlaybackEvent, PlaybackStatus,
+};
 use anyhow::{ensure, Result};
 use rodio::{buffer::SamplesBuffer, ChannelCount, Decoder, Player, SampleRate, Source};
 use std::{
     sync::{
         atomic::{AtomicU64, Ordering},
+        mpsc::{self, Sender},
         Arc, Condvar, Mutex,
     },
     time::Duration,
@@ -24,11 +27,22 @@ struct Controls {
     update: u64,
     paused: bool,
     volume: f32,
+    audio: audio::Settings,
+    normalization: f64,
+    processing: Option<(SampleRate, Sender<audio::Parameters>)>,
     target: f64,
     sink: Option<Arc<Player>>,
     clock: Option<Clock>,
     status: PlaybackStatus,
     error: Option<String>,
+}
+
+impl Controls {
+    fn update_audio(&self) {
+        if let Some((rate, sender)) = &self.processing {
+            let _ = sender.send(self.audio.parameters(*rate, self.normalization));
+        }
+    }
 }
 
 pub struct Session {
@@ -54,6 +68,9 @@ impl Session {
                 update: 0,
                 paused: request.paused,
                 volume: request.volume.clamp(0.0, 1.0),
+                audio: request.audio.clone(),
+                normalization: 1.0,
+                processing: None,
                 target: 0.0,
                 sink: None,
                 clock: None,
@@ -74,6 +91,12 @@ impl Session {
         if let Some(media) = self.media.lock().unwrap().take() {
             media.wake();
         }
+    }
+
+    pub fn set_normalization(&self, gain: f64) {
+        let mut controls = self.controls.lock().unwrap();
+        controls.normalization = gain;
+        controls.update_audio();
     }
 
     pub fn fail(&self, error: String) {
@@ -181,6 +204,11 @@ impl Session {
                     sink.set_volume(controls.volume);
                 }
             }
+            Control::Audio(mut settings) => {
+                settings.validate()?;
+                controls.audio = settings;
+                controls.update_audio();
+            }
             Control::Seek {
                 position: seconds,
                 revision,
@@ -274,7 +302,8 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
             continue;
         }
         let (mut source, channels, rate) = opening?;
-        let sink = Arc::new(Player::connect_new(output.as_ref().unwrap().mixer()));
+        let (sink, input) = Player::new();
+        let sink = Arc::new(sink);
         let played = Arc::new(AtomicU64::new(0));
         {
             let mut controls = session.controls.lock().unwrap();
@@ -286,6 +315,12 @@ fn decode(session: &Arc<Session>, media: &Media) -> Result<()> {
                 sink.pause();
             }
             controls.sink = Some(sink.clone());
+            let (sender, receiver) = mpsc::channel();
+            let initial = controls.audio.parameters(rate, controls.normalization);
+            controls.processing = Some((rate, sender));
+            output.as_ref().unwrap().mixer().add(audio::Processed::new(
+                input, channels, rate, initial, receiver,
+            ));
             controls.clock = Some(Clock {
                 start: at,
                 samples: played.clone(),

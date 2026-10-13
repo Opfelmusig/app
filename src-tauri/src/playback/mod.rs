@@ -1,4 +1,5 @@
 mod apple;
+mod audio;
 mod cenc;
 mod license;
 mod output;
@@ -17,11 +18,13 @@ pub struct PlayRequest {
     pub id: String,
     pub catalog_id: Option<String>,
     pub library_id: Option<String>,
+    pub storefront: Option<String>,
     pub developer_token: String,
     pub user_token: String,
     pub duration: f64,
     pub volume: f32,
     pub paused: bool,
+    pub audio: audio::Settings,
     pub metadata: media::NativeMediaMetadata,
 }
 
@@ -55,6 +58,7 @@ pub enum Control {
     Resume,
     Seek { position: f64, revision: u64 },
     Volume(f32),
+    Audio(audio::Settings),
     Stop,
 }
 
@@ -73,13 +77,14 @@ impl NativePlayback {
 pub fn native_playback_play(
     app: AppHandle,
     state: State<'_, NativePlayback>,
-    request: PlayRequest,
+    mut request: PlayRequest,
     events: Channel<PlaybackEvent>,
     media: State<'_, media::NativeMediaSession>,
 ) -> Result<(), String> {
     if !request.duration.is_finite() || request.duration < 0.0 || !request.volume.is_finite() {
         return Err("Invalid playback duration or volume".into());
     }
+    request.audio.validate()?;
     let session = Arc::new(player::Session::new(&request));
     {
         let mut current = state.0.lock().unwrap();
@@ -147,6 +152,15 @@ pub fn native_playback_play(
         })
         .map_err(|error| error.to_string())?;
     tauri::async_runtime::spawn(async move {
+        let request = Arc::new(request);
+        let normalizing = session.clone();
+        let details = request.clone();
+        tauri::async_runtime::spawn(async move {
+            tokio::select! {
+                _ = normalizing.cancel.cancelled() => {},
+                gain = apple::normalization(&details) => normalizing.set_normalization(gain),
+            }
+        });
         let prepared = apple::prepare(&app, &request, session.cancel.clone()).await;
         if session.cancel.is_cancelled() {
             return;

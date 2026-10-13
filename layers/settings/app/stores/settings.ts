@@ -40,6 +40,14 @@ export const useSettingsStore = defineStore(
       animatedArtwork: true,
     });
 
+    const playback = reactive({
+      normalization: true,
+      equalizer: {
+        enabled: false,
+        gains: Array<number>(10).fill(0),
+      },
+    });
+
     const lyrics = reactive({
       showTransliteration: false,
       showTranslation: false,
@@ -63,6 +71,7 @@ export const useSettingsStore = defineStore(
       system,
       integrations,
       player,
+      playback,
       lyrics,
       panel,
       immersive,

@@ -20,6 +20,10 @@ interface PlaybackEvent {
 type PlaybackControl =
   | { action: "pause" | "resume" | "stop" }
   | { action: "volume"; value: number }
+  | {
+      action: "audio";
+      value: { normalization: boolean; equalizer: { enabled: boolean; gains: number[] } };
+    }
   | { action: "seek"; value: { position: number; revision: number } };
 
 export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
@@ -28,6 +32,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const queueStore = useQueueStore();
   const historyStore = useHistoryStore();
   const volumeStore = useVolumeStore();
+  const settingsStore = useSettingsStore();
   const log = logger.withTag("player");
   const savedPosition = useLocalStorage(
     "opfelmusig:playback:position",
@@ -149,9 +154,11 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
           catalogId: resource.type === "songs" ? resource.id : resource.extras.catalogId,
           libraryId: resource.type === "library-songs" ? resource.id : resource.extras.libraryId,
           ...credentials,
+          storefront: auth.storefront.value?.id,
           duration: duration.value,
           volume: volumeStore.output,
           paused: paused.value,
+          audio: settingsStore.playback,
           metadata: {
             title: resource.attributes.name,
             artist: resource.attributes.artistName,
@@ -254,6 +261,11 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     { throttle: 80 },
   );
   useNuxtApp().hook("auth:logout", stop);
+  watchThrottled(
+    () => settingsStore.playback,
+    (value) => control({ action: "audio", value }),
+    { deep: true, throttle: 80 },
+  );
   useDiscordPresence({ isPlaying, paused, position, duration });
 
   return { pending, isPlaying, paused, position, duration, toggle, seek, previous };
