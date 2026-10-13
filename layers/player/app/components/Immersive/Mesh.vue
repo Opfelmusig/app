@@ -1,14 +1,23 @@
 <template>
-  <div class="pointer-none relative isolate size-full overflow-hidden bg-default">
-    <div class="mesh-base" :class="baseClasses" />
-    <div class="mesh-layer-1" :class="layerClass" />
-    <div class="mesh-layer-2" :class="layerClass" />
-    <div class="mesh-layer-3" :class="layerClass" />
-    <div class="mesh-layer-4" :class="layerClass" />
+  <div class="pointer-events-none fixed inset-1 top-9 z-10 overflow-hidden rounded-xl">
+    <Transition>
+      <div
+        v-if="settingsStore.immersive.isOpen"
+        class="pointer-none relative isolate size-full overflow-hidden bg-default duration-500"
+      >
+        <div class="mesh-base" :class="baseClasses" />
+        <div class="mesh-layer-1" :class="layerClass" />
+        <div class="mesh-layer-2" :class="layerClass" />
+        <div class="mesh-layer-3" :class="layerClass" />
+        <div class="mesh-layer-4" :class="layerClass" />
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script lang="ts" setup>
+const settingsStore = useSettingsStore();
+
 const baseClasses = cn("absolute -inset-20 opacity-50 blur-[72px] saturate-120");
 
 const layerClass = cn(baseClasses, "will-change-transform");
