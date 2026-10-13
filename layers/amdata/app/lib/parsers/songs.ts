@@ -29,6 +29,7 @@ export type LibrarySongTemplate = ResourceTemplateOf<
       {
         albums: ResourceTemplateOf<"albums", "name", "editorialVideo">;
         artists: ResourceTemplateOf<"artists", "name", "editorialVideo">;
+        "audio-analysis": ResourceTemplateOf<"audio-analysis", "loudness">;
       }
     >;
   }
@@ -60,6 +61,7 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
       contentRating: attributes.contentRating,
       personalRating: catalog?.attributes?.personalRating,
       editorialVideo: catalogAlbums?.map((a) => a.attributes?.editorialVideo).find((e) => !!e),
+      loudness: catalog?.relationships?.["audio-analysis"].data[0]?.attributes?.loudness?.main,
 
       albums: parseCatalogLinks(catalogAlbums),
       artists: parseCatalogLinks(catalog?.relationships?.artists.data),
@@ -81,6 +83,7 @@ export type CatalogSongTemplate = ResourceTemplateOf<
     albums: ResourceTemplateOf<"albums", "name", "editorialVideo">;
     artists: ResourceTemplateOf<"artists", "name">;
     library: ResourceTemplateOf<"library-songs">;
+    "audio-analysis": ResourceTemplateOf<"audio-analysis", "loudness">;
   }
 >;
 
@@ -106,6 +109,7 @@ export function parseCatalogSong(resource: CatalogSongTemplate): AmCatalogSong {
       contentRating: attributes.contentRating,
       personalRating: attributes.personalRating,
       editorialVideo: albums?.map((a) => a.attributes?.editorialVideo).find((e) => !!e),
+      loudness: resource.relationships?.["audio-analysis"].data[0]?.attributes?.loudness?.main,
 
       albums: parseCatalogLinks(albums),
       artists: parseCatalogLinks(resource.relationships?.artists.data),

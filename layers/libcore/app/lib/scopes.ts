@@ -31,6 +31,7 @@ export const songsScopes = defineScopes({
     relationships: {
       albums: "include",
       artists: "include",
+      "audio-analysis": "include",
     },
   },
   albums: {
@@ -39,6 +40,9 @@ export const songsScopes = defineScopes({
   },
   artists: {
     fields: ["name"],
+  },
+  "audio-analysis": {
+    fields: ["loudness"],
   },
 });
 
