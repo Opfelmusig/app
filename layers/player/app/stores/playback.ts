@@ -253,7 +253,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     { throttle: 80 },
   );
   useNuxtApp().hook("auth:logout", stop);
-  onScopeDispose(stop);
+  useDiscordPresence({ isPlaying, paused, position, duration });
 
   return { pending, isPlaying, paused, position, duration, toggle, seek, previous };
 });

@@ -15,6 +15,12 @@
       />
       <SettingsToggle v-model="settingsStore.lyrics.showTranslation" label="Show translation" />
     </SettingsSection>
+    <SettingsSection title="Integrations">
+      <SettingsToggle
+        v-model="settingsStore.integrations.discordRichPresence"
+        label="Discord Rich Presence"
+      />
+    </SettingsSection>
   </SettingsWrapper>
 </template>
 

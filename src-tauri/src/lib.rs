@@ -1,3 +1,4 @@
+mod discord;
 mod drm;
 mod logging;
 mod media;
@@ -20,11 +21,13 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_dialog::init())
         .manage(playback::NativePlayback::default())
+        .manage(discord::NativeDiscordPresence::new())
         .on_page_load(|webview, payload| {
             if webview.label() != "main" || payload.event() != PageLoadEvent::Started {
                 return;
             }
             webview.state::<playback::NativePlayback>().stop();
+            webview.state::<discord::NativeDiscordPresence>().clear();
             if let Some(media) = webview.try_state::<media::NativeMediaSession>() {
                 if let Err(cause) = media::reset(&media) {
                     log::warn!("Could not reset system media controls on page load: {cause}");
@@ -45,6 +48,7 @@ pub fn run() {
         )
         .invoke_handler(tauri::generate_handler![
             native_open_devtools,
+            discord::native_discord_set_presence,
             media::native_media_listen,
             playback::native_playback_play,
             playback::native_playback_control

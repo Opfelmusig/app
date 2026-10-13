@@ -51,12 +51,17 @@ export const useSettingsStore = defineStore(
       debugMode: false,
     });
 
+    const integrations = reactive({
+      discordRichPresence: false,
+    });
+
     return {
       isOpen,
       page,
       language,
       sidebarSections,
       system,
+      integrations,
       player,
       lyrics,
       panel,
