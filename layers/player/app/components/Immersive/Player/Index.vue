@@ -1,8 +1,11 @@
 <template>
-  <div v-if="resource" class="flex items-end justify-center">
+  <div class="flex items-end justify-center">
     <ImmersiveReverseRadius position="br" :size="24" class="z-10" />
     <div class="flex w-120 flex-col gap-4 rounded-t-4xl bg-default p-4 px-6 shadow-2xl">
-      <OMScrollingTextGroup class="flex w-full min-w-0 flex-1 flex-col overflow-hidden">
+      <OMScrollingTextGroup
+        v-if="resource"
+        class="flex w-full min-w-0 flex-1 flex-col overflow-hidden"
+      >
         <OMScrollingText class="text-xl">
           <div class="flex items-center gap-2">
             <span>{{ resource.attributes.name }}</span>
