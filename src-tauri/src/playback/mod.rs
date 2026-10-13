@@ -4,6 +4,7 @@ mod cenc;
 mod license;
 mod output;
 mod player;
+mod song;
 mod stream;
 
 use serde::{Deserialize, Serialize};
@@ -16,16 +17,12 @@ use crate::media;
 #[serde(rename_all = "camelCase")]
 pub struct PlayRequest {
     pub id: String,
-    pub catalog_id: Option<String>,
-    pub library_id: Option<String>,
-    pub storefront: Option<String>,
+    pub song: song::Song,
     pub developer_token: String,
     pub user_token: String,
-    pub duration: f64,
     pub volume: f32,
     pub paused: bool,
     pub audio: audio::Settings,
-    pub metadata: media::NativeMediaMetadata,
 }
 
 #[derive(Clone, Copy, PartialEq, Serialize)]
@@ -81,7 +78,8 @@ pub fn native_playback_play(
     events: Channel<PlaybackEvent>,
     media: State<'_, media::NativeMediaSession>,
 ) -> Result<(), String> {
-    if !request.duration.is_finite() || request.duration < 0.0 || !request.volume.is_finite() {
+    let duration = request.song.duration();
+    if !duration.is_finite() || duration < 0.0 || !request.volume.is_finite() {
         return Err("Invalid playback duration or volume".into());
     }
     request.audio.validate()?;
@@ -92,7 +90,7 @@ pub fn native_playback_play(
             previous.stop();
         }
     }
-    if let Err(cause) = media::set_metadata(&media, &request.metadata, request.duration) {
+    if let Err(cause) = media::set_metadata(&media, &request.song.metadata(), duration) {
         log::warn!("Could not update system media metadata: {cause}");
     }
     let reporting = session.clone();
@@ -152,15 +150,6 @@ pub fn native_playback_play(
         })
         .map_err(|error| error.to_string())?;
     tauri::async_runtime::spawn(async move {
-        let request = Arc::new(request);
-        let normalizing = session.clone();
-        let details = request.clone();
-        tauri::async_runtime::spawn(async move {
-            tokio::select! {
-                _ = normalizing.cancel.cancelled() => {},
-                gain = apple::normalization(&details) => normalizing.set_normalization(gain),
-            }
-        });
         let prepared = apple::prepare(&app, &request, session.cancel.clone()).await;
         if session.cancel.is_cancelled() {
             return;

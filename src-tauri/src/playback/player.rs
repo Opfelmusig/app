@@ -61,7 +61,7 @@ impl Session {
             id: request.id.clone(),
             cancel: CancellationToken::new(),
             epoch: Arc::new(AtomicU64::new(0)),
-            duration: request.duration,
+            duration: request.song.duration(),
             media: Mutex::new(None),
             changed: Condvar::new(),
             controls: Mutex::new(Controls {
@@ -69,7 +69,7 @@ impl Session {
                 paused: request.paused,
                 volume: request.volume.clamp(0.0, 1.0),
                 audio: request.audio.clone(),
-                normalization: 1.0,
+                normalization: audio::normalization(request.song.attributes.loudness.as_ref()),
                 processing: None,
                 target: 0.0,
                 sink: None,
@@ -91,12 +91,6 @@ impl Session {
         if let Some(media) = self.media.lock().unwrap().take() {
             media.wake();
         }
-    }
-
-    pub fn set_normalization(&self, gain: f64) {
-        let mut controls = self.controls.lock().unwrap();
-        controls.normalization = gain;
-        controls.update_audio();
     }
 
     pub fn fail(&self, error: String) {

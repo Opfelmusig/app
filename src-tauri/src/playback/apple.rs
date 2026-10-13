@@ -44,52 +44,6 @@ pub struct Prepared {
     pub media: Media,
 }
 
-/// Missing catalog analysis leaves the original gain; never boost without a known peak.
-pub async fn normalization(request: &PlayRequest) -> f64 {
-    async fn lookup(request: &PlayRequest) -> Result<f64> {
-        let id = request.catalog_id.as_deref().context("No catalog ID")?;
-        let storefront = request.storefront.as_deref().context("No storefront")?;
-        let mut url = reqwest::Url::parse("https://amp-api.music.apple.com/v1/catalog/")?;
-        url.path_segments_mut()
-            .unwrap()
-            .pop_if_empty()
-            .extend([storefront, "songs", id]);
-        let response = client()
-            .await?
-            .get(url)
-            .bearer_auth(&request.developer_token)
-            .header("music-user-token", &request.user_token)
-            .header("origin", "https://music.apple.com")
-            .header("referer", "https://music.apple.com/")
-            .query(&[
-                ("include[songs]", "audio-analysis"),
-                ("fields[songs]", "durationInMillis"),
-                ("omit[resource]", "autos"),
-            ])
-            .timeout(Duration::from_secs(6))
-            .send()
-            .await?
-            .error_for_status()?
-            .json::<serde_json::Value>()
-            .await?;
-        let main = response
-            .pointer("/data/0/relationships/audio-analysis/data/0/attributes/loudness/main")
-            .context("No loudness analysis")?;
-        let lufs = main
-            .get("value")
-            .and_then(serde_json::Value::as_f64)
-            .filter(|value| value.is_finite() && (-70.0..0.0).contains(value))
-            .context("Invalid loudness analysis")?;
-        let headroom = main
-            .get("peak")
-            .and_then(serde_json::Value::as_f64)
-            .filter(|value| value.is_finite() && (-100.0..=20.0).contains(value))
-            .map_or(1.0, |dbfs| 10f64.powf(-dbfs / 20.).min(4.0));
-        Ok(10f64.powf((-14.0 - lufs) / 20.).min(headroom))
-    }
-    lookup(request).await.unwrap_or(1.0)
-}
-
 async fn client() -> Result<Client> {
     let client = HTTP
         .get_or_try_init(|| async {
@@ -121,19 +75,19 @@ pub async fn prepare(
     let started = Instant::now();
     let http = client().await?;
     let mut body = serde_json::Map::new();
-    if let Some(id) = &request.catalog_id {
+    if let Some(id) = request.song.catalog_id() {
         body.insert(
-            if request.library_id.is_some() {
+            if request.song.library_id().is_some() {
                 "subscriptionAdamId"
             } else {
                 "salableAdamId"
             }
             .into(),
-            id.clone().into(),
+            id.into(),
         );
     }
-    if let Some(id) = &request.library_id {
-        body.insert("universalLibraryId".into(), id.clone().into());
+    if let Some(id) = request.song.library_id() {
+        body.insert("universalLibraryId".into(), id.into());
     }
     ensure!(!body.is_empty(), "A catalog or library song ID is required");
     let response = authenticated(&http, PLAYBACK, request)

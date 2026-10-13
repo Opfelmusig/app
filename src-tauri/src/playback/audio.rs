@@ -7,6 +7,26 @@ const FREQUENCIES: [f64; 10] = [
 ];
 const FLAT: [f64; 5] = [1., 0., 0., 0., 0.];
 
+#[derive(Deserialize)]
+pub struct Loudness {
+    value: f64,
+    peak: Option<f64>,
+}
+
+/// Missing analysis leaves the original gain; never boost without a known peak.
+pub fn normalization(loudness: Option<&Loudness>) -> f64 {
+    let Some(loudness) = loudness
+        .filter(|loudness| loudness.value.is_finite() && (-70.0..0.0).contains(&loudness.value))
+    else {
+        return 1.0;
+    };
+    let headroom = loudness
+        .peak
+        .filter(|peak| peak.is_finite() && (-100.0..=20.0).contains(peak))
+        .map_or(1.0, |dbfs| 10f64.powf(-dbfs / 20.).min(4.0));
+    10f64.powf((-14.0 - loudness.value) / 20.).min(headroom)
+}
+
 #[derive(Clone, Deserialize)]
 pub struct Equalizer {
     pub enabled: bool,

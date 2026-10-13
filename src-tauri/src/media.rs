@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use souvlaki::{
     MediaControlEvent, MediaControls, MediaMetadata, MediaPlayback, MediaPosition, PlatformConfig,
     SeekDirection,
@@ -29,13 +29,11 @@ pub enum NativeMediaEvent {
     SetVolume { volume: f64 },
 }
 
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
 pub struct NativeMediaMetadata {
-    title: String,
-    album: Option<String>,
-    artist: Option<String>,
-    cover_url: Option<String>,
+    pub title: String,
+    pub album: Option<String>,
+    pub artist: Option<String>,
+    pub cover_url: Option<String>,
 }
 
 pub struct NativeMediaSession {

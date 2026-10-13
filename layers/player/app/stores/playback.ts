@@ -1,4 +1,3 @@
-import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 import { Channel, invoke } from "@tauri-apps/api/core";
 
 type MediaEvent =
@@ -151,20 +150,11 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       await invoke("native_playback_play", {
         request: {
           id,
-          catalogId: resource.type === "songs" ? resource.id : resource.extras.catalogId,
-          libraryId: resource.type === "library-songs" ? resource.id : resource.extras.libraryId,
+          song: resource,
           ...credentials,
-          storefront: auth.storefront.value?.id,
-          duration: duration.value,
           volume: volumeStore.output,
           paused: paused.value,
           audio: settingsStore.playback,
-          metadata: {
-            title: resource.attributes.name,
-            artist: resource.attributes.artistName,
-            album: resource.attributes.albumName,
-            coverUrl: getArtworkUrl(resource.attributes.artwork, { width: 512 }),
-          },
         },
         events,
       });
