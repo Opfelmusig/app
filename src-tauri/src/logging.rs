@@ -17,7 +17,11 @@ pub fn plugin<R: Runtime>() -> tauri::plugin::TauriPlugin<R> {
 
     tauri_plugin_log::Builder::new()
         .level(level)
-        .level_for("symphonia_format_isomp4", log::LevelFilter::Warn)
+        .level_for("reqwest", log::LevelFilter::Info)
+        .filter(|metadata| {
+            !metadata.target().starts_with("symphonia") || metadata.level() <= log::Level::Warn
+        })
+        .level_for("app_lib", log::LevelFilter::Info)
         .level_for("app_lib::widevine", log::LevelFilter::Warn)
         .level_for(
             "tao::platform_impl::platform::event_loop::runner",
