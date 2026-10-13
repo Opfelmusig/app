@@ -1,12 +1,12 @@
 <template>
   <div class="fixed inset-0 z-100 flex shrink-0 flex-col bg-default select-none">
-    <div class="pointer-events-none fixed inset-1 z-10 overflow-hidden rounded-xl">
+    <div class="pointer-events-none fixed inset-1 top-9 z-10 overflow-hidden rounded-xl">
       <Transition>
         <ImmersiveMesh v-if="settingsStore.immersive.isOpen" class="duration-500" />
       </Transition>
     </div>
 
-    <div class="pointer-events-none fixed inset-1 z-20 overflow-hidden rounded-xl">
+    <div class="pointer-events-none fixed inset-1 top-9 z-20 overflow-hidden rounded-xl">
       <div
         v-if="resource?.attributes.editorialVideo || resource?.attributes.artwork"
         class="relative flex size-full justify-center"
@@ -45,7 +45,7 @@
     >
       <div class="group relative flex h-13 w-full flex-col" data-tauri-drag-region>
         <div
-          class="flex h-0 w-full items-end overflow-hidden bg-default px-0.5 text-muted transition-[height] group-hover:h-8"
+          class="flex h-8 w-full items-end overflow-hidden bg-default px-0.5 text-muted transition-[height]"
           data-tauri-drag-region
         >
           <div
