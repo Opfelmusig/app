@@ -172,6 +172,10 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     }
   }
 
+  function play() {
+    if (queueStore.current && paused.value) toggle();
+  }
+
   function toggle() {
     if (!activeId) return load();
     paused.value = !paused.value;
@@ -204,7 +208,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const mediaEvents = new Channel<MediaEvent>((event) => {
     switch (event.event) {
       case "play":
-        if (paused.value) toggle();
+        play();
         break;
       case "pause":
         if (!paused.value) toggle();
@@ -258,5 +262,5 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   );
   useDiscordPresence({ isPlaying, paused, position, duration });
 
-  return { pending, isPlaying, paused, position, duration, toggle, seek, previous };
+  return { pending, isPlaying, paused, position, duration, play, toggle, seek, previous };
 });

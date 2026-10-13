@@ -1,3 +1,4 @@
+mod deep_link;
 mod discord;
 mod drm;
 mod logging;
@@ -12,10 +13,10 @@ use tauri_plugin_window_state::StateFlags;
 
 pub fn run() {
     tauri::Builder::default()
-        .plugin(logging::plugin())
         /* .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             focus_main_window(app)
         })) */
+        .plugin(logging::plugin())
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_prevent_default::debug())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -57,6 +58,7 @@ pub fn run() {
             playback::native_playback_control
         ])
         .setup(|app| {
+            deep_link::setup(app.handle())?;
             app.manage(media::NativeMediaSession::new(app.handle()));
             let app_data_dir = app
                 .path()
