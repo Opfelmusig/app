@@ -30,6 +30,9 @@
         </MediaEditorialVideo>
       </div>
     </div>
+    <div class="flex size-full items-center justify-center bg-muted">
+      <OMIcon name="lucide:music" class="size-12" />
+    </div>
   </div>
 </template>
 
