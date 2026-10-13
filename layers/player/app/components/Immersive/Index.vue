@@ -31,6 +31,7 @@
           <MediaEditorialVideo
             :editorial-video="resource?.attributes.editorialVideo"
             variant="square"
+            quality="highest"
             :paused="!settingsStore.immersive.isOpen || settingsStore.immersive.page !== null"
             class="h-full transition-[filter,opacity] [&_img]:object-cover"
             :class="settingsStore.immersive.page === null ? '' : 'opacity-0'"

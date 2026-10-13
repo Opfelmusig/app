@@ -20,6 +20,7 @@ const props = defineProps<{
   src: string;
   poster?: string;
   paused?: boolean;
+  quality?: "auto" | "highest";
 }>();
 
 const video = ref<HTMLVideoElement | null>(null);
@@ -81,9 +82,8 @@ onMounted(async () => {
   if (Hls.isSupported()) {
     hls = new Hls({
       loader: FetchLoader,
-      videoPreference: {
-        videoCodec: "avc1",
-      },
+      autoStartLoad: false,
+      videoPreference: props.quality === "highest" ? undefined : { videoCodec: "avc1" },
       fetchSetup(context, initParams) {
         if (context.rangeEnd !== undefined) {
           initParams.cache = "no-store";
@@ -91,6 +91,26 @@ onMounted(async () => {
 
         return new Request(context.url, initParams);
       },
+    });
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      if (!hls) return;
+
+      if (props.quality === "highest" && hls.levels.length) {
+        const bestLevel = hls.levels.reduce((bestIndex, level, index, levels) => {
+          const best = levels[bestIndex]!;
+          const pixels = level.width * level.height;
+          const bestPixels = best.width * best.height;
+
+          return pixels > bestPixels || (pixels === bestPixels && level.bitrate < best.bitrate)
+            ? index
+            : bestIndex;
+        }, 0);
+
+        hls.startLevel = bestLevel;
+        hls.loadLevel = bestLevel;
+      }
+
+      hls.startLoad();
     });
     loadSource(props.src);
     hls.attachMedia(video.value);

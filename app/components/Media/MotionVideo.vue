@@ -4,6 +4,7 @@
       <MediaHlsVideo
         v-if="motionVideo.video"
         :paused
+        :quality
         :poster="previewFrameUrl"
         :src="motionVideo.video"
       />
@@ -19,6 +20,7 @@ import type { MotionVideo } from "@opfelmusig/lib/types";
 const props = defineProps<{
   motionVideo: MotionVideo;
   paused?: boolean;
+  quality?: "auto" | "highest";
 }>();
 
 const previewFrameUrl = computed(() =>

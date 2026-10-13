@@ -1,6 +1,11 @@
 <template>
   <div :class="artwork({ variant })">
-    <MediaMotionVideo v-if="enabledMotionVideo" :paused :motion-video="enabledMotionVideo" />
+    <MediaMotionVideo
+      v-if="enabledMotionVideo"
+      :paused
+      :quality
+      :motion-video="enabledMotionVideo"
+    />
     <template v-else>
       <slot name="fallback" />
     </template>
@@ -29,6 +34,7 @@ const props = defineProps<{
   editorialVideo?: EditorialVideo;
   variant?: EditorialVideoVariants;
   paused?: boolean;
+  quality?: "auto" | "highest";
 }>();
 const settingsStore = useSettingsStore();
 
