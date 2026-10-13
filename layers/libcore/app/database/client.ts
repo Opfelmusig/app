@@ -1,5 +1,6 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { Collection } from "dexie";
+import { filter, flatMap, groupBy, isTruthy, pipe, sort, unique } from "remeda";
 
 import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
@@ -114,20 +115,24 @@ export class LibraryClient {
       right: AmLibraryPlaylist | AmLibraryPlaylistFolder,
     ) => left.attributes.name.localeCompare(right.attributes.name);
 
+    const foldersByParent = groupBy(folders, (item) =>
+      item.attributes.name ? item.extras.parentId : undefined,
+    );
+    const playlistsByParent = groupBy(playlists, (item) =>
+      item.attributes.name ? item.extras.parentId : undefined,
+    );
+
     function build(parentId: string): AmLibraryTreeNode[] {
       return [
-        ...folders
-          .filter((item) => item.extras.parentId === parentId && item.attributes.name)
-          .sort(byName)
-          .map((item) => ({
-            type: item.type,
-            item,
-            children: build(item.id),
-          })),
-        ...playlists
-          .filter((item) => item.extras.parentId === parentId && item.attributes.name)
-          .sort(byName)
-          .map((item) => ({ type: item.type, item })),
+        ...sort(foldersByParent[parentId] ?? [], byName).map((item) => ({
+          type: item.type,
+          item,
+          children: build(item.id),
+        })),
+        ...sort(playlistsByParent[parentId] ?? [], byName).map((item) => ({
+          type: item.type,
+          item,
+        })),
       ];
     }
 
@@ -193,9 +198,13 @@ export class LibraryClient {
   async getGenres() {
     const albums = await this.resourcesByType("library-albums").toArray();
 
-    return [...new Set(albums.flatMap((album) => album.attributes.genreNames))]
-      .filter(Boolean)
-      .sort((a, b) => a.localeCompare(b));
+    return pipe(
+      albums,
+      flatMap((album) => album.attributes.genreNames),
+      filter(isTruthy),
+      unique(),
+      sort((a, b) => a.localeCompare(b)),
+    );
   }
 
   async getGenreAlbums(genre: string) {

@@ -23,6 +23,8 @@
 </template>
 
 <script lang="ts" setup>
+import { flatMap, groupBy, map, pipe, values } from "remeda";
+
 const { handlers } = useKeyboardInspector();
 
 type Shortcut = {
@@ -36,24 +38,31 @@ type ShortcutGroup = {
   keys: Shortcut[];
 };
 
-const groupedHandlers = computed<ShortcutGroup[]>(() => {
-  const groups = new Map<string, Shortcut[]>();
+const groupedHandlers = computed<ShortcutGroup[]>(() =>
+  pipe(
+    handlers.value,
+    flatMap((handler) => {
+      const keys = handler.keys
+        .filter((keybind) => keybind.visibleOn())
+        .map((keybind) => toNuxtUiKeys(keybind));
+      if (!keys.length) return [];
 
-  for (const handler of handlers.value) {
-    const keys = handler.keys
-      .filter((keybind) => keybind.visibleOn())
-      .map((keybind) => toNuxtUiKeys(keybind));
+      const meta = handler.config.meta;
+      if (typeof meta?.name !== "string") return [];
 
-    if (keys.length === 0) continue;
-
-    const meta = handler.config.meta;
-    if (typeof meta?.name !== "string") continue;
-    const group = typeof meta?.group === "string" ? meta.group : "Other";
-
-    if (!groups.has(group)) groups.set(group, []);
-    groups.get(group)!.push({ id: handler.id, name: meta.name, keys });
-  }
-
-  return Array.from(groups, ([name, keys]) => ({ name, keys }));
-});
+      return [
+        {
+          group: typeof meta.group === "string" ? meta.group : "Other",
+          shortcut: { id: handler.id, name: meta.name, keys },
+        },
+      ];
+    }),
+    groupBy(({ group }) => group),
+    values(),
+    map((shortcuts) => ({
+      name: shortcuts[0].group,
+      keys: shortcuts.map(({ shortcut }) => shortcut),
+    })),
+  ),
+);
 </script>

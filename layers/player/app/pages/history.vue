@@ -61,11 +61,12 @@
 </template>
 
 <script lang="ts" setup>
+import { entries, groupBy, map, pipe } from "remeda";
+
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import type { AmSong, SongColumns } from "#layers/amdata/app/types/songs";
-import type { HistoryEntry } from "#layers/player/app/stores/history";
 
 useHead({ title: "History" });
 
@@ -101,27 +102,25 @@ const sections = computed(() => {
   today.setHours(0, 0, 0, 0);
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  const groups = new Map<string, { id: string; title: string; entries: HistoryEntry[] }>();
-
-  for (const entry of displayedEntries.value) {
-    const day = new Date(entry.playedAt);
-    day.setHours(0, 0, 0, 0);
-    const id = day.toISOString();
-    let group = groups.get(id);
-    if (!group) {
+  return pipe(
+    displayedEntries.value,
+    groupBy((entry) => {
+      const day = new Date(entry.playedAt);
+      day.setHours(0, 0, 0, 0);
+      return day.toISOString();
+    }),
+    entries(),
+    map(([id, entries]) => {
+      const day = new Date(id);
       const title =
         day.getTime() === today.getTime()
           ? "Today"
           : day.getTime() === yesterday.getTime()
             ? "Yesterday"
             : day.toLocaleDateString();
-      group = { id, title, entries: [] };
-      groups.set(id, group);
-    }
-    group.entries.push(entry);
-  }
-
-  return [...groups.values()];
+      return { id, title, entries };
+    }),
+  );
 });
 
 function play(index = 0, shuffle = false) {

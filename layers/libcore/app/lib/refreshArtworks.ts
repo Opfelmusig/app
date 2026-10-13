@@ -1,6 +1,7 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { getArtworkExpiresAt, isResourceType } from "@opfelmusig/lib/helpers";
 import type { Artwork } from "@opfelmusig/lib/types";
+import { chunk, groupBy, indexBy, mapValues } from "remeda";
 
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import type { DbResourceType } from "#layers/libcore/app/database/types";
@@ -54,30 +55,27 @@ export async function refreshArtworks(
 
   let updated = false;
 
-  const batchedExpired = Array.from({ length: Math.ceil(expired.length / 100) }, (_, i) =>
-    expired.slice(i * 100, (i + 1) * 100),
-  );
+  const expiredByKey = indexBy(expired, ({ type, id }) => `${type}:${id}`);
 
   const responses = await Promise.all(
-    batchedExpired.map((expired) =>
-      client.library.getMany(
+    chunk(expired, 100).map((batch) => {
+      const idsByType = mapValues(
+        groupBy(batch, ({ type }) => type),
+        (resources) => resources.map(({ id }) => id),
+      );
+
+      return client.library.getMany(
         {
-          "library-songs": expired
-            .filter(({ type }) => type === "library-songs")
-            .map(({ id }) => id),
-          "library-albums": expired
-            .filter(({ type }) => type === "library-albums")
-            .map(({ id }) => id),
-          "library-playlists": expired
-            .filter(({ type }) => type === "library-playlists")
-            .map(({ id }) => id),
+          "library-songs": idsByType["library-songs"] ?? [],
+          "library-albums": idsByType["library-albums"] ?? [],
+          "library-playlists": idsByType["library-playlists"] ?? [],
         },
         {
           config: { signal },
           scopes: artworkScopes,
         },
-      ),
-    ),
+      );
+    }),
   );
 
   const resources = responses.flatMap(({ data }) => data);
@@ -97,7 +95,7 @@ export async function refreshArtworks(
 
   await Promise.all(
     filteredResources.map(async (resource) => {
-      const details = expired.find(({ id, type }) => id === resource.id && resource.type === type);
+      const details = expiredByKey[`${resource.type}:${resource.id}`];
       const artwork =
         resource.attributes?.artwork ??
         resource.relationships?.catalog.data[0]?.attributes?.artwork;
