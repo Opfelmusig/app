@@ -1,5 +1,6 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect, isNotResourceType, isResourceType } from "@opfelmusig/lib/helpers";
+import { pullObject } from "remeda";
 
 import { prepareAppleMusicLibrary } from "#layers/libcore/app/lib/prepare";
 import { createEmptyLibrary } from "#layers/libcore/app/lib/prepare/helpers";
@@ -133,9 +134,10 @@ function fetchPlaylistTracks(
   const seenSongIds = new Set(pages.songs.map((song) => song.id));
 
   return Promise.allKeyed(
-    Object.fromEntries(
-      pages.playlists.map((playlist) => [
-        playlist.id,
+    pullObject(
+      pages.playlists,
+      (playlist) => playlist.id,
+      (playlist) =>
         collect(
           client.library.playlists.iterateRelationship(playlist.id, "tracks", {
             limit: 100,
@@ -152,7 +154,6 @@ function fetchPlaylistTracks(
             },
           },
         ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
-      ]),
     ),
   );
 }

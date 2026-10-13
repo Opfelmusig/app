@@ -1,6 +1,6 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { Collection } from "dexie";
-import { filter, flatMap, groupBy, isTruthy, pipe, sort, unique } from "remeda";
+import { filter, flatMap, groupBy, isDefined, isTruthy, pipe, sort, unique } from "remeda";
 
 import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
 import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
@@ -153,7 +153,7 @@ export class LibraryClient {
       }),
     );
 
-    return results.filter((result) => result !== undefined) as DbListResourceByList<L>[];
+    return results.filter(isDefined) as DbListResourceByList<L>[];
   }
 
   async getArtistAlbums(id: string) {

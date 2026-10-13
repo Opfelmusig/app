@@ -1,3 +1,5 @@
+import { sort as sortWith, sortBy } from "remeda";
+
 import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
 import type { AmSong, SongSort } from "#layers/amdata/app/types/songs";
@@ -21,29 +23,26 @@ export default function sortSongs(
       : 0;
   }
 
-  return songs.toSorted((a, b) => {
-    const left = a.resource.attributes;
-    const right = b.resource.attributes;
-
-    switch (sort) {
-      case "default":
-        return (a.position - b.position) * direction;
-      case "discAndTrackNumber": {
-        const disc = (left.discNumber ?? 0) - (right.discNumber ?? 0);
-        const track = (left.trackNumber ?? 0) - (right.trackNumber ?? 0);
-
-        return (disc || track) * direction;
-      }
-      case "title":
-        return compare(left.name, right.name);
-      case "artist":
-        return compare(left.artistName, right.artistName);
-      case "album":
-        return compare(left.albumName, right.albumName);
-      case "year":
-        return (year(left.releaseDate) - year(right.releaseDate)) * direction;
-      case "length":
-        return (left.durationInMillis - right.durationInMillis) * direction;
+  switch (sort) {
+    case "default":
+      return sortBy(songs, [(song) => song.position, dir]);
+    case "discAndTrackNumber":
+      return sortBy(
+        songs,
+        [(song) => song.resource.attributes.discNumber ?? 0, dir],
+        [(song) => song.resource.attributes.trackNumber ?? 0, dir],
+      );
+    case "title":
+    case "artist":
+    case "album": {
+      const field = sort === "title" ? "name" : sort === "artist" ? "artistName" : "albumName";
+      return sortWith(songs, (a, b) =>
+        compare(a.resource.attributes[field], b.resource.attributes[field]),
+      );
     }
-  });
+    case "year":
+      return sortBy(songs, [(song) => year(song.resource.attributes.releaseDate), dir]);
+    case "length":
+      return sortBy(songs, [(song) => song.resource.attributes.durationInMillis, dir]);
+  }
 }

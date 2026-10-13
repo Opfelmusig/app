@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import Hls, { FetchLoader } from "hls.js";
 import type HlsType from "hls.js";
+import { firstBy } from "remeda";
 
 const props = defineProps<{
   src: string;
@@ -96,15 +97,11 @@ onMounted(async () => {
       if (!hls) return;
 
       if (props.quality === "highest" && hls.levels.length) {
-        const bestLevel = hls.levels.reduce((bestIndex, level, index, levels) => {
-          const best = levels[bestIndex]!;
-          const pixels = level.width * level.height;
-          const bestPixels = best.width * best.height;
-
-          return pixels > bestPixels || (pixels === bestPixels && level.bitrate < best.bitrate)
-            ? index
-            : bestIndex;
-        }, 0);
+        const bestLevel = firstBy(
+          hls.levels.map((level, index) => ({ level, index })),
+          [({ level }) => level.width * level.height, "desc"],
+          ({ level }) => level.bitrate,
+        )!.index;
 
         hls.startLevel = bestLevel;
         hls.loadLevel = bestLevel;

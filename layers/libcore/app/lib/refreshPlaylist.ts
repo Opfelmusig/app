@@ -1,5 +1,6 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect, isNotResourceType } from "@opfelmusig/lib/helpers";
+import { uniqueBy } from "remeda";
 
 import { parseResource } from "#layers/amdata/app/lib/parsers";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
@@ -79,7 +80,7 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
 
     await db.listResources.bulkPut([...prepared.listResources.values()]);
 
-    for (const songId of new Set(oldEntries.map((entry) => entry.resourceId))) {
+    for (const { resourceId: songId } of uniqueBy(oldEntries, (entry) => entry.resourceId)) {
       if (prepared.resources.has(songId)) continue;
       if (await db.listResources.where("resourceId").equals(songId).count()) continue;
 

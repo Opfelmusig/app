@@ -1,3 +1,5 @@
+import { pipe, take, uniqueBy } from "remeda";
+
 import type { QueueTrack } from "#layers/player/app/types/queue";
 
 export interface HistoryEntry {
@@ -12,14 +14,11 @@ export const useHistoryStore = defineStore(
     const entries = ref<HistoryEntry[]>([]);
 
     function record(track: QueueTrack) {
-      const previous = entries.value.filter(
-        ({ track: saved }) =>
-          saved.resource.type !== track.resource.type || saved.resource.id !== track.resource.id,
+      entries.value = pipe(
+        [{ id: crypto.randomUUID(), playedAt: new Date().toISOString(), track }, ...entries.value],
+        uniqueBy(({ track }) => `${track.resource.type}:${track.resource.id}`),
+        take(500),
       );
-      entries.value = [
-        { id: crypto.randomUUID(), playedAt: new Date().toISOString(), track },
-        ...previous,
-      ].slice(0, 500);
     }
 
     function clear() {

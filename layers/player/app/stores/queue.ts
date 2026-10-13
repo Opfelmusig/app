@@ -1,3 +1,4 @@
+import { shuffle as shuffleList } from "remeda";
 import type {
   CreateQueueContext,
   QueueContext,
@@ -140,15 +141,6 @@ export const useQueueStore = defineStore(
       const targetIndex = toQueue ? toIndex : toIndex - queue.value.length;
 
       if (entry) target.splice(targetIndex, 0, entry);
-    }
-
-    function shuffleList(entries: QueueEntry[]): QueueEntry[] {
-      for (let i = entries.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [entries[i], entries[j]] = [entries[j]!, entries[i]!];
-      }
-
-      return entries;
     }
 
     function shuffle() {

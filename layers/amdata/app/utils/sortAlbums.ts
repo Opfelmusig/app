@@ -1,3 +1,5 @@
+import { sort as sortWith, sortBy } from "remeda";
+
 import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
 import type { AlbumSort, AmAlbum } from "#layers/amdata/app/types/albums";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
@@ -21,19 +23,17 @@ export default function sortAlbums(
       : 0;
   }
 
-  return albums.toSorted((a, b) => {
-    const left = a.resource.attributes;
-    const right = b.resource.attributes;
-
-    switch (sort) {
-      case "default":
-        return (a.position - b.position) * direction;
-      case "title":
-        return compare(left.name, right.name);
-      case "artist":
-        return compare(left.artistName, right.artistName);
-      case "year":
-        return (year(left.releaseDate) - year(right.releaseDate)) * direction;
+  switch (sort) {
+    case "default":
+      return sortBy(albums, [(album) => album.position, dir]);
+    case "title":
+    case "artist": {
+      const field = sort === "title" ? "name" : "artistName";
+      return sortWith(albums, (a, b) =>
+        compare(a.resource.attributes[field], b.resource.attributes[field]),
+      );
     }
-  });
+    case "year":
+      return sortBy(albums, [(album) => year(album.resource.attributes.releaseDate), dir]);
+  }
 }
