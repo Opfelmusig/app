@@ -17,11 +17,11 @@
 import type { StyleValue } from "vue";
 
 const props = defineProps<{
-  size: number;
+  size: number | string;
   position: "tl" | "tr" | "bl" | "br";
 }>();
 
-const px = computed(() => `${props.size}px`);
+const px = computed(() => (typeof props.size === "number" ? `${props.size}px` : props.size));
 
 const style = computed<StyleValue>(() => {
   const style: StyleValue = {};

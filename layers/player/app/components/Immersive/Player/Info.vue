@@ -1,9 +1,12 @@
 <template>
   <OMScrollingTextGroup v-if="resource" class="flex w-full min-w-0 flex-1 flex-col overflow-hidden">
-    <OMScrollingText class="text-xl">
+    <OMScrollingText
+      class="transition-[font-size,line-height] duration-150 ease-out"
+      :class="expanded ? 'cursor-default text-xl' : 'cursor-pointer text-sm'"
+    >
       <div class="flex items-center gap-2">
         <span>{{ resource.attributes.name }}</span>
-        <OMStar v-if="resource.attributes.personalRating === 1" large />
+        <OMStar v-if="resource.attributes.personalRating === 1" :large="expanded" />
       </div>
     </OMScrollingText>
     <OMScrollingText
@@ -13,7 +16,8 @@
         resource.attributes.albums.length ||
         resource.attributes.albumName
       "
-      class="text-muted"
+      class="text-muted transition-opacity duration-150 ease-out"
+      :class="expanded ? 'opacity-100' : 'pointer-events-none opacity-0'"
     >
       <span class="flex w-max items-center gap-1.5 whitespace-nowrap">
         <AMLinks
@@ -45,6 +49,10 @@
 </template>
 
 <script lang="ts" setup>
+defineProps<{
+  expanded: boolean;
+}>();
+
 const queueStore = useQueueStore();
 
 const resource = computed(() => queueStore.current?.entry.resource);
