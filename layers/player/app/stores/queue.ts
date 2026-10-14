@@ -197,8 +197,10 @@ export const useQueueStore = defineStore(
       else return queue.value;
     });
 
-    const currentCount = computed(
-      () => currentQueue.value.length + (isShuffling.value ? 0 : contextQueue.value.length),
+    const currentCount = computed(() =>
+      isShuffling.value
+        ? shuffledQueue.value.length
+        : currentQueue.value.length + contextQueue.value.length,
     );
 
     return {
