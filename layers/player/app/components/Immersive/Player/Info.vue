@@ -5,15 +5,22 @@
     class="flex w-full min-w-0 flex-1 flex-col overflow-hidden"
     :class="!expanded ? 'pointer-events-none' : ''"
   >
-    <OMScrollingText
-      class="transition-[font-size,line-height] duration-150 ease-out"
-      :class="expanded ? 'cursor-default text-xl' : 'cursor-pointer text-sm'"
-    >
-      <div class="flex items-center gap-2">
-        <span>{{ resource.attributes.name }}</span>
-        <OMStar v-if="resource.attributes.personalRating === 1" :large="expanded" />
-      </div>
-    </OMScrollingText>
+    <div class="flex items-center justify-between gap-2">
+      <OMScrollingText
+        class="transition-[font-size,line-height] duration-150 ease-out"
+        :class="expanded ? 'cursor-default text-xl' : 'cursor-pointer text-sm'"
+      >
+        <div class="flex items-center gap-2">
+          <span>{{ resource.attributes.name }}</span>
+          <OMStar v-if="resource.attributes.personalRating === 1" :large="expanded" />
+        </div>
+      </OMScrollingText>
+      <UIcon
+        v-if="!expanded && playbackStore.pending"
+        name="lucide:loader-circle"
+        class="size-4 animate-spin text-muted"
+      />
+    </div>
     <OMScrollingText
       v-if="
         resource.attributes.artists.length ||
@@ -59,6 +66,7 @@ defineProps<{
 }>();
 
 const queueStore = useQueueStore();
+const playbackStore = usePlaybackStore();
 
 const resource = computed(() => queueStore.current?.entry.resource);
 </script>
