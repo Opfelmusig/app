@@ -1,6 +1,7 @@
 export interface TableReorder {
-  fromIndex: number;
-  toIndex: number;
+  id: string;
+  targetId: string;
+  placement: "before" | "after";
 }
 
 export const tableReorderKey: InjectionKey<ReturnType<typeof createTableReorder>> =
@@ -63,15 +64,10 @@ export function createTableReorder(
     const destination = target.value;
     reset();
     if (!enabled.value || !id || !destination) return;
-
-    const fromIndex = ids.value.indexOf(id);
-    const targetIndex = ids.value.indexOf(destination.targetId);
-    if (fromIndex < 0 || targetIndex < 0) return;
+    if (!ids.value.includes(id) || !ids.value.includes(destination.targetId)) return;
 
     event.preventDefault();
-    const toIndex =
-      targetIndex + (destination.placement === "after" ? 1 : 0) - (fromIndex < targetIndex ? 1 : 0);
-    if (fromIndex !== toIndex) onReorder({ fromIndex, toIndex });
+    onReorder({ id, ...destination });
   }
 
   return { enabled, source, target, start, over, overTable, leave, drop, reset };

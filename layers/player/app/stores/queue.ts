@@ -100,49 +100,54 @@ export const useQueueStore = defineStore(
     function clearQueue() {}
     function clearContext() {}
 
-    function playIndex(nextIndex: number) {
-      if (nextIndex < 0 || nextIndex >= combinedLength.value) return;
+    function findEntryIndex(id: string) {
+      const entries = isShuffling.value
+        ? shuffledQueue.value
+        : [...queue.value, ...contextQueue.value];
+      return entries.findIndex((entry) => entry.id === id);
+    }
+
+    function playEntry(id: string) {
+      const nextIndex = findEntryIndex(id);
+      if (nextIndex < 0) return;
 
       index.value = nextIndex;
     }
 
-    function deleteIndex(targetIndex: number) {
+    function deleteEntry(id: string) {
+      const targetIndex = findEntryIndex(id);
+      if (targetIndex < 0) return;
       if (index.value !== null && targetIndex <= index.value) return;
-
-      const entries = isShuffling.value
-        ? shuffledQueue.value
-        : [...queue.value, ...contextQueue.value];
-
-      const id = entries[targetIndex]?.id;
 
       queue.value = queue.value.filter((entry) => entry.id !== id);
       contextQueue.value = contextQueue.value.filter((entry) => entry.id !== id);
       shuffledQueue.value = shuffledQueue.value.filter((entry) => entry.id !== id);
     }
 
-    function moveIndex(fromIndex: number, toIndex: number) {
-      if (fromIndex === toIndex) return;
+    function moveEntry(id: string, targetId: string, placement: "before" | "after") {
+      const entries = isShuffling.value
+        ? shuffledQueue.value
+        : queue.value.some((entry) => entry.id === id)
+          ? queue.value
+          : contextQueue.value;
+      const fromIndex = entries.findIndex((entry) => entry.id === id);
+      const targetIndex = entries.findIndex((entry) => entry.id === targetId);
+      if (fromIndex < 0 || targetIndex < 0 || fromIndex === targetIndex) return;
 
-      if (index.value !== null && (fromIndex <= index.value || toIndex <= index.value)) return;
-
-      if (isShuffling.value) {
-        const [entry] = shuffledQueue.value.splice(fromIndex, 1);
-        shuffledQueue.value.splice(toIndex, 0, entry!);
+      const offset = !isShuffling.value && entries === contextQueue.value ? queue.value.length : 0;
+      if (
+        index.value !== null &&
+        (fromIndex + offset <= index.value || targetIndex + offset <= index.value)
+      ) {
         return;
       }
 
-      const queueLength = queue.value.length;
-      const fromQueue = fromIndex < queueLength;
-      const toQueue = toIndex < queueLength;
+      const toIndex =
+        targetIndex + (placement === "after" ? 1 : 0) - (fromIndex < targetIndex ? 1 : 0);
+      if (fromIndex === toIndex) return;
 
-      const source = fromQueue ? queue.value : contextQueue.value;
-      const sourceIndex = fromQueue ? fromIndex : fromIndex - queueLength;
-      const [entry] = source.splice(sourceIndex, 1);
-
-      const target = toQueue ? queue.value : contextQueue.value;
-      const targetIndex = toQueue ? toIndex : toIndex - queue.value.length;
-
-      if (entry) target.splice(targetIndex, 0, entry);
+      const [entry] = entries.splice(fromIndex, 1);
+      if (entry) entries.splice(toIndex, 0, entry);
     }
 
     function shuffle() {
@@ -221,9 +226,9 @@ export const useQueueStore = defineStore(
       clearContext,
       playNext,
       playAfter,
-      playIndex,
-      deleteIndex,
-      moveIndex,
+      playEntry,
+      deleteEntry,
+      moveEntry,
       isLooping,
       isShuffling,
       toggleShuffle,
