@@ -28,6 +28,17 @@
       </AMArtworkWrapper>
     </NuxtLink>
     <div class="flex w-full min-w-0 flex-col">
+      <UTooltip
+        v-if="resource.resource.shared?.reasonForDisplay"
+        :text="resource.resource.shared.reasonForDisplay"
+        arrow
+      >
+        <span
+          class="mb-1 w-full max-w-max min-w-0 truncate rounded-sm bg-muted px-2 py-1 text-sm text-muted select-none"
+        >
+          {{ resource.resource.shared.reasonForDisplay }}
+        </span>
+      </UTooltip>
       <NuxtLink :to="resourceLink(resource.resource)" class="flex items-center gap-2">
         <span class="truncate">
           {{ resource.resource.attributes.name }}

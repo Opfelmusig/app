@@ -47,7 +47,6 @@
         class="flex w-44 shrink-0 snap-start flex-col gap-1 sm:w-52 lg:w-56"
       >
         <AMGridItem :resource="item" :show-artists :show-year />
-        <slot name="caption" :item />
       </div>
     </div>
   </section>

@@ -5,7 +5,7 @@
       :key="shelf.id"
       :title="shelf.attributes.title ?? 'Recommendations'"
       :description="shelf.attributes.reason"
-      :items="shelf.relationships.content.map((content) => content.item)"
+      :items="shelf.relationships.content"
       :see-more-to="
         shelf.attributes.hasSeeAll
           ? {
@@ -15,16 +15,7 @@
           : undefined
       "
       show-artists
-    >
-      <template #caption="{ item }">
-        <p
-          v-if="shelf.relationships.content[item.position]?.reason"
-          class="line-clamp-2 text-sm text-muted"
-        >
-          {{ shelf.relationships.content[item.position]?.reason }}
-        </p>
-      </template>
-    </AMResourceScroller>
+    />
     <div
       v-if="!data && isPending"
       class="flex items-center justify-center gap-2 py-8 text-sm text-muted"

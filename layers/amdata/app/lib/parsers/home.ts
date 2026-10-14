@@ -101,7 +101,7 @@ function flattenRecommendations(items?: readonly Content[]): FlatContent[] {
   );
 }
 
-function getReason(meta: unknown): string | undefined {
+function getReasonForDisplay(meta: unknown): string | undefined {
   if (typeof meta !== "object" || meta === null || !("reason" in meta)) return;
 
   const reason = meta.reason;
@@ -136,12 +136,15 @@ export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRec
     },
 
     relationships: {
-      content: content
-        .map((resource, position) => ({
-          reason: getReason(resource.meta),
-          item: createListResource(parseResource(resource), `home:${resource.id}`, position),
-        }))
-        .filter((resource) => resource.item.resource.attributes.name),
+      content: createListResources(
+        content
+          .map((item) => ({
+            ...parseResource(item),
+            shared: { reasonForDisplay: getReasonForDisplay(item.meta) },
+          }))
+          .filter((item) => item.attributes.name),
+        `home:${resource.id}`,
+      ),
     },
   };
 }

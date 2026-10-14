@@ -14,9 +14,6 @@ export interface AmMeRecommendation extends AmResourceBase {
   };
 
   relationships: {
-    content: {
-      reason?: string;
-      item: AmListResource<AmMeRecommendationContent>;
-    }[];
+    content: AmListResource<AmMeRecommendationContent>[];
   };
 }
