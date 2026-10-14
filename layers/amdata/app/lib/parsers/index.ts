@@ -1,5 +1,7 @@
 import {
+  parseCatalogAlbum,
   parseLibraryAlbum,
+  type CatalogAlbumTemplate,
   type LibraryAlbumTemplate,
 } from "#layers/amdata/app/lib/parsers/albums";
 import {
@@ -21,14 +23,20 @@ import {
   parseLibrarySong,
   type SongTemplate,
 } from "#layers/amdata/app/lib/parsers/songs";
+import {
+  parseCatalogStation,
+  type CatalogStationTemplate,
+} from "#layers/amdata/app/lib/parsers/stations";
 import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmResource } from "#layers/amdata/app/types/resources";
 
 export type ResourceTemplate =
   | SongTemplate
+  | CatalogAlbumTemplate
   | LibraryAlbumTemplate
   | LibraryArtistTemplate
   | PlaylistTemplate
+  | CatalogStationTemplate
   | ProfileTemplate
   | LibraryPlaylistFolderTemplate;
 
@@ -47,6 +55,8 @@ export function parseResource(resource: ResourceTemplate | undefined): AmResourc
       return parseCatalogSong(resource);
     case "library-songs":
       return parseLibrarySong(resource);
+    case "albums":
+      return parseCatalogAlbum(resource);
     case "library-albums":
       return parseLibraryAlbum(resource);
     case "library-artists":
@@ -55,6 +65,8 @@ export function parseResource(resource: ResourceTemplate | undefined): AmResourc
       return parseCatalogPlaylist(resource);
     case "library-playlists":
       return parseLibraryPlaylist(resource);
+    case "stations":
+      return parseCatalogStation(resource);
     case "library-playlist-folders":
       return parseLibraryPlaylistFolder(resource);
     case "social-profiles":

@@ -1,7 +1,7 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
 import { parseCatalogLinks } from "#layers/amdata/app/lib/parsers/helpers";
-import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
+import type { AmCatalogAlbum, AmLibraryAlbum } from "#layers/amdata/app/types/albums";
 
 export type LibraryAlbumTemplate = ResourceTemplateOf<
   "library-albums",
@@ -48,6 +48,44 @@ export function parseLibraryAlbum(resource: LibraryAlbumTemplate): AmLibraryAlbu
       dateAdded: attributes.dateAdded ? new Date(attributes.dateAdded) : undefined,
       artistId: artist?.id,
       catalogId: catalog?.id,
+    },
+  };
+}
+
+export type CatalogAlbumTemplate = ResourceTemplateOf<
+  "albums",
+  "name" | "artistName" | "artwork" | "genreNames" | "releaseDate" | "contentRating",
+  "personalRating" | "editorialVideo",
+  {
+    artists: ResourceTemplateOf<"artists", "name">;
+    library: ResourceTemplateOf<"library-albums">;
+  }
+>;
+
+export function parseCatalogAlbum(resource: CatalogAlbumTemplate): AmCatalogAlbum {
+  const attributes = resource.attributes;
+
+  if (!attributes) throw new Error(`Invalid Apple Music album: ${resource.id}: missing attributes`);
+
+  return {
+    id: resource.id,
+    type: "albums",
+
+    attributes: {
+      name: attributes.name,
+      artistName: attributes.artistName,
+      genreNames: attributes.genreNames,
+      artwork: attributes.artwork,
+      releaseDate: attributes.releaseDate,
+      contentRating: attributes.contentRating,
+      editorialVideo: attributes.editorialVideo,
+      personalRating: attributes.personalRating,
+
+      artists: parseCatalogLinks(resource.relationships?.artists.data),
+    },
+
+    extras: {
+      libraryId: resource.relationships?.library.data[0]?.id,
     },
   };
 }
