@@ -19,9 +19,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { LyricMetadata, LyricVariant } from "#layers/lyrics/app/types/lyrics";
-import type { LyricsTimelineItem } from "#layers/lyrics/app/types/timeline";
-
 const props = defineProps<{
   item: LyricsTimelineItem;
   progress: number;

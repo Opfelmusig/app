@@ -1,7 +1,6 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
 import { parseCatalogLinks } from "#layers/amdata/app/lib/parsers/helpers";
-import type { AmCatalogAlbum, AmLibraryAlbum } from "#layers/amdata/app/types/albums";
 
 export type LibraryAlbumTemplate = ResourceTemplateOf<
   "library-albums",

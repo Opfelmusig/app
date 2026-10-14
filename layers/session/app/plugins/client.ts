@@ -5,10 +5,6 @@ import { fetch } from "@tauri-apps/plugin-http";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
 
 import { parseResource } from "#layers/amdata/app/lib/parsers";
-import type { AmCatalogPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-import { createListResources } from "#layers/amdata/app/utils/listResources";
 import { getAppleMusicDeveloperToken } from "#layers/session/app/lib/getAppleMusicDeveloperToken";
 import { profileScope } from "#layers/session/app/lib/profileScope";
 

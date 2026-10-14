@@ -8,8 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import { tableReorderKey } from "#layers/ui/app/utils/tableReorder";
-
 const columns = useTableColumns();
 const reorder = inject(tableReorderKey, undefined);
 </script>

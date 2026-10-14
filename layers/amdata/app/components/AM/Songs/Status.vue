@@ -15,9 +15,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmSong } from "#layers/amdata/app/types/songs";
-
 defineProps<{
   isPending: boolean;
   error: Error | null;

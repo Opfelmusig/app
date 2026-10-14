@@ -1,6 +1,3 @@
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmResourceBase } from "#layers/amdata/app/types/resources";
-
 export interface AmLibraryPlaylistFolder extends AmResourceBase {
   type: "library-playlist-folders";
   attributes: {

@@ -29,8 +29,6 @@ import {
   parseCatalogStation,
   type CatalogStationTemplate,
 } from "#layers/amdata/app/lib/parsers/stations";
-import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
-import type { AmResource } from "#layers/amdata/app/types/resources";
 
 export type ResourceTemplate =
   | SongTemplate

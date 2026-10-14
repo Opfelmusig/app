@@ -1,7 +1,5 @@
 import type { Artwork, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
 
-import type { AmResourceBase } from "#layers/amdata/app/types/resources";
-
 export interface AmPlaylistAttributes {
   name: string;
   artwork?: Artwork;

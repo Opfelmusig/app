@@ -103,12 +103,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { AmAlbum } from "#layers/amdata/app/types/albums";
-import type { AmArtist } from "#layers/amdata/app/types/artists";
-import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-
 const props = defineProps<{
   resource: AmListResource<AmAlbum | AmPlaylist | AmArtist | AmSocialProfile | AmCatalogStation>;
   showArtists?: boolean;

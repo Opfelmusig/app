@@ -13,8 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { QueueContext } from "#layers/player/app/types/queue";
-
 defineProps<{
   title: string;
   context?: QueueContext | null;

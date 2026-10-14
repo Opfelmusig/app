@@ -1,6 +1,5 @@
 import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 import { invoke } from "@tauri-apps/api/core";
-import type { Ref } from "vue";
 
 interface DiscordPlayback {
   isPlaying: Ref<boolean>;

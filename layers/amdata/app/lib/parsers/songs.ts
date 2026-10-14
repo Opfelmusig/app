@@ -1,7 +1,6 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
 import { parseCatalogLinks } from "#layers/amdata/app/lib/parsers/helpers";
-import type { AmCatalogSong, AmLibrarySong } from "#layers/amdata/app/types/songs";
 
 type SongAttributeKeys =
   | "name"

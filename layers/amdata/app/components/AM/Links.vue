@@ -16,8 +16,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { AmCatalogLink } from "#layers/amdata/app/types/resources";
-
 const props = defineProps<{
   links: AmCatalogLink[];
   type: "albums" | "artists";

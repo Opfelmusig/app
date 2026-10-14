@@ -1,9 +1,3 @@
-import type { AmAlbum } from "#layers/amdata/app/types/albums";
-import type { AmArtist } from "#layers/amdata/app/types/artists";
-import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmResource } from "#layers/amdata/app/types/resources";
-import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
-
 export function resourceLink(resource?: AmResource | null) {
   if (!resource) return;
 

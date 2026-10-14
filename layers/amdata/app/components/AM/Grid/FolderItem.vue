@@ -33,9 +33,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { AmLibraryPlaylistFolder } from "#layers/amdata/app/types/folders";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-
 const props = defineProps<{
   resource: AmListResource<AmLibraryPlaylistFolder>;
 }>();

@@ -1,6 +1,4 @@
 import type { ControlOption } from "#layers/amdata/app/lib/controls/types";
-import type { AlbumSort } from "#layers/amdata/app/types/albums";
-import type { SongSort } from "#layers/amdata/app/types/songs";
 
 export type SortingDirection = "asc" | "desc";
 

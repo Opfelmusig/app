@@ -1,5 +1,4 @@
 import type { ControlOption } from "#layers/amdata/app/lib/controls/types";
-import type { SongColumns } from "#layers/amdata/app/types/songs";
 
 export const defaultSongColumns: SongColumns[] = ["album", "artist", "length"];
 

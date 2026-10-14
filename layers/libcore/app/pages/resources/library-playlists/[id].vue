@@ -119,7 +119,6 @@
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { defaultSongSorting } from "#layers/amdata/app/lib/controls/sorting";
-import type { SongSort } from "#layers/amdata/app/types/songs";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 const id = useRouteParams<string>("id");

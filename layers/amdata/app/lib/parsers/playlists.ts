@@ -1,8 +1,6 @@
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import type { AmCatalogPlaylist, AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
-
 export type LibraryPlaylistTemplate = ResourceTemplateOf<
   "library-playlists",
   "name" | "artwork" | "canEdit" | "dateAdded" | "description" | "isPublic" | "lastModifiedDate",

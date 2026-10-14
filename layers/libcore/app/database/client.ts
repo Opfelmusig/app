@@ -2,11 +2,6 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { Collection } from "dexie";
 import { filter, flatMap, groupBy, isDefined, isTruthy, pipe, sort, unique } from "remeda";
 
-import type { AmLibraryPlaylistFolder, AmLibraryTreeNode } from "#layers/amdata/app/types/folders";
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmLibrarySong } from "#layers/amdata/app/types/songs";
-import { createListResource, createListResources } from "#layers/amdata/app/utils/listResources";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
   DbListId,

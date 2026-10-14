@@ -8,12 +8,6 @@
 import type { Artwork } from "@opfelmusig/lib/types";
 
 import { artworkContextKey } from "#layers/amdata/app/lib/contexts/artwork";
-import type { AmAlbum } from "#layers/amdata/app/types/albums";
-import type { AmArtist } from "#layers/amdata/app/types/artists";
-import type { AmPlaylist } from "#layers/amdata/app/types/playlists";
-import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmSong } from "#layers/amdata/app/types/songs";
 
 const variants = cva(
   "group relative flex aspect-square shrink-0 items-center justify-center overflow-hidden select-none",

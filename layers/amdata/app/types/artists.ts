@@ -1,7 +1,5 @@
 import type { Artwork, EditorialArtwork, RatingValue } from "@opfelmusig/lib/types";
 
-import type { AmResourceBase } from "#layers/amdata/app/types/resources";
-
 export interface AmArtistAttributes {
   name: string;
   artwork?: Artwork;

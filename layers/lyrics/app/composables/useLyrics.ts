@@ -1,8 +1,5 @@
 import { AppleMusicError } from "@opfelmusig/lib";
 
-import type { AmSong } from "#layers/amdata/app/types/songs";
-import { parseAppleMusicLyricsTtml } from "#layers/lyrics/app/utils/parseAppleMusicLyricsTtml";
-
 export default function useLyrics(song: MaybeRefOrGetter<AmSong | undefined>) {
   const client = useClient();
   const auth = useAuth();

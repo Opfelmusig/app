@@ -1,6 +1,3 @@
-import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
-
 export default function useResourceTracksPlayback() {
   const queueStore = useQueueStore();
   const toast = useToast();

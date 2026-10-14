@@ -15,8 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import { tableReorderKey } from "#layers/ui/app/utils/tableReorder";
-
 defineProps<{ id: string }>();
 
 const reorder = inject(tableReorderKey, undefined);

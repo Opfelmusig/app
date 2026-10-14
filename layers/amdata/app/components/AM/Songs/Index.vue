@@ -23,9 +23,6 @@
 <script lang="ts" setup>
 import { groupBy, map, pipe, values } from "remeda";
 
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmSong } from "#layers/amdata/app/types/songs";
-
 const props = defineProps<{
   songs?: AmListResource<AmSong>[];
   albumMode?: boolean;

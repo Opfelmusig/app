@@ -1,8 +1,6 @@
 // https://github.com/nuxt/ui/blob/v4/src/runtime/composables/useScrollShadow.ts
 
-import { useMutationObserver, useResizeObserver, useScroll } from "@vueuse/core";
-import type { CSSProperties, MaybeRef, MaybeRefOrGetter } from "vue";
-import { computed, toValue } from "vue";
+import type { CSSProperties } from "vue";
 
 export interface UseScrollShadowOptions {
   /**

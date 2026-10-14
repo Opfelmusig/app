@@ -29,12 +29,6 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  AppleMusicLyricsLineDocument,
-  AppleMusicLyricsTimedDocument,
-} from "#layers/lyrics/app/types/lyrics";
-import type { LyricsTimelineItem } from "#layers/lyrics/app/types/timeline";
-
 const props = defineProps<{
   lyrics: AppleMusicLyricsLineDocument | AppleMusicLyricsTimedDocument;
   progress: number;

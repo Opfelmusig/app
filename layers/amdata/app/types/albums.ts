@@ -1,7 +1,5 @@
 import type { Artwork, ContentRating, EditorialVideo, RatingValue } from "@opfelmusig/lib/types";
 
-import type { AmCatalogLink, AmResourceBase } from "#layers/amdata/app/types/resources";
-
 export interface AmAlbumAttributes {
   name: string;
   artistName?: string;

@@ -16,8 +16,6 @@
 </template>
 
 <script lang="ts" setup>
-import { tableReorderKey } from "#layers/ui/app/utils/tableReorder";
-
 const props = defineProps<{
   noHover?: boolean;
   small?: boolean;

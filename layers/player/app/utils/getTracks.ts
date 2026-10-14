@@ -1,5 +1,3 @@
-import type { AmLibraryAlbum } from "#layers/amdata/app/types/albums";
-import type { AmLibraryPlaylist } from "#layers/amdata/app/types/playlists";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 export default async function getTracks(resource: AmLibraryAlbum | AmLibraryPlaylist) {

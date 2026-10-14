@@ -1,5 +1,3 @@
-import type { AmResource } from "#layers/amdata/app/types/resources";
-
 export default function (type?: AmResource["type"] | null) {
   switch (type) {
     case "artists":

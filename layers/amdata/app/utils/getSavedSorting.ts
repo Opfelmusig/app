@@ -1,5 +1,4 @@
 import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
-import type { SongSort } from "#layers/amdata/app/types/songs";
 
 export default function getSavedSorting(id: string, defaultSort: SongSort) {
   const key = `opfelmusig:list:${id}`;

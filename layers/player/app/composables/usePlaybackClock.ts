@@ -1,5 +1,3 @@
-import type { Ref } from "vue";
-
 const MAX_DRIFT = 0.5;
 
 export function usePlaybackClock(duration: Ref<number>) {

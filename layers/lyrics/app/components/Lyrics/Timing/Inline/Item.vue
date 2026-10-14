@@ -31,8 +31,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { LyricInlineTimedLine, LyricVariant } from "#layers/lyrics/app/types/lyrics";
-
 const props = defineProps<{
   line: LyricInlineTimedLine;
   variants: LyricVariant[];

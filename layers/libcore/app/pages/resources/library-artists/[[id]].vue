@@ -98,7 +98,6 @@ import { filter, pipe, reverse, sortBy as sortArtists } from "remeda";
 import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/controls/filters";
 import { artistSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
-import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: artists } = useLibraryList(DbListId.Artists);

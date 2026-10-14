@@ -1,11 +1,3 @@
-import type {
-  AppleMusicLyricsLineDocument,
-  AppleMusicLyricsTimedDocument,
-  LyricLineTimedLine,
-  LyricInlineTimedLine,
-} from "#layers/lyrics/app/types/lyrics";
-import type { LyricsTimelineItem } from "#layers/lyrics/app/types/timeline";
-
 const SILENCE_THRESHOLD_MS = 5000;
 
 export function usePreparedLyrics(

@@ -14,9 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { createTableReorder, tableReorderKey } from "#layers/ui/app/utils/tableReorder";
-import type { TableReorder } from "#layers/ui/app/utils/tableReorder";
-
 const props = defineProps<{
   reorderable?: boolean;
   reorderIds?: readonly string[];

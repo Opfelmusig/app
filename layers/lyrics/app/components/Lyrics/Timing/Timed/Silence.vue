@@ -16,8 +16,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { LyricsTimelineItemSilence } from "#layers/lyrics/app/types/timeline";
-
 const props = defineProps<{
   silence: LyricsTimelineItemSilence;
   progress: number;

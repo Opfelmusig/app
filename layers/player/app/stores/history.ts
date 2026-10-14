@@ -1,7 +1,5 @@
 import { pipe, take, uniqueBy } from "remeda";
 
-import type { QueueTrack } from "#layers/player/app/types/queue";
-
 export interface HistoryEntry {
   id: string;
   playedAt: string;

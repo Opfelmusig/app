@@ -1,7 +1,5 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import type { AmCatalogStation } from "#layers/amdata/app/types/stations";
-
 export type CatalogStationTemplate = ResourceTemplateOf<"stations", "name" | "artwork">;
 
 export function parseCatalogStation(resource: CatalogStationTemplate): AmCatalogStation {

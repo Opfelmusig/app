@@ -13,8 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { AmResource } from "#layers/amdata/app/types/resources";
-
 const type = useRouteParams<AmResource["type"]>("type");
 
 useHead({ title: "Not found" });

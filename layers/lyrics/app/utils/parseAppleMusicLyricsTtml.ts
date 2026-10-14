@@ -1,15 +1,3 @@
-import type {
-  AppleMusicLyricsDocument,
-  LyricInlineTimedLine,
-  LyricInlineTimedTextNode,
-  LyricLineTimedLine,
-  LyricMetadata,
-  LyricNoneLine,
-  LyricTimingMode,
-  LyricUntimedTextNode,
-  LyricVariant,
-} from "#layers/lyrics/app/types/lyrics";
-
 interface InlineContext {
   startMs: number | null;
   endMs: number | null;

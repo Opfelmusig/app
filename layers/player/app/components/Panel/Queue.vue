@@ -76,8 +76,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { TableReorder } from "#layers/ui/app/utils/tableReorder";
-
 const queueStore = useQueueStore();
 const maxSongs = 50;
 

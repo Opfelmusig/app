@@ -33,8 +33,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { LyricInlineTimedTextNode } from "#layers/lyrics/app/types/lyrics";
-
 const props = defineProps<{
   node: LyricInlineTimedTextNode;
   progress: number;

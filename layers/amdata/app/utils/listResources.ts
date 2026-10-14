@@ -1,5 +1,3 @@
-import type { AmListResource, AmResource } from "#layers/amdata/app/types/resources";
-
 export function createListResource<T extends AmResource>(
   resource: T,
   listId: string,

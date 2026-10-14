@@ -1,8 +1,6 @@
 import { sort as sortWith, sortBy } from "remeda";
 
 import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
-import type { AlbumSort, AmAlbum } from "#layers/amdata/app/types/albums";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
 
 export default function sortAlbums(
   albums: AmListResource<AmAlbum>[],

@@ -6,8 +6,6 @@ import type {
   RatingValue,
 } from "@opfelmusig/lib/types";
 
-import type { AmCatalogLink, AmResourceBase } from "#layers/amdata/app/types/resources";
-
 export interface AmSongAttributes {
   name: string;
   artistName?: string;

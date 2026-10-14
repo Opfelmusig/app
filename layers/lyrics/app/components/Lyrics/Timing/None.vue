@@ -18,8 +18,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { AppleMusicLyricsNoneDocument } from "#layers/lyrics/app/types/lyrics";
-
 defineProps<{
   lyrics: AppleMusicLyricsNoneDocument;
 }>();

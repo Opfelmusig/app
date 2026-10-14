@@ -66,7 +66,6 @@ import { entries, groupBy, map, pipe } from "remeda";
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
-import type { AmSong, SongColumns } from "#layers/amdata/app/types/songs";
 
 useHead({ title: "History" });
 

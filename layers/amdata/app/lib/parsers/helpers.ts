@@ -1,5 +1,3 @@
-import type { AmCatalogLink } from "#layers/amdata/app/types/resources";
-
 export function parseCatalogLinks(
   resources: readonly { id: string; attributes?: { name?: string } }[] | undefined,
 ): AmCatalogLink[] {

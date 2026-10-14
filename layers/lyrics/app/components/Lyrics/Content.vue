@@ -19,8 +19,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { AppleMusicLyricsDocument } from "#layers/lyrics/app/types/lyrics";
-
 defineProps<{
   lyrics: AppleMusicLyricsDocument | null;
   pending: boolean;

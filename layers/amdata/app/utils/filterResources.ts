@@ -1,7 +1,4 @@
 import type { ResourceFilters } from "#layers/amdata/app/lib/controls/filters";
-import type { AmAlbum } from "#layers/amdata/app/types/albums";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmSong } from "#layers/amdata/app/types/songs";
 
 export default function filterResources<T extends AmSong | AmAlbum>(
   resources: AmListResource<T>[],

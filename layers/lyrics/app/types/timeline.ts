@@ -1,5 +1,3 @@
-import type { LyricLineTimedLine, LyricInlineTimedLine } from "#layers/lyrics/app/types/lyrics";
-
 export type LyricsTimelineItem =
   | {
       type: "line";

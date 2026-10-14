@@ -46,7 +46,6 @@
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { albumSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { libraryAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
-import type { AlbumSort } from "#layers/amdata/app/types/albums";
 import { DbListId } from "#layers/libcore/app/database/types";
 
 const { data: albums, isPending, error } = useLibraryList(DbListId.Albums);

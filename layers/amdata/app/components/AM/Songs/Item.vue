@@ -98,10 +98,6 @@
 </template>
 
 <script lang="ts" setup>
-import { AMLinks } from "#components";
-import type { AmListResource } from "#layers/amdata/app/types/resources";
-import type { AmSong } from "#layers/amdata/app/types/songs";
-
 const props = defineProps<{
   song: AmListResource<AmSong>;
   albumMode?: boolean;
