@@ -14,7 +14,7 @@
         <p v-if="message" class="text-base text-neutral-400">
           {{ message }}
         </p>
-        <div class="mt-4 flex gap-2">
+        <div class="mt-4 flex flex-wrap justify-center gap-2">
           <button
             type="button"
             class="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-90"
@@ -28,6 +28,14 @@
             @click="reload"
           >
             Reload
+          </button>
+          <button
+            type="button"
+            class="cursor-pointer rounded-md bg-neutral-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700 disabled:pointer-events-none disabled:opacity-50"
+            :disabled="clearingCache"
+            @click="clearCache"
+          >
+            {{ clearingCache ? "Clearing cache..." : "Clear cache and reload" }}
           </button>
           <button
             type="button"
@@ -47,6 +55,7 @@
             {{ state.syncing ? "Syncing..." : "Sync library" }}
           </button>
         </div>
+        <p v-if="cacheError" class="text-sm text-red-400" role="alert">{{ cacheError }}</p>
       </main>
       <div
         v-if="isDev && stack"
@@ -65,6 +74,7 @@
 <script setup lang="ts">
 import { appDataDir, join } from "@tauri-apps/api/path";
 import { Stronghold } from "@tauri-apps/plugin-stronghold";
+import { clearPersistedQueryCache } from "~~/colada.options";
 
 const error = useError();
 
@@ -116,4 +126,26 @@ async function logout() {
 }
 
 const { sync, state } = useLibrary() ?? {};
+const queryCache = useQueryCache();
+const clearingCache = ref(false);
+const cacheError = ref<string>();
+
+async function clearCache() {
+  if (clearingCache.value) return;
+
+  clearingCache.value = true;
+  cacheError.value = undefined;
+
+  try {
+    queryCache.cancelQueries();
+    for (const entry of queryCache.getEntries()) queryCache.remove(entry);
+    await clearPersistedQueryCache();
+    reload();
+  } catch (cause) {
+    logger.withTag("cache").error("Failed to clear cached data", { cause });
+    cacheError.value = "Could not clear the cache. Please try again.";
+  } finally {
+    clearingCache.value = false;
+  }
+}
 </script>
