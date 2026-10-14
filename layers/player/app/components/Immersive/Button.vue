@@ -5,7 +5,7 @@
     :icon
     :disabled
     class="size-6 justify-center rounded-md p-0 disabled:text-dimmed/80"
-    :class="active ? 'text-highlighted' : 'text-muted hover:text-default'"
+    :class="active ? 'text-highlighted' : 'text-muted'"
     :ui="{ leadingIcon: smallIcon ? 'size-3.5' : 'size-4' }"
   />
 </template>

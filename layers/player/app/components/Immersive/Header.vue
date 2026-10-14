@@ -30,15 +30,15 @@
           data-tauri-drag-region
         >
           <ImmersiveButton
-            :active="settingsStore.immersive.queue"
-            icon="lucide:list"
-            @click="settingsStore.immersive.queue = !settingsStore.immersive.queue"
-          />
-          <ImmersiveButton
             :active="settingsStore.immersive.lyrics"
             icon="lucide:message-square-quote"
             small-icon
             @click="settingsStore.immersive.lyrics = !settingsStore.immersive.lyrics"
+          />
+          <ImmersiveButton
+            :active="settingsStore.immersive.queue"
+            icon="lucide:list"
+            @click="settingsStore.immersive.queue = !settingsStore.immersive.queue"
           />
           <ImmersiveButton
             icon="lucide:settings"
