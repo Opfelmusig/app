@@ -9,6 +9,8 @@ import type {
 export const useQueueStore = defineStore(
   "opfelmusig:queue-store",
   () => {
+    const maxDisplayedSongs = 50;
+
     const queue = ref<QueueEntry[]>([]);
     const context = ref<QueueContext | null>(null);
     const contextQueue = ref<QueueEntry[]>([]);
@@ -190,8 +192,18 @@ export const useQueueStore = defineStore(
       else return contextQueue.value[contextIndex.value] ?? null;
     });
 
+    const currentQueue = computed(() => {
+      if (isShuffling.value) return shuffledQueue.value;
+      else return queue.value;
+    });
+
+    const currentCount = computed(
+      () => currentQueue.value.length + (isShuffling.value ? 0 : contextQueue.value.length),
+    );
+
     return {
       queue,
+      currentQueue,
       contextQueue,
       shuffledQueue,
       context,
@@ -213,6 +225,8 @@ export const useQueueStore = defineStore(
       isLooping,
       isShuffling,
       toggleShuffle,
+      maxDisplayedSongs,
+      currentCount,
     };
   },
   {

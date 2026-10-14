@@ -1,6 +1,6 @@
 <template>
   <div class="z-10 flex size-full flex-col overflow-hidden overflow-y-auto border-t border-default">
-    <template v-if="currentQueue.length > 0">
+    <template v-if="queueStore.currentQueue.length > 0">
       <PanelHeader
         v-if="queueStore.context && queueStore.isShuffling"
         title="Continue playing"
@@ -20,12 +20,12 @@
           :reorder-id="entry.id"
           @play="queueStore.playIndex(i + overshoot)"
         />
-        <OMTableStatus v-if="upNext.length > maxSongs">
+        <OMTableStatus v-if="upNext.length > queueStore.maxDisplayedSongs">
           <div class="flex items-center gap-2">
             <OMIcon name="lucide:layout-grid" class="size-4" filled />
             <span
-              >{{ upNext.length - maxSongs }} more
-              {{ upNext.length - maxSongs === 1 ? "song" : "songs" }}</span
+              >{{ upNext.length - queueStore.maxDisplayedSongs }} more
+              {{ upNext.length - queueStore.maxDisplayedSongs === 1 ? "song" : "songs" }}</span
             >
           </div>
         </OMTableStatus>
@@ -47,12 +47,14 @@
           :reorder-id="entry.id"
           @play="queueStore.playIndex(i + overshootContext)"
         />
-        <OMTableStatus v-if="upNextContext.length > maxSongs">
+        <OMTableStatus v-if="upNextContext.length > queueStore.maxDisplayedSongs">
           <div class="flex items-center gap-2">
             <OMIcon name="lucide:layout-grid" class="size-4" filled />
             <span
-              >{{ upNextContext.length - maxSongs }} more
-              {{ upNextContext.length - maxSongs === 1 ? "song" : "songs" }}</span
+              >{{ upNextContext.length - queueStore.maxDisplayedSongs }} more
+              {{
+                upNextContext.length - queueStore.maxDisplayedSongs === 1 ? "song" : "songs"
+              }}</span
             >
           </div>
         </OMTableStatus>
@@ -60,13 +62,14 @@
     </template>
     <div
       v-if="
-        (currentQueue.length <= 0 || !queueStore.isShuffling) && queueStore.contextQueue.length <= 0
+        (queueStore.currentQueue.length <= 0 || !queueStore.isShuffling) &&
+        queueStore.contextQueue.length <= 0
       "
       class="flex size-full items-center justify-center text-muted"
     >
       Nothing in the queue
     </div>
-    <AMFooter v-if="count > 0 && queueStore.isLooping">
+    <AMFooter v-if="queueStore.currentCount > 0 && queueStore.isLooping">
       <div class="flex items-center gap-2 text-sm text-muted">
         <UIcon name="lucide:repeat" class="size-3.5" />
         Repeating songs
@@ -77,27 +80,19 @@
 
 <script lang="ts" setup>
 const queueStore = useQueueStore();
-const maxSongs = 50;
 
 function reorder({ fromIndex, toIndex }: TableReorder, offset: number) {
   queueStore.moveIndex(fromIndex + offset, toIndex + offset);
 }
 
-const currentQueue = computed(() => {
-  if (queueStore.isShuffling) return queueStore.shuffledQueue;
-  else return queueStore.queue;
-});
-
 const overshoot = computed(() => (queueStore.index ?? -1) + 1);
-const upNext = computed(() => currentQueue.value.slice(overshoot.value));
-const visibleUpNext = computed(() => upNext.value.slice(0, maxSongs));
+const upNext = computed(() => queueStore.currentQueue.slice(overshoot.value));
+const visibleUpNext = computed(() => upNext.value.slice(0, queueStore.maxDisplayedSongs));
 
 const contextStart = computed(() => (queueStore.contextIndex ?? -1) + 1);
 const upNextContext = computed(() => queueStore.contextQueue.slice(contextStart.value));
-const visibleUpNextContext = computed(() => upNextContext.value.slice(0, maxSongs));
-const overshootContext = computed(() => queueStore.queue.length + contextStart.value);
-
-const count = computed(
-  () => currentQueue.value.length + (queueStore.isShuffling ? 0 : queueStore.contextQueue.length),
+const visibleUpNextContext = computed(() =>
+  upNextContext.value.slice(0, queueStore.maxDisplayedSongs),
 );
+const overshootContext = computed(() => queueStore.queue.length + contextStart.value);
 </script>
