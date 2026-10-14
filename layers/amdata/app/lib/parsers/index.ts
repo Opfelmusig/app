@@ -5,7 +5,9 @@ import {
   type LibraryAlbumTemplate,
 } from "#layers/amdata/app/lib/parsers/albums";
 import {
+  parseCatalogArtist,
   parseLibraryArtist,
+  type CatalogArtistTemplate,
   type LibraryArtistTemplate,
 } from "#layers/amdata/app/lib/parsers/artists";
 import {
@@ -34,6 +36,7 @@ export type ResourceTemplate =
   | SongTemplate
   | CatalogAlbumTemplate
   | LibraryAlbumTemplate
+  | CatalogArtistTemplate
   | LibraryArtistTemplate
   | PlaylistTemplate
   | CatalogStationTemplate
@@ -59,6 +62,8 @@ export function parseResource(resource: ResourceTemplate | undefined): AmResourc
       return parseCatalogAlbum(resource);
     case "library-albums":
       return parseLibraryAlbum(resource);
+    case "artists":
+      return parseCatalogArtist(resource);
     case "library-artists":
       return parseLibraryArtist(resource);
     case "playlists":

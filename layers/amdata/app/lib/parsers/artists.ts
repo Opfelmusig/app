@@ -1,6 +1,6 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import type { AmLibraryArtist } from "#layers/amdata/app/types/artists";
+import type { AmCatalogArtist, AmLibraryArtist } from "#layers/amdata/app/types/artists";
 
 export type LibraryArtistTemplate = ResourceTemplateOf<
   "library-artists",
@@ -37,5 +37,33 @@ export function parseLibraryArtist(resource: LibraryArtistTemplate): AmLibraryAr
     extras: {
       catalogId: catalog?.id,
     },
+  };
+}
+
+export type CatalogArtistTemplate = ResourceTemplateOf<
+  "artists",
+  "name" | "artwork" | "genreNames",
+  "personalRating" | "editorialArtwork"
+>;
+
+export function parseCatalogArtist(resource: CatalogArtistTemplate): AmCatalogArtist {
+  const attributes = resource.attributes;
+
+  if (!attributes)
+    throw new Error(`Invalid Apple Music artist: ${resource.id}: missing attributes`);
+
+  return {
+    id: resource.id,
+    type: "artists",
+
+    attributes: {
+      name: attributes.name,
+      genreNames: attributes.genreNames,
+      artwork: attributes.artwork,
+      editorialArtwork: attributes.editorialArtwork,
+      personalRating: attributes.personalRating,
+    },
+
+    extras: {},
   };
 }
