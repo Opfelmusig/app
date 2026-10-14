@@ -22,8 +22,8 @@ import type { AmListResource } from "#layers/amdata/app/types/resources";
 
 defineProps<{
   items?: AmListResource<
-    AmAlbum | AmPlaylist | AmArtist | AmLibraryPlaylistFolder | AmSocialProfile
-  >[]; // stations
+    AmAlbum | AmPlaylist | AmArtist | AmLibraryPlaylistFolder | AmSocialProfile | AmCatalogStation
+  >[];
   showArtists?: boolean;
   showYear?: boolean;
 }>();

@@ -8,6 +8,8 @@ export function resourceLink(resource?: AmResource | null) {
   if (!resource) return;
 
   switch (resource.type) {
+    case "stations":
+      return;
     case "songs":
       if (!resource.attributes.albums[0]?.id) return;
       return rawResourceLink("albums", resource.attributes.albums[0].id, resource.id);

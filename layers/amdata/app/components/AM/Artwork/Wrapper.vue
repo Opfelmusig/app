@@ -38,7 +38,7 @@ const variants = cva(
   },
 );
 
-type Resources = AmSong | AmAlbum | AmArtist | AmPlaylist | AmSocialProfile;
+type Resources = AmSong | AmAlbum | AmArtist | AmPlaylist | AmSocialProfile | AmCatalogStation;
 
 const props = defineProps<{
   context: NonNullable<VariantProps<typeof variants>["context"]>;

@@ -1,10 +1,13 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
-    <NuxtLink class="w-full" :to="resourceLink(resource.resource)">
-      <AMArtworkWrapper :resource context="grid" color="muted">
+    <NuxtLink
+      class="w-full"
+      :to="resource.resource.type === 'stations' ? undefined : resourceLink(resource.resource)"
+    >
+      <AMArtworkWrapper v-slot="{ iconClass }" :resource context="grid" color="muted">
         <AMArtworkImage />
         <AMArtworkPlaceholder />
-        <AMArtworkOverlay alignment="bottom">
+        <AMArtworkOverlay v-if="resource.resource.type !== 'stations'" alignment="bottom">
           <AMArtworkOverlayButton
             v-if="playableResource"
             icon="lucide:play"
@@ -13,6 +16,13 @@
             @click="play(playableResource)"
           />
           <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
+        </AMArtworkOverlay>
+        <AMArtworkOverlay v-else>
+          <OMIcon
+            :name="pendingResource ? 'lucide:loader-circle' : 'lucide:play'"
+            :class="cn(iconClass, pendingResource ? 'animate-spin stroke-3 [&>path]:stroke-3' : '')"
+            :filled="!pendingResource"
+          />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
     </NuxtLink>
@@ -24,6 +34,7 @@
         <OMStar
           v-if="
             resource.resourceType !== 'social-profiles' &&
+            resource.resourceType !== 'stations' &&
             resource.resource.attributes.personalRating === 1
           "
         />
@@ -99,7 +110,7 @@ import type { AmSocialProfile } from "#layers/amdata/app/types/profiles";
 import type { AmListResource } from "#layers/amdata/app/types/resources";
 
 const props = defineProps<{
-  resource: AmListResource<AmAlbum | AmPlaylist | AmArtist | AmSocialProfile>; // station
+  resource: AmListResource<AmAlbum | AmPlaylist | AmArtist | AmSocialProfile | AmCatalogStation>;
   showArtists?: boolean;
   showYear?: boolean;
 }>();

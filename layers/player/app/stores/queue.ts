@@ -66,7 +66,7 @@ export const useQueueStore = defineStore(
       }
     }
 
-    function playStation(_station: unknown) {
+    function playStation(_station: AmCatalogStation) {
       // set context
       // fetch next song
       // if "next" fetch next song
