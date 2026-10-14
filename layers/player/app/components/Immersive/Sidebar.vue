@@ -1,9 +1,11 @@
 <template>
   <div
-    class="flex h-full flex-col overflow-hidden bg-default transition-[width]"
-    :class="settingsStore.immersive.queue ? 'w-120' : 'w-0'"
+    class="flex h-full shrink-0 flex-col overflow-hidden bg-default transition-[width]"
+    :class="settingsStore.immersive.queue ? 'w-100' : 'w-0'"
   >
-    <Queue />
+    <div class="flex h-full w-100 flex-col overflow-hidden">
+      <Queue />
+    </div>
   </div>
 </template>
 
