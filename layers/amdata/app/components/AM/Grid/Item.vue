@@ -4,7 +4,7 @@
       class="w-full"
       :to="resource.resource.type === 'stations' ? undefined : resourceLink(resource.resource)"
     >
-      <AMArtworkWrapper v-slot="{ iconClass }" :resource context="grid" color="muted">
+      <AMArtworkWrapper :resource context="grid" color="muted">
         <AMArtworkImage />
         <AMArtworkPlaceholder />
         <AMArtworkOverlay v-if="resource.resource.type !== 'stations'" alignment="bottom">
@@ -20,7 +20,8 @@
         <AMArtworkOverlay v-else>
           <OMIcon
             :name="pendingResource ? 'lucide:loader-circle' : 'lucide:play'"
-            :class="cn(iconClass, pendingResource ? 'animate-spin stroke-3 [&>path]:stroke-3' : '')"
+            class="size-10"
+            :class="pendingResource ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''"
             :filled="!pendingResource"
           />
         </AMArtworkOverlay>
