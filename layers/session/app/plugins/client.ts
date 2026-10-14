@@ -192,7 +192,7 @@ export default defineNuxtPlugin({
         client,
         auth: {
           valid: readonly(tokenValid),
-          profile: readonly(profile) as Readonly<Ref<AmSocialProfile>>,
+          profile: readonly(profile),
           sharedPlaylists: readonly(sharedPlaylists) as Readonly<
             Ref<AmListResource<AmCatalogPlaylist>[]>
           >,

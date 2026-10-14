@@ -1,7 +1,9 @@
 import type { UseQueryOptions, UseQueryReturn } from "@pinia/colada";
 
-type AmQueryOptions<T> = Pick<UseQueryOptions<T>, "key" | "query" | "staleTime" | "gcTime"> & {
+type AmQueryOptions<T> = Pick<UseQueryOptions<T>, "key" | "query"> & {
   enabled?: MaybeRefOrGetter<boolean | string | null | undefined>;
+  staleTime: number;
+  gcTime: number | false;
 };
 
 export default function useAmQuery<T>(options: AmQueryOptions<T>): UseQueryReturn<T> {
@@ -12,12 +14,12 @@ export default function useAmQuery<T>(options: AmQueryOptions<T>): UseQueryRetur
     key: () => [
       "amdata",
       ...toValue(options.key),
-      profile.value.id ?? null,
+      profile.value?.id ?? null,
       storefront.value?.id ?? null,
       settings.language ?? null,
     ],
     query: options.query,
-    enabled:
+    enabled: () =>
       valid.value &&
       !!storefront.value?.id &&
       (options.enabled === undefined || !!toValue(options.enabled)),
