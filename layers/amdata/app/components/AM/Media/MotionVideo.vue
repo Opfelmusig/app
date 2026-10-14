@@ -1,7 +1,7 @@
 <template>
   <div class="relative size-full select-none">
     <div class="absolute inset-0 z-10 size-full">
-      <MediaHlsVideo
+      <AMMediaHlsVideo
         v-if="motionVideo.video"
         :paused
         :quality

@@ -1,6 +1,6 @@
 <template>
   <div :class="artwork({ variant })">
-    <MediaMotionVideo
+    <AMMediaMotionVideo
       v-if="enabledMotionVideo"
       :paused
       :quality

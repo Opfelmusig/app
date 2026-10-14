@@ -16,7 +16,7 @@
       <div
         class="relative z-20 aspect-square h-full mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)]"
       >
-        <MediaEditorialVideo
+        <AMMediaEditorialVideo
           :editorial-video="resource?.attributes.editorialVideo"
           variant="square"
           quality="highest"
@@ -27,7 +27,7 @@
           <template #fallback>
             <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />
           </template>
-        </MediaEditorialVideo>
+        </AMMediaEditorialVideo>
       </div>
     </div>
     <div class="flex size-full items-center justify-center bg-muted">

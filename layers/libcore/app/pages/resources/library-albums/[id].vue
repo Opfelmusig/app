@@ -2,12 +2,12 @@
   <PageWrapper>
     <header class="flex gap-4 p-4">
       <AMArtworkWrapper :resource="album" context="header" color="muted">
-        <MediaEditorialVideo :editorial-video="album?.attributes.editorialVideo" variant="square">
+        <AMMediaEditorialVideo :editorial-video="album?.attributes.editorialVideo" variant="square">
           <template #fallback>
             <AMArtworkImage />
             <AMArtworkPlaceholder />
           </template>
-        </MediaEditorialVideo>
+        </AMMediaEditorialVideo>
       </AMArtworkWrapper>
       <div v-if="album" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">

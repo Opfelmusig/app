@@ -2,7 +2,7 @@
   <PageWrapper>
     <header class="flex gap-4 p-4">
       <AMArtworkWrapper :resource="playlist" context="header" color="muted">
-        <MediaEditorialVideo
+        <AMMediaEditorialVideo
           :editorial-video="playlist?.attributes.editorialVideo"
           variant="square"
         >
@@ -10,7 +10,7 @@
             <AMArtworkImage />
             <AMArtworkPlaceholder />
           </template>
-        </MediaEditorialVideo>
+        </AMMediaEditorialVideo>
       </AMArtworkWrapper>
       <div v-if="playlist" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
