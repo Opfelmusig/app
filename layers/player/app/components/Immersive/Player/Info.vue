@@ -3,6 +3,7 @@
     v-if="resource"
     :key="expanded ? 'expanded' : 'collapsed'"
     class="flex w-full min-w-0 flex-1 flex-col overflow-hidden"
+    :class="!expanded ? 'pointer-events-none' : ''"
   >
     <OMScrollingText
       class="transition-[font-size,line-height] duration-150 ease-out"
