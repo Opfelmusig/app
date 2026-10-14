@@ -42,8 +42,11 @@
         leave-active-class="transition-opacity"
         leave-to-class="opacity-0"
       >
-        <div v-show="settingsStore.panel.page === 'queue'" class="absolute inset-0">
-          <PanelQueue />
+        <div
+          v-show="settingsStore.panel.page === 'queue'"
+          class="absolute inset-0 z-10 flex border-t border-default"
+        >
+          <Queue />
         </div>
       </Transition>
     </div>
