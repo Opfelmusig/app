@@ -2,7 +2,7 @@
   <UApp :locale="en">
     <div :style="cssVars">
       <NuxtLayout>
-        <NuxtPage :keepalive="{ max: 5 }" />
+        <NuxtPage />
       </NuxtLayout>
     </div>
   </UApp>
