@@ -1,5 +1,9 @@
 <template>
-  <OMScrollingTextGroup v-if="resource" class="flex w-full min-w-0 flex-1 flex-col overflow-hidden">
+  <OMScrollingTextGroup
+    v-if="resource"
+    :key="expanded ? 'expanded' : 'collapsed'"
+    class="flex w-full min-w-0 flex-1 flex-col overflow-hidden"
+  >
     <OMScrollingText
       class="transition-[font-size,line-height] duration-150 ease-out"
       :class="expanded ? 'cursor-default text-xl' : 'cursor-pointer text-sm'"
