@@ -1,30 +1,45 @@
 <template>
-  <PageWrapper class="gap-4 p-4">
-    <template v-if="data">
-      <div v-for="shelve in data" :key="shelve.id" class="flex flex-col gap-4">
-        <div class="flex flex-col">
-          <h2>{{ shelve.attributes.title }}</h2>
-          <h3 v-if="shelve.attributes.reason">{{ shelve.attributes.reason }}</h3>
-        </div>
-        <div class="flex flex-col gap-2">
-          <span v-for="resource in shelve.relationships.content" :key="resource.item.id">
-            <template v-if="resource.reason"> {{ resource.reason }}: </template>
-            {{ resource.item.attributes.name }} - {{ resource.item.type }}
-          </span>
-        </div>
-      </div>
-    </template>
-    <div v-else class="flex size-full items-center justify-center overflow-hidden">
-      <div v-if="isPending" :class="statusClass()">
-        <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
-        <span>Loading</span>
-      </div>
-      <div v-else-if="error" :class="statusClass({ color: 'error' })">
-        <UIcon name="lucide:x" class="size-4" />
-        <span>{{ error.message }}</span>
-      </div>
-      <div v-else-if="!data" :class="statusClass()">No lyrics found</div>
+  <PageWrapper class="gap-8 p-4">
+    <AMResourceScroller
+      v-for="shelf in data"
+      :key="shelf.id"
+      :title="shelf.attributes.title ?? 'Recommendations'"
+      :description="shelf.attributes.reason"
+      :items="shelf.relationships.content.map((content) => content.item)"
+      :see-more-to="
+        shelf.attributes.hasSeeAll
+          ? {
+              path: `/home/${encodeURIComponent(shelf.id)}`,
+              query: { title: shelf.attributes.title ?? 'Recommendations' },
+            }
+          : undefined
+      "
+      show-artists
+    >
+      <template #caption="{ item }">
+        <p
+          v-if="shelf.relationships.content[item.position]?.reason"
+          class="line-clamp-2 text-sm text-muted"
+        >
+          {{ shelf.relationships.content[item.position]?.reason }}
+        </p>
+      </template>
+    </AMResourceScroller>
+    <div
+      v-if="!data && isPending"
+      class="flex items-center justify-center gap-2 py-8 text-sm text-muted"
+      role="status"
+    >
+      <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+      Loading recommendations
     </div>
+    <div v-else-if="error" class="flex items-center gap-2 text-sm text-error" role="alert">
+      <UIcon name="lucide:x" class="size-4 shrink-0" />
+      <span>{{ error.message }}</span>
+    </div>
+    <p v-else-if="data?.length === 0" class="py-8 text-center text-sm text-muted">
+      No recommendations available.
+    </p>
   </PageWrapper>
 </template>
 
@@ -38,17 +53,5 @@ const { data, isPending, error } = useAmQuery({
   query: () => fetchHome(client),
   staleTime: ms("5m"),
   gcTime: ms("6h"),
-});
-
-const statusClass = cva("flex items-center gap-2 text-sm", {
-  variants: {
-    color: {
-      muted: "text-muted",
-      error: "text-error",
-    },
-  },
-  defaultVariants: {
-    color: "muted",
-  },
 });
 </script>

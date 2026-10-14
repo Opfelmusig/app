@@ -137,11 +137,11 @@ export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRec
 
     relationships: {
       content: content
-        .map((resource) => ({
+        .map((resource, position) => ({
           reason: getReason(resource.meta),
-          item: parseResource(resource),
+          item: createListResource(parseResource(resource), `home:${resource.id}`, position),
         }))
-        .filter((resource) => resource.item.attributes.name),
+        .filter((resource) => resource.item.resource.attributes.name),
     },
   };
 }
