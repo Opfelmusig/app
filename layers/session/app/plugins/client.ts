@@ -89,6 +89,12 @@ export default defineNuxtPlugin({
 
     const settingsStore = useSettingsStore();
 
+    watch(
+      () => settingsStore.language,
+      (language) => client.setLanguageFromTag(language),
+      { flush: "sync" },
+    );
+
     async function prepareClient() {
       if (!token.value) return;
 
