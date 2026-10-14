@@ -1,5 +1,5 @@
 <template>
-  <div class="pointer-events-none fixed inset-1 top-9 z-10 overflow-hidden rounded-xl">
+  <div class="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-xl">
     <Transition>
       <div
         v-if="settingsStore.immersive.isOpen"

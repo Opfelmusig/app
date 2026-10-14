@@ -1,6 +1,6 @@
 <template>
   <div
-    class="pointer-events-none fixed inset-1 top-9 z-20 overflow-hidden rounded-xl"
+    class="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-xl"
     @load.capture="revealArtwork"
     @loadeddata.capture="revealArtwork"
   >
@@ -20,9 +20,8 @@
           :editorial-video="resource?.attributes.editorialVideo"
           variant="square"
           quality="highest"
-          :paused="!settingsStore.immersive.isOpen || settingsStore.immersive.page !== null"
+          :paused="!settingsStore.immersive.isOpen"
           class="h-full transition-[filter,opacity] [&_img]:object-cover"
-          :class="settingsStore.immersive.page === null ? '' : 'opacity-0'"
         >
           <template #fallback>
             <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />

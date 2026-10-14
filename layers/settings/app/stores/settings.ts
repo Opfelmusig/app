@@ -27,7 +27,8 @@ export const useSettingsStore = defineStore(
 
     const immersive = reactive({
       isOpen: false,
-      page: null as "queue" | "lyrics" | null,
+      lyrics: false,
+      queue: false,
     });
 
     const sidebarSections = reactive<SidebarSections>({

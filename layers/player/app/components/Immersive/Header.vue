@@ -29,11 +29,16 @@
           :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''"
           data-tauri-drag-region
         >
-          <ImmersiveButton icon="lucide:list" @click="togglePage('queue')" />
           <ImmersiveButton
+            :active="settingsStore.immersive.queue"
+            icon="lucide:list"
+            @click="settingsStore.immersive.queue = !settingsStore.immersive.queue"
+          />
+          <ImmersiveButton
+            :active="settingsStore.immersive.lyrics"
             icon="lucide:message-square-quote"
             small-icon
-            @click="togglePage('lyrics')"
+            @click="settingsStore.immersive.lyrics = !settingsStore.immersive.lyrics"
           />
           <ImmersiveButton
             icon="lucide:settings"
@@ -46,20 +51,10 @@
         </div>
       </div>
     </div>
-    <div class="z-10 flex h-3.5 justify-between" data-tauri-drag-region>
-      <ImmersiveReverseRadius position="tl" :size="14" />
-      <ImmersiveReverseRadius position="tr" :size="14" />
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 const settingsStore = useSettingsStore();
 const volumeStore = useVolumeStore();
-
-function togglePage(page: "queue" | "lyrics") {
-  const immersive = settingsStore.immersive;
-  immersive.isOpen = !immersive.isOpen || immersive.page !== page;
-  immersive.page = page;
-}
 </script>
