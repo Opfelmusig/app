@@ -52,12 +52,16 @@ export default defineNuxtPlugin({
         },
         {
           keys: "s",
-          run: () => queueStore.toggleShuffle(),
+          run: () => {
+            if (queueStore.isStation) return;
+            queueStore.toggleShuffle();
+          },
           config: { meta: { group: "Player", name: "Toggle shuffle" } },
         },
         {
           keys: "r",
           run() {
+            if (queueStore.isStation) return;
             queueStore.isLooping = !queueStore.isLooping;
           },
           config: { meta: { group: "Player", name: "Toggle repeat" } },

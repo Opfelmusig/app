@@ -23,6 +23,8 @@ export const useQueueStore = defineStore(
     const isShuffling = ref(false);
     const requestedStation = ref<AmCatalogStation | null>(null);
 
+    const isStation = computed(() => context.value?.type === "stations");
+
     const inContext = computed(
       () =>
         !isShuffling.value &&
@@ -299,6 +301,7 @@ export const useQueueStore = defineStore(
       maxDisplayedSongs,
       currentCount,
       requestedStation,
+      isStation,
     };
   },
   {

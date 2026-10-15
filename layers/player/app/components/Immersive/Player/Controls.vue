@@ -2,7 +2,8 @@
   <div class="flex items-center justify-between">
     <ImmersivePlayerToggle
       icon="lucide:shuffle"
-      :active="queueStore.isShuffling"
+      :class="queueStore.isStation ? 'pointer-events-none opacity-50' : ''"
+      :active="!queueStore.isStation && queueStore.isShuffling"
       @click="queueStore.toggleShuffle"
     />
 
@@ -17,7 +18,8 @@
 
     <ImmersivePlayerToggle
       icon="lucide:repeat"
-      :active="queueStore.isLooping"
+      :class="queueStore.isStation ? 'pointer-events-none opacity-50' : ''"
+      :active="!queueStore.isStation && queueStore.isLooping"
       @click="queueStore.isLooping = !queueStore.isLooping"
     />
   </div>

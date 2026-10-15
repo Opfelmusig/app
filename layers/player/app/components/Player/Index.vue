@@ -64,13 +64,14 @@
         <div class="mr-1 h-8 w-px shrink-0 grow-0 rounded-full bg-border" />
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
+          :class="queueStore.isStation ? 'pointer-events-none opacity-50' : ''"
           @click="queueStore.toggleShuffle"
         >
           <UIcon
             mode="svg"
             name="lucide:shuffle"
             class="size-4"
-            :class="queueStore.isShuffling ? 'text-primary' : 'text-muted'"
+            :class="!queueStore.isStation && queueStore.isShuffling ? 'text-primary' : 'text-muted'"
           />
         </div>
         <div
@@ -105,13 +106,14 @@
         </div>
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
+          :class="queueStore.isStation ? 'pointer-events-none opacity-50' : ''"
           @click="queueStore.isLooping = !queueStore.isLooping"
         >
           <UIcon
             mode="svg"
             name="lucide:repeat"
             class="size-4"
-            :class="queueStore.isLooping ? 'text-primary' : 'text-muted'"
+            :class="!queueStore.isStation && queueStore.isLooping ? 'text-primary' : 'text-muted'"
           />
         </div>
       </div>
