@@ -65,7 +65,6 @@ export default defineNuxtPlugin({
 
     const storefront = ref<Storefront>();
     const profile = ref<AmSocialProfile>();
-    const sharedPlaylists = ref<AmListResource<AmCatalogPlaylist>[]>();
 
     const client = new OpfelMusigClient({
       developerToken: async () => {
@@ -127,11 +126,6 @@ export default defineNuxtPlugin({
 
       if (!profile.value) throw new Error("Profile not found");
 
-      const playlists = (userProfile?.relationships?.["shared-playlists"].data ?? [])
-        .filter(hasResourceName)
-        .map((playlist) => parseResource(playlist));
-      sharedPlaylists.value = createListResources(playlists, "shared-playlists");
-
       tokenValid.value = true;
 
       log.info("Authentication validated", {
@@ -167,7 +161,6 @@ export default defineNuxtPlugin({
       settingsStore.language = undefined;
       tokenValid.value = false;
       profile.value = undefined;
-      sharedPlaylists.value = undefined;
 
       await nuxtApp.callHook("auth:logout");
 
@@ -201,9 +194,6 @@ export default defineNuxtPlugin({
         auth: {
           valid: readonly(tokenValid),
           profile: readonly(profile),
-          sharedPlaylists: readonly(sharedPlaylists) as Readonly<
-            Ref<AmListResource<AmCatalogPlaylist>[]>
-          >,
           storefront: readonly(storefront),
           getPlaybackCredentials,
           login,

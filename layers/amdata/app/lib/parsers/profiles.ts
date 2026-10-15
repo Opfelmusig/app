@@ -1,7 +1,5 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import type { CatalogPlaylistTemplate } from "#layers/amdata/app/lib/parsers/playlists";
-
 export type SocialProfileTemplate = ResourceTemplateOf<
   "social-profiles",
   "name" | "handle" | "artwork" | "isPrivate" | "isVerified"
@@ -12,7 +10,6 @@ export type PersonalSocialProfileTemplate = ResourceTemplateOf<
   never,
   {
     "social-profile": SocialProfileTemplate;
-    "shared-playlists": CatalogPlaylistTemplate;
   }
 >;
 

@@ -19,7 +19,7 @@
             <span v-if="playlist.attributes.curatorName" class="truncate">
               <NuxtLink
                 v-if="playlist.attributes.curatorSocialHandle"
-                :to="`/profile/${playlist.attributes.curatorSocialHandle}`"
+                :to="rawResourceLink('social-profiles', playlist.attributes.curatorSocialHandle)"
                 class="hover:underline"
               >
                 {{ playlist.attributes.curatorName }}

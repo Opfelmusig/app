@@ -89,7 +89,9 @@
           <span v-if="resource.resource.attributes.curatorName" class="truncate">
             <NuxtLink
               v-if="resource.resource.attributes.curatorSocialHandle"
-              :to="`/profile/${resource.resource.attributes.curatorSocialHandle}`"
+              :to="
+                rawResourceLink('social-profiles', resource.resource.attributes.curatorSocialHandle)
+              "
               class="hover:underline"
             >
               {{ resource.resource.attributes.curatorName }}
