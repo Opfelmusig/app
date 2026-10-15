@@ -19,13 +19,12 @@ export const useQueueStore = defineStore(
     const isLooping = ref<boolean>(true);
     const isShuffling = ref<boolean>(false);
 
-    const combinedLength = computed(() => queue.value.length + contextQueue.value.length);
     const inContext = computed(
       () =>
         !isShuffling.value &&
         index.value !== null &&
         index.value >= queue.value.length &&
-        index.value < combinedLength.value,
+        index.value < currentCount.value,
     );
     const contextIndex = computed(() => {
       if (index.value === null || isShuffling.value) return null;
@@ -36,7 +35,7 @@ export const useQueueStore = defineStore(
     });
 
     function loop() {
-      if (isLooping.value && combinedLength.value > 0) index.value = 0;
+      if (isLooping.value && currentCount.value > 0) index.value = 0;
       else index.value = null;
     }
 
@@ -81,24 +80,39 @@ export const useQueueStore = defineStore(
     }
 
     function next() {
-      if (combinedLength.value === 0) index.value = null;
+      if (currentCount.value === 0) index.value = null;
       else if (index.value !== null) {
         index.value += 1;
-        if (index.value >= combinedLength.value) loop();
+        if (index.value >= currentCount.value) loop();
       } else index.value = 0;
     }
 
     function previous() {
-      if (index.value === null || combinedLength.value <= 0) return;
+      if (index.value === null || currentCount.value <= 0) return;
 
       index.value -= 1;
 
-      if (index.value < 0 && isLooping.value) index.value = combinedLength.value - 1;
+      if (index.value < 0 && isLooping.value) index.value = currentCount.value - 1;
       else if (index.value < 0) index.value = 0;
     }
 
-    function clearQueue() {}
-    function clearContext() {}
+    function clearQueue() {
+      if (isShuffling.value) {
+        shuffledQueue.value.splice((index.value ?? -1) + 1);
+      } else if (!inContext.value) {
+        queue.value.splice((index.value ?? -1) + 1);
+      }
+    }
+
+    function clearContext() {
+      if (!inContext.value) {
+        context.value = null;
+        contextQueue.value = [];
+        return;
+      }
+
+      contextQueue.value.splice((contextIndex.value ?? -1) + 1);
+    }
 
     function findEntryIndex(id: string) {
       const entries = isShuffling.value

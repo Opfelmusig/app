@@ -44,7 +44,7 @@
     </p>
     <section v-for="(section, index) in sections" :key="section.id">
       <USeparator v-if="index" />
-      <PanelHeader :title="section.title" />
+      <OMTableTitle :title="section.title" :clearable="index === 0" @clear="historyStore.clear" />
       <AMSongsWrapper :columns>
         <AMSongsItem
           v-for="entry in section.entries"
