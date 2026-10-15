@@ -1,19 +1,75 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect } from "@opfelmusig/lib/helpers";
 
+import { parseCatalogArtist } from "#layers/amdata/app/lib/parsers/artists";
+import { getUnknownProperty } from "#layers/amdata/app/lib/parsers/helpers";
 import { parseCatalogPlaylist } from "#layers/amdata/app/lib/parsers/playlists";
 import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
-import { catalogPlaylistsScopes, catalogSongsScopes } from "#layers/amdata/app/lib/scopes/catalog";
+import {
+  catalogArtistsScopes,
+  catalogPlaylistsScopes,
+  catalogSongsScopes,
+} from "#layers/amdata/app/lib/scopes/catalog";
+
+export const playlistViews = ["featured-artists"] as const;
+export type PlaylistView = (typeof playlistViews)[number];
+
+const playlistViewScopes = {
+  ...catalogPlaylistsScopes,
+  ...catalogArtistsScopes,
+};
 
 export async function fetchCatalogPlaylist(client: OpfelMusigClient, id: string) {
   const response = await client.catalog.playlists.get(id, {
-    scopes: catalogPlaylistsScopes,
+    scopes: {
+      ...playlistViewScopes,
+      playlists: {
+        ...catalogPlaylistsScopes.playlists,
+        views: {
+          "featured-artists": { limit: 12 },
+        },
+      },
+    },
   });
 
   const playlist = response.data[0];
   if (!hasResourceName(playlist)) return null;
 
-  return parseCatalogPlaylist(playlist);
+  return {
+    playlist: parseCatalogPlaylist(playlist),
+    views: playlistViews.map((view) => {
+      const collection = playlist.views?.[view];
+      const title = getUnknownProperty(collection?.attributes, "title");
+
+      return {
+        view,
+        title: typeof title === "string" ? title : view,
+        items: createListResources(
+          (collection?.data ?? []).filter(hasResourceName).map(parseCatalogArtist),
+          `playlists:${id}:${view}`,
+        ),
+        hasMore: !!collection?.next,
+      };
+    }),
+  };
+}
+
+export async function fetchCatalogPlaylistView(
+  client: OpfelMusigClient,
+  id: string,
+  view: PlaylistView,
+) {
+  const resources = await collect(
+    client.catalog.playlists.iterateView(id, view, {
+      limit: 100,
+      scopes: playlistViewScopes,
+    }),
+  );
+
+  return createListResources(
+    resources.filter(hasResourceName).map(parseCatalogArtist),
+    `playlists:${id}:${view}`,
+  );
 }
 
 export async function fetchCatalogPlaylistTracks(client: OpfelMusigClient, id: string) {
