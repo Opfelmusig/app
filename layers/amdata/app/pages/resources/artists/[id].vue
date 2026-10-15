@@ -41,6 +41,16 @@
       </div>
       <p v-else class="text-sm text-muted">Artist not found.</p>
     </header>
+    <div v-if="artist" class="flex flex-col gap-8 py-4">
+      <AMResourceScroller
+        v-for="section in views"
+        :key="section.view"
+        :title="section.title"
+        :items="section.items"
+        show-artists
+        show-year
+      />
+    </div>
   </PageWrapper>
 </template>
 
@@ -52,16 +62,15 @@ import { fetchCatalogArtist } from "#layers/amdata/app/lib/queries/artists";
 const client = useClient();
 const id = useRouteParams<string>("id");
 
-const {
-  data: artist,
-  isPending,
-  error,
-} = useAmQuery({
+const { data, isPending, error } = useAmQuery({
   key: () => ["artists", id.value],
   query: () => fetchCatalogArtist(client, id.value),
-  staleTime: ms("5m"),
-  gcTime: ms("6h"),
+  staleTime: ms("10m"),
+  gcTime: ms("12h"),
 });
+
+const artist = computed(() => data.value?.artist);
+const views = computed(() => data.value?.views ?? []);
 
 const nameArtworkUrl = computed(() =>
   getArtworkUrl(artist.value?.attributes.editorialArtwork?.musicContentColorLogoTrimmed, {
