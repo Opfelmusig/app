@@ -98,6 +98,7 @@
             placeholder="Search..."
             :ui="{ base: 'h-9 rounded-xl' }"
           />
+          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </div>
     </header>

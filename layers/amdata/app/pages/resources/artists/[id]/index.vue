@@ -79,6 +79,7 @@
               </NuxtLink>
             </template>
           </template>
+          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </div>
     </header>
