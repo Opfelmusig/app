@@ -46,6 +46,8 @@ pub struct PlaybackEvent {
     duration: f64,
     error: Option<String>,
     paused: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reporting: Option<bool>,
 }
 
 #[derive(Deserialize)]
@@ -156,6 +158,7 @@ pub fn native_playback_play(
         }
         match prepared {
             Ok(prepared) => {
+                session.set_reporting(prepared.reporting);
                 let running = session.clone();
                 match std::thread::Builder::new()
                     .name("playback-decode".into())

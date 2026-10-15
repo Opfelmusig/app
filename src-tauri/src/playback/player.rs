@@ -35,6 +35,7 @@ struct Controls {
     clock: Option<Clock>,
     status: PlaybackStatus,
     error: Option<String>,
+    reporting: Option<bool>,
 }
 
 impl Controls {
@@ -76,8 +77,13 @@ impl Session {
                 clock: None,
                 status: PlaybackStatus::Loading,
                 error: None,
+                reporting: None,
             }),
         }
+    }
+
+    pub fn set_reporting(&self, reporting: Option<bool>) {
+        self.controls.lock().unwrap().reporting = reporting;
     }
 
     pub fn stop(&self) {
@@ -162,6 +168,7 @@ impl Session {
                 duration: self.duration,
                 error: controls.error.clone(),
                 paused: controls.paused,
+                reporting: controls.reporting,
             },
         )
     }

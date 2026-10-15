@@ -42,6 +42,7 @@ struct Asset {
 }
 pub struct Prepared {
     pub media: Media,
+    pub reporting: Option<bool>,
 }
 
 async fn client() -> Result<Client> {
@@ -206,7 +207,10 @@ pub async fn prepare(
         request.id,
         started.elapsed().as_millis()
     );
-    Ok(Prepared { media })
+    Ok(Prepared {
+        media,
+        reporting: song.reporting,
+    })
 }
 
 fn attributes(tag: &str) -> Vec<(&str, &str)> {
