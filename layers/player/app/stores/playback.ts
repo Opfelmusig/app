@@ -139,7 +139,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       if (event.status === "ended") {
         queueStore.next();
         if (!queueStore.current) stop();
-        else if (queueStore.current.id === current.id) load();
+        else if (queueStore.current.id === current.id && !queueStore.isStation) load();
       }
     };
 

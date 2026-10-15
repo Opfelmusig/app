@@ -22,6 +22,7 @@ export const useQueueStore = defineStore(
     const isLooping = ref(true);
     const isShuffling = ref(false);
     const requestedStation = ref<AmCatalogStation | null>(null);
+    let pendingStationEntry: string | undefined;
 
     const isStation = computed(() => context.value?.type === "stations");
 
@@ -132,6 +133,8 @@ export const useQueueStore = defineStore(
     }
 
     function next() {
+      if (isStation.value && index.value === currentCount.value - 1) return;
+
       if (currentCount.value === 0) index.value = null;
       else if (index.value !== null) {
         index.value += 1;
@@ -141,6 +144,7 @@ export const useQueueStore = defineStore(
 
     function previous() {
       if (index.value === null || currentCount.value <= 0) return;
+      if (isStation.value && index.value === 0) return;
 
       index.value -= 1;
 
@@ -272,6 +276,36 @@ export const useQueueStore = defineStore(
       isShuffling.value
         ? shuffledQueue.value.length
         : currentQueue.value.length + contextQueue.value.length,
+    );
+
+    watch(
+      () =>
+        isStation.value && index.value === currentCount.value - 1 ? current.value?.id : undefined,
+      async (id) => {
+        const station = context.value;
+        if (!id || station?.type !== "stations") return;
+        if (pendingStationEntry && findEntryIndex(pendingStationEntry) >= 0) return;
+
+        pendingStationEntry = id;
+        try {
+          const songs = await getTracks(station);
+          if (context.value !== station || findEntryIndex(id) < 0) return;
+
+          contextQueue.value.push(...createQueueFromTracks(songs));
+        } catch (cause) {
+          if (context.value !== station || findEntryIndex(id) < 0) return;
+
+          log.error("Failed to fetch next station song", { cause });
+          toast.add({
+            title: "Unable to load next song",
+            description: String(cause),
+            color: "error",
+          });
+        } finally {
+          if (pendingStationEntry === id) pendingStationEntry = undefined;
+        }
+      },
+      { immediate: true },
     );
 
     return {
