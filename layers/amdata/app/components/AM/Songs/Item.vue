@@ -1,6 +1,8 @@
 <template>
   <OMTableRow
-    :highlighted="highlightedSongId === song.resource.id"
+    ref="row"
+    class="scroll-mt-8"
+    :highlighted="isHighlighted"
     :reorder-id
     @dblclick="$emit('play')"
   >
@@ -109,6 +111,23 @@ const props = defineProps<{
   albumMode?: boolean;
   reorderId?: string;
 }>();
+
+const row = useTemplateRef("row");
+const isHighlighted = computed(() => highlightedSongId.value === props.song.resource.id);
+
+watch(
+  [row, isHighlighted],
+  ([, highlighted]) => {
+    if (!highlighted) return;
+
+    unrefElement(row.value)?.scrollIntoView({
+      block: "center",
+      inline: "nearest",
+      behavior: "smooth",
+    });
+  },
+  { flush: "post" },
+);
 
 const columns = useTableColumns();
 
