@@ -27,7 +27,7 @@ export function parseProfile(resource: ProfileTemplate): AmSocialProfile {
     throw new Error(`Invalid Apple Music profile: ${resource.id}: missing attributes`);
 
   return {
-    id: resource.id,
+    id: profile.id ?? resource.id,
     type: "social-profiles",
 
     attributes: {
