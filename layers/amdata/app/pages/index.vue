@@ -11,20 +11,22 @@
       "
       show-artists
     />
-    <div
-      v-if="!data && isPending"
-      class="flex items-center justify-center gap-2 py-8 text-sm text-muted"
-    >
-      <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
-      Loading recommendations
+    <div class="flex w-full justify-center px-4">
+      <div
+        v-if="!data && isPending"
+        class="flex items-center justify-center gap-2 py-8 text-sm text-muted"
+      >
+        <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+        Loading recommendations
+      </div>
+      <div v-else-if="error" class="flex items-center gap-2 text-sm text-error">
+        <UIcon name="lucide:x" class="size-4 shrink-0" />
+        <span>{{ error.message }}</span>
+      </div>
+      <p v-else-if="data?.length === 0" class="py-8 text-center text-sm text-muted">
+        No recommendations available.
+      </p>
     </div>
-    <div v-else-if="error" class="flex items-center gap-2 text-sm text-error">
-      <UIcon name="lucide:x" class="size-4 shrink-0" />
-      <span>{{ error.message }}</span>
-    </div>
-    <p v-else-if="data?.length === 0" class="py-8 text-center text-sm text-muted">
-      No recommendations available.
-    </p>
   </PageWrapper>
 </template>
 
