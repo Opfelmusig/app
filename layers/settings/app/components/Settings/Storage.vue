@@ -48,6 +48,21 @@
       </SettingsConfig>
     </div>
     <USeparator />
+    <SettingsConfig
+      no-label
+      label="Cached data"
+      description="Refresh cached data."
+      :error="cacheError"
+    >
+      <UButton
+        color="warning"
+        variant="soft"
+        icon="lucide:refresh-cw"
+        label="Invalidate cache"
+        :loading="invalidatingCache"
+        @click="invalidateCache"
+      />
+    </SettingsConfig>
     <SettingsConfig no-label label="Data directory">
       <UButton
         color="neutral"
@@ -69,6 +84,27 @@ import { openPath } from "@tauri-apps/plugin-opener";
 import type { UBadge } from "#components";
 
 const openingDataDirectory = ref(false);
+const queryCache = useQueryCache();
+const invalidatingCache = ref(false);
+const cacheError = ref<Error | null>(null);
+
+async function invalidateCache() {
+  if (invalidatingCache.value) return;
+
+  invalidatingCache.value = true;
+  cacheError.value = null;
+
+  try {
+    queryCache.cancelQueries({ active: false });
+    for (const entry of queryCache.getEntries({ active: false })) queryCache.remove(entry);
+    await queryCache.invalidateQueries({ active: true });
+  } catch (cause) {
+    logger.withTag("cache").error("Failed to invalidate cached data", { cause });
+    cacheError.value = new Error("Could not invalidate the cache. Please try again.");
+  } finally {
+    invalidatingCache.value = false;
+  }
+}
 
 async function openDataDirectory() {
   openingDataDirectory.value = true;
