@@ -1,5 +1,5 @@
 <template>
-  <PageWrapper class="gap-8 p-4">
+  <PageWrapper class="gap-8 py-4">
     <AMResourceScroller
       v-for="shelf in data"
       :key="shelf.id"

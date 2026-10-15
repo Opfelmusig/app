@@ -1,6 +1,6 @@
 <template>
   <section v-if="items.length" class="flex min-w-0 flex-col gap-3">
-    <div class="flex items-end justify-between gap-4">
+    <div class="flex items-end justify-between gap-4 px-4">
       <div class="flex min-w-0 flex-col gap-1">
         <NuxtLink v-if="seeMoreTo" :to="seeMoreTo" class="flex min-w-0 items-center gap-1">
           <h2 class="truncate">{{ title }}</h2>
@@ -39,7 +39,7 @@
     <div
       v-if="gridItems.length"
       ref="scroller"
-      class="scrollbar-hide flex snap-x snap-proximity gap-4 overflow-x-auto"
+      class="scrollbar-hide flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4"
     >
       <div
         v-for="item in gridItems"
