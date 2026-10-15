@@ -69,6 +69,7 @@ export default defineNuxtConfig({
         "vue-collapsed",
         "motion-v",
         "node-vibrant/browser",
+        "@opfelmusig/lib/types",
       ],
     },
   },

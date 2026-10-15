@@ -15,6 +15,7 @@ export interface CreateQueueContext {
 
 export interface QueueEntry {
   id: string;
+  fromContext: boolean;
   position: number;
   entry: QueueTrack;
 }

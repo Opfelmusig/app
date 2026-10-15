@@ -46,9 +46,10 @@ export const useQueueStore = defineStore(
       else index.value = null;
     }
 
-    function createQueueFromTracks(tracks: QueueTrack[]): QueueEntry[] {
+    function createQueueFromTracks(tracks: QueueTrack[], fromContext = false): QueueEntry[] {
       return tracks.map((track, i) => ({
         id: crypto.randomUUID(),
+        fromContext,
         position: i,
         entry: track,
       }));
@@ -61,7 +62,7 @@ export const useQueueStore = defineStore(
       index.value = null;
 
       context.value = createContext.context;
-      contextQueue.value = createQueueFromTracks(createContext.tracks);
+      contextQueue.value = createQueueFromTracks(createContext.tracks, true);
 
       if (shouldShuffle) shuffle();
       else resetShuffle();
@@ -291,7 +292,7 @@ export const useQueueStore = defineStore(
           const songs = await getTracks(station);
           if (context.value !== station || findEntryIndex(id) < 0) return;
 
-          contextQueue.value.push(...createQueueFromTracks(songs));
+          contextQueue.value.push(...createQueueFromTracks(songs, true));
         } catch (cause) {
           if (context.value !== station || findEntryIndex(id) < 0) return;
 
