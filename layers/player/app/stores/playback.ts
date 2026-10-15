@@ -1,5 +1,8 @@
 import { Channel, invoke } from "@tauri-apps/api/core";
 
+import { createPlaybackActivityReporter } from "#layers/player/app/lib/activity";
+import type { QueueEntry } from "#layers/player/app/types/queue";
+
 type MediaEvent =
   | { event: "play" | "pause" | "toggle" | "next" | "previous" | "stop" }
   | { event: "seekBy"; data: { seconds: number } }
@@ -13,6 +16,7 @@ interface PlaybackEvent {
   seekRevision: number;
   duration: number;
   paused: boolean;
+  reporting?: boolean;
   error?: string;
 }
 
@@ -25,14 +29,32 @@ type PlaybackControl =
     }
   | { action: "seek"; value: { position: number; revision: number } };
 
+interface PlaybackSession {
+  id: string;
+  queueEntry: QueueEntry;
+  seekRevision: number;
+  started: boolean;
+  recorded: boolean;
+}
+
 export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const toast = useToast();
   const auth = useAuth();
+  const client = useClient();
   const queueStore = useQueueStore();
   const historyStore = useHistoryStore();
   const volumeStore = useVolumeStore();
   const settingsStore = useSettingsStore();
   const log = logger.withTag("player");
+  const activity = createPlaybackActivityReporter({
+    send: (event, signal) => client.playback.reportPlayActivity(event, { config: { signal } }),
+    getStorefront: () => (auth.valid.value ? auth.storefront.value?.id : undefined),
+    getPlayMode: () => ({
+      repeat: !queueStore.isStation && queueStore.isLooping,
+      shuffle: !queueStore.isStation && queueStore.isShuffling,
+    }),
+    onError: (cause) => log.warn("Could not report Apple Music playback activity", { cause }),
+  });
   const savedPosition = useLocalStorage(
     "opfelmusig:playback:position",
     { id: "", position: 0 },
@@ -45,10 +67,8 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const duration = ref(0);
   const clock = usePlaybackClock(duration);
   const { position } = clock;
-  let activeId: string | undefined;
+  let session: PlaybackSession | undefined;
   let nativeId: string | undefined;
-  let seekRevision = 0;
-  let started = false;
   let seekLoadingTimer: ReturnType<typeof setTimeout> | undefined;
 
   function clearSeekLoading() {
@@ -57,7 +77,8 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function failed(id: string, cause: unknown) {
-    if (activeId !== id) return;
+    if (session?.id !== id) return;
+    activity.end("error", position.value, duration.value);
     clearSeekLoading();
     pending.value = false;
     isPlaying.value = false;
@@ -66,7 +87,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     toast.add({ title: "Unable to play", description: String(cause), color: "error" });
   }
 
-  async function control(command: PlaybackControl, id = activeId) {
+  async function control(command: PlaybackControl, id = session?.id) {
     if (!id) return;
     try {
       await invoke("native_playback_control", { id, command });
@@ -77,12 +98,11 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function stop() {
+    activity.end("stop", position.value, duration.value);
     clearSeekLoading();
     if (nativeId) control({ action: "stop" }, nativeId);
     nativeId = undefined;
-    activeId = undefined;
-    seekRevision = 0;
-    started = false;
+    session = undefined;
     pending.value = false;
     isPlaying.value = false;
     paused.value = true;
@@ -90,17 +110,65 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     duration.value = 0;
   }
 
+  function handlePlaybackEvent(event: PlaybackEvent) {
+    const playback = session;
+    if (!playback || event.id !== playback.id) return;
+    if (event.status === "error") {
+      activity.end("error", event.position, event.duration);
+      failed(playback.id, event.error ?? "Native playback failed");
+      stop();
+      return;
+    }
+    if (event.seekRevision < playback.seekRevision) return;
+
+    if (event.status === "ended") activity.end("ended", event.position, event.duration);
+    else if (event.status === "stopped") activity.end("stop", event.position, event.duration);
+    else if (event.paused) activity.end("pause", event.position, event.duration);
+    else if (event.status === "playing") {
+      activity.start(event.position, event.duration, event.reporting);
+    }
+
+    if (event.status !== "loading") clearSeekLoading();
+    pending.value = event.status === "loading" && (seekLoadingTimer === undefined || pending.value);
+    isPlaying.value = event.status === "playing";
+    paused.value = event.paused;
+    duration.value = event.duration;
+    clock.sync(event.position, isPlaying.value && !paused.value);
+
+    if (!playback.recorded && isPlaying.value && !paused.value) {
+      playback.recorded = true;
+      historyStore.record(playback.queueEntry.entry);
+    }
+    if (
+      event.status !== "playing" ||
+      Math.abs(event.position - savedPosition.value.position) >= 1
+    ) {
+      savedPosition.value.position = event.position;
+    }
+    if (event.status === "ended") {
+      queueStore.next();
+      if (!queueStore.current) stop();
+      else if (queueStore.current.id === playback.queueEntry.id && !queueStore.isStation) load();
+    }
+  }
+
   async function load(initiallyPaused = false) {
     const current = queueStore.current;
     if (!current) return stop();
+    activity.end("select", position.value, duration.value);
     const resumeAt =
       initiallyPaused && savedPosition.value.id === current.id ? savedPosition.value.position : 0;
     clearSeekLoading();
     const resource = current.entry.resource;
-    const id = crypto.randomUUID();
-    activeId = id;
-    seekRevision = 0;
-    started = false;
+    activity.setItem(resource, current.fromContext ? queueStore.context : null);
+    const playback: PlaybackSession = {
+      id: crypto.randomUUID(),
+      queueEntry: current,
+      seekRevision: 0,
+      started: false,
+      recorded: false,
+    };
+    session = playback;
     pending.value = true;
     isPlaying.value = false;
     paused.value = initiallyPaused;
@@ -109,66 +177,32 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     savedPosition.value = { id: current.id, position: 0 };
     if (resumeAt > 0) seek(resumeAt);
 
-    const events = new Channel<PlaybackEvent>();
-    let recorded = false;
-    events.onmessage = (event) => {
-      if (event.id !== activeId) return;
-      if (event.status === "error") {
-        failed(id, event.error ?? "Native playback failed");
-        stop();
-        return;
-      }
-      if (event.seekRevision < seekRevision) return;
-      if (event.status !== "loading") clearSeekLoading();
-      pending.value =
-        event.status === "loading" && (seekLoadingTimer === undefined || pending.value);
-      isPlaying.value = event.status === "playing";
-      paused.value = event.paused;
-      if (!recorded && isPlaying.value && !paused.value) {
-        recorded = true;
-        historyStore.record(current.entry);
-      }
-      duration.value = event.duration;
-      clock.sync(event.position, isPlaying.value && !paused.value);
-      if (
-        event.status !== "playing" ||
-        Math.abs(event.position - savedPosition.value.position) >= 1
-      ) {
-        savedPosition.value.position = event.position;
-      }
-      if (event.status === "ended") {
-        queueStore.next();
-        if (!queueStore.current) stop();
-        else if (queueStore.current.id === current.id && !queueStore.isStation) load();
-      }
-    };
-
     try {
       const credentials = await auth.getPlaybackCredentials();
-      if (activeId !== id) return;
-      nativeId = id;
+      if (session !== playback) return;
+      nativeId = playback.id;
       await invoke("native_playback_play", {
         request: {
-          id,
+          id: playback.id,
           song: resource,
           ...credentials,
           volume: volumeStore.output,
           paused: paused.value,
           audio: settingsStore.playback,
         },
-        events,
+        events: new Channel<PlaybackEvent>(handlePlaybackEvent),
       });
-      if (activeId !== id) return control({ action: "stop" }, id);
-      started = true;
-      if (seekRevision > 0) {
+      if (session !== playback) return control({ action: "stop" }, playback.id);
+      playback.started = true;
+      if (playback.seekRevision > 0) {
         control({
           action: "seek",
-          value: { position: position.value, revision: seekRevision },
+          value: { position: position.value, revision: playback.seekRevision },
         });
       }
     } catch (cause) {
-      failed(id, cause);
-      if (activeId === id) stop();
+      failed(playback.id, cause);
+      if (session === playback) stop();
     }
   }
 
@@ -177,66 +211,67 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function toggle() {
-    if (!activeId) return load();
+    if (!session) return load();
     paused.value = !paused.value;
     if (paused.value) clock.reset(position.value);
     control({ action: paused.value ? "pause" : "resume" });
   }
 
   function seek(seconds: number) {
-    if (!Number.isFinite(seconds) || !activeId) return;
+    const playback = session;
+    if (!Number.isFinite(seconds) || !playback) return;
     const target = Math.max(0, Math.min(seconds, duration.value));
+    activity.seek(position.value, target, duration.value);
     clock.reset(target);
     savedPosition.value.position = target;
     isPlaying.value = false;
-    const value = { position: target, revision: ++seekRevision };
+    const value = { position: target, revision: ++playback.seekRevision };
     clearSeekLoading();
     if (!pending.value) {
-      const id = activeId;
       seekLoadingTimer = setTimeout(() => {
-        if (activeId === id && seekRevision === value.revision) pending.value = true;
+        if (session === playback && playback.seekRevision === value.revision) pending.value = true;
       }, 150);
     }
-    if (started) control({ action: "seek", value });
+    if (playback.started) control({ action: "seek", value });
   }
 
   function next() {
     const currentId = queueStore.current?.id;
     queueStore.next();
+    if (currentId && queueStore.current?.id !== currentId) {
+      activity.end("next", position.value, duration.value);
+    }
     if (currentId && queueStore.current?.id === currentId && !queueStore.isStation) seek(0);
   }
 
   function previous() {
-    if (position.value > 5 || (queueStore.index === 0 && !queueStore.isLooping)) seek(0);
-    else queueStore.previous();
+    if (position.value > 5 || (queueStore.index === 0 && !queueStore.isLooping)) return seek(0);
+    const currentId = queueStore.current?.id;
+    queueStore.previous();
+    if (currentId && queueStore.current?.id !== currentId) {
+      activity.end("previous", position.value, duration.value);
+    }
   }
 
   const mediaEvents = new Channel<MediaEvent>((event) => {
     switch (event.event) {
       case "play":
-        play();
-        break;
+        return play();
       case "pause":
         if (!paused.value) toggle();
-        break;
+        return;
       case "toggle":
-        toggle();
-        break;
+        return toggle();
       case "next":
-        next();
-        break;
+        return next();
       case "previous":
-        previous();
-        break;
+        return previous();
       case "stop":
-        stop();
-        break;
+        return stop();
       case "seekBy":
-        seek(position.value + event.data.seconds);
-        break;
+        return seek(position.value + event.data.seconds);
       case "setPosition":
-        seek(event.data.position);
-        break;
+        return seek(event.data.position);
       case "setVolume":
         volumeStore.volume = event.data.volume;
         break;
@@ -261,6 +296,13 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     { throttle: 80 },
   );
   useNuxtApp().hook("auth:logout", stop);
+  watch(
+    auth.valid,
+    (valid) => {
+      if (!valid) activity.reset();
+    },
+    { flush: "sync" },
+  );
   watchThrottled(
     () => settingsStore.playback,
     (value) => control({ action: "audio", value }),
