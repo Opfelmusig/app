@@ -72,11 +72,36 @@ export const useQueueStore = defineStore(
       // fetch next song
       // if "next" fetch next song
     }
-    function playNext(_tracks: QueueTrack[]) {
-      // if in context split context at index and put before to queue and after back in context
+
+    function playNext(tracks: QueueTrack[]) {
+      if (tracks.length === 0) return;
+
+      const entries = createQueueFromTracks(tracks);
+
+      if (currentCount.value === 0) {
+        queue.value.push(...entries);
+        if (isShuffling.value) shuffledQueue.value.push(...entries);
+        index.value = 0;
+        return;
+      }
+
+      const currentId = current.value?.id;
+      const currentContextIndex = contextQueue.value.findIndex((entry) => entry.id === currentId);
+      if (currentContextIndex >= 0) {
+        queue.value.push(...contextQueue.value.splice(0, currentContextIndex + 1));
+      }
+
+      const currentQueueIndex = queue.value.findIndex((entry) => entry.id === currentId);
+      queue.value.splice(currentQueueIndex + 1, 0, ...entries);
+      if (isShuffling.value) shuffledQueue.value.splice(index.value! + 1, 0, ...entries);
     }
-    function playAfter(_tracks: QueueTrack[]) {
-      // only if in queue and there already is a track
+
+    function playAfter(tracks: QueueTrack[]) {
+      if (!current.value || inContext.value || queue.value.length === 0) return;
+
+      const entries = createQueueFromTracks(tracks);
+      queue.value.push(...entries);
+      if (isShuffling.value) shuffledQueue.value.push(...entries);
     }
 
     function next() {
