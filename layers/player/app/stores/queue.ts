@@ -10,7 +10,7 @@ export const useQueueStore = defineStore(
   "opfelmusig:queue-store",
   () => {
     const toast = useToast();
-    const log = logger.withTag("queu");
+    const log = logger.withTag("queue");
 
     const maxDisplayedSongs = 50;
 
