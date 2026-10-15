@@ -9,6 +9,9 @@ import type {
 export const useQueueStore = defineStore(
   "opfelmusig:queue-store",
   () => {
+    const toast = useToast();
+    const log = logger.withTag("queu");
+
     const maxDisplayedSongs = 50;
 
     const queue = ref<QueueEntry[]>([]);
@@ -16,8 +19,9 @@ export const useQueueStore = defineStore(
     const contextQueue = ref<QueueEntry[]>([]);
     const shuffledQueue = ref<QueueEntry[]>([]);
     const index = ref<number | null>(null);
-    const isLooping = ref<boolean>(true);
-    const isShuffling = ref<boolean>(false);
+    const isLooping = ref(true);
+    const isShuffling = ref(false);
+    const requestedStation = ref<AmCatalogStation | null>(null);
 
     const inContext = computed(
       () =>
@@ -48,6 +52,7 @@ export const useQueueStore = defineStore(
     }
 
     function playContext(createContext: CreateQueueContext, shouldShuffle: boolean = false) {
+      requestedStation.value = null;
       queue.value = [];
       contextQueue.value = [];
       index.value = null;
@@ -67,10 +72,30 @@ export const useQueueStore = defineStore(
       }
     }
 
-    function playStation(_station: AmCatalogStation) {
-      // set context
-      // fetch next song
-      // if "next" fetch next song
+    async function playStation(station: AmCatalogStation) {
+      requestedStation.value = station;
+
+      try {
+        const songs = await getTracks(station, 2);
+
+        if (requestedStation.value?.id !== station.id) {
+          return;
+        }
+
+        playContext(
+          {
+            context: station,
+            index: 0,
+            tracks: songs,
+          },
+          false,
+        );
+      } catch (cause) {
+        log.error("Failed to fetch station tracks", { cause });
+        toast.add({ title: "Unable to play station", description: String(cause), color: "error" });
+      }
+
+      requestedStation.value = null;
     }
 
     function playNext(tracks: QueueTrack[]) {
@@ -273,6 +298,7 @@ export const useQueueStore = defineStore(
       toggleShuffle,
       maxDisplayedSongs,
       currentCount,
+      requestedStation,
     };
   },
   {

@@ -17,12 +17,16 @@
           />
           <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
         </AMArtworkOverlay>
-        <AMArtworkOverlay v-else>
+        <AMArtworkOverlay
+          v-else
+          :class="isStationPending ? 'pointer-events-none' : ''"
+          @click="queueStore.playStation(resource.resource)"
+        >
           <OMIcon
-            :name="pendingResource ? 'lucide:loader-circle' : 'lucide:play'"
+            :name="isStationPending ? 'lucide:loader-circle' : 'lucide:play'"
             class="size-10"
-            :class="pendingResource ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''"
-            :filled="!pendingResource"
+            :class="isStationPending ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''"
+            :filled="!isStationPending"
           />
         </AMArtworkOverlay>
       </AMArtworkWrapper>
@@ -127,6 +131,14 @@ const playableResource = computed(() => {
 
   return null;
 });
+
+const queueStore = useQueueStore();
+
+const isStationPending = computed(
+  () =>
+    props.resource.resource.type === "stations" &&
+    queueStore.requestedStation?.id === props.resource.resource.id,
+);
 
 const { play, pendingResource } = useResourceTracksPlayback();
 const isPending = computed(
