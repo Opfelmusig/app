@@ -22,7 +22,7 @@
           <template #content>
             <UIcon name="lucide:check" class="size-3.5 [&>path]:stroke-3" mode="svg" />
           </template>
-          <AMArtworkWrapper :resource="profile" context="profile" color="muted">
+          <AMArtworkWrapper :resource="profile" context="profile">
             <AMArtworkImage />
             <AMArtworkPlaceholder />
           </AMArtworkWrapper>

@@ -4,7 +4,7 @@
       class="w-full"
       :to="resource.resource.type === 'stations' ? undefined : resourceLink(resource.resource)"
     >
-      <AMArtworkWrapper :resource context="grid" color="muted">
+      <AMArtworkWrapper :resource context="grid">
         <AMArtworkImage />
         <AMArtworkPlaceholder />
         <AMArtworkOverlay v-if="resource.resource.type !== 'stations'" alignment="bottom">

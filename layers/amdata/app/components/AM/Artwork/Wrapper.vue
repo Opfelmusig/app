@@ -1,5 +1,5 @@
 <template>
-  <div :class="cn(variants({ context, color }), props.class, round && 'rounded-full')">
+  <div :class="cn(variants({ context, transparent }), props.class, round && 'rounded-full')">
     <slot :icon-class :image-size :artwork />
   </div>
 </template>
@@ -10,7 +10,7 @@ import type { Artwork } from "@opfelmusig/lib/types";
 import { artworkContextKey } from "#layers/amdata/app/lib/contexts/artwork";
 
 const variants = cva(
-  "group relative flex aspect-square shrink-0 items-center justify-center overflow-hidden select-none",
+  "group relative flex aspect-square shrink-0 items-center justify-center overflow-hidden text-muted select-none",
   {
     variants: {
       context: {
@@ -23,20 +23,23 @@ const variants = cva(
         "folder-preview": "w-full rounded-xl",
         account: "size-12",
       },
-      color: {
-        error: "bg-error/20 text-error",
-        muted: "bg-muted text-muted",
-        loading: "animate-pulse bg-elevated text-muted",
+      transparent: {
+        false: "bg-muted",
       },
+    },
+    defaultVariants: {
+      transparent: false,
     },
   },
 );
 
 type Resources = AmSong | AmAlbum | AmArtist | AmPlaylist | AmSocialProfile | AmCatalogStation;
 
+type ArtworkVariants = VariantProps<typeof variants>;
+
 const props = defineProps<{
-  context: NonNullable<VariantProps<typeof variants>["context"]>;
-  color?: VariantProps<typeof variants>["color"];
+  context: NonNullable<ArtworkVariants["context"]>;
+  transparent?: boolean;
   round?: boolean;
   class?: string;
   resource?: Resources | AmListResource<Resources>;

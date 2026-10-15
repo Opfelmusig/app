@@ -10,7 +10,6 @@
         v-slot="{ iconClass }"
         :resource
         context="player"
-        color="muted"
         class="transition-[scale,opacity]"
         :class="playbackStore.paused ? 'scale-90 opacity-80' : ''"
       >

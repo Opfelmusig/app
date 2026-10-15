@@ -1,7 +1,7 @@
 <template>
   <PageWrapper>
     <header class="flex flex-col gap-4 p-4 lg:flex-row">
-      <AMArtworkWrapper :resource="artist ?? undefined" context="header" color="muted" round>
+      <AMArtworkWrapper :resource="artist ?? undefined" context="header" round>
         <AMArtworkImage :alt="artist?.attributes.name" />
         <AMArtworkPlaceholder />
       </AMArtworkWrapper>

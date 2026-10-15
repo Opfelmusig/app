@@ -2,7 +2,7 @@
   <SettingsWrapper>
     <SettingsSection>
       <div class="flex items-center gap-3">
-        <AMArtworkWrapper :resource="profile" context="account" color="muted">
+        <AMArtworkWrapper :resource="profile" context="account">
           <AMArtworkImage />
           <AMArtworkPlaceholder />
         </AMArtworkWrapper>

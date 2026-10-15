@@ -5,7 +5,7 @@
         v-slot="{ iconClass }"
         :resource="song"
         context="list"
-        :color="albumMode ? undefined : 'muted'"
+        :transparent="albumMode"
       >
         <div
           v-if="albumMode && !isActive"

@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-w-0 flex-col gap-2 overflow-hidden">
     <NuxtLink class="w-full" :to="resourceLink(resource.resource)">
-      <AMArtworkWrapper context="grid" color="muted">
+      <AMArtworkWrapper context="grid">
         <template v-if="children?.length">
           <div class="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-3 p-3">
             <AMArtworkWrapper
@@ -11,7 +11,6 @@
               context="folder-preview"
               class="border"
               :class="child.resource.attributes.artwork ? 'border-transparent' : 'border-muted'"
-              color="muted"
             >
               <AMArtworkImage />
               <AMArtworkPlaceholder />
