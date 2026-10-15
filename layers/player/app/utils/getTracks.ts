@@ -1,15 +1,33 @@
+import { collect } from "@opfelmusig/lib/helpers";
+
 import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
 import { catalogSongsScopes } from "#layers/amdata/app/lib/scopes/songs";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 export default async function getTracks(
-  resource: AmLibraryAlbum | AmLibraryPlaylist | AmCatalogStation,
+  resource: AmAlbum | AmPlaylist | AmCatalogStation,
   limit?: number,
 ): Promise<AmListResource<AmSong>[]> {
   const library = useLibrary();
   const client = useClient();
 
   switch (resource.type) {
+    case "albums":
+    case "playlists": {
+      const options = { limit: 100, scopes: catalogSongsScopes };
+      const tracks = await collect(
+        resource.type === "albums"
+          ? client.catalog.albums.iterateRelationship(resource.id, "tracks", options)
+          : client.catalog.playlists.iterateRelationship(resource.id, "tracks", options),
+      );
+      const songs = tracks
+        .filter((track) => track.type === "songs")
+        .filter(hasResourceName)
+        .map(parseCatalogSong);
+
+      return createListResources(songs, `${resource.type}:${resource.id}`);
+    }
+
     case "library-albums": {
       const { sortBy, direction } = getSavedSorting(`album:${resource.id}`, "discAndTrackNumber");
 

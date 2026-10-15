@@ -127,7 +127,13 @@ const props = defineProps<{
 
 const playableResource = computed(() => {
   const resource = props.resource.resource;
-  if (resource.type === "library-albums" || resource.type === "library-playlists") return resource;
+  if (
+    resource.type === "albums" ||
+    resource.type === "playlists" ||
+    resource.type === "library-albums" ||
+    resource.type === "library-playlists"
+  )
+    return resource;
 
   return null;
 });

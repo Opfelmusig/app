@@ -4,7 +4,7 @@ export default function useResourceTracksPlayback() {
   const requestId = useState("player:resource-request", () => 0);
   const pendingResource = useState<string | null>("player:pending-resource", () => null);
 
-  async function play(resource: AmLibraryAlbum | AmLibraryPlaylist) {
+  async function play(resource: AmAlbum | AmPlaylist) {
     const resourceKey = `${resource.type}:${resource.id}`;
     if (pendingResource.value === resourceKey) return;
 
