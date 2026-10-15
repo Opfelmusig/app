@@ -1,5 +1,10 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
+import {
+  parseCatalogStation,
+  type CatalogStationTemplate,
+} from "#layers/amdata/app/lib/parsers/stations";
+
 export type LibraryArtistTemplate = ResourceTemplateOf<
   "library-artists",
   "name",
@@ -41,11 +46,15 @@ export function parseLibraryArtist(resource: LibraryArtistTemplate): AmLibraryAr
 export type CatalogArtistTemplate = ResourceTemplateOf<
   "artists",
   "name" | "artwork" | "genreNames",
-  "personalRating" | "editorialArtwork"
+  "personalRating" | "editorialArtwork",
+  {
+    station?: CatalogStationTemplate;
+  }
 >;
 
 export function parseCatalogArtist(resource: CatalogArtistTemplate): AmCatalogArtist {
   const attributes = resource.attributes;
+  const station = resource.relationships?.station?.data[0];
 
   if (!attributes)
     throw new Error(`Invalid Apple Music artist: ${resource.id}: missing attributes`);
@@ -60,6 +69,10 @@ export function parseCatalogArtist(resource: CatalogArtistTemplate): AmCatalogAr
       artwork: attributes.artwork,
       editorialArtwork: attributes.editorialArtwork,
       personalRating: attributes.personalRating,
+    },
+
+    relationships: {
+      station: hasResourceName(station) ? parseCatalogStation(station) : undefined,
     },
 
     extras: {},

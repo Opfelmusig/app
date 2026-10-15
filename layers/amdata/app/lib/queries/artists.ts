@@ -29,8 +29,14 @@ export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
       ...catalogSongsScopes,
       ...catalogAlbumsScopes,
       ...catalogPlaylistsScopes,
+      stations: {
+        fields: ["name", "artwork"],
+      },
       artists: {
         ...catalogArtistsScopes.artists,
+        relationships: {
+          station: "include",
+        },
         views: {
           "top-songs": { limit: 6 },
           "featured-albums": { limit: 12 },

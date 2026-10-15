@@ -31,7 +31,10 @@
         </div>
         <p v-else class="text-sm text-muted">Artist not found.</p>
         <div class="flex items-center gap-2">
-          <OMButtonPlay />
+          <OMButtonPlay
+            :disabled="!station || queueStore.requestedStation?.id === station.id"
+            @click="station && queueStore.playStation(station)"
+          />
           <template v-if="artist">
             <OMButtonSecondary
               fill
@@ -107,6 +110,9 @@ const { data, isPending, error } = useAmQuery({
 });
 
 const artist = computed(() => data.value?.artist);
+const station = computed(() => artist.value?.relationships.station);
+const queueStore = useQueueStore();
+
 const views = computed(
   () => data.value?.views.filter((section) => section.view !== "latest-release") ?? [],
 );

@@ -12,6 +12,10 @@ export interface AmCatalogArtist extends AmResourceBase {
   type: "artists";
   attributes: AmArtistAttributes;
 
+  relationships: {
+    station?: AmCatalogStation;
+  };
+
   extras: {
     libraryId?: string;
   };
