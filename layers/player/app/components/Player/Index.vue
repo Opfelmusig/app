@@ -6,7 +6,14 @@
       class="flex w-full min-w-0 items-center gap-2"
       :style="{ maxWidth: `${width && !isCollapsed ? width - 16 : 244}px` }"
     >
-      <AMArtworkWrapper v-slot="{ iconClass }" :resource context="player" color="muted">
+      <AMArtworkWrapper
+        v-slot="{ iconClass }"
+        :resource
+        context="player"
+        color="muted"
+        class="transition-[scale,opacity]"
+        :class="playbackStore.isPlaying ? '' : 'scale-90 opacity-80'"
+      >
         <AMArtworkImage />
         <AMArtworkPlaceholder />
         <AMArtworkOverlay>
