@@ -7,7 +7,16 @@
       </AMArtworkWrapper>
       <div v-if="artist" class="flex w-full min-w-0 flex-col justify-end gap-4">
         <div class="flex min-w-0 flex-col gap-1">
-          <h2>{{ artist.attributes.name }}</h2>
+          <h2>
+            <img
+              v-if="nameArtworkUrl"
+              :src="nameArtworkUrl"
+              :alt="artist.attributes.name"
+              class="h-auto max-h-8 max-w-full object-contain object-left select-none"
+              draggable="false"
+            />
+            <template v-else>{{ artist.attributes.name }}</template>
+          </h2>
           <span class="truncate text-sm text-muted">
             {{ artist.attributes.genreNames.join(", ") }}
           </span>
@@ -36,6 +45,8 @@
 </template>
 
 <script lang="ts" setup>
+import { getArtworkUrl } from "@opfelmusig/lib/helpers";
+
 import { fetchCatalogArtist } from "#layers/amdata/app/lib/queries/artists";
 
 const client = useClient();
@@ -51,4 +62,11 @@ const {
   staleTime: ms("5m"),
   gcTime: ms("6h"),
 });
+
+const nameArtworkUrl = computed(() =>
+  getArtworkUrl(artist.value?.attributes.editorialArtwork?.musicContentColorLogoTrimmed, {
+    width: 640,
+    format: "png",
+  }),
+);
 </script>
