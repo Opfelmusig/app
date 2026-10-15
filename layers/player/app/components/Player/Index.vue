@@ -12,7 +12,7 @@
         context="player"
         color="muted"
         class="transition-[scale,opacity]"
-        :class="playbackStore.isPlaying ? '' : 'scale-90 opacity-80'"
+        :class="playbackStore.paused ? 'scale-90 opacity-80' : ''"
       >
         <AMArtworkImage />
         <AMArtworkPlaceholder />
