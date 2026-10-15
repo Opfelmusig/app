@@ -2,21 +2,21 @@ import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect, isNotResourceType, isResourceType } from "@opfelmusig/lib/helpers";
 import { pullObject } from "remeda";
 
+import {
+  libraryAlbumsScopes,
+  libraryArtistsScopes,
+  libraryPinsScopes,
+  libraryPlaylistsScopes,
+  librarySongsScopes,
+  type LibraryAlbumsScopes,
+  type LibraryArtistsScopes,
+  type LibraryPinsScopes,
+  type LibraryPlaylistFoldersScopes,
+  type LibraryPlaylistsScopes,
+  type LibrarySongsScopes,
+} from "#layers/amdata/app/lib/scopes/library";
 import { prepareAppleMusicLibrary } from "#layers/libcore/app/lib/prepare";
 import { createEmptyLibrary } from "#layers/libcore/app/lib/prepare/helpers";
-import {
-  albumsScopes,
-  artistsScopes,
-  pinsScopes,
-  playlistsScopes,
-  songsScopes,
-  type AlbumsScopes,
-  type ArtistsScopes,
-  type PinsScopes,
-  type PlaylistFoldersScopes,
-  type PlaylistsScopes,
-  type SongsScopes,
-} from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 import type { LibraryProgress } from "#layers/libcore/app/plugins/libcore";
 
@@ -38,12 +38,12 @@ export async function fetchAppleMusicLibrary(
 }
 
 export interface LibraryPages {
-  songs: SongsScopes[];
-  albums: AlbumsScopes[];
-  artists: ArtistsScopes[];
-  playlists: PlaylistsScopes[];
-  pins: PinsScopes[];
-  playlistFolders: PlaylistFoldersScopes[];
+  songs: LibrarySongsScopes[];
+  albums: LibraryAlbumsScopes[];
+  artists: LibraryArtistsScopes[];
+  playlists: LibraryPlaylistsScopes[];
+  pins: LibraryPinsScopes[];
+  playlistFolders: LibraryPlaylistFoldersScopes[];
 }
 
 function fetchAllLibraryPages(
@@ -55,7 +55,7 @@ function fetchAllLibraryPages(
     songs: collect(
       client.library.songs.iterateAll({
         limit: 100,
-        scopes: songsScopes,
+        scopes: librarySongsScopes,
         sort: "-dateAdded",
         config: { signal },
       }),
@@ -69,7 +69,7 @@ function fetchAllLibraryPages(
     albums: collect(
       client.library.albums.iterateAll({
         limit: 100,
-        scopes: albumsScopes,
+        scopes: libraryAlbumsScopes,
         sort: "-dateAdded",
         config: { signal },
       }),
@@ -84,7 +84,11 @@ function fetchAllLibraryPages(
       return result.filter(hasResourceName);
     }),
     artists: collect(
-      client.library.artists.iterateAll({ limit: 100, scopes: artistsScopes, config: { signal } }),
+      client.library.artists.iterateAll({
+        limit: 100,
+        scopes: libraryArtistsScopes,
+        config: { signal },
+      }),
       {
         signal,
         onItem: () => {
@@ -98,7 +102,7 @@ function fetchAllLibraryPages(
     playlists: collect(
       client.library.playlists.iterateAll({
         limit: 100,
-        scopes: playlistsScopes,
+        scopes: libraryPlaylistsScopes,
         config: { signal },
       }),
       {
@@ -112,7 +116,7 @@ function fetchAllLibraryPages(
       return result.filter(hasResourceName);
     }),
     pins: client.library
-      .getPins({ scopes: pinsScopes, config: { signal } })
+      .getPins({ scopes: libraryPinsScopes, config: { signal } })
       .then((response) =>
         response.data
           .filter((resource) => isNotResourceType(resource, "library-music-videos"))
@@ -132,7 +136,7 @@ function fetchPlaylistTracks(
   signal: AbortSignal,
   pages: LibraryPages,
   progress: LibraryProgress,
-): Promise<Record<string, SongsScopes[]>> {
+): Promise<Record<string, LibrarySongsScopes[]>> {
   const seenSongIds = new Set(pages.songs.map((song) => song.id));
 
   return Promise.allKeyed(
@@ -143,7 +147,7 @@ function fetchPlaylistTracks(
         collect(
           client.library.playlists.iterateRelationship(playlist.id, "tracks", {
             limit: 100,
-            scopes: songsScopes,
+            scopes: librarySongsScopes,
             config: { signal },
           }),
           {

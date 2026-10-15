@@ -1,16 +1,16 @@
+import type { LibrarySongsScopes } from "#layers/amdata/app/lib/scopes/library";
 import { DbListId } from "#layers/libcore/app/database/types";
 import type { LibraryPages } from "#layers/libcore/app/lib/fetch";
 import { addFolders } from "#layers/libcore/app/lib/prepare/folders";
 import { addPins } from "#layers/libcore/app/lib/prepare/pins";
 import { addPlaylistTracks } from "#layers/libcore/app/lib/prepare/playlists";
 import { addResources } from "#layers/libcore/app/lib/prepare/resources";
-import type { SongsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
 export function prepareAppleMusicLibrary(
   target: AppleMusicLibrary,
   pages: LibraryPages,
-  playlistTracks: Record<string, SongsScopes[]>,
+  playlistTracks: Record<string, LibrarySongsScopes[]>,
 ) {
   addResources(target, pages.songs, DbListId.Songs);
 

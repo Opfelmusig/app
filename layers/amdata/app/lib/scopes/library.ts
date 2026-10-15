@@ -5,7 +5,7 @@ import type {
   ScopedResourceOf,
 } from "@opfelmusig/lib/types";
 
-export const songsScopes = defineScopes({
+export const librarySongsScopes = defineScopes({
   "library-songs": {
     fields: [
       "name",
@@ -46,9 +46,9 @@ export const songsScopes = defineScopes({
   },
 });
 
-export type SongsScopes = ScopedResourceOf<"library-songs", typeof songsScopes>;
+export type LibrarySongsScopes = ScopedResourceOf<"library-songs", typeof librarySongsScopes>;
 
-export const albumsScopes = defineScopes({
+export const libraryAlbumsScopes = defineScopes({
   "library-albums": {
     fields: [
       "name",
@@ -76,9 +76,9 @@ export const albumsScopes = defineScopes({
   },
 });
 
-export type AlbumsScopes = ScopedResourceOf<"library-albums", typeof albumsScopes>;
+export type LibraryAlbumsScopes = ScopedResourceOf<"library-albums", typeof libraryAlbumsScopes>;
 
-export const artistsScopes = defineScopes({
+export const libraryArtistsScopes = defineScopes({
   "library-artists": {
     fields: ["name"],
     relationships: {
@@ -91,9 +91,9 @@ export const artistsScopes = defineScopes({
   },
 });
 
-export type ArtistsScopes = ScopedResourceOf<"library-artists", typeof artistsScopes>;
+export type LibraryArtistsScopes = ScopedResourceOf<"library-artists", typeof libraryArtistsScopes>;
 
-export const playlistsScopes = defineScopes({
+export const libraryPlaylistsScopes = defineScopes({
   "library-playlists": {
     fields: [
       "name",
@@ -116,9 +116,12 @@ export const playlistsScopes = defineScopes({
   },
 });
 
-export type PlaylistsScopes = ScopedResourceOf<"library-playlists", typeof playlistsScopes>;
+export type LibraryPlaylistsScopes = ScopedResourceOf<
+  "library-playlists",
+  typeof libraryPlaylistsScopes
+>;
 
-export const pinsScopes = defineScopes({
+export const libraryPinsScopes = defineScopes({
   "library-songs": { fields: ["name"] },
   "library-albums": { fields: ["name"] },
   "library-artists": { fields: ["name"] },
@@ -126,17 +129,17 @@ export const pinsScopes = defineScopes({
   "library-music-videos": { fields: ["name"] },
 });
 
-export type PinsScopes = ScopedResourceOf<
+export type LibraryPinsScopes = ScopedResourceOf<
   Exclude<PinnableResourceTypes, "library-music-videos">,
-  typeof pinsScopes
+  typeof libraryPinsScopes
 >;
 
-export type PlaylistFoldersScopes = ScopedResourceOf<
+export type LibraryPlaylistFoldersScopes = ScopedResourceOf<
   "library-playlist-folders",
   LibraryPlaylistFolderTreeScopes
 >;
 
-export const artworkScopes = defineScopes({
+export const libraryArtworkScopes = defineScopes({
   "library-songs": { fields: ["artwork"], relationships: { catalog: "include" } },
   songs: { fields: ["artwork"] },
   "library-albums": { fields: ["artwork"], relationships: { catalog: "include" } },

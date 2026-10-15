@@ -3,11 +3,11 @@ import { collect, isNotResourceType } from "@opfelmusig/lib/helpers";
 import { uniqueBy } from "remeda";
 
 import { parseResource } from "#layers/amdata/app/lib/parsers";
+import { libraryPlaylistsScopes, librarySongsScopes } from "#layers/amdata/app/lib/scopes/library";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import { createEmptyLibrary } from "#layers/libcore/app/lib/prepare/helpers";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { addResources } from "#layers/libcore/app/lib/prepare/resources";
-import { playlistsScopes, songsScopes } from "#layers/libcore/app/lib/scopes";
 
 export async function refreshPlaylist(id: string, db: LibraryDatabase, client: OpfelMusigClient) {
   const log = logger.withTag("libcore:refresh");
@@ -20,7 +20,7 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   log.info("Checking for expired catalog playlist", { id, catalogId: playlist.extras.catalogId });
 
   const result = await client.library.playlists.get(id, {
-    scopes: playlistsScopes,
+    scopes: libraryPlaylistsScopes,
   });
 
   const newPlaylist = result.data[0];
@@ -42,7 +42,7 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   const tracks = await collect(
     client.library.playlists.iterateRelationship(id, "tracks", {
       limit: 100,
-      scopes: songsScopes,
+      scopes: librarySongsScopes,
     }),
   );
 

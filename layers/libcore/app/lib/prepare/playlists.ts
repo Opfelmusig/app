@@ -1,11 +1,11 @@
+import type { LibrarySongsScopes } from "#layers/amdata/app/lib/scopes/library";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { addResources } from "#layers/libcore/app/lib/prepare/resources";
-import type { SongsScopes } from "#layers/libcore/app/lib/scopes";
 import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 
 export function addPlaylistTracks(
   target: AppleMusicLibrary,
-  resources: Record<string, SongsScopes[]>,
+  resources: Record<string, LibrarySongsScopes[]>,
 ) {
   const entries = Object.entries(resources);
 

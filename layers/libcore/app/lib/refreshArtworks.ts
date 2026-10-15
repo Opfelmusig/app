@@ -3,9 +3,9 @@ import { getArtworkExpiresAt, isResourceType } from "@opfelmusig/lib/helpers";
 import type { Artwork } from "@opfelmusig/lib/types";
 import { chunk, groupBy, indexBy, mapValues } from "remeda";
 
+import { libraryArtworkScopes } from "#layers/amdata/app/lib/scopes/library";
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import type { DbResourceType } from "#layers/libcore/app/database/types";
-import { artworkScopes } from "#layers/libcore/app/lib/scopes";
 
 interface Expired {
   id: string;
@@ -72,7 +72,7 @@ export async function refreshArtworks(
         },
         {
           config: { signal },
-          scopes: artworkScopes,
+          scopes: libraryArtworkScopes,
         },
       );
     }),

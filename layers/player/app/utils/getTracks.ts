@@ -1,7 +1,7 @@
 import { collect } from "@opfelmusig/lib/helpers";
 
 import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
-import { catalogSongsScopes } from "#layers/amdata/app/lib/scopes/songs";
+import { catalogSongsScopes } from "#layers/amdata/app/lib/scopes/catalog";
 import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 export default async function getTracks(

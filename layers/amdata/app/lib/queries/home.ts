@@ -1,6 +1,7 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
 
-import { homeScopes, parseMeRecommendation } from "#layers/amdata/app/lib/parsers/home";
+import { parseMeRecommendation } from "#layers/amdata/app/lib/parsers/home";
+import { homeScopes } from "#layers/amdata/app/lib/scopes/home";
 
 export async function fetchHome(client: OpfelMusigClient) {
   const timezone = currentAppleTimezoneOffset();
