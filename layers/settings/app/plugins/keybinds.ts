@@ -6,6 +6,19 @@ export default defineNuxtPlugin({
     const settingsStore = useSettingsStore();
     const queueStore = useQueueStore();
     const volumeStore = useVolumeStore();
+    const router = useRouter();
+    const { goBack, goForward } = useNavigation();
+    const { toggle: toggleSidebar } = useSidebar();
+    const navigationRoutes = [
+      "/search",
+      "/",
+      "/history",
+      "/resources/library-songs",
+      "/resources/library-albums",
+      "/resources/library-artists",
+      "/library/genres",
+      "/resources/library-playlist-folders",
+    ];
 
     function togglePanel(page: "queue" | "lyrics") {
       if (settingsStore.immersive.isOpen) {
@@ -21,17 +34,17 @@ export default defineNuxtPlugin({
     const off = useKeybind(
       [
         {
-          keys: "space",
+          keys: ["space", "media-play-pause"],
           run: () => nuxtApp.runWithContext(() => usePlaybackStore().toggle()),
           config: { meta: { group: "Playback", name: "Play / pause" } },
         },
         {
-          keys: "ctrl-cmd+arrow-left",
+          keys: ["ctrl-cmd+arrow-left", "media-track-previous"],
           run: () => nuxtApp.runWithContext(() => usePlaybackStore().previous()),
           config: { meta: { group: "Playback", name: "Previous track" } },
         },
         {
-          keys: "ctrl-cmd+arrow-right",
+          keys: ["ctrl-cmd+arrow-right", "media-track-next"],
           run: () => nuxtApp.runWithContext(() => usePlaybackStore().next()),
           config: { meta: { group: "Playback", name: "Next track" } },
         },
@@ -104,6 +117,47 @@ export default defineNuxtPlugin({
             settingsStore.lyrics.showTransliteration = !settingsStore.lyrics.showTransliteration;
           },
           config: { meta: { group: "Lyrics", name: "Toggle lyrics transliteration" } },
+        },
+        {
+          keys: "alt+arrow-left",
+          run: goBack,
+          config: { meta: { group: "Navigation", name: "Go back" } },
+        },
+        {
+          keys: "alt+arrow-right",
+          run: goForward,
+          config: { meta: { group: "Navigation", name: "Go forward" } },
+        },
+        {
+          keys: "ctrl-cmd+$num",
+          run({ template }) {
+            if (template === undefined) return;
+
+            const path = navigationRoutes[template - 1];
+            if (path) return router.push(path);
+          },
+          config: {
+            when: ({ template }) =>
+              auth.valid.value &&
+              template !== undefined &&
+              template >= 1 &&
+              template <= navigationRoutes.length,
+          },
+        },
+        {
+          keys: "ctrl-cmd+f",
+          run() {
+            if (router.currentRoute.value.path !== "/search") return router.push("/search");
+          },
+          config: {
+            ignoreIfEditable: false,
+            meta: { group: "Navigation", name: "Open search" },
+          },
+        },
+        {
+          keys: "ctrl-cmd+b",
+          run: toggleSidebar,
+          config: { meta: { group: "Application", name: "Toggle sidebar" } },
         },
         {
           keys: "ctrl-cmd+comma",
