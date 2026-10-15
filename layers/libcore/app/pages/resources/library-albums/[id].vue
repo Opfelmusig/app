@@ -28,7 +28,7 @@
               v-if="album.attributes.releaseDate"
               class="size-1 shrink-0 rounded-full bg-accented first:hidden"
             />
-            <span class="truncate">
+            <span v-if="album.attributes.genreNames.length > 0" class="truncate">
               {{ album.attributes.genreNames.join(", ") }}
             </span>
           </div>

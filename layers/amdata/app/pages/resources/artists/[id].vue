@@ -17,7 +17,7 @@
             />
             <template v-else>{{ artist.attributes.name }}</template>
           </h2>
-          <span class="truncate text-sm text-muted">
+          <span v-if="artist.attributes.genreNames.length > 0" class="truncate text-sm text-muted">
             {{ artist.attributes.genreNames.join(", ") }}
           </span>
         </div>
