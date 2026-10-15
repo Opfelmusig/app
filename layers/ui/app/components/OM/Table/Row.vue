@@ -3,7 +3,12 @@
     class="group last:[&>td]:border-b-0"
     :class="[
       small ? 'h-10' : 'h-14',
-      noHover ? '' : 'hover:bg-raised [&:active:not(:has(.no-active:active))]:bg-muted/60',
+      highlighted
+        ? 'bg-primary/5 hover:bg-primary/10 [&:active:not(:has(.no-active:active))]:bg-primary/15'
+        : '',
+      noHover || highlighted
+        ? ''
+        : 'hover:bg-raised [&:active:not(:has(.no-active:active))]:bg-muted/60',
       reorderId && reorder?.source.value === reorderId ? 'opacity-40' : '',
       placement === 'before' ? '[&>td]:shadow-[inset_0_2px_0_var(--color-primary)]' : '',
       placement === 'after' ? '[&>td]:shadow-[inset_0_-2px_0_var(--color-primary)]' : '',
@@ -20,6 +25,7 @@ const props = defineProps<{
   noHover?: boolean;
   small?: boolean;
   reorderId?: string;
+  highlighted?: boolean;
 }>();
 
 const reorder = inject(tableReorderKey, undefined);

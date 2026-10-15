@@ -1,5 +1,9 @@
 <template>
-  <OMTableRow :reorder-id @dblclick="$emit('play')">
+  <OMTableRow
+    :highlighted="highlightedSongId === song.resource.id"
+    :reorder-id
+    @dblclick="$emit('play')"
+  >
     <OMTableSimple>
       <AMArtworkWrapper
         v-slot="{ iconClass }"
@@ -98,6 +102,8 @@
 </template>
 
 <script lang="ts" setup>
+const highlightedSongId = useRouteQuery<string>("song_id");
+
 const props = defineProps<{
   song: AmListResource<AmSong>;
   albumMode?: boolean;
