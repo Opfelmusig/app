@@ -1,4 +1,5 @@
 import { defineScopes } from "@opfelmusig/lib";
+import type { ScopedResourceOf } from "@opfelmusig/lib/types";
 
 export const catalogSongsScopes = defineScopes({
   songs: {
@@ -33,3 +34,49 @@ export const catalogSongsScopes = defineScopes({
     fields: ["loudness"],
   },
 });
+
+export type CatalogSongsScopes = ScopedResourceOf<"songs", typeof catalogSongsScopes>;
+
+export const catalogAlbumsScopes = defineScopes({
+  albums: {
+    fields: ["name", "artistName", "artwork", "genreNames", "releaseDate", "contentRating"],
+    extend: ["personalRating", "editorialVideo"],
+    relationships: {
+      artists: "include",
+      library: "relate",
+    },
+  },
+  artists: {
+    fields: ["name"],
+  },
+});
+
+export type CatalogAlbumsScopes = ScopedResourceOf<"albums", typeof catalogAlbumsScopes>;
+
+export const catalogArtistsScopes = defineScopes({
+  artists: {
+    fields: ["name", "artwork", "genreNames"],
+    extend: ["personalRating", "editorialArtwork"],
+  },
+});
+
+export type CatalogArtistsScopes = ScopedResourceOf<"artists", typeof catalogArtistsScopes>;
+
+export const catalogPlaylistsScopes = defineScopes({
+  playlists: {
+    fields: [
+      "name",
+      "artwork",
+      "description",
+      "curatorName",
+      "curatorSocialHandle",
+      "lastModifiedDate",
+    ],
+    extend: ["personalRating", "editorialVideo"],
+    relationships: {
+      library: "relate",
+    },
+  },
+});
+
+export type CatalogPlaylistsScopes = ScopedResourceOf<"playlists", typeof catalogPlaylistsScopes>;
