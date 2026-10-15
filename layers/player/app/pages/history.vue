@@ -125,7 +125,15 @@ const sections = computed(() => {
 function play(index = 0, shuffle = false) {
   if (index < 0 || !displayedEntries.value.length) return;
   queueStore.playContext(
-    { index, tracks: displayedEntries.value.map((entry) => entry.track), context: "History" },
+    {
+      index,
+      tracks: displayedEntries.value.map((entry) => entry.track),
+      context: {
+        type: "generic",
+        name: "History",
+        link: "/history",
+      },
+    },
     shuffle,
   );
 }

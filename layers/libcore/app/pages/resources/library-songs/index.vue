@@ -108,7 +108,7 @@ function play(index: number = 0, shuffle: boolean = false) {
     {
       index,
       tracks: displayedSongs.value,
-      context: "Library songs",
+      context: { type: "generic", name: "Library songs", link: "/resources/library-songs" },
     },
     shuffle,
   );

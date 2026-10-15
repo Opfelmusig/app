@@ -3,9 +3,13 @@
     <div class="flex flex-col">
       <div class="text-lg">{{ title }}</div>
       <span v-if="context" class="text-xs text-muted">
-        <span v-if="typeof context === 'string'">
-          {{ context }}
-        </span>
+        <NuxtLink
+          v-if="context.type === 'generic'"
+          :to="context.link"
+          :class="context.link ? 'hover:underline' : ''"
+        >
+          {{ context.name }}
+        </NuxtLink>
         <NuxtLink v-else :to="resourceLink(context)" class="hover:underline">
           {{ context.attributes.name }}
         </NuxtLink>

@@ -83,7 +83,11 @@ const gridItems = computed(() =>
 const queueStore = useQueueStore();
 
 function play(index: number) {
-  queueStore.playContext({ tracks: songs.value, index, context: props.title });
+  queueStore.playContext({
+    tracks: songs.value,
+    index,
+    context: { type: "generic", name: props.title },
+  });
 }
 
 const scroller = useTemplateRef("scroller");

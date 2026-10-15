@@ -1,6 +1,11 @@
 export type QueueTrack = AmListResource<AmSong>;
 
-export type QueueContext = AmAlbum | AmPlaylist | AmCatalogStation | string;
+export interface GenericQueueContext {
+  type: "generic";
+  name: string;
+  link?: string;
+}
+export type QueueContext = AmAlbum | AmPlaylist | AmCatalogStation | GenericQueueContext;
 
 export interface CreateQueueContext {
   tracks: QueueTrack[];
