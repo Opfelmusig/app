@@ -132,7 +132,7 @@ const client = useClient();
 const id = useRouteParams<string>("id");
 
 const { data, isPending, error } = useAmQuery({
-  key: () => ["albums", id.value],
+  key: () => ["albums", id.value, "resource"],
   query: () => fetchCatalogAlbum(client, id.value),
   staleTime: ms("10m"),
   gcTime: ms("12h"),

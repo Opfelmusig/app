@@ -134,7 +134,7 @@ const id = useRouteParams<string | undefined>("id");
 
 const library = useLibrary();
 const { data: currentArtist } = useLibraryQuery({
-  key: () => ["artist", id.value ?? null],
+  key: () => ["artist", id.value ?? null, "resource"],
   query: () => library.client.getArtist(id.value!),
   enabled: id,
 });

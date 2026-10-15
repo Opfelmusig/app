@@ -108,7 +108,7 @@ const client = useClient();
 const id = useRouteParams<string>("id");
 
 const { data, isPending, error } = useAmQuery({
-  key: () => ["artists", id.value],
+  key: () => ["artists", id.value, "resource"],
   query: () => fetchCatalogArtist(client, id.value),
   staleTime: ms("10m"),
   gcTime: ms("12h"),

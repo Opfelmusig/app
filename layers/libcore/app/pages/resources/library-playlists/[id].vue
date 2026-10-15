@@ -125,7 +125,7 @@ const id = useRouteParams<string>("id");
 
 const library = useLibrary();
 const { data: playlist } = useLibraryQuery({
-  key: () => ["playlist", id.value],
+  key: () => ["playlist", id.value, "resource"],
   query: () => library.client.getPlaylist(id.value),
 });
 const {

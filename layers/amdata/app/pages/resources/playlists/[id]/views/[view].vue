@@ -30,7 +30,7 @@ const id = useRouteParams<string>("id");
 const view = useRouteParams<PlaylistView>("view");
 
 const { data: playlistData } = useAmQuery({
-  key: () => ["playlists", id.value],
+  key: () => ["playlists", id.value, "resource"],
   query: () => fetchCatalogPlaylist(client, id.value),
   staleTime: ms("10m"),
   gcTime: ms("12h"),

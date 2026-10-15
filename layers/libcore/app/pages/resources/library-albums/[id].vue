@@ -102,7 +102,7 @@ const library = useLibrary();
 const id = useRouteParams<string>("id");
 
 const { data: album } = useLibraryQuery({
-  key: () => ["album", id.value],
+  key: () => ["album", id.value, "resource"],
   query: () => library.client.getAlbum(id.value),
 });
 const {

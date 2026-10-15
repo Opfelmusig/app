@@ -35,7 +35,7 @@ const id = useRouteParams<string>("id");
 const view = useRouteParams<ArtistView>("view");
 
 const { data: artistData } = useAmQuery({
-  key: () => ["artists", id.value],
+  key: () => ["artists", id.value, "resource"],
   query: () => fetchCatalogArtist(client, id.value),
   staleTime: ms("10m"),
   gcTime: ms("12h"),

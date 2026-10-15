@@ -32,7 +32,7 @@ const id = useRouteParams<string>("id", ROOT_FOLDER_ID);
 
 const library = useLibrary();
 const { data: folder } = useLibraryQuery({
-  key: () => ["folders", id.value],
+  key: () => ["folders", id.value, "resource"],
   query: () => library.client.getFolder(id.value),
 });
 const {

@@ -294,7 +294,7 @@ export default defineNuxtPlugin({
     async function refreshAndInvalidatePlaylist(id: string) {
       await refreshPlaylist(id, db, opfelmusig);
       await Promise.all([
-        queryCache.invalidateQueries({ key: ["libcore", "playlist", id] }),
+        queryCache.invalidateQueries({ key: ["libcore", "playlist", id, "resource"] }),
         queryCache.invalidateQueries({ key: ["libcore", "list", playlistTracksListId(id)] }),
       ]);
     }
