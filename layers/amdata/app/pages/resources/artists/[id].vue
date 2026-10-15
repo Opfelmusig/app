@@ -1,8 +1,8 @@
 <template>
   <PageWrapper>
     <header class="flex flex-col gap-4 p-4 lg:flex-row">
-      <AMArtworkWrapper :resource="artist ?? undefined" context="header" round>
-        <AMArtworkImage :alt="artist?.attributes.name" />
+      <AMArtworkWrapper :resource="artist" context="header" round>
+        <AMArtworkImage />
         <AMArtworkPlaceholder />
       </AMArtworkWrapper>
       <div v-if="artist" class="flex w-full min-w-0 flex-col justify-end gap-4">
@@ -29,6 +29,40 @@
             :active="artist.attributes.personalRating === 1"
             aria-label="Favorite artist"
           />
+          <template v-if="latestRelease">
+            <OMButtonSeparator class="shrink-0" />
+            <NuxtLink
+              :to="resourceLink(latestRelease)"
+              class="flex h-9 min-w-0 items-center gap-2 rounded-xl pr-2.5 text-muted select-none hover:bg-muted"
+            >
+              <div class="size-9 shrink-0 overflow-hidden p-1">
+                <AMArtworkWrapper class="rounded-lg" :resource="latestRelease" context="grid">
+                  <AMArtworkImage />
+                  <AMArtworkPlaceholder />
+                  <AMArtworkOverlay
+                    class="cursor-default p-0"
+                    @click.prevent.stop="play(latestRelease)"
+                  >
+                    <OMIcon
+                      :name="latestReleasePending ? 'lucide:loader-circle' : 'lucide:play'"
+                      class="size-4"
+                      :class="latestReleasePending ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''"
+                      :filled="!latestReleasePending"
+                    />
+                  </AMArtworkOverlay>
+                </AMArtworkWrapper>
+              </div>
+              <span class="text-sm whitespace-nowrap text-muted">
+                <span class="truncate text-sm font-medium text-default">
+                  {{ latestRelease.attributes.name }}
+                </span>
+                <span v-if="latestRelease.attributes.releaseDate">
+                  (<AMReleaseDate :release-date="latestRelease.attributes.releaseDate" />)
+                </span>
+              </span>
+              <OMIcon name="lucide:chevron-right" class="size-4 shrink-0" />
+            </NuxtLink>
+          </template>
         </div>
       </div>
       <div v-else-if="isPending" class="flex items-center gap-2 text-sm text-muted" role="status">
@@ -70,7 +104,21 @@ const { data, isPending, error } = useAmQuery({
 });
 
 const artist = computed(() => data.value?.artist);
-const views = computed(() => data.value?.views ?? []);
+const views = computed(
+  () => data.value?.views.filter((section) => section.view !== "latest-release") ?? [],
+);
+const latestReleaseView = computed(() =>
+  data.value?.views.find((section) => section.view === "latest-release"),
+);
+const latestRelease = computed(() => {
+  const resource = latestReleaseView.value?.items[0]?.resource;
+  return resource?.type === "albums" ? resource : undefined;
+});
+
+const { play, pendingResource } = useResourceTracksPlayback();
+const latestReleasePending = computed(
+  () => pendingResource.value === `albums:${latestRelease.value?.id}`,
+);
 
 const nameArtworkUrl = computed(() =>
   getArtworkUrl(artist.value?.attributes.editorialArtwork?.musicContentColorLogoTrimmed, {
