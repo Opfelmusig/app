@@ -5,8 +5,8 @@
         <AMArtworkImage />
         <AMArtworkPlaceholder />
       </AMArtworkWrapper>
-      <div v-if="artist" class="flex w-full min-w-0 flex-col justify-end gap-4">
-        <div class="flex min-w-0 flex-col gap-1">
+      <div class="flex w-full min-w-0 flex-col justify-end gap-4">
+        <div v-if="artist" class="flex min-w-0 flex-col gap-1">
           <h2>
             <img
               v-if="nameArtworkUrl"
@@ -21,59 +21,62 @@
             {{ artist.attributes.genreNames.join(", ") }}
           </span>
         </div>
+        <div v-else-if="isPending" class="flex items-center gap-2 text-sm text-muted" role="status">
+          <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+          Loading artist
+        </div>
+        <div v-else-if="error" class="flex items-center gap-2 text-sm text-error" role="alert">
+          <UIcon name="lucide:x" class="size-4 shrink-0" />
+          <span>{{ error.message }}</span>
+        </div>
+        <p v-else class="text-sm text-muted">Artist not found.</p>
         <div class="flex items-center gap-2">
           <OMButtonPlay />
-          <OMButtonSecondary
-            fill
-            icon="lucide:star"
-            :active="artist.attributes.personalRating === 1"
-            aria-label="Favorite artist"
-          />
-          <template v-if="latestRelease">
-            <OMButtonSeparator class="shrink-0" />
-            <NuxtLink
-              :to="resourceLink(latestRelease)"
-              class="flex h-9 min-w-0 items-center gap-2 rounded-xl pr-2.5 text-muted select-none hover:bg-muted"
-            >
-              <div class="size-9 shrink-0 overflow-hidden p-1">
-                <AMArtworkWrapper class="rounded-lg" :resource="latestRelease" context="grid">
-                  <AMArtworkImage />
-                  <AMArtworkPlaceholder />
-                  <AMArtworkOverlay
-                    class="cursor-default p-0"
-                    @click.prevent.stop="play(latestRelease)"
-                  >
-                    <OMIcon
-                      :name="latestReleasePending ? 'lucide:loader-circle' : 'lucide:play'"
-                      class="size-4"
-                      :class="latestReleasePending ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''"
-                      :filled="!latestReleasePending"
-                    />
-                  </AMArtworkOverlay>
-                </AMArtworkWrapper>
-              </div>
-              <span class="text-sm whitespace-nowrap text-muted">
-                <span class="truncate text-sm font-medium text-default">
-                  {{ latestRelease.attributes.name }}
+          <template v-if="artist">
+            <OMButtonSecondary
+              fill
+              icon="lucide:star"
+              :active="artist.attributes.personalRating === 1"
+            />
+            <template v-if="latestRelease">
+              <OMButtonSeparator class="shrink-0" />
+              <NuxtLink
+                :to="resourceLink(latestRelease)"
+                class="flex h-9 min-w-0 items-center gap-2 rounded-xl pr-2.5 text-muted select-none hover:bg-muted"
+              >
+                <div class="size-9 shrink-0 overflow-hidden p-1">
+                  <AMArtworkWrapper class="rounded-lg" :resource="latestRelease" context="grid">
+                    <AMArtworkImage />
+                    <AMArtworkPlaceholder />
+                    <AMArtworkOverlay
+                      class="cursor-default p-0"
+                      @click.prevent.stop="play(latestRelease)"
+                    >
+                      <OMIcon
+                        :name="latestReleasePending ? 'lucide:loader-circle' : 'lucide:play'"
+                        class="size-4"
+                        :class="
+                          latestReleasePending ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''
+                        "
+                        :filled="!latestReleasePending"
+                      />
+                    </AMArtworkOverlay>
+                  </AMArtworkWrapper>
+                </div>
+                <span class="text-sm whitespace-nowrap text-muted">
+                  <span class="truncate text-sm font-medium text-default">
+                    {{ latestRelease.attributes.name }}
+                  </span>
+                  <span v-if="latestRelease.attributes.releaseDate">
+                    (<AMReleaseDate :release-date="latestRelease.attributes.releaseDate" />)
+                  </span>
                 </span>
-                <span v-if="latestRelease.attributes.releaseDate">
-                  (<AMReleaseDate :release-date="latestRelease.attributes.releaseDate" />)
-                </span>
-              </span>
-              <OMIcon name="lucide:chevron-right" class="size-4 shrink-0" />
-            </NuxtLink>
+                <OMIcon name="lucide:chevron-right" class="size-4 shrink-0" />
+              </NuxtLink>
+            </template>
           </template>
         </div>
       </div>
-      <div v-else-if="isPending" class="flex items-center gap-2 text-sm text-muted" role="status">
-        <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
-        Loading artist
-      </div>
-      <div v-else-if="error" class="flex items-center gap-2 text-sm text-error" role="alert">
-        <UIcon name="lucide:x" class="size-4 shrink-0" />
-        <span>{{ error.message }}</span>
-      </div>
-      <p v-else class="text-sm text-muted">Artist not found.</p>
     </header>
     <div v-if="artist" class="flex flex-col gap-8 py-4">
       <AMResourceScroller
