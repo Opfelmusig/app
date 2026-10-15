@@ -1,5 +1,5 @@
 import { parseResource } from "#layers/amdata/app/lib/parsers";
-import { getMeta } from "#layers/amdata/app/lib/parsers/helpers";
+import { getUnknownProperty } from "#layers/amdata/app/lib/parsers/helpers";
 import type { MeRecommendationScopes } from "#layers/amdata/app/lib/scopes/home";
 
 type Content = NonNullable<MeRecommendationScopes["relationships"]>["contents"]["data"][number];
@@ -46,7 +46,7 @@ export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRec
     relationships: {
       content: createListResources(
         content.map((item) => {
-          const reason = getMeta(item.meta, "reason", "stringForDisplay");
+          const reason = getUnknownProperty(item.meta, "reason", "stringForDisplay");
 
           return {
             ...parseResource(item),

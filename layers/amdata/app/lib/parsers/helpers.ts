@@ -9,8 +9,8 @@ export function parseCatalogLinks(
   );
 }
 
-export function getMeta(meta: unknown, ...path: string[]): unknown {
-  let value = meta;
+export function getUnknownProperty(source: unknown, ...path: string[]): unknown {
+  let value = source;
 
   for (const key of path) {
     if (typeof value !== "object" || value === null || !(key in value)) {
