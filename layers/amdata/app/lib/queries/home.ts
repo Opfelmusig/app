@@ -26,3 +26,24 @@ export async function fetchHome(client: OpfelMusigClient) {
         recommendation.relationships.content.length > 0,
     );
 }
+
+export async function fetchHomeShelf(client: OpfelMusigClient, shelf: string) {
+  const response = await client.me.recommendations.getView(shelf, "see-all", {
+    scopes: homeScopes,
+
+    config: {
+      extraParams: {
+        name: "listen-now",
+        platform: "web",
+        timezone: currentAppleTimezoneOffset(),
+        with: "friendsMix,library,social",
+      },
+    },
+  });
+
+  const recommendation = response.data[0];
+  if (!recommendation) return null;
+
+  const parsed = parseMeRecommendation(recommendation);
+  return parsed.relationships.content;
+}

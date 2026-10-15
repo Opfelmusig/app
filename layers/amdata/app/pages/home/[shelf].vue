@@ -1,12 +1,33 @@
 <template>
-  <PageWrapper class="gap-4 p-4">
-    <div class="flex items-center gap-3">
-      <UButton to="/" icon="lucide:arrow-left" color="neutral" variant="ghost" />
-      <h1>{{ title }}</h1>
-    </div>
+  <PageWrapper>
+    <header class="flex items-center gap-2 p-4">
+      <OMButtonTertiary to="/" icon="lucide:arrow-left" />
+      <h2>{{ title }}</h2>
+    </header>
+    <USeparator />
+    <AMGridWrapper>
+      <AMGridStatus :is-pending :error :total="items.length" :resources="items">
+        <AMGrid :items show-artists />
+      </AMGridStatus>
+    </AMGridWrapper>
   </PageWrapper>
 </template>
 
 <script lang="ts" setup>
-const title = useRouteQuery<string>("title", "Recommendations");
+import { fetchHomeShelf } from "#layers/amdata/app/lib/queries/home";
+
+const client = useClient();
+const shelf = useRouteParams<string>("shelf");
+
+const { data, isPending, error } = useAmQuery({
+  key: () => ["home", shelf.value],
+  query: () => fetchHomeShelf(client, shelf.value),
+  staleTime: ms("5m"),
+  gcTime: ms("6h"),
+});
+
+const items = computed(() => data.value?.relationships.content ?? []);
+
+const title = computed(() => data.value?.attributes.title ?? "Recommendations");
+useHead({ title });
 </script>

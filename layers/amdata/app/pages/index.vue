@@ -7,12 +7,7 @@
       :description="shelf.attributes.reason"
       :items="shelf.relationships.content"
       :see-more-to="
-        shelf.attributes.hasSeeAll
-          ? {
-              path: `/home/${encodeURIComponent(shelf.id)}`,
-              query: { title: shelf.attributes.title ?? 'Recommendations' },
-            }
-          : undefined
+        shelf.attributes.hasSeeAll ? `/home/${encodeURIComponent(shelf.id)}` : undefined
       "
       show-artists
     />
