@@ -34,19 +34,19 @@ export async function fetchCatalogSearch(
 
   return {
     songs: createListResources(
-      (response.results.songs?.data ?? []).filter(hasResourceName).map(parseCatalogSong),
+      (response.results.song?.data ?? []).filter(hasResourceName).map(parseCatalogSong),
       `search:${term}:songs`,
     ),
     albums: createListResources(
-      (response.results.albums?.data ?? []).filter(hasResourceName).map(parseCatalogAlbum),
+      (response.results.album?.data ?? []).filter(hasResourceName).map(parseCatalogAlbum),
       `search:${term}:albums`,
     ),
     artists: createListResources(
-      (response.results.artists?.data ?? []).filter(hasResourceName).map(parseCatalogArtist),
+      (response.results.artist?.data ?? []).filter(hasResourceName).map(parseCatalogArtist),
       `search:${term}:artists`,
     ),
     playlists: createListResources(
-      (response.results.playlists?.data ?? []).filter(hasResourceName).map(parseCatalogPlaylist),
+      (response.results.playlist?.data ?? []).filter(hasResourceName).map(parseCatalogPlaylist),
       `search:${term}:playlists`,
     ),
   };
