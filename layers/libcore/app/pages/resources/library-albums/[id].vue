@@ -1,6 +1,6 @@
 <template>
   <PageWrapper>
-    <header class="flex gap-4 p-4">
+    <header class="flex flex-col gap-4 p-4 lg:flex-row">
       <AMArtworkWrapper :resource="album" context="header" color="muted">
         <AMMediaEditorialVideo :editorial-video="album?.attributes.editorialVideo" variant="square">
           <template #fallback>
