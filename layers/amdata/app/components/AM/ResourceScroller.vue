@@ -33,7 +33,7 @@
         />
       </div>
     </div>
-    <AMSongsWrapper v-if="songs.length" :columns="['artist', 'length']">
+    <AMSongsWrapper v-if="songs.length" :columns="['album', 'artist', 'length']">
       <AMSongs :songs="songs.slice(0, 6)" @play="play" />
     </AMSongsWrapper>
     <div
