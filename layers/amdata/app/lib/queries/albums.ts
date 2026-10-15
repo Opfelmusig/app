@@ -21,6 +21,11 @@ export async function fetchCatalogAlbumTracks(client: OpfelMusigClient, id: stri
     client.catalog.albums.iterateRelationship(id, "tracks", {
       limit: 100,
       scopes: catalogSongsScopes,
+      config: {
+        extraParams: {
+          "meta[albums:tracks]": "popularity",
+        },
+      },
     }),
   );
 
