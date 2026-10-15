@@ -32,7 +32,7 @@ export default defineNuxtPlugin({
         },
         {
           keys: "ctrl-cmd+arrow-right",
-          run: () => queueStore.next(),
+          run: () => nuxtApp.runWithContext(() => usePlaybackStore().next()),
           config: { meta: { group: "Playback", name: "Next track" } },
         },
         {
