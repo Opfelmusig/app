@@ -10,7 +10,7 @@ import {
   catalogSongsScopes,
 } from "#layers/amdata/app/lib/scopes/catalog";
 
-const artistViews = [
+export const artistViews = [
   "top-songs",
   "featured-albums",
   "full-albums",
@@ -23,12 +23,19 @@ const artistViews = [
   "latest-release",
 ] as const;
 
+export type ArtistView = (typeof artistViews)[number];
+
+const artistViewScopes = {
+  ...catalogSongsScopes,
+  ...catalogAlbumsScopes,
+  ...catalogPlaylistsScopes,
+  ...catalogArtistsScopes,
+};
+
 export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
   const response = await client.catalog.artists.get(id, {
     scopes: {
-      ...catalogSongsScopes,
-      ...catalogAlbumsScopes,
-      ...catalogPlaylistsScopes,
+      ...artistViewScopes,
       stations: {
         fields: ["name", "artwork"],
       },
@@ -61,15 +68,32 @@ export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
     views: artistViews.map((view) => {
       const collection = artist.views?.[view];
       const title = getUnknownProperty(collection?.attributes, "title");
+      const items = createListResources(
+        (collection?.data ?? []).filter(hasResourceName).map((item) => parseResource(item)),
+        `artists:${id}:${view}`,
+      );
 
       return {
         view,
         title: typeof title === "string" ? title : view,
-        items: createListResources(
-          (collection?.data ?? []).filter(hasResourceName).map((item) => parseResource(item)),
-          `artists:${id}:${view}`,
-        ),
+        items,
+        hasMore: !!collection?.next,
       };
     }),
   };
+}
+
+export async function fetchCatalogArtistView(
+  client: OpfelMusigClient,
+  id: string,
+  view: ArtistView,
+) {
+  const response = await client.catalog.artists.getView(id, view, {
+    limit: 100,
+    scopes: artistViewScopes,
+  });
+  return createListResources(
+    response.data.filter(hasResourceName).map((item) => parseResource(item)),
+    `artists:${id}:${view}`,
+  );
 }

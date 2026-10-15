@@ -120,8 +120,4 @@ useKeybind({
   run: () => searchInput.value?.inputRef?.focus(),
   config: { prevent: true, ignoreRepeat: true },
 });
-
-useHead({
-  title: () => (term.value ? `Search: ${term.value}` : "Search"),
-});
 </script>

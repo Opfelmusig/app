@@ -88,6 +88,9 @@
         :key="section.view"
         :title="section.title"
         :items="section.items"
+        :see-more-to="
+          section.hasMore ? `/resources/artists/${id}/views/${section.view}` : undefined
+        "
         show-artists
         show-year
       />
