@@ -33,12 +33,14 @@
       <Panel v-if="settingsStore.panel.isOpen" />
     </Transition>
     <Transition
+      persisted
       enter-active-class="transition-transform duration-400"
       enter-from-class="translate-y-full"
       leave-active-class="transition-transform duration-400"
       leave-to-class="translate-y-full"
+      @after-leave="immersiveMounted = false"
     >
-      <Immersive v-if="settingsStore.immersive.isOpen" />
+      <Immersive v-if="immersiveMounted" v-show="settingsStore.immersive.isOpen" />
     </Transition>
     <Player />
     <Settings />
@@ -63,4 +65,12 @@ const panels: SplitterItem[] = [
 
 const { splitter: _splitter, reset } = useSidebar();
 const settingsStore = useSettingsStore();
+
+const immersiveMounted = ref(settingsStore.immersive.isOpen);
+watch(
+  () => settingsStore.immersive.isOpen,
+  (isOpen) => {
+    if (isOpen) immersiveMounted.value = true;
+  },
+);
 </script>
