@@ -42,7 +42,6 @@
           />
           <ImmersiveButton
             icon="lucide:settings"
-            aria-label="Open settings"
             :active="settingsStore.isOpen"
             small-icon
             @click="settingsStore.isOpen = true"

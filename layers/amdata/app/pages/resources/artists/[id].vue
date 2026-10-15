@@ -11,7 +11,6 @@
             <img
               v-if="nameArtworkUrl"
               :src="nameArtworkUrl"
-              :alt="artist.attributes.name"
               class="h-auto max-h-8 max-w-full object-contain object-left select-none"
               draggable="false"
             />
@@ -21,11 +20,11 @@
             {{ artist.attributes.genreNames.join(", ") }}
           </span>
         </div>
-        <div v-else-if="isPending" class="flex items-center gap-2 text-sm text-muted" role="status">
+        <div v-else-if="isPending" class="flex items-center gap-2 text-sm text-muted">
           <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
           Loading artist
         </div>
-        <div v-else-if="error" class="flex items-center gap-2 text-sm text-error" role="alert">
+        <div v-else-if="error" class="flex items-center gap-2 text-sm text-error">
           <UIcon name="lucide:x" class="size-4 shrink-0" />
           <span>{{ error.message }}</span>
         </div>

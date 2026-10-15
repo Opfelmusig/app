@@ -1,6 +1,6 @@
 <template>
   <SettingsConfig :label :description>
-    <USwitch v-model="model" :aria-label="label" :disabled class="shrink-0" />
+    <USwitch v-model="model" :disabled class="shrink-0" />
   </SettingsConfig>
 </template>
 

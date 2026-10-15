@@ -9,7 +9,7 @@
       <span ref="content" class="block w-max min-w-max shrink-0">
         <slot />
       </span>
-      <span v-if="overflowing" inert aria-hidden="true" class="block w-max min-w-max shrink-0">
+      <span v-if="overflowing" class="block w-max min-w-max shrink-0">
         <slot />
       </span>
     </span>

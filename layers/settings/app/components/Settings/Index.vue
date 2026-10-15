@@ -12,7 +12,6 @@
     >
       <template #body>
         <nav
-          aria-label="Settings sections"
           class="scrollbar-hide flex w-16 shrink-0 flex-col gap-1 overflow-y-auto border-r border-default bg-raised p-2 sm:w-52"
         >
           <template v-for="item in pages" :key="item.id">
@@ -24,8 +23,6 @@
             </span>
             <UButton
               :icon="item.icon"
-              :aria-label="item.label"
-              :aria-current="settingsStore.page === item.id ? 'page' : undefined"
               :title="item.label"
               color="neutral"
               variant="ghost"

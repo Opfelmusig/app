@@ -10,7 +10,6 @@
           color="neutral"
           icon="lucide:search"
           placeholder="Search..."
-          aria-label="Search Apple Music"
           class="w-full"
           :ui="{ base: 'h-10 rounded-xl' }"
         />
@@ -22,7 +21,6 @@
           color="neutral"
           size="sm"
           :variant="filter === item ? 'soft' : 'ghost'"
-          :aria-pressed="filter === item"
           class="capitalize"
           @click="filter = item"
         >
@@ -31,15 +29,11 @@
       </div>
     </header>
     <template v-if="term">
-      <div
-        v-if="isPending"
-        class="flex items-center justify-center gap-2 py-8 text-sm text-muted"
-        role="status"
-      >
+      <div v-if="isPending" class="flex items-center justify-center gap-2 py-8 text-sm text-muted">
         <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
         Loading results
       </div>
-      <div v-else-if="error" class="flex items-center gap-2 p-4 text-sm text-error" role="alert">
+      <div v-else-if="error" class="flex items-center gap-2 p-4 text-sm text-error">
         <UIcon name="lucide:x" class="size-4 shrink-0" />
         <span>{{ error.message }}</span>
       </div>

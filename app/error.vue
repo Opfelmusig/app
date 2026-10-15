@@ -55,7 +55,7 @@
             {{ state.syncing ? "Syncing..." : "Sync library" }}
           </button>
         </div>
-        <p v-if="cacheError" class="text-sm text-red-400" role="alert">{{ cacheError }}</p>
+        <p v-if="cacheError" class="text-sm text-red-400">{{ cacheError }}</p>
       </main>
       <div
         v-if="isDev && stack"

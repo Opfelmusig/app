@@ -1,7 +1,6 @@
 <template>
   <img
     v-if="imageSrc && !imageExpired"
-    :alt
     loading="lazy"
     decoding="async"
     :src="imageSrc"
@@ -19,7 +18,6 @@ import { artworkContextKey, type ArtworkContext } from "#layers/amdata/app/lib/c
 const props = defineProps<{
   artwork?: Artwork;
   src?: string;
-  alt?: string;
   width?: number;
   class?: string;
 }>();

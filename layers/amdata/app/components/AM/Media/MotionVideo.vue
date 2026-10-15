@@ -9,7 +9,7 @@
         :src="motionVideo.video"
       />
     </div>
-    <img :src="previewFrameUrl" class="absolute inset-0 size-full" alt="poster" draggable="false" />
+    <img :src="previewFrameUrl" class="absolute inset-0 size-full" draggable="false" />
   </div>
 </template>
 

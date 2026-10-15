@@ -14,7 +14,7 @@
     </div>
     <USeparator />
     <div class="flex w-48 flex-col gap-2 p-2 px-2.5">
-      <URadioGroup v-model="model" :ui="{ fieldset: 'gap-2' }" :items aria-label="Sort songs by" />
+      <URadioGroup v-model="model" :ui="{ fieldset: 'gap-2' }" :items />
     </div>
     <USeparator />
     <div class="flex w-48 flex-col gap-2 p-1">

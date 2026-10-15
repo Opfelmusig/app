@@ -16,10 +16,7 @@
 
       <div class="overflow-x-auto py-4">
         <div class="flex min-w-130 gap-4">
-          <div
-            class="relative h-36 w-12 shrink-0 text-xs text-muted tabular-nums"
-            aria-label="Gain in decibels"
-          >
+          <div class="relative h-36 w-12 shrink-0 text-xs text-muted tabular-nums">
             <span
               v-for="(gain, index) in [12, 6, 0, -6, -12]"
               :key="gain"
@@ -41,7 +38,6 @@
                 :max="12"
                 :step="0.5"
                 :disabled="!equalizer.enabled"
-                :aria-label="`${frequency} Hz gain`"
                 class="h-36"
                 @dblclick="equalizer.gains[index] = 0"
               />

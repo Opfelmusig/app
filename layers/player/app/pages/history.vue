@@ -34,7 +34,7 @@
         class="shrink-0"
         :ui="{ base: 'h-9 rounded-xl' }"
       />
-      <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" aria-label="History options" />
+      <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <p v-if="!historyStore.entries.length" class="p-4 text-sm text-muted">
       No listening history yet.
