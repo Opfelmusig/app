@@ -2,6 +2,7 @@ import { defineScopes } from "@opfelmusig/lib/helpers";
 import type { ScopedResourceOf } from "@opfelmusig/lib/types";
 
 import { parseResource } from "#layers/amdata/app/lib/parsers";
+import { getMeta } from "#layers/amdata/app/lib/parsers/helpers";
 
 export const homeScopes = defineScopes({
   "personal-recommendation": {
@@ -101,15 +102,6 @@ function flattenRecommendations(items?: readonly Content[]): FlatContent[] {
   );
 }
 
-function getReasonForDisplay(meta: unknown): string | undefined {
-  if (typeof meta !== "object" || meta === null || !("reason" in meta)) return;
-
-  const reason = meta.reason;
-  if (typeof reason !== "object" || reason === null || !("stringForDisplay" in reason)) return;
-
-  return typeof reason.stringForDisplay === "string" ? reason.stringForDisplay : undefined;
-}
-
 export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRecommendation {
   const attributes = resource.attributes;
   const content = flattenRecommendations(resource.relationships?.contents.data).filter(
@@ -138,10 +130,14 @@ export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRec
     relationships: {
       content: createListResources(
         content
-          .map((item) => ({
-            ...parseResource(item),
-            shared: { reasonForDisplay: getReasonForDisplay(item.meta) },
-          }))
+          .map((item) => {
+            const reason = getMeta(item.meta, "reason", "stringForDisplay");
+
+            return {
+              ...parseResource(item),
+              shared: { reasonForDisplay: typeof reason === "string" ? reason : undefined },
+            };
+          })
           .filter((item) => item.attributes.name),
         `home:${resource.id}`,
       ),

@@ -20,6 +20,7 @@ export interface AmSongAttributes {
   personalRating?: RatingValue;
   editorialVideo?: EditorialVideo;
   loudness?: AudioAnalysisLoudness;
+  popularity?: number;
 
   albums: AmCatalogLink[];
   artists: AmCatalogLink[];

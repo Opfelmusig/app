@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col p-3 px-4">
-    <div class="text-default">{{ title }}</div>
+    <div class="text-lg">{{ title }}</div>
     <span v-if="context" class="text-xs text-muted">
       <span v-if="typeof context === 'string'">
         {{ context }}

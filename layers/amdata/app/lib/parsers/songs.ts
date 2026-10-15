@@ -1,6 +1,6 @@
 import type { ResourceTemplateOf } from "@opfelmusig/lib/types";
 
-import { parseCatalogLinks } from "#layers/amdata/app/lib/parsers/helpers";
+import { getMeta, parseCatalogLinks } from "#layers/amdata/app/lib/parsers/helpers";
 
 type SongAttributeKeys =
   | "name"
@@ -90,6 +90,8 @@ export function parseCatalogSong(resource: CatalogSongTemplate): AmCatalogSong {
   const attributes = resource.attributes;
   const albums = resource.relationships?.albums.data;
 
+  const popularity = getMeta(resource, "popularity");
+
   if (!attributes) throw new Error(`Invalid Apple Music song: ${resource.id}: missing attributes`);
 
   return {
@@ -109,6 +111,7 @@ export function parseCatalogSong(resource: CatalogSongTemplate): AmCatalogSong {
       personalRating: attributes.personalRating,
       editorialVideo: albums?.map((a) => a.attributes?.editorialVideo).find((e) => !!e),
       loudness: resource.relationships?.["audio-analysis"].data[0]?.attributes?.loudness?.main,
+      popularity: typeof popularity === "number" ? popularity : undefined,
 
       albums: parseCatalogLinks(albums),
       artists: parseCatalogLinks(resource.relationships?.artists.data),

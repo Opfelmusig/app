@@ -8,3 +8,17 @@ export function parseCatalogLinks(
     })) ?? []
   );
 }
+
+export function getMeta(meta: unknown, ...path: string[]): unknown {
+  let value = meta;
+
+  for (const key of path) {
+    if (typeof value !== "object" || value === null || !(key in value)) {
+      return undefined;
+    }
+
+    value = (value as Record<string, unknown>)[key];
+  }
+
+  return value;
+}
