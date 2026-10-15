@@ -8,9 +8,14 @@ export default defineNuxtPlugin({
     const volumeStore = useVolumeStore();
 
     function togglePanel(page: "queue" | "lyrics") {
-      const panel = settingsStore.panel;
-      panel.isOpen = !panel.isOpen || panel.page !== page;
-      panel.page = page;
+      if (settingsStore.immersive.isOpen) {
+        if (page === "lyrics") settingsStore.immersive.lyrics = !settingsStore.immersive.lyrics;
+        else settingsStore.immersive.queue = !settingsStore.immersive.queue;
+      } else {
+        const panel = settingsStore.panel;
+        panel.isOpen = !panel.isOpen || panel.page !== page;
+        panel.page = page;
+      }
     }
 
     const off = useKeybind(
