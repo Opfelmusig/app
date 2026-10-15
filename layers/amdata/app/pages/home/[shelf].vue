@@ -20,7 +20,7 @@ const client = useClient();
 const shelf = useRouteParams<string>("shelf");
 
 const { data, isPending, error } = useAmQuery({
-  key: () => ["home", shelf.value],
+  key: () => ["home", "shelf", shelf.value],
   query: () => fetchHomeShelf(client, shelf.value),
   staleTime: ms("5m"),
   gcTime: ms("6h"),
@@ -29,5 +29,4 @@ const { data, isPending, error } = useAmQuery({
 const items = computed(() => data.value?.relationships.content ?? []);
 
 const title = computed(() => data.value?.attributes.title ?? "Recommendations");
-useHead({ title });
 </script>

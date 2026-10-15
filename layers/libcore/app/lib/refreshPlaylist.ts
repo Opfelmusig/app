@@ -24,7 +24,7 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
   });
 
   const newPlaylist = result.data[0];
-  if (!newPlaylist?.attributes) return;
+  if (!hasResourceName(newPlaylist)) return;
 
   const updatedPlaylist = parseResource(newPlaylist);
   const newLastModifiedDate = updatedPlaylist.attributes.lastModifiedDate;
@@ -46,7 +46,9 @@ export async function refreshPlaylist(id: string, db: LibraryDatabase, client: O
     }),
   );
 
-  const songs = tracks.filter((resource) => isNotResourceType(resource, "library-music-videos"));
+  const songs = tracks
+    .filter((resource) => isNotResourceType(resource, "library-music-videos"))
+    .filter(hasResourceName);
 
   const prepared = createEmptyLibrary();
 

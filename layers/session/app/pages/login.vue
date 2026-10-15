@@ -23,8 +23,6 @@
 </template>
 
 <script lang="ts" setup>
-useHead({ title: "Log in" });
-
 const token = ref("");
 const error = ref<string>();
 const loading = ref(false);

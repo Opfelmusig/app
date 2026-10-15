@@ -8,7 +8,7 @@ export const homeScopes = defineScopes({
   "personal-recommendation": {
     fields: ["hasSeeAll", "kind", "reason", "resourceTypes", "title"],
     relationships: {
-      contents: { mode: "include", limit: 25 },
+      contents: { mode: "include", limit: 100 },
     },
   },
 
@@ -104,13 +104,15 @@ function flattenRecommendations(items?: readonly Content[]): FlatContent[] {
 
 export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRecommendation {
   const attributes = resource.attributes;
-  const content = flattenRecommendations(resource.relationships?.contents.data).filter(
-    (resource) =>
-      resource.type !== "editorial-items" &&
-      resource.type !== "concerts" &&
-      resource.type !== "music-videos" &&
-      resource.type !== "library-music-videos",
-  );
+  const content = flattenRecommendations(resource.relationships?.contents.data)
+    .filter(
+      (resource) =>
+        resource.type !== "editorial-items" &&
+        resource.type !== "concerts" &&
+        resource.type !== "music-videos" &&
+        resource.type !== "library-music-videos",
+    )
+    .filter(hasResourceName);
 
   if (!attributes)
     throw new Error(`Invalid Apple Music recommendation: ${resource.id}: missing attributes`);
@@ -129,16 +131,14 @@ export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRec
 
     relationships: {
       content: createListResources(
-        content
-          .map((item) => {
-            const reason = getMeta(item.meta, "reason", "stringForDisplay");
+        content.map((item) => {
+          const reason = getMeta(item.meta, "reason", "stringForDisplay");
 
-            return {
-              ...parseResource(item),
-              shared: { reasonForDisplay: typeof reason === "string" ? reason : undefined },
-            };
-          })
-          .filter((item) => item.attributes.name),
+          return {
+            ...parseResource(item),
+            shared: { reasonForDisplay: typeof reason === "string" ? reason : undefined },
+          };
+        }),
         `home:${resource.id}`,
       ),
     },

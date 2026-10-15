@@ -12,8 +12,4 @@
 import { en } from "@nuxt/ui/locale";
 
 const { cssVars } = useArtworkTheme();
-
-useHead({
-  titleTemplate: (title) => (title ? `${title} | Öpfelmusig` : "Öpfelmusig"),
-});
 </script>

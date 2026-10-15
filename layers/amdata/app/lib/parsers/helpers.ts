@@ -2,9 +2,9 @@ export function parseCatalogLinks(
   resources: readonly { id: string; attributes?: { name?: string } }[] | undefined,
 ): AmCatalogLink[] {
   return (
-    resources?.map((resource) => ({
+    resources?.filter(hasResourceName).map((resource) => ({
       id: resource.id,
-      name: resource.attributes?.name ?? "Unknown",
+      name: resource.attributes.name,
     })) ?? []
   );
 }

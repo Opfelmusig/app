@@ -1,14 +1,12 @@
 <template>
   <template v-for="item in items" :key="item.key">
-    <template v-if="item.resource.attributes.name">
-      <AMGridItem
-        v-if="item.resourceType !== 'library-playlist-folders'"
-        :resource="item"
-        :show-artists
-        :show-year
-      />
-      <AMGridFolderItem v-else :resource="item" />
-    </template>
+    <AMGridItem
+      v-if="item.resourceType !== 'library-playlist-folders'"
+      :resource="item"
+      :show-artists
+      :show-year
+    />
+    <AMGridFolderItem v-else :resource="item" />
   </template>
 </template>
 

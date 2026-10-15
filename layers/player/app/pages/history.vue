@@ -67,8 +67,6 @@ import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
 
-useHead({ title: "History" });
-
 const historyStore = useHistoryStore();
 const queueStore = useQueueStore();
 const {

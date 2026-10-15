@@ -19,6 +19,7 @@ export async function fetchHome(client: OpfelMusigClient) {
   });
 
   return recommendations.data
+    .filter((recommendation) => recommendation.attributes)
     .map(parseMeRecommendation)
     .filter(
       (recommendation) =>
@@ -42,8 +43,7 @@ export async function fetchHomeShelf(client: OpfelMusigClient, shelf: string) {
   });
 
   const recommendation = response.data[0];
-  if (!recommendation) return null;
+  if (!recommendation?.attributes) return null;
 
-  const parsed = parseMeRecommendation(recommendation);
-  return parsed.relationships.content;
+  return parseMeRecommendation(recommendation);
 }

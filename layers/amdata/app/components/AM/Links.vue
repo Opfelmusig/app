@@ -2,7 +2,7 @@
   <span v-if="links.length" class="truncate">
     <template v-for="(link, index) in links" :key="link.id">
       <span v-if="index !== 0">, </span>
-      <NuxtLink v-if="link.name" class="hover:underline" :to="rawResourceLink(type, link.id)">
+      <NuxtLink class="hover:underline" :to="rawResourceLink(type, link.id)">
         {{ link.name }}
       </NuxtLink>
     </template>

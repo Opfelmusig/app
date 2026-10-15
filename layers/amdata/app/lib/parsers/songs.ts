@@ -27,7 +27,7 @@ export type LibrarySongTemplate = ResourceTemplateOf<
       "personalRating",
       {
         albums: ResourceTemplateOf<"albums", "name", "editorialVideo">;
-        artists: ResourceTemplateOf<"artists", "name", "editorialVideo">;
+        artists: ResourceTemplateOf<"artists", "name">;
         "audio-analysis": ResourceTemplateOf<"audio-analysis", "loudness">;
       }
     >;

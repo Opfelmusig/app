@@ -110,12 +110,8 @@ export class LibraryClient {
       right: AmLibraryPlaylist | AmLibraryPlaylistFolder,
     ) => left.attributes.name.localeCompare(right.attributes.name);
 
-    const foldersByParent = groupBy(folders, (item) =>
-      item.attributes.name ? item.extras.parentId : undefined,
-    );
-    const playlistsByParent = groupBy(playlists, (item) =>
-      item.attributes.name ? item.extras.parentId : undefined,
-    );
+    const foldersByParent = groupBy(folders, (item) => item.extras.parentId);
+    const playlistsByParent = groupBy(playlists, (item) => item.extras.parentId);
 
     function build(parentId: string): AmLibraryTreeNode[] {
       return [

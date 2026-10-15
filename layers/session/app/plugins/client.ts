@@ -120,14 +120,16 @@ export default defineNuxtPlugin({
         settingsStore.language = storefront.value?.attributes?.defaultLanguageTag;
       }
 
-      const userProfile = profileData.data[0];
+      const userProfile = profileData.data.find((resource) =>
+        hasResourceName(resource.relationships?.["social-profile"].data[0]),
+      );
       profile.value = parseResource(userProfile);
 
       if (!profile.value) throw new Error("Profile not found");
 
-      const playlists = (userProfile?.relationships?.["shared-playlists"].data ?? []).map(
-        (playlist) => parseResource(playlist),
-      );
+      const playlists = (userProfile?.relationships?.["shared-playlists"].data ?? [])
+        .filter(hasResourceName)
+        .map((playlist) => parseResource(playlist));
       sharedPlaylists.value = createListResources(playlists, "shared-playlists");
 
       tokenValid.value = true;

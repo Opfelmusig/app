@@ -65,7 +65,7 @@ function fetchAllLibraryPages(
           progress.songs.count++;
         },
       },
-    ),
+    ).then((resources) => resources.filter(hasResourceName)),
     albums: collect(
       client.library.albums.iterateAll({
         limit: 100,
@@ -81,7 +81,7 @@ function fetchAllLibraryPages(
       },
     ).then((result) => {
       progress.albums.done = true;
-      return result;
+      return result.filter(hasResourceName);
     }),
     artists: collect(
       client.library.artists.iterateAll({ limit: 100, scopes: artistsScopes, config: { signal } }),
@@ -93,7 +93,7 @@ function fetchAllLibraryPages(
       },
     ).then((result) => {
       progress.artists.done = true;
-      return result;
+      return result.filter(hasResourceName);
     }),
     playlists: collect(
       client.library.playlists.iterateAll({
@@ -109,19 +109,21 @@ function fetchAllLibraryPages(
       },
     ).then((result) => {
       progress.playlists.done = true;
-      return result;
+      return result.filter(hasResourceName);
     }),
     pins: client.library
       .getPins({ scopes: pinsScopes, config: { signal } })
       .then((response) =>
-        response.data.filter((resource) => isNotResourceType(resource, "library-music-videos")),
+        response.data
+          .filter((resource) => isNotResourceType(resource, "library-music-videos"))
+          .filter(hasResourceName),
       ),
     playlistFolders: collect(
       client.library.playlistFolders.iterateFolders({ config: { signal } }),
       {
         signal,
       },
-    ),
+    ).then((resources) => resources.filter(hasResourceName)),
   });
 }
 
@@ -153,7 +155,9 @@ function fetchPlaylistTracks(
               }
             },
           },
-        ).then((tracks) => tracks.filter((track) => isResourceType(track, "library-songs"))),
+        ).then((tracks) =>
+          tracks.filter((track) => isResourceType(track, "library-songs")).filter(hasResourceName),
+        ),
     ),
   );
 }

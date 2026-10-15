@@ -14,6 +14,4 @@
 
 <script lang="ts" setup>
 const type = useRouteParams<AmResource["type"]>("type");
-
-useHead({ title: "Not found" });
 </script>

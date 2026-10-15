@@ -34,6 +34,7 @@ export default async function getTracks(
 
       const parsed = songs.data
         .filter((resource) => resource.type === "songs")
+        .filter(hasResourceName)
         .map(parseCatalogSong);
 
       if (parsed.length < (limit ?? 1)) {
