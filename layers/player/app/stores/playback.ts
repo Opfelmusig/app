@@ -200,6 +200,12 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     if (started) control({ action: "seek", value });
   }
 
+  function next() {
+    const currentId = queueStore.current?.id;
+    queueStore.next();
+    if (currentId && queueStore.current?.id === currentId && !queueStore.isStation) seek(0);
+  }
+
   function previous() {
     if (position.value > 5 || (queueStore.index === 0 && !queueStore.isLooping)) seek(0);
     else queueStore.previous();
@@ -217,7 +223,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
         toggle();
         break;
       case "next":
-        queueStore.next();
+        next();
         break;
       case "previous":
         previous();
@@ -262,5 +268,5 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   );
   useDiscordPresence({ isPlaying, paused, position, duration });
 
-  return { pending, isPlaying, paused, position, duration, play, toggle, seek, previous };
+  return { pending, isPlaying, paused, position, duration, play, toggle, seek, next, previous };
 });

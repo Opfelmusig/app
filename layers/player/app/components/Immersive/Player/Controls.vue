@@ -14,7 +14,7 @@
       filled
       @click="playbackStore.toggle"
     />
-    <ImmersivePlayerButton icon="lucide:skip-forward" filled @click="queueStore.next" />
+    <ImmersivePlayerButton icon="lucide:skip-forward" filled @click="playbackStore.next" />
 
     <ImmersivePlayerToggle
       icon="lucide:repeat"

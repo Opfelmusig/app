@@ -107,7 +107,7 @@
         </div>
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
-          @click="queueStore.next"
+          @click="playbackStore.next"
         >
           <OMIcon mode="svg" name="lucide:skip-forward" class="size-4 text-muted" filled />
         </div>
