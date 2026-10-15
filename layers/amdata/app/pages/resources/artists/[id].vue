@@ -65,11 +65,13 @@
                     </AMArtworkOverlay>
                   </AMArtworkWrapper>
                 </div>
-                <span class="text-sm whitespace-nowrap text-muted">
+                <span
+                  class="flex min-w-0 items-baseline gap-2 text-sm whitespace-nowrap text-muted"
+                >
                   <span class="truncate text-sm font-medium text-default">
                     {{ latestRelease.attributes.name }}
                   </span>
-                  <span v-if="latestRelease.attributes.releaseDate">
+                  <span v-if="latestRelease.attributes.releaseDate" class="shrink-0">
                     (<AMReleaseDate :release-date="latestRelease.attributes.releaseDate" />)
                   </span>
                 </span>
