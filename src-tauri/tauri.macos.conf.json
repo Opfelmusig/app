@@ -29,6 +29,7 @@
   "bundle": {
     "macOS": {
       "entitlements": "entitlements.plist",
+      "signingIdentity": "-",
       "dmg": {
         "background": "./dmg/background.jpg",
         "windowSize": {
