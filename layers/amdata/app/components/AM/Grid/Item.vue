@@ -7,7 +7,15 @@
       <AMArtworkWrapper :resource context="grid">
         <AMArtworkImage />
         <AMArtworkPlaceholder />
-        <AMArtworkOverlay v-if="resource.resource.type !== 'stations'" alignment="bottom">
+        <AMArtworkOverlay
+          v-if="
+            resource.resource.type === 'albums' ||
+            resource.resource.type === 'library-albums' ||
+            resource.resource.type === 'playlists' ||
+            resource.resource.type === 'library-playlists'
+          "
+          alignment="bottom"
+        >
           <AMArtworkOverlayButton
             v-if="playableResource"
             icon="lucide:play"
@@ -17,8 +25,20 @@
           />
           <AMArtworkOverlayButton icon="lucide:ellipsis" class="ml-auto" />
         </AMArtworkOverlay>
+        <AMArtworkOverlay v-else-if="resource.resource.type === 'artists'">
+          <AMArtworkOverlayButton
+            v-if="resource.resource.relationships.station"
+            icon="lucide:play"
+            :loading="
+              queueStore.requestedStation?.id === resource.resource.relationships.station.id
+            "
+            filled
+            @click="queueStore.playStation(resource.resource.relationships.station)"
+          />
+          <AMArtworkOverlayButton icon="lucide:ellipsis" />
+        </AMArtworkOverlay>
         <AMArtworkOverlay
-          v-else
+          v-else-if="resource.resource.type === 'stations'"
           :class="isStationPending ? 'pointer-events-none' : ''"
           @click="queueStore.playStation(resource.resource)"
         >
