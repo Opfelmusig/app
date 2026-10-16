@@ -62,6 +62,7 @@
   },
   "patchedDependencies": {
     "reka-ui@2.10.4": "patches/reka-ui@2.10.4.patch",
+    "@pinia/colada-devtools@2.0.1": "patches/@pinia%2Fcolada-devtools@2.0.1.patch",
   },
   "overrides": {
     "@nuxt/devtools": "4.0.0-beta.4",
