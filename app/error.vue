@@ -68,6 +68,9 @@
         />
       </div>
     </div>
+    <div class="absolute bottom-4 flex w-full justify-center">
+      <UpdaterButtons />
+    </div>
   </div>
 </template>
 

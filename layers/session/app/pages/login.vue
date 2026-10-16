@@ -19,6 +19,9 @@
         Log in
       </UButton>
     </div>
+    <div class="absolute bottom-4 flex w-full justify-center">
+      <UpdaterButtons />
+    </div>
   </main>
 </template>
 

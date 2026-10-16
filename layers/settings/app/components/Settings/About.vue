@@ -7,6 +7,9 @@
         description="Check for updates when Öpfelmusig starts and at regular intervals."
         :disabled="isDev"
       />
+      <SettingsConfig no-label label="Updates">
+        <UpdaterButtons />
+      </SettingsConfig>
     </SettingsSection>
     <USeparator />
     <SettingsSection>
