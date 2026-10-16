@@ -55,13 +55,13 @@
 <script lang="ts" setup>
 import type { RouteLocationRaw } from "vue-router";
 
-type ScrollerResource = Exclude<AmResource, AmLibraryPlaylistFolder>;
-type GridResource = Exclude<ScrollerResource, AmSong>;
+type ShelfResource = Exclude<AmResource, AmLibraryPlaylistFolder>;
+type GridResource = Exclude<ShelfResource, AmSong>;
 
 const props = defineProps<{
   title: string;
   description?: string;
-  items: AmListResource<ScrollerResource>[];
+  items: AmListResource<ShelfResource>[];
   seeMoreTo?: RouteLocationRaw;
   showArtists?: boolean;
   showYear?: boolean;

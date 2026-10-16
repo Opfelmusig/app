@@ -120,7 +120,7 @@
     </AMFooter>
     <USeparator class="last:hidden" />
     <div v-if="playlist" class="flex flex-col gap-8 py-4">
-      <AMResourceScroller
+      <AMResourceShelf
         v-for="section in views"
         :key="section.view"
         :title="section.title"

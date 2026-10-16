@@ -72,7 +72,7 @@
       </p>
       <template v-else-if="data">
         <div v-if="filter === 'all'" class="flex flex-col gap-8 py-4">
-          <AMResourceScroller
+          <AMResourceShelf
             v-for="section in sections"
             :key="section"
             :title="section.charAt(0).toUpperCase() + section.slice(1)"
