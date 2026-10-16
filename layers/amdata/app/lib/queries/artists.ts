@@ -34,18 +34,7 @@ const artistViewScopes = {
 
 export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
   const response = await client.catalog.artists.get(id, {
-    scopes: {
-      ...catalogArtistsScopes,
-      stations: {
-        fields: ["name", "artwork"],
-      },
-      artists: {
-        ...catalogArtistsScopes.artists,
-        relationships: {
-          station: "include",
-        },
-      },
-    },
+    scopes: catalogArtistsScopes,
   });
 
   const artist = response.data[0];

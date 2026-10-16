@@ -57,6 +57,12 @@ export const catalogArtistsScopes = defineScopes({
   artists: {
     fields: ["name", "artwork", "genreNames"],
     extend: ["personalRating", "editorialArtwork"],
+    relationships: {
+      station: "include",
+    },
+  },
+  stations: {
+    fields: ["name", "artwork"],
   },
 });
 
