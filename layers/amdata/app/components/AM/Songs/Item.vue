@@ -140,7 +140,7 @@ const playbackStore = usePlaybackStore();
 const isActive = computed(() => queueStore.current?.entry.key === props.song.key);
 const disabled = computed(() => !props.song.resource.attributes.playParams);
 
-const menuItems = useResourceMenu(() => props.song.resource, {
+const menuItems = useResourceMenu(() => props.song, {
   play: () => emit("play"),
 });
 </script>
