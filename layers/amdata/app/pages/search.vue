@@ -1,7 +1,7 @@
 <template>
   <PageWrapper>
     <header class="flex flex-col gap-4 p-4">
-      <form class="w-full max-w-150" @submit.prevent="search">
+      <form class="w-full max-w-150" @submit.prevent="search(draft)">
         <UInput
           ref="search-input"
           v-model="draft"
@@ -28,6 +28,36 @@
         </UButton>
       </div>
     </header>
+    <section v-if="!term && searchHistory.length" class="flex flex-col gap-3 p-4">
+      <div class="flex items-center justify-between gap-4">
+        <h2>Recently searched</h2>
+        <UButton color="neutral" variant="soft" size="sm" @click="searchHistory = []">
+          Clear
+        </UButton>
+      </div>
+      <ul class="flex flex-wrap gap-2">
+        <li v-for="entry in searchHistory" :key="entry" class="flex max-w-full min-w-0">
+          <UButton
+            color="neutral"
+            variant="soft"
+            icon="lucide:history"
+            class="min-w-0 rounded-r-none border-r border-bg"
+            :label="entry"
+            @click="search(entry)"
+          />
+          <UButton
+            color="neutral"
+            variant="soft"
+            size="xs"
+            icon="lucide:x"
+            class="shrink-0 rounded-l-none px-2"
+            :ui="{ leadingIcon: 'size-3' }"
+            :aria-label="`Remove ${entry} from search history`"
+            @click="removeSearch(entry)"
+          />
+        </li>
+      </ul>
+    </section>
     <template v-if="term">
       <div v-if="isPending" class="flex items-center justify-center gap-2 py-8 text-sm text-muted">
         <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
@@ -71,6 +101,7 @@ import {
 
 const client = useClient();
 const queueStore = useQueueStore();
+const searchHistory = useLocalStorage<string[]>("opfelmusig:search-history", []);
 
 const term = useRouteQuery<string>("term", "");
 const filter = useRouteQuery<SearchFilter>("filter", "all", {
@@ -82,12 +113,21 @@ const filter = useRouteQuery<SearchFilter>("filter", "all", {
 const sections = ["songs", "albums", "artists", "playlists"] as const;
 const draft = ref(term.value);
 
-function search() {
-  term.value = draft.value.trim();
-  draft.value = term.value;
+function search(value: string) {
+  const query = value.trim();
+  term.value = query;
+  draft.value = query;
+  if (!query) return;
+
+  searchHistory.value = [
+    query,
+    ...searchHistory.value.filter((entry) => entry.toLowerCase() !== query.toLowerCase()),
+  ].slice(0, 20);
 }
 
-watch(term, (value) => (draft.value = value));
+function removeSearch(value: string) {
+  searchHistory.value = searchHistory.value.filter((entry) => entry !== value);
+}
 
 const { data, isPending, error } = useAmQuery({
   key: () => ["search", term.value, filter.value],
