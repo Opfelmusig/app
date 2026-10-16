@@ -1,10 +1,6 @@
+use playwire::{Event, MediaControls, PlaybackState, PlayerConfig, Track};
 use serde::Serialize;
-use souvlaki::{
-    MediaControlEvent, MediaControls, MediaMetadata, MediaPlayback, MediaPosition, PlatformConfig,
-    SeekDirection,
-};
 use std::{
-    ffi::c_void,
     sync::{Arc, Mutex},
     time::Duration,
 };
@@ -36,8 +32,13 @@ pub struct NativeMediaMetadata {
     pub cover_url: Option<String>,
 }
 
+struct MediaSession {
+    controls: MediaControls,
+    playback: PlaybackState,
+}
+
 pub struct NativeMediaSession {
-    controls: Mutex<Option<MediaControls>>,
+    session: Mutex<Option<MediaSession>>,
     events: Arc<Mutex<Option<Channel<NativeMediaEvent>>>>,
 }
 
@@ -49,7 +50,13 @@ impl NativeMediaSession {
         });
 
         Self {
-            controls: Mutex::new(controls.ok()),
+            session: Mutex::new(controls.ok().map(|controls| MediaSession {
+                controls,
+                playback: PlaybackState {
+                    volume: 1.0,
+                    ..PlaybackState::default()
+                },
+            })),
             events,
         }
     }
@@ -67,17 +74,17 @@ impl NativeMediaSession {
         Ok(())
     }
 
-    fn with_controls(
-        &self,
-        action: impl FnOnce(&mut MediaControls) -> Result<(), souvlaki::Error>,
-    ) -> Result<(), String> {
-        let mut controls = self
-            .controls
+    fn update(&self, action: impl FnOnce(&mut PlaybackState)) -> Result<(), String> {
+        let mut session = self
+            .session
             .lock()
             .map_err(|_| "OS media controls are unavailable.".to_string())?;
 
-        if let Some(controls) = controls.as_mut() {
-            action(controls)
+        if let Some(session) = session.as_mut() {
+            action(&mut session.playback);
+            session
+                .controls
+                .set_state(&session.playback)
                 .map_err(|cause| format!("Could not update OS media controls: {cause}"))?;
         }
 
@@ -85,72 +92,62 @@ impl NativeMediaSession {
     }
 }
 
+fn media_event(event: Event) -> Option<NativeMediaEvent> {
+    Some(match event {
+        Event::Play => NativeMediaEvent::Play,
+        Event::Pause => NativeMediaEvent::Pause,
+        Event::PlayPause => NativeMediaEvent::Toggle,
+        Event::Next => NativeMediaEvent::Next,
+        Event::Previous => NativeMediaEvent::Previous,
+        Event::Stop => NativeMediaEvent::Stop,
+        Event::SeekBy(seconds) => NativeMediaEvent::SeekBy { seconds },
+        Event::SeekTo(position) => NativeMediaEvent::SetPosition {
+            position: position.as_secs_f64(),
+        },
+        Event::SetVolume(volume) => NativeMediaEvent::SetVolume { volume },
+        _ => return None,
+    })
+}
+
 fn create_controls(
     app: &AppHandle,
     events: Arc<Mutex<Option<Channel<NativeMediaEvent>>>>,
 ) -> Result<MediaControls, String> {
-    let mut controls = MediaControls::new(PlatformConfig {
-        dbus_name: "opfelmusig",
-        display_name: "Öpfelmusig",
-        hwnd: window_handle(app)?,
-    })
-    .map_err(|cause| cause.to_string())?;
-
-    controls
-        .attach(move |event| {
-            let event = match event {
-                MediaControlEvent::Play => NativeMediaEvent::Play,
-                MediaControlEvent::Pause => NativeMediaEvent::Pause,
-                MediaControlEvent::Toggle => NativeMediaEvent::Toggle,
-                MediaControlEvent::Next => NativeMediaEvent::Next,
-                MediaControlEvent::Previous => NativeMediaEvent::Previous,
-                MediaControlEvent::Stop => NativeMediaEvent::Stop,
-                MediaControlEvent::Seek(direction) => NativeMediaEvent::SeekBy {
-                    seconds: seek_seconds(direction, Duration::from_secs(10)),
-                },
-                MediaControlEvent::SeekBy(direction, duration) => NativeMediaEvent::SeekBy {
-                    seconds: seek_seconds(direction, duration),
-                },
-                MediaControlEvent::SetPosition(position) => NativeMediaEvent::SetPosition {
-                    position: position.0.as_secs_f64(),
-                },
-                MediaControlEvent::SetVolume(volume) => NativeMediaEvent::SetVolume { volume },
-                _ => return,
+    MediaControls::new(
+        PlayerConfig {
+            identity: "Öpfelmusig".into(),
+            bus_name: "opfelmusig".into(),
+            hwnd: window_handle(app)?,
+            app_media_id: Some(app.config().identifier.clone()),
+            ..PlayerConfig::default()
+        },
+        move |event| {
+            let Some(event) = media_event(event) else {
+                return;
             };
-
             if let Ok(events) = events.lock() {
                 if let Some(channel) = events.as_ref() {
                     let _ = channel.send(event);
                 }
             }
-        })
-        .map_err(|cause| cause.to_string())?;
-
-    Ok(controls)
-}
-
-fn seek_seconds(direction: SeekDirection, duration: Duration) -> f64 {
-    let seconds = duration.as_secs_f64();
-
-    match direction {
-        SeekDirection::Forward => seconds,
-        SeekDirection::Backward => -seconds,
-    }
+        },
+    )
+    .map_err(|cause| cause.to_string())
 }
 
 #[cfg(not(target_os = "windows"))]
-fn window_handle(_app: &AppHandle) -> Result<Option<*mut c_void>, String> {
+fn window_handle(_app: &AppHandle) -> Result<Option<u64>, String> {
     Ok(None)
 }
 
 #[cfg(target_os = "windows")]
-fn window_handle(app: &AppHandle) -> Result<Option<*mut c_void>, String> {
+fn window_handle(app: &AppHandle) -> Result<Option<u64>, String> {
     let window = app
         .get_webview_window("main")
         .ok_or_else(|| "Main window is unavailable.".to_string())?;
     let handle = window.hwnd().map_err(|cause| cause.to_string())?;
 
-    Ok(Some(handle.0))
+    Ok(Some(handle.0 as u64))
 }
 
 #[tauri::command]
@@ -167,20 +164,37 @@ pub fn native_media_listen(
 
 pub fn set_metadata(
     media: &NativeMediaSession,
+    id: &str,
     metadata: &NativeMediaMetadata,
     duration: f64,
 ) -> Result<(), String> {
-    let duration = Duration::try_from_secs_f64(duration).ok();
-
-    media.with_controls(|controls| {
-        controls.set_metadata(MediaMetadata {
-            title: Some(&metadata.title),
-            album: metadata.album.as_deref(),
-            artist: metadata.artist.as_deref(),
-            cover_url: metadata.cover_url.as_deref(),
-            duration,
-        })
+    media.update(|state| {
+        state.track = Some(Track {
+            id: id.to_owned(),
+            title: metadata.title.clone(),
+            album: metadata.album.clone().unwrap_or_default(),
+            artists: metadata.artist.iter().cloned().collect(),
+            artwork_url: metadata.cover_url.clone().unwrap_or_default(),
+            ..Track::default()
+        });
+        state.duration = Duration::try_from_secs_f64(duration).ok();
+        state.position = Duration::ZERO;
+        state.playing = false;
     })
+}
+
+fn update_playback(state: &mut PlaybackState, status: PlaybackStatus, position: f64, paused: bool) {
+    state.playing = !paused
+        && match status {
+            PlaybackStatus::Playing => true,
+            PlaybackStatus::Loading => state.playing,
+            _ => false,
+        };
+    state.position = Duration::try_from_secs_f64(position.max(0.0)).unwrap_or_default();
+    if matches!(status, PlaybackStatus::Error | PlaybackStatus::Stopped) {
+        state.track = None;
+        state.duration = None;
+    }
 }
 
 pub fn set_playback(
@@ -189,24 +203,15 @@ pub fn set_playback(
     position: f64,
     paused: bool,
 ) -> Result<(), String> {
-    let progress = Duration::try_from_secs_f64(position.max(0.0))
-        .ok()
-        .map(MediaPosition);
-    let playback = match status {
-        PlaybackStatus::Playing if !paused => MediaPlayback::Playing { progress },
-        PlaybackStatus::Playing | PlaybackStatus::Paused | PlaybackStatus::Loading => {
-            MediaPlayback::Paused { progress }
-        }
-        _ => MediaPlayback::Stopped,
-    };
-
-    media.with_controls(|controls| controls.set_playback(playback))
+    media.update(|state| update_playback(state, status, position, paused))
 }
 
 pub fn clear(media: &NativeMediaSession) -> Result<(), String> {
-    media.with_controls(|controls| {
-        controls.set_playback(MediaPlayback::Stopped)?;
-        controls.set_metadata(MediaMetadata::default())
+    media.update(|state| {
+        *state = PlaybackState {
+            volume: 1.0,
+            ..PlaybackState::default()
+        };
     })
 }
 

@@ -92,7 +92,8 @@ pub fn native_playback_play(
             previous.stop();
         }
     }
-    if let Err(cause) = media::set_metadata(&media, &request.song.metadata(), duration) {
+    if let Err(cause) = media::set_metadata(&media, &request.id, &request.song.metadata(), duration)
+    {
         log::warn!("Could not update system media metadata: {cause}");
     }
     let reporting = session.clone();
