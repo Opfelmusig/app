@@ -13,25 +13,21 @@
         context="list"
         :transparent="albumMode"
       >
-        <div
-          v-if="albumMode && !isActive"
-          class="flex size-full items-center justify-center text-muted"
-        >
-          <span class="truncate text-center tabular-nums group-hover:opacity-0">
-            {{ song.resource.attributes.trackNumber }}
-          </span>
-        </div>
-        <div
-          v-else-if="albumMode"
-          class="absolute inset-0 flex items-center justify-center bg-muted/50"
-        >
-          <OMIcon
-            v-if="playbackStore.pending"
-            name="lucide:loader-circle"
-            class="size-4 animate-spin text-highlighted [&>path]:stroke-3"
-          />
-          <OMVisualizer v-else />
-        </div>
+        <template v-if="albumMode">
+          <div v-if="!isActive" class="flex size-full items-center justify-center text-muted">
+            <span class="truncate text-center tabular-nums group-hover:opacity-0">
+              {{ song.resource.attributes.trackNumber }}
+            </span>
+          </div>
+          <div v-else class="absolute inset-0 flex items-center justify-center">
+            <OMIcon
+              v-if="playbackStore.pending"
+              name="lucide:loader-circle"
+              class="size-4 animate-spin text-highlighted [&>path]:stroke-3"
+            />
+            <OMVisualizer v-else />
+          </div>
+        </template>
         <template v-else>
           <AMArtworkImage />
           <div
