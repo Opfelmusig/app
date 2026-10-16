@@ -7,7 +7,9 @@ type MediaEvent =
   | { event: "play" | "pause" | "toggle" | "next" | "previous" | "stop" }
   | { event: "seekBy"; data: { seconds: number } }
   | { event: "setPosition"; data: { position: number } }
-  | { event: "setVolume"; data: { volume: number } };
+  | { event: "setVolume"; data: { volume: number } }
+  | { event: "setShuffle"; data: { enabled: boolean } }
+  | { event: "setRepeat"; data: { mode: "off" | "one" | "all" } };
 
 interface PlaybackEvent {
   id: string;
@@ -272,6 +274,17 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     if (currentId && queueStore.current?.id === currentId && !queueStore.isStation) seek(0);
   }
 
+  async function syncMediaPlayModes() {
+    try {
+      return await invoke("native_media_set_play_modes", {
+        shuffle: !queueStore.isStation && queueStore.isShuffling,
+        repeat: !queueStore.isStation && queueStore.isLooping,
+      });
+    } catch (cause) {
+      return log.warn("Could not update system playback modes", { cause });
+    }
+  }
+
   const mediaEvents = new Channel<MediaEvent>((event) => {
     switch (event.event) {
       case "play":
@@ -294,10 +307,28 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       case "setVolume":
         volumeStore.volume = event.data.volume;
         break;
+      case "setShuffle":
+        if (queueStore.isStation || queueStore.isShuffling === event.data.enabled) {
+          return syncMediaPlayModes();
+        }
+        queueStore.toggleShuffle();
+        return;
+      case "setRepeat": {
+        if (queueStore.isStation || event.data.mode === "one") return syncMediaPlayModes();
+        const enabled = event.data.mode === "all";
+        if (queueStore.isLooping === enabled) return syncMediaPlayModes();
+        queueStore.isLooping = enabled;
+        return;
+      }
     }
   });
   invoke("native_media_listen", { events: mediaEvents }).catch((cause) =>
     log.warn("Could not register system media controls", { cause }),
+  );
+  watch(
+    [() => queueStore.isStation, () => queueStore.isShuffling, () => queueStore.isLooping],
+    syncMediaPlayModes,
+    { immediate: true },
   );
 
   let restoring = true;

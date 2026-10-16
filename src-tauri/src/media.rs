@@ -1,4 +1,4 @@
-use playwire::{Event, MediaControls, PlaybackState, PlayerConfig, Track};
+use playwire::{Event, MediaControls, PlaybackState, PlayerConfig, Repeat, Track};
 use serde::Serialize;
 use std::{
     sync::{Arc, Mutex},
@@ -23,6 +23,8 @@ pub enum NativeMediaEvent {
     SeekBy { seconds: f64 },
     SetPosition { position: f64 },
     SetVolume { volume: f64 },
+    SetShuffle { enabled: bool },
+    SetRepeat { mode: &'static str },
 }
 
 pub struct NativeMediaMetadata {
@@ -105,6 +107,14 @@ fn media_event(event: Event) -> Option<NativeMediaEvent> {
             position: position.as_secs_f64(),
         },
         Event::SetVolume(volume) => NativeMediaEvent::SetVolume { volume },
+        Event::SetShuffle(enabled) => NativeMediaEvent::SetShuffle { enabled },
+        Event::SetRepeat(mode) => NativeMediaEvent::SetRepeat {
+            mode: match mode {
+                Repeat::Off => "off",
+                Repeat::One => "one",
+                Repeat::All => "all",
+            },
+        },
         _ => return None,
     })
 }
@@ -117,6 +127,11 @@ fn create_controls(
         PlayerConfig {
             identity: "Öpfelmusig".into(),
             bus_name: "opfelmusig".into(),
+            desktop_entry: app
+                .config()
+                .product_name
+                .clone()
+                .unwrap_or_else(|| app.package_info().name.clone()),
             hwnd: window_handle(app)?,
             app_media_id: Some(app.config().identifier.clone()),
             ..PlayerConfig::default()
@@ -160,6 +175,18 @@ pub fn native_media_listen(
         .lock()
         .map_err(|_| "OS media controls are unavailable.".to_string())? = Some(events);
     Ok(())
+}
+
+#[tauri::command]
+pub fn native_media_set_play_modes(
+    shuffle: bool,
+    repeat: bool,
+    media: State<'_, NativeMediaSession>,
+) -> Result<(), String> {
+    media.update(|state| {
+        state.shuffle = shuffle;
+        state.repeat = if repeat { Repeat::All } else { Repeat::Off };
+    })
 }
 
 pub fn set_metadata(
@@ -208,10 +235,10 @@ pub fn set_playback(
 
 pub fn clear(media: &NativeMediaSession) -> Result<(), String> {
     media.update(|state| {
-        *state = PlaybackState {
-            volume: 1.0,
-            ..PlaybackState::default()
-        };
+        state.track = None;
+        state.playing = false;
+        state.position = Duration::ZERO;
+        state.duration = None;
     })
 }
 

@@ -54,6 +54,7 @@ pub fn run() {
             tray::native_set_minimize_to_tray,
             discord::native_discord_set_presence,
             media::native_media_listen,
+            media::native_media_set_play_modes,
             playback::native_playback_play,
             playback::native_playback_control
         ])
