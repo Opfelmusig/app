@@ -41,9 +41,20 @@ export const useQueueStore = defineStore(
       else return null;
     });
 
-    function loop() {
-      if (isLooping.value && currentCount.value > 0) index.value = 0;
-      else index.value = null;
+    function findPlayableIndex(start: number, direction = 1): number | null {
+      const entries = isShuffling.value
+        ? shuffledQueue.value
+        : [...queue.value, ...contextQueue.value];
+
+      const playable = entries.flatMap((entry, i) =>
+        entry.entry.resource.attributes.playParams ? [i] : [],
+      );
+      const target =
+        direction === 1 ? playable.find((i) => i >= start) : playable.findLast((i) => i <= start);
+
+      if (target !== undefined) return target;
+      if (!isLooping.value || isStation.value) return null;
+      return (direction === 1 ? playable[0] : playable.at(-1)) ?? null;
     }
 
     function createQueueFromTracks(tracks: QueueTrack[], fromContext = false): QueueEntry[] {
@@ -67,13 +78,11 @@ export const useQueueStore = defineStore(
       if (shouldShuffle) shuffle();
       else resetShuffle();
 
-      if (contextQueue.value.length === 0) {
-        index.value = null;
-      } else if (createContext.index >= 0 && createContext.index < contextQueue.value.length) {
-        index.value = createContext.index;
-      } else {
-        index.value = 0;
-      }
+      const start =
+        createContext.index >= 0 && createContext.index < contextQueue.value.length
+          ? createContext.index
+          : 0;
+      index.value = findPlayableIndex(start);
     }
 
     async function playStation(station: AmCatalogStation) {
@@ -110,7 +119,7 @@ export const useQueueStore = defineStore(
       if (currentCount.value === 0) {
         queue.value.push(...entries);
         if (isShuffling.value) shuffledQueue.value.push(...entries);
-        index.value = 0;
+        index.value = findPlayableIndex(0);
         return;
       }
 
@@ -134,23 +143,14 @@ export const useQueueStore = defineStore(
     }
 
     function next() {
-      if (isStation.value && index.value === currentCount.value - 1) return;
-
-      if (currentCount.value === 0) index.value = null;
-      else if (index.value !== null) {
-        index.value += 1;
-        if (index.value >= currentCount.value) loop();
-      } else index.value = 0;
+      const nextIndex = findPlayableIndex((index.value ?? -1) + 1);
+      if (isStation.value && nextIndex === null && current.value) return;
+      index.value = nextIndex;
     }
 
     function previous() {
-      if (index.value === null || currentCount.value <= 0) return;
-      if (isStation.value && index.value === 0) return;
-
-      index.value -= 1;
-
-      if (index.value < 0 && isLooping.value) index.value = currentCount.value - 1;
-      else if (index.value < 0) index.value = 0;
+      if (index.value === null) return;
+      index.value = findPlayableIndex(index.value - 1, -1) ?? findPlayableIndex(0);
     }
 
     function clearQueue() {
@@ -182,7 +182,7 @@ export const useQueueStore = defineStore(
       const nextIndex = findEntryIndex(id);
       if (nextIndex < 0) return;
 
-      index.value = nextIndex;
+      index.value = findPlayableIndex(nextIndex);
     }
 
     function deleteEntry(id: string) {
@@ -281,7 +281,9 @@ export const useQueueStore = defineStore(
 
     watch(
       () =>
-        isStation.value && index.value === currentCount.value - 1 ? current.value?.id : undefined,
+        isStation.value && findPlayableIndex((index.value ?? -1) + 1) === null
+          ? current.value?.id
+          : undefined,
       async (id) => {
         const station = context.value;
         if (!id || station?.type !== "stations") return;

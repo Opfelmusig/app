@@ -249,12 +249,13 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   }
 
   function previous() {
-    if (position.value > 5 || (queueStore.index === 0 && !queueStore.isLooping)) return seek(0);
+    if (position.value > 5) return seek(0);
     const currentId = queueStore.current?.id;
     queueStore.previous();
     if (currentId && queueStore.current?.id !== currentId) {
       activity.end("previous", position.value, duration.value);
     }
+    if (currentId && queueStore.current?.id === currentId && !queueStore.isStation) seek(0);
   }
 
   const mediaEvents = new Channel<MediaEvent>((event) => {
