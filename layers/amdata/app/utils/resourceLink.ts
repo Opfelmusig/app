@@ -24,8 +24,8 @@ export function resourceRelationLink(
 
   switch (resource.type) {
     case "library-songs":
-      if (!resource.attributes.albums[0]?.id) return;
-      return rawResourceLink("albums", resource.attributes.albums[0].id, resource.id);
+      if (!resource.attributes.albums[0]?.id || !resource.extras.catalogId) return;
+      return rawResourceLink("albums", resource.attributes.albums[0].id, resource.extras.catalogId);
     case "library-albums":
       return rawResourceLink("albums", resource.extras.catalogId);
     case "library-artists":
@@ -39,6 +39,37 @@ export function resourceRelationLink(
     case "playlists":
       return rawResourceLink("playlists", resource.extras.libraryId);
   }
+}
+
+export function songAlbumLink(song: AmSong) {
+  const catalogAlbumId = song.attributes.albums[0]?.id;
+  const catalogSongId = song.type === "songs" ? song.id : song.extras.catalogId;
+
+  if (catalogAlbumId) return rawResourceLink("albums", catalogAlbumId, catalogSongId);
+  if (song.type === "library-songs") {
+    return rawResourceLink("library-albums", song.extras.albumId, song.id);
+  }
+}
+
+export function songArtistLinks(song: AmSong) {
+  const catalogArtists = song.attributes.artists;
+  if (catalogArtists.length) {
+    return catalogArtists.map((artist) => ({
+      label: artist.name,
+      to: rawResourceLink("artists", artist.id),
+    }));
+  }
+
+  if (song.type === "library-songs" && song.extras.artistId) {
+    return [
+      {
+        label: song.attributes.artistName ?? "Artist",
+        to: rawResourceLink("library-artists", song.extras.artistId),
+      },
+    ];
+  }
+
+  return [];
 }
 
 export function rawResourceLink(type?: AmResource["type"], id?: string, songId?: string) {

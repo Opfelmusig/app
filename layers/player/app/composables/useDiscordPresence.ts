@@ -17,12 +17,6 @@ export function useDiscordPresence(playback: DiscordPlayback) {
   const log = logger.withTag("discord");
   let timer: ReturnType<typeof setTimeout> | undefined;
 
-  function catalogUrl(type: "song" | "artist", id: string | undefined) {
-    const storefront = auth.storefront.value?.id;
-    if (!id || !storefront) return;
-    return `https://music.apple.com/${encodeURIComponent(storefront)}/${type}/${encodeURIComponent(id)}`;
-  }
-
   const presence = computed(() => {
     const song = queueStore.current?.entry.resource;
     if (
@@ -35,11 +29,12 @@ export function useDiscordPresence(playback: DiscordPlayback) {
     }
 
     const attributes = song.attributes;
+    const storefront = auth.storefront.value?.id;
     return {
       title: attributes.name,
-      songUrl: catalogUrl("song", song.type === "songs" ? song.id : song.extras.catalogId),
+      songUrl: appleMusicLink(song, storefront),
       artist: attributes.artistName ?? "Unknown Artist",
-      artistUrl: catalogUrl("artist", attributes.artists[0]?.id),
+      artistUrl: rawAppleMusicLink("artists", attributes.artists[0]?.id, storefront),
       album: attributes.albumName,
       artworkUrl: getArtworkUrl(attributes.artwork, { width: 512 }),
       duration: playback.duration.value,
