@@ -90,7 +90,12 @@
         :title="section.title"
         :items="section.items"
         :see-more-to="
-          section.hasMore ? `/resources/artists/${id}/views/${section.view}` : undefined
+          section.hasMore
+            ? {
+                path: `/resources/artists/${id}/views/${section.view}`,
+                query: { name: artist.attributes.name, title: section.title },
+              }
+            : undefined
         "
         show-artists
         show-year

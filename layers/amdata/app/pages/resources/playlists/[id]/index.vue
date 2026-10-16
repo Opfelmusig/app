@@ -126,7 +126,12 @@
         :title="section.title"
         :items="section.items"
         :see-more-to="
-          section.hasMore ? `/resources/playlists/${id}/views/${section.view}` : undefined
+          section.hasMore
+            ? {
+                path: `/resources/playlists/${id}/views/${section.view}`,
+                query: { title: section.title },
+              }
+            : undefined
         "
       />
     </div>

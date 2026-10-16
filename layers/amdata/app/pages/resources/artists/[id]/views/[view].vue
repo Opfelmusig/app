@@ -21,9 +21,7 @@
 <script lang="ts" setup>
 import {
   artistViews,
-  fetchCatalogArtist,
   fetchCatalogArtistView,
-  fetchCatalogArtistViews,
   type ArtistView,
 } from "#layers/amdata/app/lib/queries/artists";
 
@@ -35,19 +33,10 @@ const client = useClient();
 const id = useRouteParams<string>("id");
 const view = useRouteParams<ArtistView>("view");
 
-const { data: artistData } = useAmQuery({
-  key: () => ["artists", id.value, "resource"],
-  query: () => fetchCatalogArtist(client, id.value),
-  staleTime: ms("10m"),
-  gcTime: ms("12h"),
-});
-
-const { data: views } = useAmQuery({
-  key: () => ["artists", id.value, "views"],
-  query: () => fetchCatalogArtistViews(client, id.value),
-  staleTime: ms("10m"),
-  gcTime: ms("12h"),
-});
+const resourceName = useRouteQuery<string>("name", "");
+const queryTitle = useRouteQuery<string>("title", "");
+const title = computed(() => queryTitle.value || view.value);
+const contextName = computed(() => [resourceName.value, title.value].filter(Boolean).join(" · "));
 
 const { data, isPending, error } = useAmQuery({
   key: () => ["artists", id.value, "views", view.value],
@@ -56,16 +45,11 @@ const { data, isPending, error } = useAmQuery({
   gcTime: ms("12h"),
 });
 
-const title = computed(() => {
-  const artist = artistData.value;
-  const viewTitle =
-    views.value?.find((section) => section.view === view.value)?.title ?? view.value;
-  return artist ? `${artist.artist.attributes.name} · ${viewTitle}` : viewTitle;
-});
 const songs = computed(() => data.value?.filter((item) => item.resourceType === "songs") ?? []);
 const gridItems = computed(() => data.value?.filter((item) => item.resourceType !== "songs") ?? []);
 
 const queueStore = useQueueStore();
+const route = useRoute();
 
 function play(index: number) {
   if (songs.value.length === 0) return;
@@ -75,8 +59,8 @@ function play(index: number) {
     index,
     context: {
       type: "generic",
-      name: title.value,
-      link: `/resources/artists/${id.value}/views/${view.value}`,
+      name: contextName.value,
+      link: route.fullPath,
     },
   });
 }

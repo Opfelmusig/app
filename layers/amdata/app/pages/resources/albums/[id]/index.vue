@@ -113,7 +113,14 @@
         :key="section.view"
         :title="section.title"
         :items="section.items"
-        :see-more-to="section.hasMore ? `/resources/albums/${id}/views/${section.view}` : undefined"
+        :see-more-to="
+          section.hasMore
+            ? {
+                path: `/resources/albums/${id}/views/${section.view}`,
+                query: { title: section.title },
+              }
+            : undefined
+        "
         show-artists
         show-year
       />
