@@ -31,6 +31,8 @@ export default defineNuxtPlugin({
   name: "libcore:ready",
   dependsOn: ["session:ready"],
   setup: async (nuxtApp) => {
+    if (isMiniplayer) return {};
+
     const log = logger.withTag("libcore");
 
     const opfelmusig = useClient();

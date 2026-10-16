@@ -5,6 +5,8 @@ export default defineNuxtPlugin({
   enforce: "pre",
   dependsOn: ["pinia", "pinia-plugin-persistedstate"],
   setup() {
+    if (isMiniplayer) return;
+
     const settingsStore = useSettingsStore();
     const log = logger.withTag("tray");
 

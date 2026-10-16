@@ -2,6 +2,8 @@ export default defineNuxtPlugin({
   name: "settings:keybinds",
   dependsOn: ["session:ready"],
   setup(nuxtApp) {
+    if (isMiniplayer) return;
+
     const auth = useAuth();
     const settingsStore = useSettingsStore();
     const queueStore = useQueueStore();

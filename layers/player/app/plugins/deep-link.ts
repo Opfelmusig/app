@@ -5,6 +5,8 @@ export default defineNuxtPlugin({
   name: "player:deep-link",
   dependsOn: ["session:ready"],
   setup(nuxtApp) {
+    if (isMiniplayer) return;
+
     const log = logger.withTag("deep-link");
     let disposed = false;
     let unlisten: UnlistenFn | undefined;

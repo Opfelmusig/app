@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (useError().value) return;
+  if (useError().value || isMiniplayer) return;
 
   const { valid } = useAuth();
 

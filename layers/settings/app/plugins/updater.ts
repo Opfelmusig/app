@@ -2,7 +2,7 @@ export default defineNuxtPlugin({
   name: "settings:updater",
   dependsOn: ["pinia", "pinia-plugin-persistedstate"],
   setup() {
-    if (isDev) return;
+    if (isDev || isMiniplayer) return;
 
     const settingsStore = useSettingsStore();
     const updater = useUpdaterStore();

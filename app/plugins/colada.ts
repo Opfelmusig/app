@@ -4,6 +4,8 @@ export default defineNuxtPlugin({
   name: "colada:ready",
   dependsOn: ["Pinia Colada"],
   async setup() {
+    if (isMiniplayer) return;
+
     await isCacheReady();
   },
 });

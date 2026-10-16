@@ -15,6 +15,8 @@ export default defineNuxtPlugin({
   name: "session:ready",
   dependsOn: ["colada:ready"],
   setup: async (nuxtApp) => {
+    if (isMiniplayer) return {};
+
     const log = logger.withTag("auth");
 
     const developerToken = useQuery({

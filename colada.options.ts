@@ -21,30 +21,32 @@ export async function clearPersistedQueryCache() {
 }
 
 export default {
-  plugins: [
-    PiniaColadaQueryHooksPlugin({
-      onError(cause, entry) {
-        logger.withTag("query").error("Query failed", { cause, key: entry.key });
-      },
-    }),
-    PiniaColadaCachePersister({
-      key: cacheKey,
-      filter: {
-        predicate: ({ meta }) => meta.persist !== false,
-      },
-      storage: {
-        async getItem(key: string) {
-          return (await get<string>(key, store)) ?? null;
-        },
-        async setItem(key: string, value: string) {
-          if (clearingCache) return;
-          await set(key, value, store);
-        },
-        async removeItem(key: string) {
-          await del(key, store);
-        },
-      },
-    }),
-    PiniaColadaAutoRefetch(),
-  ],
+  plugins: isMiniplayer
+    ? []
+    : [
+        PiniaColadaQueryHooksPlugin({
+          onError(cause, entry) {
+            logger.withTag("query").error("Query failed", { cause, key: entry.key });
+          },
+        }),
+        PiniaColadaCachePersister({
+          key: cacheKey,
+          filter: {
+            predicate: ({ meta }) => meta.persist !== false,
+          },
+          storage: {
+            async getItem(key: string) {
+              return (await get<string>(key, store)) ?? null;
+            },
+            async setItem(key: string, value: string) {
+              if (clearingCache) return;
+              await set(key, value, store);
+            },
+            async removeItem(key: string) {
+              await del(key, store);
+            },
+          },
+        }),
+        PiniaColadaAutoRefetch(),
+      ],
 } satisfies PiniaColadaOptions;
