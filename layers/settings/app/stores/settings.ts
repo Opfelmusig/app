@@ -39,6 +39,7 @@ export const useSettingsStore = defineStore(
     const player = reactive({
       animatedArtwork: true,
       activityReporting: true,
+      miniplayerLayout: "default" as MiniplayerLayout,
     });
 
     const playback = reactive({
