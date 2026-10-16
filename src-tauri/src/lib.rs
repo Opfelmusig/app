@@ -44,7 +44,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(
             tauri_plugin_window_state::Builder::default()
-                .with_filter(|label| !label.starts_with("widget-"))
+                .with_filter(|label| label == "main")
                 .with_state_flags(
                     StateFlags::all() & !StateFlags::VISIBLE & !StateFlags::DECORATIONS,
                 )
