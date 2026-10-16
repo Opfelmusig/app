@@ -109,7 +109,7 @@
     <USeparator class="last:hidden" />
     <div v-if="album" class="flex flex-col gap-8 py-4">
       <AMResourceScroller
-        v-for="section in data?.views"
+        v-for="section in views"
         :key="section.view"
         :title="section.title"
         :items="section.items"
@@ -126,7 +126,11 @@ import { songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { albumSongSorting } from "#layers/amdata/app/lib/controls/sorting";
-import { fetchCatalogAlbum, fetchCatalogAlbumTracks } from "#layers/amdata/app/lib/queries/albums";
+import {
+  fetchCatalogAlbum,
+  fetchCatalogAlbumTracks,
+  fetchCatalogAlbumViews,
+} from "#layers/amdata/app/lib/queries/albums";
 
 const client = useClient();
 const id = useRouteParams<string>("id");
@@ -134,9 +138,17 @@ const id = useRouteParams<string>("id");
 const { data, isPending, error } = useAmQuery({
   key: () => ["albums", id.value, "resource"],
   query: () => fetchCatalogAlbum(client, id.value),
+  staleTime: ms("1h"),
+  gcTime: ms("1d"),
+});
+
+const { data: views } = useAmQuery({
+  key: () => ["albums", id.value, "views"],
+  query: () => fetchCatalogAlbumViews(client, id.value),
   staleTime: ms("10m"),
   gcTime: ms("12h"),
 });
+
 const album = computed(() => data.value?.album);
 
 const {

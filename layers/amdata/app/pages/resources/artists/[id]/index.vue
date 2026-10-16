@@ -102,7 +102,10 @@
 <script lang="ts" setup>
 import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 
-import { fetchCatalogArtist } from "#layers/amdata/app/lib/queries/artists";
+import {
+  fetchCatalogArtist,
+  fetchCatalogArtistViews,
+} from "#layers/amdata/app/lib/queries/artists";
 
 const client = useClient();
 const id = useRouteParams<string>("id");
@@ -110,6 +113,13 @@ const id = useRouteParams<string>("id");
 const { data, isPending, error } = useAmQuery({
   key: () => ["artists", id.value, "resource"],
   query: () => fetchCatalogArtist(client, id.value),
+  staleTime: ms("1h"),
+  gcTime: ms("1d"),
+});
+
+const { data: viewsData } = useAmQuery({
+  key: () => ["artists", id.value, "views"],
+  query: () => fetchCatalogArtistViews(client, id.value),
   staleTime: ms("10m"),
   gcTime: ms("12h"),
 });
@@ -119,10 +129,10 @@ const station = computed(() => artist.value?.relationships.station);
 const queueStore = useQueueStore();
 
 const views = computed(
-  () => data.value?.views.filter((section) => section.view !== "latest-release") ?? [],
+  () => viewsData.value?.filter((section) => section.view !== "latest-release") ?? [],
 );
 const latestReleaseView = computed(() =>
-  data.value?.views.find((section) => section.view === "latest-release"),
+  viewsData.value?.find((section) => section.view === "latest-release"),
 );
 const latestRelease = computed(() => {
   const resource = latestReleaseView.value?.items[0]?.resource;

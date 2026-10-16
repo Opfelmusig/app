@@ -21,6 +21,17 @@ const playlistViewScopes = {
 
 export async function fetchCatalogPlaylist(client: OpfelMusigClient, id: string) {
   const response = await client.catalog.playlists.get(id, {
+    scopes: catalogPlaylistsScopes,
+  });
+
+  const playlist = response.data[0];
+  if (!hasResourceName(playlist)) return null;
+
+  return { playlist: parseCatalogPlaylist(playlist) };
+}
+
+export async function fetchCatalogPlaylistViews(client: OpfelMusigClient, id: string) {
+  const response = await client.catalog.playlists.get(id, {
     scopes: {
       ...playlistViewScopes,
       playlists: {
@@ -33,25 +44,22 @@ export async function fetchCatalogPlaylist(client: OpfelMusigClient, id: string)
   });
 
   const playlist = response.data[0];
-  if (!hasResourceName(playlist)) return null;
+  if (!playlist) return [];
 
-  return {
-    playlist: parseCatalogPlaylist(playlist),
-    views: playlistViews.map((view) => {
-      const collection = playlist.views?.[view];
-      const title = getUnknownProperty(collection?.attributes, "title");
+  return playlistViews.map((view) => {
+    const collection = playlist.views?.[view];
+    const title = getUnknownProperty(collection?.attributes, "title");
 
-      return {
-        view,
-        title: typeof title === "string" ? title : view,
-        items: createListResources(
-          (collection?.data ?? []).filter(hasResourceName).map(parseCatalogArtist),
-          `playlists:${id}:${view}`,
-        ),
-        hasMore: !!collection?.next,
-      };
-    }),
-  };
+    return {
+      view,
+      title: typeof title === "string" ? title : view,
+      items: createListResources(
+        (collection?.data ?? []).filter(hasResourceName).map(parseCatalogArtist),
+        `playlists:${id}:${view}`,
+      ),
+      hasMore: !!collection?.next,
+    };
+  });
 }
 
 export async function fetchCatalogPlaylistView(

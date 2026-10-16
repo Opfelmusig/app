@@ -23,6 +23,7 @@ import {
   artistViews,
   fetchCatalogArtist,
   fetchCatalogArtistView,
+  fetchCatalogArtistViews,
   type ArtistView,
 } from "#layers/amdata/app/lib/queries/artists";
 
@@ -41,6 +42,13 @@ const { data: artistData } = useAmQuery({
   gcTime: ms("12h"),
 });
 
+const { data: views } = useAmQuery({
+  key: () => ["artists", id.value, "views"],
+  query: () => fetchCatalogArtistViews(client, id.value),
+  staleTime: ms("10m"),
+  gcTime: ms("12h"),
+});
+
 const { data, isPending, error } = useAmQuery({
   key: () => ["artists", id.value, "views", view.value],
   query: () => fetchCatalogArtistView(client, id.value, view.value),
@@ -51,7 +59,7 @@ const { data, isPending, error } = useAmQuery({
 const title = computed(() => {
   const artist = artistData.value;
   const viewTitle =
-    artist?.views.find((section) => section.view === view.value)?.title ?? view.value;
+    views.value?.find((section) => section.view === view.value)?.title ?? view.value;
   return artist ? `${artist.artist.attributes.name} · ${viewTitle}` : viewTitle;
 });
 const songs = computed(() => data.value?.filter((item) => item.resourceType === "songs") ?? []);

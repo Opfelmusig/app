@@ -121,7 +121,7 @@
     <USeparator class="last:hidden" />
     <div v-if="playlist" class="flex flex-col gap-8 py-4">
       <AMResourceScroller
-        v-for="section in data?.views"
+        v-for="section in views"
         :key="section.view"
         :title="section.title"
         :items="section.items"
@@ -141,6 +141,7 @@ import { defaultSongSorting } from "#layers/amdata/app/lib/controls/sorting";
 import {
   fetchCatalogPlaylist,
   fetchCatalogPlaylistTracks,
+  fetchCatalogPlaylistViews,
 } from "#layers/amdata/app/lib/queries/playlists";
 
 const client = useClient();
@@ -149,9 +150,17 @@ const id = useRouteParams<string>("id");
 const { data, isPending, error } = useAmQuery({
   key: () => ["playlists", id.value, "resource"],
   query: () => fetchCatalogPlaylist(client, id.value),
+  staleTime: ms("1h"),
+  gcTime: ms("1d"),
+});
+
+const { data: views } = useAmQuery({
+  key: () => ["playlists", id.value, "views"],
+  query: () => fetchCatalogPlaylistViews(client, id.value),
   staleTime: ms("10m"),
   gcTime: ms("12h"),
 });
+
 const playlist = computed(() => data.value?.playlist);
 
 const {

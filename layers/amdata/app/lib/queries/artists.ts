@@ -35,7 +35,7 @@ const artistViewScopes = {
 export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
   const response = await client.catalog.artists.get(id, {
     scopes: {
-      ...artistViewScopes,
+      ...catalogArtistsScopes,
       stations: {
         fields: ["name", "artwork"],
       },
@@ -44,6 +44,22 @@ export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
         relationships: {
           station: "include",
         },
+      },
+    },
+  });
+
+  const artist = response.data[0];
+  if (!hasResourceName(artist)) return null;
+
+  return { artist: parseCatalogArtist(artist) };
+}
+
+export async function fetchCatalogArtistViews(client: OpfelMusigClient, id: string) {
+  const response = await client.catalog.artists.get(id, {
+    scopes: {
+      ...artistViewScopes,
+      artists: {
+        ...catalogArtistsScopes.artists,
         views: {
           "top-songs": { limit: 6 },
           "featured-albums": { limit: 12 },
@@ -61,26 +77,23 @@ export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
   });
 
   const artist = response.data[0];
-  if (!hasResourceName(artist)) return null;
+  if (!artist) return [];
 
-  return {
-    artist: parseCatalogArtist(artist),
-    views: artistViews.map((view) => {
-      const collection = artist.views?.[view];
-      const title = getUnknownProperty(collection?.attributes, "title");
-      const items = createListResources(
-        (collection?.data ?? []).filter(hasResourceName).map((item) => parseResource(item)),
-        `artists:${id}:${view}`,
-      );
+  return artistViews.map((view) => {
+    const collection = artist.views?.[view];
+    const title = getUnknownProperty(collection?.attributes, "title");
+    const items = createListResources(
+      (collection?.data ?? []).filter(hasResourceName).map((item) => parseResource(item)),
+      `artists:${id}:${view}`,
+    );
 
-      return {
-        view,
-        title: typeof title === "string" ? title : view,
-        items,
-        hasMore: !!collection?.next,
-      };
-    }),
-  };
+    return {
+      view,
+      title: typeof title === "string" ? title : view,
+      items,
+      hasMore: !!collection?.next,
+    };
+  });
 }
 
 export async function fetchCatalogArtistView(

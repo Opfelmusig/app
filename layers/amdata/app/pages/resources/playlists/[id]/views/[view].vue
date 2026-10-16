@@ -18,6 +18,7 @@ import {
   playlistViews,
   fetchCatalogPlaylist,
   fetchCatalogPlaylistView,
+  fetchCatalogPlaylistViews,
   type PlaylistView,
 } from "#layers/amdata/app/lib/queries/playlists";
 
@@ -36,6 +37,13 @@ const { data: playlistData } = useAmQuery({
   gcTime: ms("12h"),
 });
 
+const { data: views } = useAmQuery({
+  key: () => ["playlists", id.value, "views"],
+  query: () => fetchCatalogPlaylistViews(client, id.value),
+  staleTime: ms("10m"),
+  gcTime: ms("12h"),
+});
+
 const { data, isPending, error } = useAmQuery({
   key: () => ["playlists", id.value, "views", view.value],
   query: () => fetchCatalogPlaylistView(client, id.value, view.value),
@@ -46,7 +54,7 @@ const { data, isPending, error } = useAmQuery({
 const title = computed(() => {
   const playlist = playlistData.value;
   const viewTitle =
-    playlist?.views.find((section) => section.view === view.value)?.title ?? view.value;
+    views.value?.find((section) => section.view === view.value)?.title ?? view.value;
   return playlist ? `${playlist.playlist.attributes.name} · ${viewTitle}` : viewTitle;
 });
 </script>
