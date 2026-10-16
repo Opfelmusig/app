@@ -36,16 +36,16 @@
           @click="logout"
         />
       </div>
+      <SettingsConfig
+        v-if="storefront?.attributes"
+        no-label
+        icon="lucide:languages"
+        label="Apple Music language"
+        description="This affects only Apple Music data."
+      >
+        <USelect v-model="settingsStore.language" :items="options" :portal="false" class="w-50" />
+      </SettingsConfig>
     </SettingsSection>
-    <SettingsConfig
-      v-if="storefront?.attributes"
-      no-label
-      icon="lucide:languages"
-      label="Apple Music language"
-      description="This affects only Apple Music data."
-    >
-      <USelect v-model="settingsStore.language" :items="options" :portal="false" class="w-50" />
-    </SettingsConfig>
   </SettingsWrapper>
 </template>
 

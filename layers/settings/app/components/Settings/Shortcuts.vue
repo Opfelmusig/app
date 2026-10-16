@@ -1,5 +1,5 @@
 <template>
-  <SettingsWrapper class="gap-12">
+  <SettingsWrapper>
     <SettingsSection v-for="group in groupedHandlers" :key="group.name" :title="group.name">
       <div class="flex flex-col gap-2">
         <SettingsConfig
