@@ -9,6 +9,7 @@ export default function useResourceMenu(
   actions: ResourceMenuActions = {},
 ) {
   const queueStore = useQueueStore();
+  const { createStation, pendingResource } = useResourcePlayback();
 
   return computed<DropdownMenuItem[]>(() => {
     const res = toValue(resource);
@@ -31,6 +32,16 @@ export default function useResourceMenu(
         items.push({
           label: "Add to queue",
           onSelect: () => queueStore.playAfter([res]),
+        });
+
+        const catalogId =
+          res.resourceType === "songs" ? res.resource.id : res.resource.extras.catalogId;
+
+        items.push({
+          label: "Play Station",
+          disabled:
+            !catalogId || pendingResource.value === `${res.resource.type}:${res.resource.id}`,
+          onSelect: () => createStation(res.resource),
         });
       }
     }

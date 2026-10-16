@@ -168,7 +168,7 @@ const isStationPending = computed(
     queueStore.requestedStation?.id === props.resource.resource.id,
 );
 
-const { play, pendingResource } = useResourceTracksPlayback();
+const { play, pendingResource } = useResourcePlayback();
 const isPending = computed(
   () => pendingResource.value === `${props.resource.resourceType}:${props.resource.resource.id}`,
 );

@@ -144,7 +144,7 @@ const latestRelease = computed(() => {
   return resource?.type === "albums" ? resource : undefined;
 });
 
-const { play, pendingResource } = useResourceTracksPlayback();
+const { play, pendingResource } = useResourcePlayback();
 const latestReleasePending = computed(
   () => pendingResource.value === `albums:${latestRelease.value?.id}`,
 );
