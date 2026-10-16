@@ -7,7 +7,6 @@ export type SettingsPage =
   | "account"
   | "player"
   | "playback"
-  | "miniplayer"
   | "about"
   | "storage"
   | "shortcuts";

@@ -39,7 +39,6 @@
           <SettingsAccount v-if="settingsStore.page === 'account'" />
           <SettingsPlayback v-else-if="settingsStore.page === 'playback'" />
           <SettingsPlayer v-else-if="settingsStore.page === 'player'" />
-          <SettingsMiniplayer v-else-if="settingsStore.page === 'miniplayer'" />
           <SettingsAbout v-else-if="settingsStore.page === 'about'" />
           <SettingsStorage v-else-if="settingsStore.page === 'storage'" />
           <SettingsShortcuts v-else-if="settingsStore.page === 'shortcuts'" />
@@ -58,7 +57,6 @@ const pages: { id: SettingsPage; label: string; icon: string; group?: string }[]
   { id: "account", label: "Account", icon: "lucide:user" },
   { id: "player", label: "Player", icon: "lucide:play", group: "Music" },
   { id: "playback", label: "Playback", icon: "lucide:music" },
-  { id: "miniplayer", label: "Miniplayer", icon: "lucide:picture-in-picture-2" },
   {
     id: "about",
     label: "Updates & about",
