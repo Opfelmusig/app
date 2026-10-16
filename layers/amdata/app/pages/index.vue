@@ -6,9 +6,7 @@
       :title="shelf.attributes.title ?? 'Recommendations'"
       :description="shelf.attributes.reason"
       :items="shelf.relationships.content"
-      :see-more-to="
-        shelf.attributes.hasSeeAll ? `/home/${encodeURIComponent(shelf.id)}` : undefined
-      "
+      :see-more-to="shelf.attributes.hasSeeAll ? `/home/${shelf.id}` : undefined"
       show-artists
     />
     <div class="flex w-full justify-center px-4">

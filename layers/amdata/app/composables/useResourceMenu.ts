@@ -10,42 +10,102 @@ export default function useResourceMenu(
 ) {
   const queueStore = useQueueStore();
   const { createStation, pendingResource } = useResourcePlayback();
+  const { copyLink } = useResourceSharing();
+  const auth = useAuth();
 
-  return computed<DropdownMenuItem[]>(() => {
+  return computed<DropdownMenuItem[][]>(() => {
     const res = toValue(resource);
-    const items: DropdownMenuItem[] = [];
+    const groups: DropdownMenuItem[][] = [];
 
-    switch (res.resourceType) {
-      case "songs":
-      case "library-songs": {
-        items.push({
+    if (res.resourceType === "songs" || res.resourceType === "library-songs") {
+      const song = res.resource;
+      const catalogId = song.type === "songs" ? song.id : song.extras.catalogId;
+      const albumLink = songAlbumLink(song);
+      const artistLinks = songArtistLinks(song);
+
+      const playback: DropdownMenuItem[] = [];
+
+      if (song.attributes.playParams && actions.play) {
+        playback.push({
           label: "Play",
           onSelect: actions.play,
-          disabled: !actions.play,
         });
+      }
 
-        items.push({
+      if (song.attributes.playParams) {
+        playback.push({
           label: "Play next",
           onSelect: () => queueStore.playNext([res]),
         });
+      }
 
-        items.push({
+      if (
+        song.attributes.playParams &&
+        queueStore.current &&
+        !queueStore.inContext &&
+        queueStore.queue.length
+      ) {
+        playback.push({
           label: "Add to queue",
           onSelect: () => queueStore.playAfter([res]),
         });
+      }
 
-        const catalogId =
-          res.resourceType === "songs" ? res.resource.id : res.resource.extras.catalogId;
-
-        items.push({
+      if (catalogId && pendingResource.value !== `${song.type}:${song.id}`) {
+        playback.push({
           label: "Play Station",
-          disabled:
-            !catalogId || pendingResource.value === `${res.resource.type}:${res.resource.id}`,
-          onSelect: () => createStation(res.resource),
+          onSelect: () => createStation(song),
         });
       }
+
+      groups.push(playback);
+
+      const navigation: DropdownMenuItem[] = [];
+
+      if (albumLink) {
+        navigation.push({
+          label: "Go to Album",
+          to: albumLink,
+        });
+      }
+
+      if (artistLinks.length) {
+        navigation.push({
+          label: "Go to Artist",
+          to: artistLinks.length === 1 ? artistLinks[0]?.to : undefined,
+          children: artistLinks.length > 1 ? artistLinks : undefined,
+        });
+      }
+
+      if (song.type === "songs" && song.extras.libraryId) {
+        navigation.push({
+          label: "Show in Library",
+          to: { path: "/resources/library-songs", query: { song_id: song.extras.libraryId } },
+        });
+      }
+
+      if (song.type === "library-songs") {
+        const catalogLink = resourceRelationLink(song);
+        if (catalogLink) {
+          navigation.push({
+            label: "Show in Apple Music",
+            to: catalogLink,
+          });
+        }
+      }
+
+      groups.push(navigation);
     }
 
-    return items;
+    if (appleMusicLink(res.resource, auth.storefront.value?.id)) {
+      groups.push([
+        {
+          label: "Copy Link",
+          onSelect: () => copyLink(res.resource),
+        },
+      ]);
+    }
+
+    return groups.filter((group) => group.length);
   });
 }
