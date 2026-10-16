@@ -15,13 +15,6 @@
         label="Hide playlists"
       />
     </SettingsSection>
-    <SettingsSection title="Lyrics">
-      <SettingsToggle
-        v-model="settingsStore.lyrics.showTransliteration"
-        label="Show transliteration"
-      />
-      <SettingsToggle v-model="settingsStore.lyrics.showTranslation" label="Show translation" />
-    </SettingsSection>
     <SettingsSection title="Integrations">
       <SettingsToggle
         v-model="settingsStore.integrations.discordRichPresence"

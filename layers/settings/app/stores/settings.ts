@@ -5,6 +5,7 @@ type SidebarSections = Record<SidebarSectionTypes, SidebarSectionConfig>;
 export type SettingsPage =
   | "general"
   | "account"
+  | "player"
   | "playback"
   | "miniplayer"
   | "about"

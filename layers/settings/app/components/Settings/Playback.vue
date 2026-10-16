@@ -1,17 +1,10 @@
 <template>
   <SettingsWrapper>
     <SettingsSection title="Volume">
-      <SettingsToggle
-        v-model="settingsStore.playback.normalization"
-        label="Volume normalization"
-        description="Keep songs at a consistent volume when loudness information is available."
-      />
+      <SettingsToggle v-model="settingsStore.playback.normalization" label="Volume normalization" />
     </SettingsSection>
 
-    <SettingsSection
-      title="Equalizer"
-      description="Adjust ten frequency bands from bass to treble."
-    >
+    <SettingsSection title="Equalizer">
       <SettingsToggle v-model="equalizer.enabled" label="Equalizer" />
 
       <div class="overflow-x-auto py-4">

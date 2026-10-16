@@ -38,6 +38,7 @@
         <div :key="settingsStore.page" class="size-full min-w-0 overflow-hidden">
           <SettingsAccount v-if="settingsStore.page === 'account'" />
           <SettingsPlayback v-else-if="settingsStore.page === 'playback'" />
+          <SettingsPlayer v-else-if="settingsStore.page === 'player'" />
           <SettingsMiniplayer v-else-if="settingsStore.page === 'miniplayer'" />
           <SettingsAbout v-else-if="settingsStore.page === 'about'" />
           <SettingsStorage v-else-if="settingsStore.page === 'storage'" />
@@ -55,7 +56,8 @@ const settingsStore = useSettingsStore();
 const pages: { id: SettingsPage; label: string; icon: string; group?: string }[] = [
   { id: "general", label: "General", icon: "lucide:settings-2" },
   { id: "account", label: "Account", icon: "lucide:user" },
-  { id: "playback", label: "Playback", icon: "lucide:music", group: "Music" },
+  { id: "player", label: "Player", icon: "lucide:play", group: "Music" },
+  { id: "playback", label: "Playback", icon: "lucide:music" },
   { id: "miniplayer", label: "Miniplayer", icon: "lucide:picture-in-picture-2" },
   {
     id: "about",
