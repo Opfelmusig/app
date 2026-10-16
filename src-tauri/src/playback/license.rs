@@ -144,7 +144,7 @@ impl License {
             user_token: request.user_token.clone(),
             uri: source.uri,
             adam_id,
-            is_library: request.song.library_id().is_some(),
+            is_library: request.song.play_params()?.is_library,
             cancel,
         };
         let path = drm::ensure(app, &apple.http).await?;

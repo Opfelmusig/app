@@ -12,7 +12,8 @@ type SongAttributeKeys =
   | "releaseDate"
   | "discNumber"
   | "trackNumber"
-  | "contentRating";
+  | "contentRating"
+  | "playParams";
 
 export type LibrarySongTemplate = ResourceTemplateOf<
   "library-songs",
@@ -58,6 +59,7 @@ export function parseLibrarySong(resource: LibrarySongTemplate): AmLibrarySong {
       trackNumber: attributes.trackNumber,
       releaseDate: attributes.releaseDate,
       contentRating: attributes.contentRating,
+      playParams: attributes.playParams,
       personalRating: catalog?.attributes?.personalRating,
       editorialVideo: catalogAlbums?.map((a) => a.attributes?.editorialVideo).find((e) => !!e),
       loudness: catalog?.relationships?.["audio-analysis"].data[0]?.attributes?.loudness?.main,
@@ -108,6 +110,7 @@ export function parseCatalogSong(resource: CatalogSongTemplate): AmCatalogSong {
       trackNumber: attributes.trackNumber,
       releaseDate: attributes.releaseDate,
       contentRating: attributes.contentRating,
+      playParams: attributes.playParams,
       personalRating: attributes.personalRating,
       editorialVideo: albums?.map((a) => a.attributes?.editorialVideo).find((e) => !!e),
       loudness: resource.relationships?.["audio-analysis"].data[0]?.attributes?.loudness?.main,

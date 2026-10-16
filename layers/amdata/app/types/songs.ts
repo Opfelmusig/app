@@ -3,6 +3,7 @@ import type {
   AudioAnalysisLoudness,
   ContentRating,
   EditorialVideo,
+  PlayParameters,
   RatingValue,
 } from "@opfelmusig/lib/types";
 
@@ -13,6 +14,7 @@ export interface AmSongAttributes {
   genreNames: readonly string[];
   artwork?: Artwork;
   durationInMillis: number;
+  playParams?: PlayParameters;
   discNumber?: number;
   trackNumber?: number;
   releaseDate?: string;

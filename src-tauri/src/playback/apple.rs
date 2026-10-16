@@ -74,11 +74,12 @@ pub async fn prepare(
     cancel: CancellationToken,
 ) -> Result<Prepared> {
     let started = Instant::now();
+    let params = request.song.play_params()?;
     let http = client().await?;
     let mut body = serde_json::Map::new();
-    if let Some(id) = request.song.catalog_id() {
+    if let Some(id) = params.catalog_id() {
         body.insert(
-            if request.song.library_id().is_some() {
+            if params.is_library {
                 "subscriptionAdamId"
             } else {
                 "salableAdamId"
@@ -87,7 +88,7 @@ pub async fn prepare(
             id.into(),
         );
     }
-    if let Some(id) = request.song.library_id() {
+    if let Some(id) = params.library_id() {
         body.insert("universalLibraryId".into(), id.into());
     }
     ensure!(!body.is_empty(), "A catalog or library song ID is required");
@@ -111,7 +112,8 @@ pub async fn prepare(
         .into_iter()
         .next()
         .context("Apple returned no playable song")?;
-    let protected = song.reporting != Some(false);
+    let reporting = song.reporting.or(params.reporting);
+    let protected = reporting != Some(false);
     let asset = if protected {
         song.assets
             .iter()
@@ -207,10 +209,7 @@ pub async fn prepare(
         request.id,
         started.elapsed().as_millis()
     );
-    Ok(Prepared {
-        media,
-        reporting: song.reporting,
-    })
+    Ok(Prepared { media, reporting })
 }
 
 fn attributes(tag: &str) -> Vec<(&str, &str)> {

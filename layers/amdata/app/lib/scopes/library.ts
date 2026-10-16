@@ -18,6 +18,7 @@ export const librarySongsScopes = defineScopes({
       "discNumber",
       "trackNumber",
       "contentRating",
+      "playParams",
     ],
     relationships: {
       albums: "relate",

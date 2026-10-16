@@ -14,6 +14,7 @@ export const catalogSongsScopes = defineScopes({
       "discNumber",
       "trackNumber",
       "contentRating",
+      "playParams",
     ],
     extend: ["personalRating"],
     relationships: {
