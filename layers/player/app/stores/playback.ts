@@ -47,7 +47,11 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
   const settingsStore = useSettingsStore();
   const log = logger.withTag("player");
   const activity = createPlaybackActivityReporter({
-    send: (event, signal) => client.playback.reportPlayActivity(event, { config: { signal } }),
+    send: async (event, signal) => {
+      if (settingsStore.player.activityReporting) {
+        await client.playback.reportPlayActivity(event, { config: { signal } });
+      }
+    },
     getStorefront: () => (auth.valid.value ? auth.storefront.value?.id : undefined),
     getPlayMode: () => ({
       repeat: !queueStore.isStation && queueStore.isLooping,
@@ -124,7 +128,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     if (event.status === "ended") activity.end("ended", event.position, event.duration);
     else if (event.status === "stopped") activity.end("stop", event.position, event.duration);
     else if (event.paused) activity.end("pause", event.position, event.duration);
-    else if (event.status === "playing") {
+    else if (event.status === "playing" && settingsStore.player.activityReporting) {
       activity.start(event.position, event.duration, event.reporting);
     }
 
@@ -296,6 +300,20 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     { throttle: 80 },
   );
   useNuxtApp().hook("auth:logout", stop);
+  watch(
+    () => settingsStore.player.activityReporting,
+    () => {
+      activity.reset();
+      if (session) {
+        const { queueEntry } = session;
+        activity.setItem(
+          queueEntry.entry.resource,
+          queueEntry.fromContext ? queueStore.context : null,
+        );
+      }
+    },
+    { flush: "sync" },
+  );
   watch(
     auth.valid,
     (valid) => {

@@ -38,6 +38,7 @@ export const useSettingsStore = defineStore(
 
     const player = reactive({
       animatedArtwork: true,
+      activityReporting: true,
     });
 
     const playback = reactive({

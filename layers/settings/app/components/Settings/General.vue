@@ -17,6 +17,11 @@
     </SettingsSection>
     <SettingsSection title="Integrations">
       <SettingsToggle
+        v-model="settingsStore.player.activityReporting"
+        label="Activity reporting"
+        description="Report playback activity to Apple Music."
+      />
+      <SettingsToggle
         v-model="settingsStore.integrations.discordRichPresence"
         label="Discord Rich Presence"
       />
