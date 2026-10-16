@@ -44,7 +44,7 @@
       <div
         v-for="item in gridItems"
         :key="item.key"
-        class="flex w-44 shrink-0 snap-start flex-col gap-1 sm:w-32 lg:w-40"
+        class="flex w-44 shrink-0 snap-start flex-col gap-1 sm:w-36 lg:w-44"
       >
         <AMGridItem :resource="item" :show-artists :show-year />
       </div>
