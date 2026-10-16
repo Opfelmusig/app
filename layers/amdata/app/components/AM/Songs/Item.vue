@@ -3,6 +3,7 @@
     ref="row"
     class="scroll-mt-8"
     :highlighted="isHighlighted"
+    :disabled
     :reorder-id
     @dblclick="$emit('play')"
   >
@@ -135,4 +136,5 @@ const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
 
 const isActive = computed(() => queueStore.current?.entry.key === props.song.key);
+const disabled = computed(() => !props.song.resource.attributes.playParams);
 </script>
