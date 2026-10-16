@@ -8,7 +8,7 @@
           :label="shortcut.name"
           no-label
         >
-          <div class="flex flex-wrap items-center justify-end gap-2">
+          <div class="flex items-center justify-end gap-2">
             <template v-for="(keys, index) in shortcut.keys" :key="index">
               <span v-if="index" class="text-xs text-dimmed">or</span>
               <span class="inline-flex items-center gap-1 whitespace-nowrap">

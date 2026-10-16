@@ -15,7 +15,7 @@
       <div class="flex w-full min-w-0 flex-col justify-end gap-4">
         <div v-if="playlist" class="flex min-w-0 flex-col gap-1">
           <h2>{{ playlist.attributes.name }}</h2>
-          <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
+          <div class="flex items-center gap-2 text-sm text-muted">
             <span v-if="playlist.attributes.curatorName">
               <NuxtLink
                 v-if="playlist.attributes.curatorSocialHandle"
@@ -52,7 +52,7 @@
           <span>{{ error.message }}</span>
         </div>
         <p v-else class="text-sm text-muted">Playlist not found.</p>
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-2">
           <OMButtonPlay :disabled="!playlist || !displayedTracks.length" @click="play()" />
           <OMButtonSecondary
             icon="lucide:shuffle"

@@ -14,7 +14,7 @@
           :ui="{ base: 'h-10 rounded-xl' }"
         />
       </form>
-      <div v-if="term" class="flex flex-wrap gap-2">
+      <div v-if="term" class="flex gap-2">
         <UButton
           v-for="item in searchFilters"
           :key="item"
