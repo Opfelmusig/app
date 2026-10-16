@@ -38,7 +38,7 @@ const client = useClient();
 const { data, isPending, error } = useAmQuery({
   key: () => ["home"],
   query: () => fetchHome(client),
-  staleTime: ms("5m"),
+  staleTime: ms("2m"),
   gcTime: ms("6h"),
 });
 </script>
