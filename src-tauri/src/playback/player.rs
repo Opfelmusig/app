@@ -246,7 +246,7 @@ pub fn run(session: Arc<Session>, media: Media) {
     *session.media.lock().unwrap() = Some(media.clone());
     let result = decode(&session, &media);
     if let Err(error) = result {
-        session.fail(error.to_string());
+        session.fail(format!("{error:#}"));
     }
 }
 

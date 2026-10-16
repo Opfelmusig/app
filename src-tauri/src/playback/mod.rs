@@ -168,7 +168,7 @@ pub fn native_playback_play(
                     Err(error) => session.fail(error.to_string()),
                 }
             }
-            Err(error) => session.fail(error.to_string()),
+            Err(error) => session.fail(format!("{error:#}")),
         }
     });
     Ok(())

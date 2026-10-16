@@ -64,7 +64,9 @@ impl AppleLicense {
             let answer: LicenseResponse = response.json().await?;
             ensure!(
                 answer.error_code.unwrap_or(0) == 0 && answer.status.unwrap_or(0) == 0,
-                "Apple refused the playback licence"
+                "Apple refused the playback licence (errorCode: {}, status: {})",
+                answer.error_code.unwrap_or(0),
+                answer.status.unwrap_or(0)
             );
             Ok(STANDARD.decode(
                 answer

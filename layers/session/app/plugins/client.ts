@@ -142,9 +142,9 @@ export default defineNuxtPlugin({
       try {
         await prepareClient();
       } catch (cause) {
-        await logout();
-
         log.error("Login failed", { cause });
+
+        await logout();
 
         throw cause;
       }

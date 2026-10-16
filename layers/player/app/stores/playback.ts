@@ -87,7 +87,21 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     pending.value = false;
     isPlaying.value = false;
     clock.reset(position.value);
-    log.error("Native playback failed", { cause });
+    const song = session.queueEntry.entry.resource;
+    log.error("Native playback failed", {
+      cause,
+      sessionId: id,
+      queueEntryId: session.queueEntry.id,
+      song: {
+        id: song.id,
+        type: song.type,
+        name: song.attributes.name,
+        catalogId: song.type === "songs" ? song.id : song.extras.catalogId,
+        libraryId: song.type === "library-songs" ? song.id : song.extras.libraryId,
+      },
+      position: position.value,
+      duration: duration.value,
+    });
     toast.add({ title: "Unable to play", description: String(cause), color: "error" });
   }
 

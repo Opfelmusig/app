@@ -1,7 +1,9 @@
-import type { PiniaColadaOptions } from "@pinia/colada";
+import { PiniaColadaQueryHooksPlugin, type PiniaColadaOptions } from "@pinia/colada";
 import { PiniaColadaAutoRefetch } from "@pinia/colada-plugin-auto-refetch";
 import { PiniaColadaCachePersister } from "@pinia/colada-plugin-cache-persister";
 import { createStore, del, get, set } from "idb-keyval";
+
+import { logger } from "./app/utils/logger";
 
 const store = createStore("opfelmusig-cache", "query-cache");
 const cacheKey = "queries-v1";
@@ -20,6 +22,11 @@ export async function clearPersistedQueryCache() {
 
 export default {
   plugins: [
+    PiniaColadaQueryHooksPlugin({
+      onError(cause, entry) {
+        logger.withTag("query").error("Query failed", { cause, key: entry.key });
+      },
+    }),
     PiniaColadaCachePersister({
       key: cacheKey,
       filter: {

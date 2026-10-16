@@ -22,6 +22,8 @@ struct PlaybackResponse {
     songs: Vec<Song>,
     #[serde(rename = "failureType")]
     failure: Option<String>,
+    #[serde(rename = "customerMessage")]
+    message: Option<String>,
 }
 #[derive(Deserialize)]
 struct Song {
@@ -105,7 +107,12 @@ pub async fn prepare(
     let playback: PlaybackResponse = response.json().await?;
     ensure!(
         playback.failure.as_deref().unwrap_or_default().is_empty(),
-        "Apple refused this track"
+        "Apple refused this track (failureType: {}): {}",
+        playback.failure.as_deref().unwrap_or_default(),
+        playback
+            .message
+            .as_deref()
+            .unwrap_or("No explanation provided")
     );
     let song = playback
         .songs
