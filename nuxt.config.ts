@@ -74,6 +74,7 @@ export default defineNuxtConfig({
         "@tauri-apps/plugin-updater",
         "@tauri-apps/plugin-deep-link",
         "remeda",
+        "@tauri-apps/plugin-clipboard-manager",
       ],
     },
   },
