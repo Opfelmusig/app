@@ -1,5 +1,5 @@
 <template>
-  <main class="relative flex size-full h-svh flex-col overflow-hidden">
+  <main class="relative flex size-full h-svh flex-col overflow-hidden" :style="cssVars">
     <Titlebar />
     <div class="flex size-full overflow-hidden">
       <USplitter
@@ -49,6 +49,8 @@
 
 <script lang="ts" setup>
 import type { SplitterItem } from "@nuxt/ui";
+
+const { cssVars } = useArtworkTheme();
 
 const panels: SplitterItem[] = [
   {

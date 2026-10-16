@@ -1,15 +1,11 @@
 <template>
   <UApp :locale="en">
-    <div :style="cssVars">
-      <NuxtLayout>
-        <NuxtPage />
-      </NuxtLayout>
-    </div>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </UApp>
 </template>
 
 <script lang="ts" setup>
 import { en } from "@nuxt/ui/locale";
-
-const { cssVars } = useArtworkTheme();
 </script>
