@@ -75,6 +75,7 @@ export default defineNuxtConfig({
         "@tauri-apps/plugin-deep-link",
         "remeda",
         "@tauri-apps/plugin-clipboard-manager",
+        "@tauri-apps/api/webviewWindow",
       ],
     },
   },
