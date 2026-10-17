@@ -1,20 +1,18 @@
-const MAX_DRIFT = 0.5;
+const STALE_AFTER_SECONDS = 0.5;
 
 export function usePlaybackClock(duration: Ref<number>) {
   const position = ref(0);
   let nativePosition = 0;
   let syncedAt = 0;
-  let rate = 1;
-  let wasPlaying = false;
 
-  const { pause, resume, isActive } = useRafFn(
-    ({ delta, timestamp }) => {
+  const { pause, resume } = useRafFn(
+    () => {
+      const elapsed = (performance.now() - syncedAt) / 1000;
       position.value = Math.min(
-        position.value + (delta / 1000) * rate,
-        nativePosition + MAX_DRIFT,
+        nativePosition + Math.min(elapsed, STALE_AFTER_SECONDS),
         duration.value || Infinity,
       );
-      if ((timestamp - syncedAt) / 1000 >= MAX_DRIFT) pause();
+      if (elapsed >= STALE_AFTER_SECONDS) pause();
     },
     { immediate: false },
   );
@@ -24,21 +22,11 @@ export function usePlaybackClock(duration: Ref<number>) {
   }
 
   function sync(seconds: number, playing: boolean) {
-    const advancing = playing && (!wasPlaying || seconds > nativePosition);
-    const error = seconds - position.value;
-
-    if (!advancing || !isActive.value || Math.abs(error) > MAX_DRIFT) {
-      position.value = seconds;
-      rate = 1;
-    } else {
-      rate = 1 + Math.max(-0.1, Math.min(0.1, error * 2));
-    }
-
-    syncedAt = performance.now();
     nativePosition = seconds;
-    wasPlaying = playing;
+    syncedAt = performance.now();
+    position.value = seconds;
 
-    if (advancing) resume();
+    if (playing) resume();
     else pause();
   }
 
