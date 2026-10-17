@@ -14,5 +14,5 @@ export const miniplayerLayoutConfiguration: Record<
   { height: number; width: number }
 > = {
   default: { width: 240, height: 80 },
-  artwork: { width: 280, height: 280 },
+  artwork: { width: 240, height: 240 },
 };
