@@ -75,7 +75,7 @@ export default function useResourceMenu(
 
       if (catalogId && pendingResource.value !== `${song.type}:${song.id}`) {
         playback.push({
-          label: "Play Station",
+          label: "Play station",
           onSelect: () => createStation(song),
         });
       }
@@ -86,14 +86,14 @@ export default function useResourceMenu(
 
       if (albumLink) {
         navigation.push({
-          label: "Go to Album",
+          label: "Go to album",
           to: albumLink,
         });
       }
 
       if (artistLinks.length) {
         navigation.push({
-          label: "Go to Artist",
+          label: "Go to artist",
           to: artistLinks.length === 1 ? artistLinks[0]?.to : undefined,
           children: artistLinks.length > 1 ? artistLinks : undefined,
         });
@@ -101,7 +101,7 @@ export default function useResourceMenu(
 
       if (song.type === "songs" && song.extras.libraryId) {
         navigation.push({
-          label: "Show in Library",
+          label: "Show in library",
           to: { path: "/resources/library-songs", query: { song_id: song.extras.libraryId } },
         });
       }
@@ -122,7 +122,7 @@ export default function useResourceMenu(
     if (appleMusicLink(res.resource, auth.storefront.value?.id)) {
       groups.push([
         {
-          label: "Copy Link",
+          label: "Copy link",
           onSelect: () => copyLink(res.resource),
         },
       ]);

@@ -20,7 +20,7 @@
       </AMGridStatus>
     </AMGridWrapper>
     <AMFooter>
-      <AMFooterCount :count="children?.length" singular="playlist" />
+      <AMFooterCount :count="children?.length" singular="item" />
     </AMFooter>
   </PageWrapper>
 </template>

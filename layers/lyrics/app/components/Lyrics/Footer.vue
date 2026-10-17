@@ -1,6 +1,6 @@
 <template>
   <span v-if="songwriters.length" class="text-lg text-highlighted/60">
-    <span>Written By: </span>
+    <span>Written by: </span>
     <span class="font-normal text-highlighted/40">{{ songwriters.join(", ") }}</span>
   </span>
 </template>

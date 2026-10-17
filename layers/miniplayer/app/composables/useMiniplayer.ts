@@ -23,7 +23,7 @@ export default function useMiniplayer() {
 
   async function open() {
     if (currentWindow.label !== "main") {
-      log.warn("Create miniplayer can only be created from the main window.");
+      log.warn("The miniplayer can only be created from the main window.");
       return;
     }
 
@@ -52,7 +52,7 @@ export default function useMiniplayer() {
 
       const window = new WebviewWindow(MINIPLAYER_LABEL, {
         url: "/miniplayer",
-        title: "Mini Player",
+        title: "Miniplayer",
         width: layout.width,
         height: layout.height,
         alwaysOnTop: true,

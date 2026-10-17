@@ -27,7 +27,7 @@ export function useDiscordPresence(playback: DiscordPlayback) {
     return {
       title: attributes.name,
       songUrl: appleMusicLink(song, storefront),
-      artist: attributes.artistName ?? "Unknown Artist",
+      artist: attributes.artistName ?? "Unknown artist",
       artistUrl: rawAppleMusicLink("artists", attributes.artists[0]?.id, storefront),
       album: attributes.albumName,
       artworkUrl: getArtworkUrl(attributes.artwork, { width: 512 }),

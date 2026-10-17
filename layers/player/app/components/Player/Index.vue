@@ -145,25 +145,25 @@ const menuItems = useResourceMenu(() => queueStore.current?.entry, {
     start: () => {
       const items: DropdownMenuItem[] = [
         {
-          label: "Open Immersive Player",
+          label: "Open immersive player",
           onSelect: () => {
             settingsStore.immersive.isOpen = true;
           },
         },
         isOpen.value
           ? {
-              label: "Close Miniplayer",
+              label: "Close miniplayer",
               onSelect: close,
             }
           : {
-              label: "Open Miniplayer",
+              label: "Open miniplayer",
               onSelect: open,
             },
       ];
 
       if (playbackSourceLink.value) {
         items.push({
-          label: "Go to Source",
+          label: "Go to source",
           to: playbackSourceLink.value,
         });
       }
