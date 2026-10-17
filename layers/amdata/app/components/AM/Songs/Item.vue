@@ -141,6 +141,8 @@ const isActive = computed(() => queueStore.current?.entry.key === props.song.key
 const disabled = computed(() => !props.song.resource.attributes.playParams);
 
 const menuItems = useResourceMenu(() => props.song, {
-  play: () => emit("play"),
+  actions: {
+    play: () => emit("play"),
+  },
 });
 </script>

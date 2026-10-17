@@ -4,9 +4,24 @@ interface ResourceMenuActions {
   play?: () => void;
 }
 
+interface ResourceMenuExtras {
+  start?: MaybeRefOrGetter<DropdownMenuItem[]>;
+  end?: MaybeRefOrGetter<DropdownMenuItem[]>;
+}
+
+interface ResourceMenuSections {
+  hidePlayback?: boolean;
+}
+
+interface ResourceMenuConfiguration {
+  actions?: ResourceMenuActions;
+  extras?: ResourceMenuExtras;
+  sections?: ResourceMenuSections;
+}
+
 export default function useResourceMenu(
-  resource: MaybeRefOrGetter<AmListResource<AmResource>>,
-  actions: ResourceMenuActions = {},
+  resource: MaybeRefOrGetter<AmListResource<AmResource> | undefined>,
+  config: ResourceMenuConfiguration = {},
 ) {
   const queueStore = useQueueStore();
   const { createStation, pendingResource } = useResourcePlayback();
@@ -15,7 +30,13 @@ export default function useResourceMenu(
 
   return computed<DropdownMenuItem[][]>(() => {
     const res = toValue(resource);
+
+    if (!res) return [];
+
     const groups: DropdownMenuItem[][] = [];
+
+    const start = toValue(config.extras?.start);
+    if (start) groups.push(start);
 
     if (res.resourceType === "songs" || res.resourceType === "library-songs") {
       const song = res.resource;
@@ -25,10 +46,10 @@ export default function useResourceMenu(
 
       const playback: DropdownMenuItem[] = [];
 
-      if (song.attributes.playParams && actions.play) {
+      if (song.attributes.playParams && config.actions?.play) {
         playback.push({
           label: "Play",
-          onSelect: actions.play,
+          onSelect: config.actions.play,
         });
       }
 
@@ -58,7 +79,7 @@ export default function useResourceMenu(
         });
       }
 
-      groups.push(playback);
+      if (!config.sections?.hidePlayback) groups.push(playback);
 
       const navigation: DropdownMenuItem[] = [];
 
@@ -105,6 +126,9 @@ export default function useResourceMenu(
         },
       ]);
     }
+
+    const end = toValue(config.extras?.end);
+    if (end) groups.push(end);
 
     return groups.filter((group) => group.length);
   });
