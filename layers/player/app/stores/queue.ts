@@ -111,6 +111,16 @@ export const useQueueStore = defineStore(
       requestedStation.value = null;
     }
 
+    function clear() {
+      requestedStation.value = null;
+      pendingStationEntry = undefined;
+      index.value = null;
+      queue.value = [];
+      context.value = null;
+      contextQueue.value = [];
+      resetShuffle();
+    }
+
     function playNext(tracks: QueueTrack[]) {
       if (tracks.length === 0) return;
 
@@ -325,6 +335,7 @@ export const useQueueStore = defineStore(
       playStation,
       next,
       previous,
+      clear,
       clearQueue,
       clearContext,
       playNext,

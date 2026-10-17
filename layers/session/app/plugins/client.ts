@@ -164,7 +164,11 @@ export default defineNuxtPlugin({
       tokenValid.value = false;
       profile.value = undefined;
 
-      await nuxtApp.callHook("auth:logout");
+      try {
+        await nuxtApp.callHook("auth:logout");
+      } finally {
+        clearPlaybackStorage();
+      }
 
       log.info("Logout completed");
 

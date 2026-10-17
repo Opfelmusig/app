@@ -80,6 +80,7 @@ import { Stronghold } from "@tauri-apps/plugin-stronghold";
 import { clearPersistedQueryCache } from "~~/colada.options";
 
 const error = useError();
+const nuxtApp = useNuxtApp();
 
 const isDev = import.meta.dev;
 
@@ -121,6 +122,12 @@ async function logout() {
 
     await client.getStore().remove("apple-music:user-token");
     await stronghold.save();
+
+    try {
+      await nuxtApp.callHook("auth:logout");
+    } finally {
+      clearPlaybackStorage();
+    }
 
     reload();
   } finally {
