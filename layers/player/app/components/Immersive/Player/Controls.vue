@@ -10,7 +10,7 @@
     <ImmersivePlayerButton icon="lucide:skip-back" filled @click="playbackStore.previous" />
     <ImmersivePlayerButton
       :icon="playbackStore.paused ? 'lucide:play' : 'lucide:pause'"
-      :loading="playbackStore.pending"
+      :loading="playbackStore.loading"
       filled
       @click="playbackStore.toggle"
     />

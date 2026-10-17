@@ -23,7 +23,7 @@
             </div>
             <div v-else class="absolute inset-0 flex items-center justify-center">
               <OMIcon
-                v-if="playbackStore.pending"
+                v-if="playbackStore.loading"
                 name="lucide:loader-circle"
                 class="size-4 animate-spin text-highlighted [&>path]:stroke-3"
               />
@@ -37,7 +37,7 @@
               class="absolute inset-0 flex items-center justify-center bg-muted/50"
             >
               <OMIcon
-                v-if="playbackStore.pending"
+                v-if="playbackStore.loading"
                 name="lucide:loader-circle"
                 class="size-4 animate-spin text-highlighted [&>path]:stroke-3"
               />

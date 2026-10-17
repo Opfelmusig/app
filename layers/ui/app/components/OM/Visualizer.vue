@@ -4,7 +4,7 @@
       v-for="i in 4"
       :key="i"
       :class="cn(`bar-${i} w-0.75 rounded-full bg-inverted`)"
-      :style="{ animationPlayState: playbackStore.isPlaying ? 'running' : 'paused' }"
+      :style="{ animationPlayState: playbackStore.playing ? 'running' : 'paused' }"
     />
   </div>
 </template>

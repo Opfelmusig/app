@@ -16,7 +16,7 @@
         </div>
       </OMScrollingText>
       <UIcon
-        v-if="!expanded && playbackStore.pending"
+        v-if="!expanded && playbackStore.loading"
         name="lucide:loader-circle"
         class="size-4 animate-spin text-muted"
       />

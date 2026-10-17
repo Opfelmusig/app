@@ -2,8 +2,7 @@ import { getArtworkUrl } from "@opfelmusig/lib/helpers";
 import { invoke } from "@tauri-apps/api/core";
 
 interface DiscordPlayback {
-  isPlaying: Ref<boolean>;
-  paused: Ref<boolean>;
+  playing: Ref<boolean>;
   position: Ref<number>;
   duration: Ref<number>;
 }
@@ -19,12 +18,7 @@ export function useDiscordPresence(playback: DiscordPlayback) {
 
   const presence = computed(() => {
     const song = queueStore.current?.entry.resource;
-    if (
-      !settingsStore.integrations.discordRichPresence ||
-      !song ||
-      !playback.isPlaying.value ||
-      playback.paused.value
-    ) {
+    if (!settingsStore.integrations.discordRichPresence || !song || !playback.playing.value) {
       return null;
     }
 

@@ -98,14 +98,14 @@
         >
           <OMIcon
             :name="
-              playbackStore.pending
+              playbackStore.loading
                 ? 'lucide:loader-circle'
                 : playbackStore.paused
                   ? 'lucide:play'
                   : 'lucide:pause'
             "
-            :filled="!playbackStore.pending"
-            :class="playbackStore.pending ? 'size-4 animate-spin text-muted' : 'size-4 text-muted'"
+            :filled="!playbackStore.loading"
+            :class="playbackStore.loading ? 'size-4 animate-spin text-muted' : 'size-4 text-muted'"
           />
         </div>
         <div
