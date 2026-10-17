@@ -10,6 +10,9 @@
       :key="entry.id"
       :song="entry.entry"
       :reorder-id="entry.id"
+      :extra-menu-items="[
+        { label: 'Remove from queue', onSelect: () => queueStore.deleteEntry(entry.id) },
+      ]"
       @play="queueStore.playEntry(entry.id)"
     />
     <OMTableStatus v-if="remainingCount > 0">

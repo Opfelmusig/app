@@ -103,12 +103,15 @@
 </template>
 
 <script lang="ts" setup>
+import type { DropdownMenuItem } from "@nuxt/ui";
+
 const highlightedSongId = useRouteQuery<string>("song_id");
 
 const props = defineProps<{
   song: AmListResource<AmSong>;
   albumMode?: boolean;
   reorderId?: string;
+  extraMenuItems?: DropdownMenuItem[];
 }>();
 
 const row = useTemplateRef("row");
@@ -143,6 +146,9 @@ const disabled = computed(() => !props.song.resource.attributes.playParams);
 const menuItems = useResourceMenu(() => props.song, {
   actions: {
     play: () => emit("play"),
+  },
+  extras: {
+    end: () => props.extraMenuItems ?? [],
   },
 });
 </script>
