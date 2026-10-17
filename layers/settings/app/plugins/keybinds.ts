@@ -1,12 +1,13 @@
 export default defineNuxtPlugin({
   name: "settings:keybinds",
   dependsOn: ["session:ready"],
-  setup(nuxtApp) {
+  setup() {
     if (isMiniplayer) return;
 
     const auth = useAuth();
     const settingsStore = useSettingsStore();
     const queueStore = useQueueStore();
+    const playbackStore = usePlaybackStore();
     const volumeStore = useVolumeStore();
     const router = useRouter();
     const { goBack, goForward } = useNavigation();
@@ -37,17 +38,17 @@ export default defineNuxtPlugin({
       [
         {
           keys: ["space", "media-play-pause"],
-          run: () => nuxtApp.runWithContext(() => usePlaybackStore().toggle()),
+          run: () => playbackStore.toggle(),
           config: { meta: { group: "Playback", name: "Play / pause" } },
         },
         {
           keys: ["ctrl-cmd+arrow-left", "media-track-previous"],
-          run: () => nuxtApp.runWithContext(() => usePlaybackStore().previous()),
+          run: () => playbackStore.previous(),
           config: { meta: { group: "Playback", name: "Previous track" } },
         },
         {
           keys: ["ctrl-cmd+arrow-right", "media-track-next"],
-          run: () => nuxtApp.runWithContext(() => usePlaybackStore().next()),
+          run: () => playbackStore.next(),
           config: { meta: { group: "Playback", name: "Next track" } },
         },
         {
@@ -88,7 +89,7 @@ export default defineNuxtPlugin({
         },
         {
           keys: "shift+r",
-          run: () => nuxtApp.runWithContext(() => usePlaybackStore().seek(0)),
+          run: () => playbackStore.seek(0),
           config: { meta: { group: "Player", name: "Restart track" } },
         },
         {
