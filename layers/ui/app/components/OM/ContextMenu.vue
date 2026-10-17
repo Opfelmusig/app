@@ -1,7 +1,8 @@
 <template>
-  <UContextMenu :items :ui="{ content: 'w-48 rounded-xl' }">
+  <UContextMenu v-if="items?.length" :items :ui="{ content: 'w-48 rounded-xl' }">
     <slot />
   </UContextMenu>
+  <slot v-else />
 </template>
 
 <script setup lang="ts">

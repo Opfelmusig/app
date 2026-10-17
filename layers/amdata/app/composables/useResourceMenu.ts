@@ -33,7 +33,7 @@ export default function useResourceMenu(
   return computed<DropdownMenuItem[][]>(() => {
     const res = toValue(resource);
 
-    if (!res) return [];
+    if (!res || res.resourceType === "stations") return [];
 
     const groups: DropdownMenuItem[][] = [];
     const playback: DropdownMenuItem[] = [];
