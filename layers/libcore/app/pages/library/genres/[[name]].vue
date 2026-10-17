@@ -48,7 +48,6 @@
             @reset="resetSorting"
           />
           <OMButtonSecondary fill icon="lucide:filter" />
-          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
         </div>
       </header>
       <USeparator />

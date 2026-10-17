@@ -34,7 +34,15 @@
         class="shrink-0"
         :ui="{ base: 'h-9 rounded-xl' }"
       />
-      <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
+      <UTooltip text="Clear history">
+        <OMButtonTertiary
+          icon="lucide:trash-2"
+          aria-label="Clear history"
+          class="ml-auto"
+          :disabled="!historyStore.entries.length"
+          @click="historyStore.clear"
+        />
+      </UTooltip>
     </header>
     <p v-if="!historyStore.entries.length" class="p-4 text-sm text-muted">
       No listening history yet.
@@ -44,7 +52,7 @@
     </p>
     <section v-for="(section, index) in sections" :key="section.id">
       <USeparator v-if="index" />
-      <OMTableTitle :title="section.title" :clearable="index === 0" @clear="historyStore.clear" />
+      <OMTableTitle :title="section.title" />
       <AMSongsWrapper :columns>
         <AMSongsItem
           v-for="entry in section.entries"

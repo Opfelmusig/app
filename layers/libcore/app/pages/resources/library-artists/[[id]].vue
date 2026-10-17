@@ -21,7 +21,6 @@
           placeholder="Search..."
           :ui="{ base: 'h-9 rounded-xl' }"
         />
-        <OMButtonTertiary icon="lucide:ellipsis" />
       </header>
       <div class="flex cursor-pointer flex-col text-sm select-none">
         <NuxtLink
@@ -40,7 +39,6 @@
             </span>
             <OMStar v-if="artist.resource.attributes.personalRating === 1" />
           </div>
-          <OMButtonTertiary icon="lucide:ellipsis" class="no-active text-muted" @click.prevent />
         </NuxtLink>
       </div>
       <AMFooter>

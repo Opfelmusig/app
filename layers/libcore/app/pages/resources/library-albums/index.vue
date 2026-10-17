@@ -28,7 +28,6 @@
         class="shrink-0"
         :ui="{ base: 'h-9 rounded-xl' }"
       />
-      <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
     </header>
     <USeparator />
     <AMGridWrapper>
