@@ -33,11 +33,11 @@ export function resourceRelationLink(
     case "library-playlists":
       return rawResourceLink("playlists", resource.extras.catalogId);
     case "albums":
-      return rawResourceLink("albums", resource.extras.libraryId);
+      return rawResourceLink("library-albums", resource.extras.libraryId);
     case "artists":
-      return rawResourceLink("artists", resource.extras.libraryId);
+      return rawResourceLink("library-artists", resource.extras.libraryId);
     case "playlists":
-      return rawResourceLink("playlists", resource.extras.libraryId);
+      return rawResourceLink("library-playlists", resource.extras.libraryId);
   }
 }
 
@@ -51,8 +51,8 @@ export function songAlbumLink(song: AmSong) {
   }
 }
 
-export function songArtistLinks(song: AmSong) {
-  const catalogArtists = song.attributes.artists;
+export function resourceArtistLinks(resource: AmSong | AmAlbum) {
+  const catalogArtists = resource.attributes.artists;
   if (catalogArtists.length) {
     return catalogArtists.map((artist) => ({
       label: artist.name,
@@ -60,11 +60,14 @@ export function songArtistLinks(song: AmSong) {
     }));
   }
 
-  if (song.type === "library-songs" && song.extras.artistId) {
+  if (
+    (resource.type === "library-songs" || resource.type === "library-albums") &&
+    resource.extras.artistId
+  ) {
     return [
       {
-        label: song.attributes.artistName ?? "Artist",
-        to: rawResourceLink("library-artists", song.extras.artistId),
+        label: resource.attributes.artistName ?? "Artist",
+        to: rawResourceLink("library-artists", resource.extras.artistId),
       },
     ];
   }
