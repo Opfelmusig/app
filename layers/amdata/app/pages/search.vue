@@ -113,6 +113,10 @@ const filter = useRouteQuery<SearchFilter>("filter", "all", {
 const sections = ["songs", "albums", "artists", "playlists"] as const;
 const draft = ref(term.value);
 
+watch(term, (value) => {
+  draft.value = value;
+});
+
 function search(value: string) {
   const query = value.trim();
   term.value = query;
