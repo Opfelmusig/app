@@ -21,11 +21,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "click"): void;
+  (e: "click", event: MouseEvent): void;
 }>();
 
-function click() {
+function click(event: MouseEvent) {
   if (props.loading) return;
-  emit("click");
+  emit("click", event);
 }
 </script>
