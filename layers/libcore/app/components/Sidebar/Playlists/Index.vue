@@ -3,14 +3,19 @@
     <SidebarItemIcon to="/resources/library-playlist-folders" icon="lucide:layout-grid">
       All playlists
     </SidebarItemIcon>
-    <SidebarItemWrapper v-if="favoritesPlaylist" :to="resourceLink(favoritesPlaylist)">
-      <div
-        class="flex aspect-square size-5 shrink-0 items-center justify-center overflow-hidden rounded-md text-muted select-none"
-      >
-        <UIcon name="lucide:square-star" class="size-4" />
-      </div>
-      <SidebarItemLabel>{{ favoritesPlaylist.attributes.name }}</SidebarItemLabel>
-    </SidebarItemWrapper>
+    <SidebarResourceMenu
+      v-if="favoritesPlaylist"
+      :resource="createListResource(favoritesPlaylist, 'sidebar-playlists', 0)"
+    >
+      <SidebarItemWrapper :to="resourceLink(favoritesPlaylist)">
+        <div
+          class="flex aspect-square size-5 shrink-0 items-center justify-center overflow-hidden rounded-md text-muted select-none"
+        >
+          <UIcon name="lucide:square-star" class="size-4" />
+        </div>
+        <SidebarItemLabel>{{ favoritesPlaylist.attributes.name }}</SidebarItemLabel>
+      </SidebarItemWrapper>
+    </SidebarResourceMenu>
     <SidebarItemIcon v-if="children?.length === 0" icon="lucide:list-music" variant="disabled">
       No playlists
     </SidebarItemIcon>

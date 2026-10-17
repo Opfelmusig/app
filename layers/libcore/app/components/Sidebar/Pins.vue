@@ -4,17 +4,15 @@
       No pins
     </SidebarItemIcon>
     <template v-else-if="data">
-      <SidebarItemWrapper
-        v-for="pin in data"
-        :key="pin.resource.id"
-        :to="resourceLink(pin.resource)"
-      >
-        <AMArtworkWrapper :resource="pin" context="small">
-          <AMArtworkImage />
-          <AMArtworkPlaceholder />
-        </AMArtworkWrapper>
-        <SidebarItemLabel>{{ pin.resource.attributes.name }}</SidebarItemLabel>
-      </SidebarItemWrapper>
+      <SidebarResourceMenu v-for="pin in data" :key="pin.resource.id" :resource="pin">
+        <SidebarItemWrapper :to="resourceLink(pin.resource)">
+          <AMArtworkWrapper :resource="pin" context="small">
+            <AMArtworkImage />
+            <AMArtworkPlaceholder />
+          </AMArtworkWrapper>
+          <SidebarItemLabel>{{ pin.resource.attributes.name }}</SidebarItemLabel>
+        </SidebarItemWrapper>
+      </SidebarResourceMenu>
     </template>
     <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
       Loading pins
