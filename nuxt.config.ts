@@ -76,6 +76,7 @@ export default defineNuxtConfig({
         "remeda",
         "@tauri-apps/plugin-clipboard-manager",
         "@tauri-apps/api/webviewWindow",
+        "birpc",
       ],
     },
   },
