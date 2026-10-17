@@ -118,6 +118,7 @@
 <script lang="ts" setup>
 const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
+const settingsStore = useSettingsStore();
 const resource = computed(() => queueStore.current?.entry.resource);
 
 const { width, isCollapsed } = useSidebar();
@@ -127,6 +128,12 @@ const { isOpen, open, close } = useMiniplayer();
 const menuItems = useResourceMenu(() => queueStore.current?.entry, {
   extras: {
     start: () => [
+      {
+        label: "Open Immersive Player",
+        onSelect: () => {
+          settingsStore.immersive.isOpen = true;
+        },
+      },
       isOpen.value
         ? {
             label: "Close Miniplayer",
