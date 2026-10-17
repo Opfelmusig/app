@@ -63,6 +63,13 @@
             icon="lucide:star"
             :active="playlist.attributes.personalRating === 1"
           />
+          <UTooltip :text="playlist.extras.isPublic ? 'Public playlist' : 'Private playlist'" arrow>
+            <OMButtonSecondary
+              :icon="playlist.extras.isPublic ? 'lucide:globe' : 'lucide:globe-lock'"
+              :active="playlist.extras.isPublic"
+              :aria-label="playlist.extras.isPublic ? 'Public playlist' : 'Private playlist'"
+            />
+          </UTooltip>
           <OMButtonSeparator />
           <AMControlsSorting
             v-model="sortBy"
