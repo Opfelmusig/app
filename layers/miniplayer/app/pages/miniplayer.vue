@@ -1,7 +1,7 @@
 <template>
   <main class="relative flex h-svh overflow-hidden text-white select-none" data-tauri-drag-region>
     <button
-      v-if="isMacos"
+      v-if="!isMacos"
       type="button"
       class="absolute top-2 right-2 z-20 flex size-5 items-center justify-center rounded-md text-white/60 hover:bg-white/10 hover:text-white"
       @click="close"
