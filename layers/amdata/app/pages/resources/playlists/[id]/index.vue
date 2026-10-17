@@ -98,7 +98,7 @@
             placeholder="Search..."
             :ui="{ base: 'h-9 rounded-xl' }"
           />
-          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
+          <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </div>
     </header>
@@ -218,4 +218,10 @@ function play(index = 0, shuffle = false) {
     shuffle,
   );
 }
+
+const menuItems = useResourceMenu(
+  () =>
+    playlist.value ? createListResource(playlist.value, `playlists:${id.value}`, 0) : undefined,
+  { actions: { play: () => play(), shuffle: () => play(0, true) } },
+);
 </script>

@@ -67,7 +67,7 @@
             @reset="resetSorting"
           />
           <OMButtonSecondary fill icon="lucide:filter" />
-          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
+          <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </header>
       <USeparator />
@@ -136,6 +136,11 @@ const { data: currentArtist } = useLibraryQuery({
   query: () => library.client.getArtist(id.value!),
   enabled: id,
 });
+const menuItems = useResourceMenu(() =>
+  currentArtist.value
+    ? createListResource(currentArtist.value, `library-artists:${id.value}`, 0)
+    : undefined,
+);
 const {
   data: currentArtistAlbums,
   isPending: currentArtistAlbumsPending,

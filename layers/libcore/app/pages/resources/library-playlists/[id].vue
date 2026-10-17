@@ -88,7 +88,7 @@
             :active="columnsChanged"
             @reset="reset"
           />
-          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
+          <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </div>
     </header>
@@ -175,6 +175,14 @@ function play(index: number = 0, shuffle: boolean = false) {
     shuffle,
   );
 }
+
+const menuItems = useResourceMenu(
+  () =>
+    playlist.value
+      ? createListResource(playlist.value, `library-playlists:${id.value}`, 0)
+      : undefined,
+  { actions: { play: () => play(), shuffle: () => play(0, true) } },
+);
 
 const { mutate: refreshPlaylist } = useMutation({
   mutation: (playlistId: string) => library.refreshPlaylist(playlistId),

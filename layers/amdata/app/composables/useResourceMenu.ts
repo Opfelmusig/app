@@ -2,6 +2,7 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 
 interface ResourceMenuActions {
   play?: () => void;
+  shuffle?: () => void;
 }
 
 interface ResourceMenuExtras {
@@ -24,7 +25,8 @@ export default function useResourceMenu(
   config: ResourceMenuConfiguration = {},
 ) {
   const queueStore = useQueueStore();
-  const { createStation, pendingResource } = useResourcePlayback();
+  const { play, shuffle, playNext, playAfter, createStation, pendingResource } =
+    useResourcePlayback();
   const { copyLink } = useResourceSharing();
   const auth = useAuth();
 
@@ -34,17 +36,16 @@ export default function useResourceMenu(
     if (!res) return [];
 
     const groups: DropdownMenuItem[][] = [];
+    const playback: DropdownMenuItem[] = [];
+    const navigation: DropdownMenuItem[] = [];
+    const pending = pendingResource.value === `${res.resourceType}:${res.resource.id}`;
 
     const start = toValue(config.extras?.start);
     if (start) groups.push(start);
 
     if (res.resourceType === "songs" || res.resourceType === "library-songs") {
       const song = res.resource;
-      const catalogId = song.type === "songs" ? song.id : song.extras.catalogId;
       const albumLink = songAlbumLink(song);
-      const artistLinks = songArtistLinks(song);
-
-      const playback: DropdownMenuItem[] = [];
 
       if (!config.sections?.hidePlayback && song.attributes.playParams && config.actions?.play) {
         playback.push({
@@ -73,24 +74,59 @@ export default function useResourceMenu(
         });
       }
 
-      if (catalogId && pendingResource.value !== `${song.type}:${song.id}`) {
-        playback.push({
-          label: "Play station",
-          onSelect: () => createStation(song),
-        });
-      }
-
-      groups.push(playback);
-
-      const navigation: DropdownMenuItem[] = [];
-
       if (albumLink) {
         navigation.push({
           label: "Go to album",
           to: albumLink,
         });
       }
+    }
 
+    if (
+      res.resourceType === "albums" ||
+      res.resourceType === "library-albums" ||
+      res.resourceType === "playlists" ||
+      res.resourceType === "library-playlists"
+    ) {
+      const collection = res.resource;
+      if (!config.sections?.hidePlayback && !pending) {
+        playback.push(
+          { label: "Play", onSelect: config.actions?.play ?? (() => play(collection)) },
+          { label: "Shuffle", onSelect: config.actions?.shuffle ?? (() => shuffle(collection)) },
+          { label: "Play next", onSelect: () => playNext(collection) },
+        );
+
+        if (queueStore.current && !queueStore.inContext && queueStore.queue.length) {
+          playback.push({ label: "Add to queue", onSelect: () => playAfter(collection) });
+        }
+      }
+    }
+
+    if (
+      res.resourceType === "songs" ||
+      res.resourceType === "library-songs" ||
+      res.resourceType === "albums" ||
+      res.resourceType === "library-albums" ||
+      res.resourceType === "artists" ||
+      res.resourceType === "library-artists"
+    ) {
+      const seed = res.resource;
+      const catalogId =
+        seed.type === "songs" || seed.type === "albums" || seed.type === "artists"
+          ? seed.id
+          : seed.extras.catalogId;
+      if (catalogId && !pending) {
+        playback.push({ label: "Play station", onSelect: () => createStation(seed) });
+      }
+    }
+
+    if (
+      res.resourceType === "songs" ||
+      res.resourceType === "library-songs" ||
+      res.resourceType === "albums" ||
+      res.resourceType === "library-albums"
+    ) {
+      const artistLinks = resourceArtistLinks(res.resource);
       if (artistLinks.length) {
         navigation.push({
           label: "Go to artist",
@@ -98,7 +134,10 @@ export default function useResourceMenu(
           children: artistLinks.length > 1 ? artistLinks : undefined,
         });
       }
+    }
 
+    if (res.resourceType === "songs" || res.resourceType === "library-songs") {
+      const song = res.resource;
       if (song.type === "songs" && song.extras.libraryId) {
         navigation.push({
           label: "Show in library",
@@ -115,9 +154,28 @@ export default function useResourceMenu(
           });
         }
       }
-
-      groups.push(navigation);
     }
+
+    if (
+      res.resourceType === "albums" ||
+      res.resourceType === "library-albums" ||
+      res.resourceType === "artists" ||
+      res.resourceType === "library-artists" ||
+      res.resourceType === "playlists" ||
+      res.resourceType === "library-playlists"
+    ) {
+      const counterpartLink = resourceRelationLink(res.resource);
+      if (counterpartLink) {
+        navigation.push({
+          label: res.resourceType.startsWith("library-")
+            ? "Show in Apple Music"
+            : "Show in library",
+          to: counterpartLink,
+        });
+      }
+    }
+
+    groups.push(playback, navigation);
 
     if (appleMusicLink(res.resource, auth.storefront.value?.id)) {
       groups.push([

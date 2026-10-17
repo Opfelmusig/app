@@ -79,7 +79,7 @@
               </NuxtLink>
             </template>
           </template>
-          <OMButtonTertiary icon="lucide:ellipsis" class="ml-auto" />
+          <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </div>
     </header>
@@ -130,6 +130,9 @@ const { data: viewsData } = useAmQuery({
 });
 
 const artist = computed(() => data.value?.artist);
+const menuItems = useResourceMenu(() =>
+  artist.value ? createListResource(artist.value, `artists:${id.value}`, 0) : undefined,
+);
 const station = computed(() => artist.value?.relationships.station);
 const queueStore = useQueueStore();
 
