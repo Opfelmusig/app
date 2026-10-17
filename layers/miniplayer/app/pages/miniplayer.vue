@@ -89,7 +89,8 @@ definePageMeta({ layout: false });
 
 const { $mainBridge } = useNuxtApp();
 const log = logger.withTag("miniplayer");
-const { layout, track, position, paused, loading } = storeToRefs(useMiniplayerStore());
+const miniplayerStore = useMiniplayerStore();
+const { layout, track, position, paused, loading } = storeToRefs(miniplayerStore);
 const artworkLayout = computed(() => layout.value === "artwork");
 const duration = computed(() => (track.value?.attributes.durationInMillis ?? 0) / 1000);
 
@@ -100,6 +101,7 @@ function run(action: "previous" | "toggle" | "next") {
 }
 
 function seek(seconds: number) {
+  miniplayerStore.updatePosition(seconds);
   $mainBridge.seek(seconds).catch((cause) => log.error("Could not seek playback", { cause }));
 }
 
