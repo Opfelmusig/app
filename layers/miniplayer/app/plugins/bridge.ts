@@ -3,13 +3,19 @@ export default defineNuxtPlugin({
   setup: async () => {
     if (!isMiniplayer) return {};
 
+    const log = logger.withTag("miniplayer");
+
     const bridge = createWindowBridge("main", createMiniplayerHandlers());
 
     const miniplayerStore = useMiniplayerStore();
 
-    const sync = await bridge.sync();
-    miniplayerStore.setLayout(sync.layout);
-    miniplayerStore.setPlayback(sync.playback);
+    try {
+      const sync = await bridge.sync();
+      miniplayerStore.setLayout(sync.layout);
+      miniplayerStore.setPlayback(sync.playback);
+    } catch (cause) {
+      log.error("Failed to sync with main window", { cause });
+    }
 
     return {
       provide: {
