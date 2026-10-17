@@ -128,10 +128,11 @@ export const useQueueStore = defineStore(
 
       const entries = createQueueFromTracks(tracks);
 
-      if (currentCount.value === 0) {
+      if (!current.value) {
+        const start = isShuffling.value ? shuffledQueue.value.length : queue.value.length;
         queue.value.push(...entries);
         if (isShuffling.value) shuffledQueue.value.push(...entries);
-        index.value = findPlayableIndex(0);
+        index.value = findPlayableIndex(start);
         return;
       }
 
