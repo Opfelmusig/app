@@ -104,6 +104,8 @@ export const useQueueStore = defineStore(
           false,
         );
       } catch (cause) {
+        if (requestedStation.value?.id !== station.id) return;
+
         log.error("Failed to fetch station tracks", { cause });
         toast.add({ title: "Unable to play station", description: String(cause), color: "error" });
       }
