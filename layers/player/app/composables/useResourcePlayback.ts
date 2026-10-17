@@ -7,23 +7,33 @@ export default function useResourcePlayback() {
   const requestId = useState("player:resource-request", () => 0);
   const pendingResource = useState<string | null>("player:pending-resource", () => null);
 
-  async function play(resource: AmAlbum | AmPlaylist) {
+  async function play(resource: AmAlbum | AmPlaylist, placement?: "next" | "after") {
+    if (
+      placement === "after" &&
+      (!queueStore.current || queueStore.inContext || !queueStore.queue.length)
+    )
+      return;
+
     const resourceKey = `${resource.type}:${resource.id}`;
     if (pendingResource.value === resourceKey) return;
 
     const currentRequest = ++requestId.value;
     pendingResource.value = resourceKey;
+    const queue = queueStore.queue;
 
     try {
       const tracks = await getTracks(resource);
       if (currentRequest !== requestId.value) return;
+      if (placement && queueStore.queue !== queue) return;
 
       if (tracks.length === 0) {
         toast.add({ title: "No songs to play", description: resource.attributes.name });
         return;
       }
 
-      queueStore.playContext({ context: resource, tracks, index: 0 });
+      if (placement === "next") queueStore.playNext(tracks);
+      else if (placement === "after") queueStore.playAfter(tracks);
+      else queueStore.playContext({ context: resource, tracks, index: 0 });
     } catch (cause) {
       if (currentRequest !== requestId.value) return;
 
@@ -60,5 +70,11 @@ export default function useResourcePlayback() {
     }
   }
 
-  return { play, createStation, pendingResource: readonly(pendingResource) };
+  return {
+    play,
+    playNext: (resource: AmAlbum | AmPlaylist) => play(resource, "next"),
+    playAfter: (resource: AmAlbum | AmPlaylist) => play(resource, "after"),
+    createStation,
+    pendingResource: readonly(pendingResource),
+  };
 }
