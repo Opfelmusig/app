@@ -116,10 +116,25 @@
 </template>
 
 <script lang="ts" setup>
+import type { DropdownMenuItem } from "@nuxt/ui";
+import { withQuery } from "ufo";
+
 const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
 const settingsStore = useSettingsStore();
 const resource = computed(() => queueStore.current?.entry.resource);
+const playbackSourceLink = computed(() => {
+  const context = queueStore.context;
+  const current = queueStore.current;
+  if (!current?.fromContext || !context || context.type === "stations") return;
+
+  const songId = current.entry.resource.id;
+  if (context.type === "generic") {
+    return context.link ? withQuery(context.link, { song_id: songId }) : undefined;
+  }
+
+  return rawResourceLink(context.type, context.id, songId);
+});
 
 const { width, isCollapsed } = useSidebar();
 
@@ -127,23 +142,34 @@ const { isOpen, open, close } = useMiniplayer();
 
 const menuItems = useResourceMenu(() => queueStore.current?.entry, {
   extras: {
-    start: () => [
-      {
-        label: "Open Immersive Player",
-        onSelect: () => {
-          settingsStore.immersive.isOpen = true;
-        },
-      },
-      isOpen.value
-        ? {
-            label: "Close Miniplayer",
-            onSelect: close,
-          }
-        : {
-            label: "Open Miniplayer",
-            onSelect: open,
+    start: () => {
+      const items: DropdownMenuItem[] = [
+        {
+          label: "Open Immersive Player",
+          onSelect: () => {
+            settingsStore.immersive.isOpen = true;
           },
-    ],
+        },
+        isOpen.value
+          ? {
+              label: "Close Miniplayer",
+              onSelect: close,
+            }
+          : {
+              label: "Open Miniplayer",
+              onSelect: open,
+            },
+      ];
+
+      if (playbackSourceLink.value) {
+        items.push({
+          label: "Go to Source",
+          to: playbackSourceLink.value,
+        });
+      }
+
+      return items;
+    },
   },
   sections: {
     hidePlayback: true,
