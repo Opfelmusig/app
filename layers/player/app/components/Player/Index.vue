@@ -84,36 +84,13 @@
             :class="!queueStore.isStation && queueStore.isShuffling ? 'text-primary' : 'text-muted'"
           />
         </div>
-        <div
-          class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
-          @click="playbackStore.previous"
-        >
-          <OMIcon mode="svg" name="lucide:skip-back" class="size-4 text-muted" filled />
-        </div>
-        <div
-          class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
-          @click="playbackStore.toggle"
-          @keydown.enter="playbackStore.toggle"
-          @keydown.space.prevent="playbackStore.toggle"
-        >
-          <OMIcon
-            :name="
-              playbackStore.loading
-                ? 'lucide:loader-circle'
-                : playbackStore.paused
-                  ? 'lucide:play'
-                  : 'lucide:pause'
-            "
-            :filled="!playbackStore.loading"
-            :class="playbackStore.loading ? 'size-4 animate-spin text-muted' : 'size-4 text-muted'"
-          />
-        </div>
-        <div
-          class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
-          @click="playbackStore.next"
-        >
-          <OMIcon mode="svg" name="lucide:skip-forward" class="size-4 text-muted" filled />
-        </div>
+        <PlayerControls
+          :paused="playbackStore.paused"
+          :loading="playbackStore.loading"
+          @previous="playbackStore.previous"
+          @toggle="playbackStore.toggle"
+          @next="playbackStore.next"
+        />
         <div
           class="flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform hover:bg-muted active:scale-95"
           :class="queueStore.isStation ? 'pointer-events-none opacity-50' : ''"
@@ -127,20 +104,13 @@
           />
         </div>
       </div>
-      <div class="flex w-full items-center gap-4 text-xs text-muted tabular-nums">
-        <span>{{ msToHMS((seekPosition ?? playbackStore.position) * 1000) }}</span>
-        <USlider
-          :model-value="seekPosition ?? playbackStore.position"
-          :min="0"
-          :max="playbackStore.duration || 1"
-          :step="0.1"
-          :disabled="!resource || !playbackStore.duration"
-          class="w-full py-2"
-          @update:model-value="seekPosition = $event ?? null"
-          @change="commitSeek"
-        />
-        <span>{{ msToHMS(playbackStore.duration * 1000) }}</span>
-      </div>
+      <PlayerProgress
+        :key="queueStore.current?.id"
+        :position="playbackStore.position"
+        :duration="playbackStore.duration"
+        :disabled="!resource"
+        @seek="playbackStore.seek"
+      />
     </div>
   </div>
 </template>
@@ -148,20 +118,6 @@
 <script lang="ts" setup>
 const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
-const seekPosition = ref<number | null>(null);
-
-function commitSeek() {
-  if (seekPosition.value !== null) playbackStore.seek(seekPosition.value);
-  seekPosition.value = null;
-}
-
-watch(
-  () => queueStore.current?.id,
-  () => {
-    seekPosition.value = null;
-  },
-);
-
 const resource = computed(() => queueStore.current?.entry.resource);
 
 const { width, isCollapsed } = useSidebar();
