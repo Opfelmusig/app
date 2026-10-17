@@ -48,7 +48,7 @@ export default function useMiniplayer() {
         return;
       }
 
-      const layout = layoutConfiguration[settingsStore.player.miniplayerLayout];
+      const layout = miniplayerLayoutConfiguration[settingsStore.player.miniplayerLayout];
 
       const window = new WebviewWindow(MINIPLAYER_LABEL, {
         url: "/miniplayer",

@@ -9,7 +9,10 @@ export function getMiniplayerWindow() {
   return WebviewWindow.getByLabel(MINIPLAYER_LABEL);
 }
 
-export const layoutConfiguration: Record<MiniplayerLayout, { height: number; width: number }> = {
+export const miniplayerLayoutConfiguration: Record<
+  MiniplayerLayout,
+  { height: number; width: number }
+> = {
   default: { width: 240, height: 80 },
   artwork: { width: 280, height: 280 },
 };
