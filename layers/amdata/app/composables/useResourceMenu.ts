@@ -46,14 +46,14 @@ export default function useResourceMenu(
 
       const playback: DropdownMenuItem[] = [];
 
-      if (song.attributes.playParams && config.actions?.play) {
+      if (!config.sections?.hidePlayback && song.attributes.playParams && config.actions?.play) {
         playback.push({
           label: "Play",
           onSelect: config.actions.play,
         });
       }
 
-      if (song.attributes.playParams) {
+      if (!config.sections?.hidePlayback && song.attributes.playParams) {
         playback.push({
           label: "Play next",
           onSelect: () => queueStore.playNext([res]),
@@ -61,6 +61,7 @@ export default function useResourceMenu(
       }
 
       if (
+        !config.sections?.hidePlayback &&
         song.attributes.playParams &&
         queueStore.current &&
         !queueStore.inContext &&
@@ -79,7 +80,7 @@ export default function useResourceMenu(
         });
       }
 
-      if (!config.sections?.hidePlayback) groups.push(playback);
+      groups.push(playback);
 
       const navigation: DropdownMenuItem[] = [];
 
