@@ -23,7 +23,11 @@ export const useHistoryStore = defineStore(
       entries.value = [];
     }
 
-    return { entries, record, clear };
+    function deleteEntry(id: string) {
+      entries.value = entries.value.filter((entry) => entry.id !== id);
+    }
+
+    return { entries, record, clear, deleteEntry };
   },
   { persist: true },
 );
