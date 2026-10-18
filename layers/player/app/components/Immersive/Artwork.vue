@@ -1,6 +1,6 @@
 <template>
   <div
-    class="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-xl transition-[opacity,filter]"
+    class="pointer-events-none absolute inset-0 z-20 overflow-hidden transition-[opacity,filter]"
     :class="settingsStore.immersive.lyrics ? 'opacity-80 brightness-40' : ''"
     @load.capture="revealArtwork"
     @loadeddata.capture="revealArtwork"

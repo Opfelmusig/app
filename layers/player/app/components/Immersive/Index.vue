@@ -6,8 +6,10 @@
 
     <div class="flex min-h-0 flex-1">
       <div class="relative flex size-full flex-col items-center justify-between">
-        <ImmersiveMesh />
-        <ImmersiveArtwork />
+        <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-t-xl">
+          <ImmersiveMesh />
+          <ImmersiveArtwork />
+        </div>
 
         <div class="z-30 flex h-full w-120 overflow-hidden pb-12">
           <Transition
