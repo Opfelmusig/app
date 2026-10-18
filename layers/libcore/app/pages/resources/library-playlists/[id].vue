@@ -15,7 +15,7 @@
       <div v-if="playlist" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
           <h2>{{ playlist.attributes.name }}</h2>
-          <div class="flex items-center gap-2 text-sm text-muted">
+          <div class="flex items-center gap-2 text-sm whitespace-nowrap text-muted">
             <span v-if="playlist.attributes.curatorName" class="truncate">
               <NuxtLink
                 v-if="playlist.attributes.curatorSocialHandle"
