@@ -14,7 +14,11 @@
       </AMArtworkWrapper>
       <div class="flex w-full min-w-0 flex-col justify-end gap-4">
         <div v-if="song" class="flex min-w-0 flex-col gap-1">
-          <h2>{{ song.resource.attributes.name }}</h2>
+          <div class="flex items-center gap-2">
+            <h2 class="truncate">{{ song.resource.attributes.name }}</h2>
+            <OMExplicit v-if="song.resource.attributes.contentRating === 'explicit'" />
+            <OMDownloaded v-if="song.resource.extras.libraryId" />
+          </div>
           <div class="flex items-center gap-2 text-sm whitespace-nowrap text-muted">
             <AMLinks
               :links="song.resource.attributes.albums"

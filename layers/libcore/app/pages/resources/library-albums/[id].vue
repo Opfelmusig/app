@@ -11,7 +11,10 @@
       </AMArtworkWrapper>
       <div v-if="album" class="flex w-full flex-col justify-end gap-4">
         <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
-          <h2>{{ album.attributes.name }}</h2>
+          <div class="flex items-center gap-2">
+            <h2 class="truncate">{{ album.attributes.name }}</h2>
+            <OMExplicit v-if="album.attributes.contentRating === 'explicit'" />
+          </div>
           <div class="flex items-center gap-2 text-sm whitespace-nowrap text-muted">
             <AMLinks
               :links="album.attributes.artists"
