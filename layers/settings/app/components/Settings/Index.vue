@@ -3,7 +3,6 @@
     <UModal
       v-model:open="settingsStore.isOpen"
       title="Settings"
-      :portal="false"
       :ui="{
         content: 'h-[min(650px,85dvh)] max-w-4xl rounded-xl',
         header: 'shrink-0',
