@@ -20,7 +20,7 @@ export const useSettingsStore = defineStore(
     const language = ref<string | undefined>();
 
     const panel = reactive({
-      isOpen: true,
+      isOpen: false,
       page: "queue" as "queue" | "lyrics",
     });
 

@@ -77,6 +77,7 @@ export default defineNuxtConfig({
         "@tauri-apps/plugin-clipboard-manager",
         "@tauri-apps/api/webviewWindow",
         "birpc",
+        "@tauri-apps/api/event",
       ],
     },
   },
