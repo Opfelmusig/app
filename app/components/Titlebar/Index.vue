@@ -9,7 +9,7 @@
       data-tauri-drag-region
     >
       <div class="flex items-center gap-1.5" data-tauri-drag-region>
-        <template v-if="layout === 'default'">
+        <template v-if="isDefaultLayout">
           <TitlebarAction
             :icon="isCollapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
             small-icon
@@ -25,10 +25,11 @@
         <TitlebarAction icon="lucide:rotate-ccw" small-icon @click="reload" />
         <TitlebarBadge v-if="isDev" label="DEV" color="error" variant="soft" />
         <UTooltip
+          v-if="isDefaultLayout"
           text="This may take a minute. You can keep browsing the catalog while your library syncs."
           arrow
         >
-          <button v-if="state.syncing && layout === 'default'" type="button" @click="openStorage">
+          <button v-if="state.syncing" type="button" @click="openStorage">
             <TitlebarBadge
               :label="`Syncing library (${progress.songs.count} ${progress.songs.count === 1 ? 'song' : 'songs'})`"
               class="cursor-pointer"
@@ -40,11 +41,11 @@
         </UTooltip>
       </div>
       <div
+        v-if="isDefaultLayout"
         class="flex items-center gap-1.5"
         :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''"
         data-tauri-drag-region
       >
-        <template v-if="layout === 'default'">
           <div class="mr-2 flex w-40 shrink-0 items-center gap-2">
             <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
             <USlider
@@ -63,7 +64,7 @@
           <USeparator orientation="vertical" class="h-4 shrink-0" />
         </template>
         <TitlebarAction
-          v-if="layout === 'default'"
+          v-if="isDefaultLayout"
           icon="lucide:settings"
           :active="settingsStore.isOpen"
           small-icon
@@ -97,4 +98,6 @@ function openStorage() {
   settingsStore.page = "storage";
   settingsStore.isOpen = true;
 }
+
+const isDefaultLayout = computed(() => layout.value === "default");
 </script>
