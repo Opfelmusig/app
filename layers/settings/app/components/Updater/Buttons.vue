@@ -20,15 +20,15 @@ const updater = useUpdaterStore();
 const label = computed(() => {
   switch (updater.status) {
     case "checking":
-      return "Checking…";
+      return "Checking...";
     case "available":
       return `Install v${updater.version}?`;
     case "downloading":
-      return "Downloading…";
+      return "Downloading...";
     case "ready":
       return "Restart to install?";
     case "installing":
-      return "Restarting…";
+      return "Restarting...";
     default:
       return "Check for updates";
   }
