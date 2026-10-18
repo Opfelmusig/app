@@ -141,7 +141,7 @@ export default function useResourceMenu(
       if (song.type === "songs" && song.extras.libraryId) {
         navigation.push({
           label: "Show in library",
-          to: { path: "/resources/library-songs", query: { song_id: song.extras.libraryId } },
+          to: resourceRelationLink(song),
         });
       }
 

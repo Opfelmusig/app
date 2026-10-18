@@ -11,9 +11,7 @@ export function resourceLink(resource?: AmResource | null) {
   }
 }
 
-export function resourceRelationLink(
-  resource?: AmLibrarySong | AmAlbum | AmArtist | AmPlaylist | null,
-) {
+export function resourceRelationLink(resource?: AmSong | AmAlbum | AmArtist | AmPlaylist | null) {
   if (!resource) return;
 
   switch (resource.type) {
@@ -25,6 +23,8 @@ export function resourceRelationLink(
       return rawResourceLink("artists", resource.extras.catalogId);
     case "library-playlists":
       return rawResourceLink("playlists", resource.extras.catalogId);
+    case "songs":
+      return rawResourceLink("library-songs", resource.extras.libraryId);
     case "albums":
       return rawResourceLink("library-albums", resource.extras.libraryId);
     case "artists":
