@@ -4,12 +4,6 @@ export function resourceLink(resource?: AmResource | null) {
   switch (resource.type) {
     case "stations":
       return;
-    case "songs":
-      if (!resource.attributes.albums[0]?.id) return;
-      return rawResourceLink("albums", resource.attributes.albums[0].id, resource.id);
-    case "library-songs":
-      if (!resource.extras.albumId) return;
-      return rawResourceLink("library-albums", resource.extras.albumId, resource.id);
     case "social-profiles":
       return rawResourceLink("social-profiles", resource.attributes.handle);
     default:
@@ -24,8 +18,7 @@ export function resourceRelationLink(
 
   switch (resource.type) {
     case "library-songs":
-      if (!resource.attributes.albums[0]?.id || !resource.extras.catalogId) return;
-      return rawResourceLink("albums", resource.attributes.albums[0].id, resource.extras.catalogId);
+      return rawResourceLink("songs", resource.extras.catalogId);
     case "library-albums":
       return rawResourceLink("albums", resource.extras.catalogId);
     case "library-artists":
