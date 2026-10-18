@@ -69,28 +69,30 @@
       </div>
     </header>
     <USeparator />
-    <div v-if="lyrics" class="flex h-max w-full flex-col gap-4 p-4 text-lg">
+    <div class="flex w-full flex-col gap-4 p-4">
       <h2>Lyrics</h2>
-      <div
-        v-for="(section, i) in lyrics.sections"
-        :key="section.startMs ?? i"
-        class="flex w-full flex-col gap-1"
-      >
-        <div v-for="(line, j) in section.lines" :key="line.key ?? j" class="inline-block">
-          <span v-for="(node, k) in line.nodes" :key="node.startMs ?? k">{{ node.text }}</span>
+      <template v-if="lyrics">
+        <div
+          v-for="(section, i) in lyrics.sections"
+          :key="section.startMs ?? i"
+          class="flex w-full flex-col gap-1"
+        >
+          <div v-for="(line, j) in section.lines" :key="line.key ?? j" class="inline-block">
+            <span v-for="(node, k) in line.nodes" :key="node.startMs ?? k">{{ node.text }}</span>
+          </div>
         </div>
+        <LyricsFooter :songwriters="lyrics.metadata.songwriters" />
+      </template>
+      <div v-else-if="lyricsPending" class="flex items-center gap-2 text-sm text-muted">
+        <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+        Loading lyrics
       </div>
-      <LyricsFooter :songwriters="lyrics.metadata.songwriters" />
+      <div v-else-if="lyricsError" class="flex items-center gap-2 text-sm text-error">
+        <UIcon name="lucide:x" class="size-4 shrink-0" />
+        <span>{{ lyricsError.message }}</span>
+      </div>
+      <p v-else class="text-sm text-muted">No lyrics found.</p>
     </div>
-    <div v-else-if="lyricsPending" class="flex items-center gap-2 text-sm text-muted">
-      <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
-      Loading lyrics
-    </div>
-    <div v-else-if="lyricsError" class="flex items-center gap-2 text-sm text-error">
-      <UIcon name="lucide:x" class="size-4 shrink-0" />
-      <span>{{ lyricsError.message }}</span>
-    </div>
-    <p v-else class="text-sm text-muted">No lyrics found.</p>
   </PageWrapper>
 </template>
 
