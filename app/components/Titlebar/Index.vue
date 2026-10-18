@@ -46,23 +46,29 @@
         :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''"
         data-tauri-drag-region
       >
-          <div class="mr-2 flex w-40 shrink-0 items-center gap-2">
-            <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
-            <USlider
-              v-model="volumeStore.volume"
-              :min="0"
-              :max="1"
-              :step="0.01"
-              class="py-3"
-              size="sm"
-              :ui="{
-                range: 'bg-white transition-colors',
-              }"
-            />
-            <UIcon name="lucide:volume-2" class="ml-1 size-3.5 shrink-0" />
-          </div>
-          <USeparator orientation="vertical" class="h-4 shrink-0" />
-        </template>
+        <div class="mr-2 flex w-40 shrink-0 items-center gap-2">
+          <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
+          <USlider
+            v-model="volumeStore.volume"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            class="py-3"
+            size="sm"
+            :ui="{
+              range: 'bg-white transition-colors',
+            }"
+          />
+          <UIcon name="lucide:volume-2" class="ml-1 size-3.5 shrink-0" />
+        </div>
+        <USeparator orientation="vertical" class="h-4 shrink-0" />
+        <TitlebarAction
+          v-if="isDefaultLayout"
+          icon="lucide:command"
+          :active="settingsStore.commandPaletteOpen"
+          small-icon
+          @click="settingsStore.commandPaletteOpen = !settingsStore.commandPaletteOpen"
+        />
         <TitlebarAction
           v-if="isDefaultLayout"
           icon="lucide:settings"

@@ -15,6 +15,7 @@ export const useSettingsStore = defineStore(
   "opfelmusig:settings-store",
   () => {
     const isOpen = ref(false);
+    const commandPaletteOpen = ref(false);
     const page = ref<SettingsPage>("general");
 
     const language = ref<string | undefined>();
@@ -68,6 +69,7 @@ export const useSettingsStore = defineStore(
 
     return {
       isOpen,
+      commandPaletteOpen,
       page,
       language,
       sidebarSections,
@@ -82,7 +84,7 @@ export const useSettingsStore = defineStore(
   },
   {
     persist: {
-      omit: ["isOpen", "immersive.isOpen"],
+      omit: ["isOpen", "commandPaletteOpen", "immersive.isOpen"],
     },
   },
 );

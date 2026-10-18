@@ -148,6 +148,17 @@ export default defineNuxtPlugin({
           },
         },
         {
+          keys: "ctrl-cmd+k",
+          run: () => {
+            if (settingsStore.isOpen) settingsStore.isOpen = false;
+            settingsStore.commandPaletteOpen = !settingsStore.commandPaletteOpen;
+          },
+          config: {
+            ignoreIfEditable: false,
+            meta: { group: "Navigation", name: "Open command palette" },
+          },
+        },
+        {
           keys: "ctrl-cmd+f",
           run() {
             if (router.currentRoute.value.path !== "/search") return router.push("/search");
@@ -164,7 +175,10 @@ export default defineNuxtPlugin({
         },
         {
           keys: "ctrl-cmd+comma",
-          run: () => (settingsStore.isOpen = true),
+          run: () => {
+            if (settingsStore.commandPaletteOpen) settingsStore.commandPaletteOpen = false;
+            settingsStore.isOpen = true;
+          },
           config: {
             ignoreIfEditable: false,
             meta: { group: "Application", name: "Open settings" },
@@ -173,7 +187,8 @@ export default defineNuxtPlugin({
         {
           keys: "escape",
           run() {
-            if (settingsStore.isOpen) settingsStore.isOpen = false;
+            if (settingsStore.commandPaletteOpen) settingsStore.commandPaletteOpen = false;
+            else if (settingsStore.isOpen) settingsStore.isOpen = false;
             else if (settingsStore.immersive.isOpen) settingsStore.immersive.isOpen = false;
             else if (settingsStore.panel.isOpen) settingsStore.panel.isOpen = false;
           },

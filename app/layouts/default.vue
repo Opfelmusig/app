@@ -35,6 +35,7 @@
     </Transition>
     <Player />
     <Settings />
+    <CommandPalette />
   </main>
 </template>
 
