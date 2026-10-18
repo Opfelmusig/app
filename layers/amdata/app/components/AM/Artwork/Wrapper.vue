@@ -42,7 +42,7 @@ const props = defineProps<{
   transparent?: boolean;
   round?: boolean;
   class?: string;
-  resource?: Resources | AmListResource<Resources>;
+  resource?: Resources | AmListResource<Resources> | null;
   artwork?: Artwork;
 }>();
 

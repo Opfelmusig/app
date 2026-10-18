@@ -40,7 +40,7 @@ export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
   const artist = response.data[0];
   if (!hasResourceName(artist)) return null;
 
-  return { artist: parseCatalogArtist(artist) };
+  return parseCatalogArtist(artist);
 }
 
 export async function fetchCatalogArtistViews(client: OpfelMusigClient, id: string) {

@@ -37,7 +37,7 @@ export async function fetchCatalogAlbum(client: OpfelMusigClient, id: string) {
   const album = response.data[0];
   if (!hasResourceName(album)) return null;
 
-  return { album: parseCatalogAlbum(album) };
+  return parseCatalogAlbum(album);
 }
 
 export async function fetchCatalogAlbumViews(client: OpfelMusigClient, id: string) {

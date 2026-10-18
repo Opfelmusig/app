@@ -118,7 +118,11 @@ import {
 const client = useClient();
 const id = useRouteParams<string>("id");
 
-const { data, isPending, error } = useAmQuery({
+const {
+  data: artist,
+  isPending,
+  error,
+} = useAmQuery({
   key: () => ["artists", id.value, "resource"],
   query: () => fetchCatalogArtist(client, id.value),
   staleTime: ms("1h"),
@@ -132,7 +136,6 @@ const { data: viewsData } = useAmQuery({
   gcTime: ms("12h"),
 });
 
-const artist = computed(() => data.value?.artist);
 const menuItems = useResourceMenu(() =>
   artist.value ? createListResource(artist.value, `artists:${id.value}`, 0) : undefined,
 );

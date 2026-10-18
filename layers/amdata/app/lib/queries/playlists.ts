@@ -27,7 +27,7 @@ export async function fetchCatalogPlaylist(client: OpfelMusigClient, id: string)
   const playlist = response.data[0];
   if (!hasResourceName(playlist)) return null;
 
-  return { playlist: parseCatalogPlaylist(playlist) };
+  return parseCatalogPlaylist(playlist);
 }
 
 export async function fetchCatalogPlaylistViews(client: OpfelMusigClient, id: string) {

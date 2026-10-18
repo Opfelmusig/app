@@ -137,7 +137,11 @@ import {
 const client = useClient();
 const id = useRouteParams<string>("id");
 
-const { data, isPending, error } = useAmQuery({
+const {
+  data: album,
+  isPending,
+  error,
+} = useAmQuery({
   key: () => ["albums", id.value, "resource"],
   query: () => fetchCatalogAlbum(client, id.value),
   staleTime: ms("1h"),
@@ -150,8 +154,6 @@ const { data: views } = useAmQuery({
   staleTime: ms("10m"),
   gcTime: ms("12h"),
 });
-
-const album = computed(() => data.value?.album);
 
 const {
   data: tracks,

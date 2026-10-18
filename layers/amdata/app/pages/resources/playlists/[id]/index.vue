@@ -143,7 +143,11 @@ import {
 const client = useClient();
 const id = useRouteParams<string>("id");
 
-const { data, isPending, error } = useAmQuery({
+const {
+  data: playlist,
+  isPending,
+  error,
+} = useAmQuery({
   key: () => ["playlists", id.value, "resource"],
   query: () => fetchCatalogPlaylist(client, id.value),
   staleTime: ms("1h"),
@@ -156,8 +160,6 @@ const { data: views } = useAmQuery({
   staleTime: ms("10m"),
   gcTime: ms("12h"),
 });
-
-const playlist = computed(() => data.value?.playlist);
 
 const {
   data: tracks,
