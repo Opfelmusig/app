@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 defineProps<{
-  lyrics: AppleMusicLyricsDocument | null;
+  lyrics?: AppleMusicLyricsDocument;
   pending: boolean;
   error: Error | null;
   progress: number;
