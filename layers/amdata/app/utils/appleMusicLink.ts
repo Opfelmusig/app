@@ -6,6 +6,32 @@ const appleMusicPaths = {
   stations: "station",
 } as const;
 
+export function parseAppleMusicLink(value: string) {
+  try {
+    const url = new URL(value.trim());
+    if (url.hostname !== "music.apple.com" && !url.hostname.endsWith(".music.apple.com")) return;
+
+    const match = url.pathname.match(
+      /^\/[a-z]{2}\/(album|artist|playlist|song)\/(?:[^/]+\/)?([^/]+)\/?$/,
+    );
+    if (!match?.[1] || !match[2]) return;
+
+    const types = {
+      album: "albums",
+      artist: "artists",
+      playlist: "playlists",
+      song: "songs",
+    } as const;
+    const type = types[match[1] as keyof typeof types];
+    const id = match[2];
+    if (type === "playlists" ? !/^pl\.[\w.-]+$/.test(id) : !/^\d+$/.test(id)) return;
+
+    return { type, id };
+  } catch {
+    return;
+  }
+}
+
 export function rawAppleMusicLink(
   type: keyof typeof appleMusicPaths,
   id?: string,

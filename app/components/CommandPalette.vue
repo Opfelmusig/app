@@ -64,6 +64,7 @@ const { commandPaletteOpen: isOpen } = storeToRefs(settingsStore);
 const library = useLibrary();
 const search = ref("");
 const query = computed(() => search.value.trim());
+const linkTarget = computed(() => parseAppleMusicLink(query.value));
 
 const { data, isPending, error } = useLibraryQuery({
   key: ["command-palette"],
@@ -119,21 +120,43 @@ const libraryItems = computed<CommandPaletteItem[]>(() => {
 const groups = computed<CommandPaletteGroup[]>(() => {
   if (!query.value) return [];
 
-  return [
-    { id: "app", label: "App", items: pages.map((item) => ({ ...item, active: false })) },
-    { id: "library", label: "Library", items: libraryItems.value },
-    {
-      id: "fallback",
+  const groups: CommandPaletteGroup[] = [];
+  const target = linkTarget.value;
+
+  if (target)
+    groups.push({
+      id: "link",
       ignoreFilter: true,
       items: [
         {
-          label: `Search Apple Music for “${query.value}”`,
+          label: `Open ${target.type.slice(0, -1)}`,
+          kind: target.type,
           active: false,
-          to: { path: "/search", query: { term: query.value } },
+          to: rawResourceLink(target.type, target.id),
         },
       ],
-    },
-  ];
+    });
+
+  groups.push({
+    id: "app",
+    label: "App",
+    items: pages.map((item) => ({ ...item, active: false })),
+  });
+  groups.push({ id: "library", label: "Library", items: libraryItems.value });
+
+  groups.push({
+    id: "fallback",
+    ignoreFilter: true,
+    items: [
+      {
+        label: `Search Apple Music for “${query.value}”`,
+        active: false,
+        to: { path: "/search", query: { term: query.value } },
+      },
+    ],
+  });
+
+  return groups;
 });
 
 watch(isOpen, (open) => {
