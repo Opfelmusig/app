@@ -90,14 +90,6 @@
             :active="columnsChanged"
             @reset="resetColumns"
           />
-          <UInput
-            v-model="search"
-            variant="soft"
-            color="neutral"
-            icon="lucide:search"
-            placeholder="Search..."
-            :ui="{ base: 'h-9 rounded-xl' }"
-          />
           <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </div>
@@ -141,7 +133,6 @@
 <script lang="ts" setup>
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
-import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { defaultSongSorting } from "#layers/amdata/app/lib/controls/sorting";
 import {
   fetchCatalogPlaylist,
@@ -201,10 +192,8 @@ const {
   reset: resetFilters,
 } = useFilters();
 
-const search = ref("");
-const searchedTracks = useSearch(tracks, search, songSearchKeys);
 const displayedTracks = computed(() => {
-  const filteredTracks = filterResources<AmSong>(searchedTracks.value, filters.value);
+  const filteredTracks = filterResources<AmSong>(tracks.value ?? [], filters.value);
   return sortSongs(filteredTracks, sortBy.value, direction.value);
 });
 
