@@ -133,7 +133,7 @@ const { data: viewsData } = useAmQuery({
   key: () => ["artists", id.value, "views"],
   query: () => fetchCatalogArtistViews(client, id.value),
   staleTime: ms("10m"),
-  gcTime: ms("12h"),
+  gcTime: ms("6h"),
 });
 
 const menuItems = useResourceMenu(() =>

@@ -158,7 +158,7 @@ const { data: views } = useAmQuery({
   key: () => ["playlists", id.value, "views"],
   query: () => fetchCatalogPlaylistViews(client, id.value),
   staleTime: ms("10m"),
-  gcTime: ms("12h"),
+  gcTime: ms("6h"),
 });
 
 const {
@@ -169,7 +169,7 @@ const {
   key: () => ["playlists", id.value, "tracks"],
   query: () => fetchCatalogPlaylistTracks(client, id.value),
   staleTime: ms("10m"),
-  gcTime: ms("12h"),
+  gcTime: ms("6h"),
 });
 
 const {

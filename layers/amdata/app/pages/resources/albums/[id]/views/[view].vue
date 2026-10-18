@@ -35,6 +35,6 @@ const { data, isPending, error } = useAmQuery({
   key: () => ["albums", id.value, "views", view.value],
   query: () => fetchCatalogAlbumView(client, id.value, view.value),
   staleTime: ms("10m"),
-  gcTime: ms("12h"),
+  gcTime: ms("6h"),
 });
 </script>

@@ -42,7 +42,7 @@ const { data, isPending, error } = useAmQuery({
   key: () => ["artists", id.value, "views", view.value],
   query: () => fetchCatalogArtistView(client, id.value, view.value),
   staleTime: ms("10m"),
-  gcTime: ms("12h"),
+  gcTime: ms("6h"),
 });
 
 const songs = computed(() => data.value?.filter((item) => item.resourceType === "songs") ?? []);
