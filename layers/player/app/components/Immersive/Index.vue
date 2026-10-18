@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed inset-0 z-100 flex size-full shrink-0 flex-col overflow-hidden rounded-xl border-4 border-bg bg-default select-none"
+    class="fixed inset-0 z-100 flex size-full shrink-0 flex-col overflow-hidden rounded-xl bg-default select-none"
   >
     <ImmersiveHeader />
 
@@ -8,11 +8,6 @@
       <div class="relative flex size-full flex-col items-center justify-between">
         <ImmersiveMesh />
         <ImmersiveArtwork />
-
-        <div class="z-30 flex h-3.5 w-full justify-between" data-tauri-drag-region>
-          <ImmersiveReverseRadius position="tl" :size="12" />
-          <ImmersiveReverseRadius position="tr" :size="12" />
-        </div>
 
         <div class="z-30 flex h-full w-120 overflow-hidden pb-12">
           <Transition
@@ -27,10 +22,8 @@
           </Transition>
         </div>
 
-        <div class="absolute bottom-0 z-30 flex w-full items-end justify-between">
-          <ImmersiveReverseRadius position="bl" :size="12" />
+        <div class="z-30 flex w-full items-end justify-center">
           <ImmersivePlayer />
-          <ImmersiveReverseRadius position="br" :size="12" />
         </div>
       </div>
 
