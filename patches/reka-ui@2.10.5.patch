@@ -58,7 +58,7 @@ index 346b7951f9864ec52146e13837696f95667ef8f1..658f78ff84b1071eab8effe4d76a02a2
    if (!hasPixelSizedPanel(panelDataArray))
      return
  
-+  // Registration can run before a hidden container has a measurable size.
++  // Retry initialization once a hidden container has a measurable size.
 +  if (prevLayout.length === 0) {
 +    eagerValuesRef.value.panelDataArrayChanged = true
 +    return

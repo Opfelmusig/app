@@ -12,6 +12,7 @@
           handle:
             'w-px bg-border transition-colors focus-visible:outline-(--ui-border-accented) data-[state=drag]:bg-(--ui-border-accented) data-[state=hover]:bg-(--ui-border-accented)',
         }"
+        @layout="onLayout"
       >
         <template #sidebar>
           <Sidebar />
@@ -65,7 +66,7 @@ const panels: SplitterItem[] = [
   { slot: "main", minSize: 0 },
 ];
 
-const { splitter: _splitter, reset } = useSidebar();
+const { splitter: _splitter, reset, onLayout } = useSidebar();
 const settingsStore = useSettingsStore();
 
 const immersiveMounted = ref(settingsStore.immersive.isOpen);
