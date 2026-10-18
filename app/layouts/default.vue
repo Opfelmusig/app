@@ -2,12 +2,7 @@
   <main class="relative flex size-full h-svh flex-col overflow-hidden" :style="cssVars">
     <Titlebar />
     <div class="flex min-h-0 flex-1">
-      <div
-        ref="_el"
-        class="relative h-full shrink-0"
-        :class="{ 'pointer-events-none': isDragging }"
-        :style="{ width: `${width}px` }"
-      >
+      <div ref="_el" class="relative h-full shrink-0" :style="{ width: `${width}px` }">
         <div
           class="peer absolute inset-y-0 right-0 z-50 w-2 translate-x-1 cursor-ew-resize touch-none"
           @mousedown="onMouseDown"
