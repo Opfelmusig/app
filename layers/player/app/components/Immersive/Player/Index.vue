@@ -1,8 +1,8 @@
 <template>
   <div class="flex items-end justify-center">
     <motion.div
-      class="relative shrink-0 bg-default"
-      :class="{ 'cursor-pointer': !expanded }"
+      class="relative shrink-0 border border-inverted/10 backdrop-blur-md transition-colors"
+      :class="expanded ? 'bg-default/90' : 'cursor-pointer bg-default/80'"
       :initial="false"
       :animate="target"
       :transition="transition"
@@ -13,16 +13,11 @@
       @pointerenter="hovered = true"
       @pointerleave="collapse"
     >
-      <ImmersiveReverseRadius
-        position="br"
-        size="calc(var(--island-corner) * 1px)"
-        class="pointer-events-none absolute right-full bottom-0 transition-none [&>div]:transition-none"
-      />
       <div class="size-full overflow-hidden rounded-[inherit]">
         <div
           ref="content"
           class="flex flex-col gap-4 transition-[padding] duration-150 ease-out"
-          :class="expanded ? 'p-4 px-6' : 'px-3 py-2'"
+          :class="expanded ? 'p-4 px-6' : lifted ? 'px-3 py-2' : 'px-2.5 py-1.5'"
         >
           <ImmersivePlayerInfo :expanded />
           <div
@@ -35,11 +30,6 @@
           </div>
         </div>
       </div>
-      <ImmersiveReverseRadius
-        position="bl"
-        size="calc(var(--island-corner) * 1px)"
-        class="pointer-events-none absolute bottom-0 left-full transition-none [&>div]:transition-none"
-      />
     </motion.div>
   </div>
 </template>
@@ -57,11 +47,9 @@ const { width: windowWidth } = useWindowSize();
 const expandedWidth = computed(() => Math.min(480, windowWidth.value - 56));
 const lifted = computed(() => hovered.value && !pressed.value);
 const target = computed(() => ({
-  width: Math.min(expandedWidth.value, expanded.value ? 480 : lifted.value ? 276 : 260),
-  height: expanded.value ? contentHeight.value : lifted.value ? 40 : 36,
-  borderTopLeftRadius: expanded.value ? 32 : lifted.value ? 16 : 12,
-  borderTopRightRadius: expanded.value ? 32 : lifted.value ? 16 : 12,
-  "--island-corner": expanded.value ? 24 : lifted.value ? 16 : 12,
+  width: Math.min(expandedWidth.value, expanded.value ? 480 : lifted.value ? 212 : 200),
+  height: expanded.value ? contentHeight.value : lifted.value ? 40 : 34,
+  borderRadius: expanded.value ? 32 : 40,
   boxShadow:
     lifted.value || expanded.value
       ? "0 -8px 32px rgba(0, 0, 0, 0.3)"

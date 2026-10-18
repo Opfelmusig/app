@@ -24,7 +24,7 @@
           </Transition>
         </div>
 
-        <div class="z-30 flex w-full items-end justify-center">
+        <div class="absolute z-30 flex size-full items-end justify-center p-2">
           <ImmersivePlayer />
         </div>
       </div>

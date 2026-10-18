@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between gap-2">
       <OMScrollingText
         class="transition-[font-size,line-height] duration-150 ease-out"
-        :class="expanded ? 'cursor-default text-xl' : 'cursor-pointer text-sm'"
+        :class="expanded ? 'text-xl' : 'text-sm'"
       >
         <div class="flex items-center gap-2">
           <span>{{ resource.attributes.name }}</span>
