@@ -24,9 +24,13 @@
         label="Library"
         collapsible
       >
-        <SidebarItemIcon icon="lucide:music-2" to="/resources/library-songs">Songs</SidebarItemIcon>
-        <SidebarItemIcon icon="lucide:disc" to="/resources/library-albums">Albums</SidebarItemIcon>
-        <SidebarItemIcon icon="lucide:mic-vocal" to="/resources/library-artists">
+        <SidebarItemIcon :icon="resourceIcon('songs')" to="/resources/library-songs">
+          Songs
+        </SidebarItemIcon>
+        <SidebarItemIcon :icon="resourceIcon('albums')" to="/resources/library-albums">
+          Albums
+        </SidebarItemIcon>
+        <SidebarItemIcon :icon="resourceIcon('artists')" to="/resources/library-artists">
           Artists
         </SidebarItemIcon>
         <SidebarItemIcon icon="lucide:guitar" to="/library/genres">Genres</SidebarItemIcon>

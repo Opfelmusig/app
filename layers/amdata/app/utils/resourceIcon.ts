@@ -10,7 +10,7 @@ export default function (type?: AmResource["type"] | null) {
       return "lucide:folder";
     case "albums":
     case "library-albums":
-      return "lucide:disc";
+      return "lucide:gallery-vertical-end";
     case "library-songs":
     case "songs":
       return "lucide:music-2";
