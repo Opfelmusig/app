@@ -63,8 +63,8 @@
       </div>
       <AMGridWrapper>
         <AMGridStatus
-          :is-pending
-          :error
+          :is-pending="sharedPlaylistsPending"
+          :error="sharedPlaylistsError"
           :total="sharedPlaylists.length"
           :resources="sharedPlaylists"
         >
@@ -79,21 +79,42 @@
 </template>
 
 <script lang="ts" setup>
-import { fetchSocialProfile } from "#layers/amdata/app/lib/queries/profiles";
+import {
+  fetchSocialProfile,
+  fetchSocialProfileSharedPlaylists,
+} from "#layers/amdata/app/lib/queries/profiles";
 
 const client = useClient();
 const id = useRouteParams<string>("id");
 const handle = computed(() => id.value.trim().replace(/^@/, "").toLowerCase());
 
-const { data, isPending, error } = useAmQuery({
-  key: () => ["social-profiles", handle.value, "resource"],
+const {
+  data: profile,
+  isPending,
+  error,
+} = useAmQuery({
+  key: () => ["social-profiles", handle.value, "resource", "v2"],
   query: () => fetchSocialProfile(client, handle.value),
-  staleTime: ms("10m"),
-  gcTime: ms("12h"),
+  staleTime: ms("1h"),
+  gcTime: ms("1d"),
 });
 
-const profile = computed(() => data.value?.profile);
-const sharedPlaylists = computed(() => data.value?.sharedPlaylists ?? []);
+const {
+  data: playlists,
+  isPending: sharedPlaylistsPending,
+  error: sharedPlaylistsError,
+} = useAmQuery({
+  key: () => ["social-profiles", profile.value?.id ?? null, "shared-playlists"],
+  query: async () => {
+    if (!profile.value) return [];
+    return fetchSocialProfileSharedPlaylists(client, profile.value.id);
+  },
+  enabled: () => !!profile.value,
+  staleTime: ms("10m"),
+  gcTime: ms("6h"),
+});
+
+const sharedPlaylists = computed(() => playlists.value ?? []);
 
 useHead({
   title: () => profile.value?.attributes.name ?? `@${handle.value}`,
