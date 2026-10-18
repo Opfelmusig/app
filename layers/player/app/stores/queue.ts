@@ -57,19 +57,37 @@ export const useQueueStore = defineStore(
       return (direction === 1 ? playable[0] : playable.at(-1)) ?? null;
     }
 
-    function createQueueFromTracks(tracks: QueueTrack[], fromContext = false): QueueEntry[] {
-      return tracks.map((track, i) => ({
+    function createQueueFromTrack(
+      track: QueueTrack,
+      position: number,
+      fromContext = false,
+    ): QueueEntry {
+      return {
         id: crypto.randomUUID(),
         fromContext,
-        position: i,
+        position,
         entry: track,
-      }));
+      };
+    }
+
+    function createQueueFromTracks(tracks: QueueTrack[], fromContext = false): QueueEntry[] {
+      return tracks.map((track, i) => createQueueFromTrack(track, i, fromContext));
+    }
+
+    function play(track: QueueTrack) {
+      requestedStation.value = null;
+      contextQueue.value = [];
+      index.value = null;
+      context.value = null;
+      resetShuffle();
+
+      queue.value = [createQueueFromTrack(track, 0)];
+      index.value = findPlayableIndex(0);
     }
 
     function playContext(createContext: CreateQueueContext, shouldShuffle: boolean = false) {
       requestedStation.value = null;
       queue.value = [];
-      contextQueue.value = [];
       index.value = null;
 
       context.value = createContext.context;
@@ -334,6 +352,7 @@ export const useQueueStore = defineStore(
       index,
       current,
       inContext,
+      play,
       playContext,
       playStation,
       next,
