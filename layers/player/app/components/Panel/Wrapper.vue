@@ -1,17 +1,17 @@
 <template>
   <div
     ref="_el"
-    class="fixed top-9.25 right-0 bottom-14.25 z-50 shrink-0 overflow-hidden pl-4 transition-transform select-none"
-    :style="{ width: `${size + 16}px` }"
+    class="fixed top-9.25 right-0 bottom-14.25 z-50 shrink-0 transition-transform select-none"
+    :style="{ width: `${size}px` }"
   >
     <div
-      class="absolute inset-y-2 left-0 w-2 cursor-ew-resize touch-none"
+      class="peer absolute inset-y-0 left-0 z-50 w-2 -translate-x-1 cursor-ew-resize touch-none"
       @mousedown="onMouseDown"
       @touchstart="onTouchStart"
       @dblclick="onDoubleClick"
     />
     <div
-      class="flex size-full flex-col overflow-hidden border-l border-default bg-default shadow-xl"
+      class="flex size-full flex-col overflow-hidden border-l border-default bg-default shadow-xl transition-colors peer-hover:border-accented peer-active:border-accented"
     >
       <slot />
     </div>
@@ -25,12 +25,12 @@ const {
   onMouseDown,
   onTouchStart,
   onDoubleClick,
-} = useResizable("opfelmusig:player-sidebar", {
+} = useResizable("opfelmusig:player-panel", {
   side: "right",
   unit: "px",
   minSize: 300,
   maxSize: 512,
-  defaultSize: 448,
+  defaultSize: 400,
   collapsible: false,
   storage: "local",
 });
