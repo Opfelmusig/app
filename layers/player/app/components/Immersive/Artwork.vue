@@ -10,13 +10,12 @@
       class="relative flex size-full justify-center"
     >
       <div
-        class="absolute z-10 flex size-full h-full w-full items-center justify-center overflow-hidden mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)] blur-xl transition-[filter,opacity]"
+        class="absolute z-10 flex size-full h-full w-full items-center justify-center overflow-hidden blur-xl transition-[filter,opacity]"
+        :style="{ maskImage: artworkMask }"
       >
         <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 512 })" />
       </div>
-      <div
-        class="relative z-20 aspect-square h-full mask-[linear-gradient(to_right,transparent_1%,black_25%,black_75%,transparent_99%)]"
-      >
+      <div class="relative z-20 aspect-square h-full" :style="{ maskImage: artworkMask }">
         <AMMediaEditorialVideo
           :editorial-video="resource?.attributes.editorialVideo"
           variant="square"
@@ -54,4 +53,22 @@ function revealArtwork(event: Event) {
 }
 
 const resource = computed(() => queueStore.current?.entry.resource);
+
+const stops = Array.from({ length: 15 }, (_, i) => {
+  const t = i / 14;
+  const position = 25 * (3 * (1 - t) ** 2 * t * 0.42 + 3 * (1 - t) * t ** 2 * 0.58 + t ** 3);
+  const opacity = 3 * (1 - t) * t ** 2 + t ** 3;
+
+  return { position, opacity: Number(opacity.toFixed(5)) };
+});
+
+const start = stops.map(
+  (stop) => `rgb(0 0 0 / ${stop.opacity}) ${Number(stop.position.toFixed(5))}%`,
+);
+
+const end = stops
+  .toReversed()
+  .map((stop) => `rgb(0 0 0 / ${stop.opacity}) ${Number((100 - stop.position).toFixed(5))}%`);
+
+const artworkMask = `linear-gradient(to right, ${[...start, ...end].join(", ")})`;
 </script>
