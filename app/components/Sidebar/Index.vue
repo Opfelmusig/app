@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex size-full shrink-0 flex-col overflow-hidden bg-raised px-2 pb-2 whitespace-normal select-none"
+    class="relative flex size-full shrink-0 flex-col overflow-hidden border-r border-default bg-raised px-2 pb-2 whitespace-normal select-none peer-hover:border-accented peer-active:border-accented"
   >
     <div
       ref="scroll-area"

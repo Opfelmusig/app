@@ -1,29 +1,24 @@
 <template>
   <main class="relative flex size-full h-svh flex-col overflow-hidden" :style="cssVars">
     <Titlebar />
-    <div class="flex size-full overflow-hidden">
-      <USplitter
-        id="main-layout"
-        ref="_splitter"
-        auto-save-id="main-layout"
-        :items="panels"
-        class="size-full overflow-hidden"
-        :ui="{
-          handle:
-            'w-px bg-border transition-colors focus-visible:outline-(--ui-border-accented) data-[state=drag]:bg-(--ui-border-accented) data-[state=hover]:bg-(--ui-border-accented)',
-        }"
-        @layout="onLayout"
+    <div class="flex min-h-0 flex-1">
+      <div
+        ref="_el"
+        class="relative h-full shrink-0"
+        :class="{ 'pointer-events-none': isDragging }"
+        :style="{ width: `${width}px` }"
       >
-        <template #sidebar>
-          <Sidebar />
-        </template>
-        <template #main>
-          <slot />
-        </template>
-        <template #resize-handle>
-          <div class="absolute -inset-x-1.25 inset-y-0 z-10" @dblclick.stop.prevent="reset" />
-        </template>
-      </USplitter>
+        <div
+          class="peer absolute inset-y-0 right-0 z-50 w-2 translate-x-1 cursor-ew-resize touch-none"
+          @mousedown="onMouseDown"
+          @touchstart="onTouchStart"
+          @dblclick="reset"
+        />
+        <Sidebar />
+      </div>
+      <div class="min-w-0 flex-1 overflow-hidden" :class="{ 'pointer-events-none': isDragging }">
+        <slot />
+      </div>
     </div>
     <Transition
       enter-active-class="transition-transform"
@@ -49,24 +44,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { SplitterItem } from "@nuxt/ui";
-
 const { cssVars } = useArtworkTheme();
 
-const panels: SplitterItem[] = [
-  {
-    slot: "sidebar",
-    sizeUnit: "px",
-    minSize: 200,
-    maxSize: 320,
-    defaultSize: 260,
-    collapsible: true,
-    collapsedSize: 56,
-  },
-  { slot: "main", minSize: 0 },
-];
-
-const { splitter: _splitter, reset, onLayout } = useSidebar();
+const { el: _el, width, isDragging, onMouseDown, onTouchStart, reset } = useSidebar();
 const settingsStore = useSettingsStore();
 
 const immersiveMounted = ref(settingsStore.immersive.isOpen);
