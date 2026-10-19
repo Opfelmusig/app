@@ -3,7 +3,6 @@ export enum DbListId {
   Albums = "albums",
   Artists = "artists",
   Playlists = "playlists",
-  Pins = "pins",
   PlaylistFolders = "playlist-folders",
 }
 
@@ -37,7 +36,6 @@ type DbResourceByList = {
   [DbListId.Artists]: AmLibraryArtist;
   [DbListId.Playlists]: AmLibraryPlaylist;
   [DbListId.PlaylistFolders]: AmLibraryPlaylistFolder;
-  [DbListId.Pins]: Exclude<DbResource, AmLibraryPlaylistFolder>;
   [listId: DbPlaylistTracksListId]: AmLibrarySong;
 };
 

@@ -1,16 +1,14 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
-import { collect, isNotResourceType, isResourceType } from "@opfelmusig/lib/helpers";
+import { collect, isResourceType } from "@opfelmusig/lib/helpers";
 import { pullObject } from "remeda";
 
 import {
   libraryAlbumsScopes,
   libraryArtistsScopes,
-  libraryPinsScopes,
   libraryPlaylistsScopes,
   librarySongsScopes,
   type LibraryAlbumsScopes,
   type LibraryArtistsScopes,
-  type LibraryPinsScopes,
   type LibraryPlaylistFoldersScopes,
   type LibraryPlaylistsScopes,
   type LibrarySongsScopes,
@@ -42,7 +40,6 @@ export interface LibraryPages {
   albums: LibraryAlbumsScopes[];
   artists: LibraryArtistsScopes[];
   playlists: LibraryPlaylistsScopes[];
-  pins: LibraryPinsScopes[];
   playlistFolders: LibraryPlaylistFoldersScopes[];
 }
 
@@ -115,13 +112,6 @@ function fetchAllLibraryPages(
       progress.playlists.done = true;
       return result.filter(hasResourceName);
     }),
-    pins: client.library
-      .getPins({ scopes: libraryPinsScopes, config: { signal } })
-      .then((response) =>
-        response.data
-          .filter((resource) => isNotResourceType(resource, "library-music-videos"))
-          .filter(hasResourceName),
-      ),
     playlistFolders: collect(
       client.library.playlistFolders.iterateFolders({ config: { signal } }),
       {

@@ -1,9 +1,5 @@
 import { defineScopes } from "@opfelmusig/lib";
-import type {
-  LibraryPlaylistFolderTreeScopes,
-  PinnableResourceTypes,
-  ScopedResourceOf,
-} from "@opfelmusig/lib/types";
+import type { LibraryPlaylistFolderTreeScopes, ScopedResourceOf } from "@opfelmusig/lib/types";
 
 export const librarySongsScopes = defineScopes({
   "library-songs": {
@@ -66,7 +62,7 @@ export const libraryAlbumsScopes = defineScopes({
     },
   },
   albums: {
-    fields: ["contentRating"],
+    fields: ["name", "contentRating"],
     extend: ["editorialVideo", "personalRating"],
     relationships: {
       artists: "include",
@@ -87,7 +83,7 @@ export const libraryArtistsScopes = defineScopes({
     },
   },
   artists: {
-    fields: ["artwork", "genreNames"],
+    fields: ["name", "artwork", "genreNames"],
     extend: ["editorialArtwork", "personalRating"],
   },
 });
@@ -120,19 +116,6 @@ export const libraryPlaylistsScopes = defineScopes({
 export type LibraryPlaylistsScopes = ScopedResourceOf<
   "library-playlists",
   typeof libraryPlaylistsScopes
->;
-
-export const libraryPinsScopes = defineScopes({
-  "library-songs": { fields: ["name"] },
-  "library-albums": { fields: ["name"] },
-  "library-artists": { fields: ["name"] },
-  "library-playlists": { fields: ["name"] },
-  "library-music-videos": { fields: ["name"] },
-});
-
-export type LibraryPinsScopes = ScopedResourceOf<
-  Exclude<PinnableResourceTypes, "library-music-videos">,
-  typeof libraryPinsScopes
 >;
 
 export type LibraryPlaylistFoldersScopes = ScopedResourceOf<

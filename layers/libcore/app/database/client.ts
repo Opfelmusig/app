@@ -23,8 +23,6 @@ function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceT
       return ["library-playlists"];
     case DbListId.PlaylistFolders:
       return ["library-playlist-folders"];
-    case DbListId.Pins:
-      return ["library-songs", "library-albums", "library-artists", "library-playlists"];
     default:
       return ["library-songs"];
   }

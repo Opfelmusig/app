@@ -6,7 +6,7 @@
     <template v-else-if="data">
       <SidebarResourceMenu v-for="pin in data" :key="pin.resource.id" :resource="pin">
         <SidebarItemWrapper :to="resourceLink(pin.resource)">
-          <AMArtworkWrapper :resource="pin" context="small">
+          <AMArtworkWrapper :artwork="pin.resource.attributes.artwork" context="small">
             <AMArtworkImage />
             <AMArtworkPlaceholder />
           </AMArtworkWrapper>
@@ -17,11 +17,12 @@
     <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
       Loading pins
     </SidebarItemIcon>
+    <SidebarItemIcon v-else-if="error" icon="lucide:x" variant="error">
+      {{ error.message }}
+    </SidebarItemIcon>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { DbListId } from "#layers/libcore/app/database/types";
-
-const { data, isPending } = useLibraryList(DbListId.Pins);
+const { data, isPending, error } = usePins();
 </script>
