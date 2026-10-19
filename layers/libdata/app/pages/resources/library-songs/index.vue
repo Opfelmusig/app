@@ -96,6 +96,8 @@ const searchedSongs = useSearch(resources, search, songSearchKeys);
 const displayedSongs = computed(() => {
   const filteredSongs = filterResources(searchedSongs.value, filters.value);
 
+  if (search.value.trim()) return filteredSongs;
+
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
 

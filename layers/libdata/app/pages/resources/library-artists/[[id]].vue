@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts" setup>
-import { filter, pipe, reverse, sortBy as sortArtists } from "remeda";
+import { reverse, sortBy as sortArtists } from "remeda";
 
 import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/controls/filters";
 import { artistSearchKeys } from "#layers/amdata/app/lib/controls/search";
@@ -132,18 +132,18 @@ function resetFilters() {
 
 const displayedArtists = computed(() => {
   const selectedRatingValues = selectedRatings.value.map(Number);
-  return pipe(
-    searchedArtists.value,
-    filter((artist) => {
-      const rating = artist.resource.attributes.personalRating ?? 0;
-      if (selectedRatingValues.length > 0 && !selectedRatingValues.includes(rating)) return false;
-      if (hasCatalog.value && !artist.resource.extras.catalogId) return false;
+  const filteredArtists = searchedArtists.value.filter((artist) => {
+    const rating = artist.resource.attributes.personalRating ?? 0;
+    if (selectedRatingValues.length > 0 && !selectedRatingValues.includes(rating)) return false;
+    if (hasCatalog.value && !artist.resource.extras.catalogId) return false;
 
-      return true;
-    }),
-    sortArtists((artist) => artist.position),
-    (artists) => (descending.value ? reverse(artists) : artists),
-  );
+    return true;
+  });
+
+  if (search.value.trim()) return filteredArtists;
+
+  const sortedArtists = sortArtists(filteredArtists, (artist) => artist.position);
+  return descending.value ? reverse(sortedArtists) : sortedArtists;
 });
 
 const id = useRouteParams<string | undefined>("id");

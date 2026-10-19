@@ -6,13 +6,17 @@ export default function useSearch<T>(
   search: MaybeRefOrGetter<string>,
   keys: FuseOptionKey<T>[] = [],
 ) {
-  const { results } = useFuse(search, () => toValue(items) ?? [], {
-    matchAllWhenSearchEmpty: true,
-    fuseOptions: {
-      keys,
-      threshold: 0.4,
+  const { results } = useFuse(
+    () => toValue(search).trim(),
+    () => toValue(items) ?? [],
+    {
+      matchAllWhenSearchEmpty: true,
+      fuseOptions: {
+        keys,
+        threshold: 0.4,
+      },
     },
-  });
+  );
 
   return computed(() => results.value.map((result) => result.item));
 }

@@ -100,9 +100,11 @@ const searchedGenres = useSearch(genres, search);
 
 const descending = ref(false);
 
-const sortedGenres = computed(() =>
-  descending.value ? searchedGenres.value.toReversed() : searchedGenres.value,
-);
+const sortedGenres = computed(() => {
+  if (search.value.trim()) return searchedGenres.value;
+
+  return descending.value ? searchedGenres.value.toReversed() : searchedGenres.value;
+});
 
 const {
   sortBy,

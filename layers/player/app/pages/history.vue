@@ -97,14 +97,20 @@ const search = ref("");
 const tracks = computed(() => historyStore.entries.map((entry) => entry.track));
 const searchedSongs = useSearch(tracks, search, songSearchKeys);
 const displayedEntries = computed(() => {
-  const matches = new Set(
-    filterResources<AmSong>(searchedSongs.value, filters.value).map((song) => song.key),
-  );
-  return historyStore.entries.filter((entry) => matches.has(entry.track.key));
+  const entriesByKey = new Map(historyStore.entries.map((entry) => [entry.track.key, entry]));
+
+  return filterResources<AmSong>(searchedSongs.value, filters.value).flatMap((song) => {
+    const entry = entriesByKey.get(song.key);
+    return entry ? [entry] : [];
+  });
 });
 
 const now = useNow({ interval: 60_000 });
 const sections = computed(() => {
+  if (search.value.trim()) {
+    return [{ id: "search", title: "Search results", entries: displayedEntries.value }];
+  }
+
   const today = new Date(now.value);
   today.setHours(0, 0, 0, 0);
   const yesterday = new Date(today);

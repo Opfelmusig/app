@@ -70,6 +70,8 @@ const {
 const displayedAlbums = computed(() => {
   const filteredAlbums = filterResources(searchedAlbums.value, filters.value);
 
+  if (search.value.trim()) return filteredAlbums;
+
   return sortAlbums(filteredAlbums, sortBy.value, direction.value);
 });
 </script>
