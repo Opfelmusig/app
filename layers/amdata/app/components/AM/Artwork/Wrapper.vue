@@ -68,7 +68,7 @@ const imageSize = computed(
       profile: 192,
       grid: 520,
       list: 72,
-      small: 40,
+      small: 56,
       player: 80,
       "folder-preview": 224,
       account: 96,
