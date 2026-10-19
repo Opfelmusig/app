@@ -13,7 +13,11 @@ import {
   catalogPlaylistsScopes,
   catalogSongsScopes,
 } from "#layers/amdata/app/lib/scopes/catalog";
-import { libraryPlaylistsScopes, librarySongsScopes } from "#layers/amdata/app/lib/scopes/library";
+import {
+  libraryFoldersScopes,
+  libraryPlaylistsScopes,
+  librarySongsScopes,
+} from "#layers/amdata/app/lib/scopes/library";
 
 export const playlistViews = ["featured-artists"] as const;
 export type PlaylistView = (typeof playlistViews)[number];
@@ -154,4 +158,17 @@ export async function fetchLibraryFolders() {
   const playlists = await collect(client.library.playlistFolders.iterateFolders());
 
   return playlists.filter(hasResourceName).map(parseLibraryPlaylistFolder);
+}
+
+export async function fetchLibraryFolder(id: string) {
+  const client = useClient();
+
+  const response = await client.library.playlistFolders.get(id, {
+    scopes: libraryFoldersScopes,
+  });
+
+  const folder = response.data[0];
+  if (!hasResourceName(folder)) return null;
+
+  return parseLibraryPlaylistFolder(folder);
 }

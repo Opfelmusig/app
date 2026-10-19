@@ -4,13 +4,30 @@
       <div class="flex h-9 min-w-0 items-center gap-2">
         <UTooltip :content="{ side: 'bottom' }" arrow text="Go to parent folder">
           <NuxtLink :to="rawResourceLink('library-playlist-folders', folder?.extras.parentId)">
-            <OMButtonTertiary icon="lucide:arrow-up-left" :disabled="!folder" />
+            <OMButtonTertiary
+              icon="lucide:arrow-up-left"
+              :disabled="folderPending || !!folderError || !folder"
+            />
           </NuxtLink>
         </UTooltip>
-        <h2 class="truncate">
-          {{ folder?.attributes.name ?? "Playlists" }}
+        <div v-if="folderPending" class="flex items-center gap-2 text-sm text-muted">
+          <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+          Loading folder
+        </div>
+        <div v-else-if="folderError" class="flex min-w-0 items-center gap-2 text-sm text-error">
+          <UIcon name="lucide:x" class="size-4 shrink-0" />
+          <span class="truncate">{{ folderError.message }}</span>
+        </div>
+        <h2 v-else class="truncate">
+          {{
+            folder?.attributes.name ?? (id === ROOT_FOLDER_ID ? "Playlists" : "Folder not found")
+          }}
         </h2>
-        <OMButtonTertiary v-if="folder" icon="lucide:ellipsis" class="ml-auto" />
+        <OMButtonTertiary
+          v-if="folder && !folderPending && !folderError"
+          icon="lucide:ellipsis"
+          class="ml-auto"
+        />
       </div>
     </header>
     <USeparator />
@@ -28,9 +45,20 @@
 <script lang="ts" setup>
 import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 
+import { fetchLibraryFolder } from "#layers/amdata/app/lib/queries/playlists";
+
 const id = useRouteParams<string>("id", ROOT_FOLDER_ID);
 
-const { data } = useLibraryFolders();
-const folder = computed(() => data.value?.find((folder) => folder.id === id.value));
+const {
+  data: folder,
+  isPending: folderPending,
+  error: folderError,
+} = useAmQuery({
+  scope: "library",
+  key: () => ["playlist-folders", id.value, "resource"],
+  query: () => fetchLibraryFolder(id.value),
+  staleTime: ms("6h"),
+  gcTime: false,
+});
 const { data: children, isPending, error } = useFolderChildren(id);
 </script>
