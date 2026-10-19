@@ -32,7 +32,6 @@
         "cn": "^0.4.0",
         "core-js": "3",
         "devalue": "^6.0.2",
-        "dexie": "^4.4.6",
         "fuse.js": "^7.5.0",
         "hls.js": "^1.7.3",
         "idb-keyval": "^6.3.0",
@@ -1105,8 +1104,6 @@
     "devalue": ["devalue@6.0.2", "", {}, "sha512-6V1HzU4to74skg//ScZR2mp9bdz+rESC9jQzVIIG/ha0HYgymHcXIQQCjH0+ivRaSuY82fa9fZ7Ro6QZT4s4uw=="],
 
     "devframe": ["devframe@1.0.0", "", { "dependencies": { "crossws": "^0.4.12", "h3": "^2.0.1-rc.31", "nostics": "^1.2.0", "pathe": "^2.0.3" }, "peerDependencies": { "@devframes/agentic": "1.0.0", "cac": "^7.0.0" }, "optionalPeers": ["@devframes/agentic", "cac"], "bin": { "devframe": "./bin/devframe.mjs" } }, "sha512-u4eeDBJ8Cxd3n19o/cT6SQcoEgASzL9dL51IkYpIDriTNDmR7WBv+o+dufQmabir10KcozoRZqgwvDi/riASAQ=="],
-
-    "dexie": ["dexie@4.4.6", "", {}, "sha512-hJP/BO6mjB+tX6hToIO1kmxYLNmun90wYbfcoAoLpKEyDYal/k33dg0TAfoUe2TDsbbLoVIzljJ3BN2UbR5EOg=="],
 
     "dom-serializer": ["dom-serializer@2.0.0", "", { "dependencies": { "domelementtype": "^2.3.0", "domhandler": "^5.0.2", "entities": "^4.2.0" } }, "sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg=="],
 

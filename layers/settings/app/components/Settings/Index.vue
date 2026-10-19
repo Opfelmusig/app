@@ -37,7 +37,7 @@
           <SettingsPlayback v-if="activePage === 'playback'" />
           <SettingsShortcuts v-else-if="activePage === 'shortcuts'" />
           <SettingsAccount v-else-if="activePage === 'account'" />
-          <SettingsLibrary v-else-if="activePage === 'library'" />
+          <SettingsData v-else-if="activePage === 'data'" />
           <SettingsApplication v-else-if="activePage === 'application'" />
           <SettingsAppearance v-else />
         </div>
@@ -64,7 +64,7 @@ const groups: {
     label: "Apple Music",
     pages: [
       { id: "account", label: "Account & sharing", icon: "lucide:user" },
-      { id: "library", label: "Library & data", icon: "lucide:database" },
+      { id: "data", label: "Data", icon: "lucide:database" },
     ],
   },
   {

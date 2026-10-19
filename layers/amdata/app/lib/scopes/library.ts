@@ -126,8 +126,3 @@ export const libraryFoldersScopes = defineScopes({
     },
   },
 });
-
-export const libraryArtworkScopes = defineScopes({
-  "library-songs": { fields: ["artwork"], relationships: { catalog: "include" } },
-  songs: { fields: ["artwork"] },
-});

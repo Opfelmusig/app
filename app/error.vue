@@ -45,15 +45,6 @@
           >
             {{ loggingOut ? "Logging out..." : "Log out" }}
           </button>
-          <button
-            v-if="state && sync && !state.initializing"
-            type="button"
-            class="cursor-pointer rounded-md bg-yellow-400 px-4 py-2 text-sm font-medium text-neutral-900 transition-opacity hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
-            :disabled="state.syncing"
-            @click="sync"
-          >
-            {{ state.syncing ? "Syncing..." : "Sync library" }}
-          </button>
         </div>
         <p v-if="cacheError" class="text-sm text-red-400">{{ cacheError }}</p>
       </main>
@@ -135,7 +126,6 @@ async function logout() {
   }
 }
 
-const { sync, state } = useLibrary() ?? {};
 const queryCache = useQueryCache();
 const clearingCache = ref(false);
 const cacheError = ref<string>();

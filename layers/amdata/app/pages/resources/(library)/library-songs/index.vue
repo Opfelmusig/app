@@ -1,8 +1,12 @@
 <template>
   <PageWrapper>
     <header class="flex items-center gap-2 p-4">
-      <OMButtonPlay @click="play" />
-      <OMButtonSecondary icon="lucide:shuffle" @click="play(0, true)" />
+      <OMButtonPlay :disabled="!displayedSongs.length" @click="play()" />
+      <OMButtonSecondary
+        icon="lucide:shuffle"
+        :disabled="!displayedSongs.length"
+        @click="play(0, true)"
+      />
       <OMButtonSeparator />
       <AMControlsSorting
         v-model="sortBy"
@@ -64,21 +68,18 @@ import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { librarySongSorting } from "#layers/amdata/app/lib/controls/sorting";
-import { DbListId } from "#layers/libcore/app/database/types";
 
-const { data: songs, isPending: songsPending, error: songsError } = useLibraryList(DbListId.Songs);
+const { data: songs, isPending: songsPending, error: songsError } = useLibrarySongs();
+const resources = computed(() => createListResources(songs.value ?? [], "songs"));
 
-const { columns, reset, columnsChanged } = useColumns<SongColumns>(
-  DbListId.Songs,
-  defaultSongColumns,
-);
+const { columns, reset, columnsChanged } = useColumns<SongColumns>("songs", defaultSongColumns);
 
 const {
   sortBy,
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<SongSort>(DbListId.Songs, "default");
+} = useSorting<SongSort>("songs", "default");
 
 const {
   filters,
@@ -90,7 +91,7 @@ const {
 } = useFilters();
 
 const search = ref("");
-const searchedSongs = useSearch(songs, search, songSearchKeys);
+const searchedSongs = useSearch(resources, search, songSearchKeys);
 
 const displayedSongs = computed(() => {
   const filteredSongs = filterResources(searchedSongs.value, filters.value);

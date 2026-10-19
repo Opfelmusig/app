@@ -30,17 +30,8 @@
             <UIcon v-if="item.kind" :name="resourceIcon(item.kind)" class="size-3.5" />
           </template>
           <template v-if="query" #footer>
-            <p
-              v-if="isPending || error || !library.state.ready"
-              class="px-2.5 py-1 text-xs text-muted"
-            >
-              {{
-                error
-                  ? "Could not load library results."
-                  : !library.state.ready
-                    ? "Library results will appear after syncing."
-                    : "Loading library..."
-              }}
+            <p v-if="isPending || error" class="px-2.5 py-1 text-xs text-muted">
+              {{ error ? "Could not load library results." : "Loading library..." }}
             </p>
             <div class="flex items-center justify-between gap-2 px-2.5 py-2 text-xs text-muted">
               <span>Search Apple Music</span>
@@ -57,11 +48,8 @@
 import type { CommandPaletteGroup, CommandPaletteItem } from "@nuxt/ui";
 import { useFuse } from "@vueuse/integrations/useFuse";
 
-import { DbListId } from "#layers/libcore/app/database/types";
-
 const settingsStore = useSettingsStore();
 const { commandPaletteOpen: isOpen } = storeToRefs(settingsStore);
-const library = useLibrary();
 const search = ref("");
 const query = computed(() => search.value.trim());
 const linkTarget = computed(() => parseAppleMusicLink(query.value));
@@ -69,28 +57,17 @@ const linkTarget = computed(() => parseAppleMusicLink(query.value));
 const playlists = useLibraryPlaylists();
 const albums = useLibraryAlbums();
 const artists = useLibraryArtists();
-const {
-  data,
-  isPending: libraryPending,
-  error: libraryError,
-} = useLibraryQuery({
-  key: ["command-palette"],
-  enabled: isOpen,
-  query: async () => {
-    const resources = await library.client.getListResources(DbListId.Songs);
-    return resources.map((item) => item.resource);
-  },
-});
+const songs = useLibrarySongs();
 
 const isPending = computed(
   () =>
-    libraryPending.value ||
+    songs.isPending.value ||
     playlists.isPending.value ||
     albums.isPending.value ||
     artists.isPending.value,
 );
 const error = computed(
-  () => libraryError.value ?? playlists.error.value ?? albums.error.value ?? artists.error.value,
+  () => songs.error.value ?? playlists.error.value ?? albums.error.value ?? artists.error.value,
 );
 
 const pages: CommandPaletteItem[] = [
@@ -113,7 +90,7 @@ const libraryItems = computed<CommandPaletteItem[]>(() => {
   if (!isOpen.value) return [];
 
   return [
-    ...(data.value ?? []),
+    ...(songs.data.value ?? []),
     ...(albums.data.value ?? []),
     ...(artists.data.value ?? []),
     ...(playlists.data.value ?? []),

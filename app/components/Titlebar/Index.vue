@@ -24,21 +24,6 @@
         </template>
         <TitlebarAction icon="lucide:rotate-ccw" small-icon @click="reload" />
         <TitlebarBadge v-if="isDev" label="DEV" color="error" variant="soft" />
-        <UTooltip
-          v-if="isDefaultLayout"
-          text="This may take a minute. You can keep browsing the catalog while your library syncs."
-          arrow
-        >
-          <button v-if="state.syncing" type="button" @click="openLibrarySettings">
-            <TitlebarBadge
-              label="Syncing library"
-              class="cursor-pointer"
-              color="secondary"
-              variant="soft"
-              loading
-            />
-          </button>
-        </UTooltip>
       </div>
       <div
         v-if="isDefaultLayout"
@@ -98,16 +83,10 @@
 <script lang="ts" setup>
 const { isCollapsed, toggle } = useSidebar();
 const { canGoBack, canGoForward, goBack, goForward, reload } = useNavigation();
-const { state } = useLibrary();
 const layout = useLayout();
 
 const settingsStore = useSettingsStore();
 const volumeStore = useVolumeStore();
-
-function openLibrarySettings() {
-  settingsStore.page = "library";
-  settingsStore.isOpen = true;
-}
 
 const isDefaultLayout = computed(() => layout.value === "default");
 </script>

@@ -99,14 +99,16 @@
 </template>
 
 <script lang="ts" setup>
-import { fetchCatalogSongLyrics } from "#layers/amdata/app/lib/queries/songs";
+import { fetchCatalogSongLyrics, fetchLibrarySong } from "#layers/amdata/app/lib/queries/songs";
 
-const library = useLibrary();
 const id = useRouteParams<string>("id");
 
-const { data, isPending, error } = useLibraryQuery({
+const { data, isPending, error } = useAmQuery({
+  scope: "library",
   key: () => ["songs", id.value, "resource"],
-  query: () => library.client.getSong(id.value),
+  query: () => fetchLibrarySong(id.value),
+  staleTime: ms("6h"),
+  gcTime: false,
 });
 
 const catalogId = computed(() => data.value?.extras.catalogId);
@@ -124,9 +126,7 @@ const {
   gcTime: ms("7d"),
 });
 
-const song = computed(() =>
-  data.value ? createListResource(data.value, `library-songs:${id.value}`, 0) : undefined,
-);
+const song = computed(() => (data.value ? createListResource(data.value, id.value, 0) : undefined));
 
 const queueStore = useQueueStore();
 

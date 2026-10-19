@@ -10,7 +10,7 @@ export type SettingsPage =
   | "playback"
   | "shortcuts"
   | "account"
-  | "library"
+  | "data"
   | "application";
 
 export const useSettingsStore = defineStore(

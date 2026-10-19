@@ -64,7 +64,6 @@ export default defineNuxtConfig({
         "@pinia/colada-plugin-auto-refetch",
         "@pinia/colada-plugin-cache-persister",
         "cn",
-        "dexie",
         "hls.js",
         "vue-collapsed",
         "motion-v",
