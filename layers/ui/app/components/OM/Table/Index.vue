@@ -27,5 +27,4 @@ const reorder = createTableReorder(
 );
 provide(tableReorderKey, reorder);
 watch(() => props.reorderable, reorder.reset);
-onBeforeUnmount(reorder.reset);
 </script>

@@ -6,7 +6,7 @@
     preload="metadata"
     loop
     muted
-    :autoplay="active && !paused"
+    :autoplay="!paused"
     class="size-full object-cover select-none"
     @canplay="syncPlayback"
   />
@@ -25,12 +25,11 @@ const props = defineProps<{
 }>();
 
 const video = ref<HTMLVideoElement | null>(null);
-const active = ref(true);
 
 function syncPlayback() {
   if (!video.value) return;
 
-  if (!active.value || props.paused) {
+  if (props.paused) {
     video.value.pause();
   } else {
     video.value.play().catch(() => undefined);
@@ -44,18 +43,6 @@ watch(
 
 let hls: HlsType | null = null;
 let supportsNativeHls = false;
-
-onDeactivated(() => {
-  active.value = false;
-  video.value?.pause();
-  hls?.stopLoad();
-});
-
-onActivated(() => {
-  active.value = true;
-  hls?.startLoad();
-  syncPlayback();
-});
 
 function loadSource(src: string) {
   if (!video.value) return;
@@ -71,11 +58,7 @@ function loadSource(src: string) {
   }
 }
 
-onMounted(async () => {
-  if (!video.value) {
-    await nextTick();
-  }
-
+onMounted(() => {
   if (!video.value) return;
 
   supportsNativeHls = video.value.canPlayType("application/vnd.apple.mpegurl") !== "";

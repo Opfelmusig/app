@@ -133,8 +133,6 @@ useMutationObserver(content, () => refresh(true), {
   subtree: true,
 });
 
-onMounted(() => refresh(true));
-
 onBeforeUnmount(() => {
   unregister();
 

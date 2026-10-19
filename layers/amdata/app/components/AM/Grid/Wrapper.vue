@@ -15,18 +15,9 @@ const minItemWidth = 180;
 const maxItemWidth = 260;
 const gap = 16;
 
-let observer: ResizeObserver | undefined;
-
-onMounted(() => {
-  if (!container.value) return;
-
-  observer = new ResizeObserver(([entry]) => {
-    if (entry) containerWidth.value = entry.contentRect.width;
-  });
-  observer.observe(container.value);
+useResizeObserver(container, ([entry]) => {
+  if (entry) containerWidth.value = entry.contentRect.width;
 });
-
-onUnmounted(() => observer?.disconnect());
 
 const availableColumns = computed(() => {
   return Math.floor((containerWidth.value + gap) / (minItemWidth + gap));

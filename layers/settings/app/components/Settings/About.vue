@@ -38,8 +38,10 @@ const { versions } = useNuxtApp();
 const appVersion = ref<string>();
 const tauriVersion = ref<string>();
 
-onMounted(async () => {
-  appVersion.value = await getVersion();
-  tauriVersion.value = await getTauriVersion();
-});
+Promise.all([getVersion(), getTauriVersion()])
+  .then(([app, tauri]) => {
+    appVersion.value = app;
+    tauriVersion.value = tauri;
+  })
+  .catch((cause) => logger.withTag("settings").error("Could not load versions", { cause }));
 </script>
