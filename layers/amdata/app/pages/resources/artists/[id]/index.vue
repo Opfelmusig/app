@@ -155,9 +155,7 @@ const latestRelease = computed(() => {
 });
 
 const { play, pendingResource } = useResourcePlayback();
-const latestReleasePending = computed(
-  () => pendingResource.value === `albums:${latestRelease.value?.id}`,
-);
+const latestReleasePending = computed(() => pendingResource.value === latestRelease.value?.id);
 
 const nameArtworkUrl = computed(() =>
   getArtworkUrl(artist.value?.attributes.editorialArtwork?.musicContentColorLogoTrimmed, {

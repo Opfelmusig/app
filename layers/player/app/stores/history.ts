@@ -14,7 +14,7 @@ export const useHistoryStore = defineStore(
     function record(track: QueueTrack) {
       entries.value = pipe(
         [{ id: crypto.randomUUID(), playedAt: new Date().toISOString(), track }, ...entries.value],
-        uniqueBy(({ track }) => `${track.resource.type}:${track.resource.id}`),
+        uniqueBy(({ track }) => track.resource.id),
         take(500),
       );
     }

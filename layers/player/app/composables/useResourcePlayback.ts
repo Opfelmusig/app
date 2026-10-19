@@ -14,11 +14,10 @@ export default function useResourcePlayback() {
     )
       return;
 
-    const resourceKey = `${resource.type}:${resource.id}`;
-    if (pendingResource.value === resourceKey) return;
+    if (pendingResource.value === resource.id) return;
 
     const currentRequest = ++requestId.value;
-    pendingResource.value = resourceKey;
+    pendingResource.value = resource.id;
     const queue = queueStore.queue;
 
     try {
@@ -37,7 +36,9 @@ export default function useResourcePlayback() {
     } catch (cause) {
       if (currentRequest !== requestId.value) return;
 
-      logger.withTag("player").error("Failed to load resource tracks", { cause, resourceKey });
+      logger
+        .withTag("player")
+        .error("Failed to load resource tracks", { cause, resourceId: resource.id });
       toast.add({ title: "Unable to play", description: resource.attributes.name, color: "error" });
     } finally {
       if (currentRequest === requestId.value) pendingResource.value = null;
@@ -45,11 +46,10 @@ export default function useResourcePlayback() {
   }
 
   async function createStation(resource: AmSong | AmAlbum | AmArtist) {
-    const resourceKey = `${resource.type}:${resource.id}`;
-    if (pendingResource.value === resourceKey) return;
+    if (pendingResource.value === resource.id) return;
 
     const currentRequest = ++requestId.value;
-    pendingResource.value = resourceKey;
+    pendingResource.value = resource.id;
 
     try {
       const station = await fetchResourceStation(client, resource);
@@ -59,7 +59,9 @@ export default function useResourcePlayback() {
     } catch (cause) {
       if (currentRequest !== requestId.value) return;
 
-      logger.withTag("player").error("Failed to create station", { cause, resourceKey });
+      logger
+        .withTag("player")
+        .error("Failed to create station", { cause, resourceId: resource.id });
       toast.add({
         title: "Unable to create station",
         description: resource.attributes.name,

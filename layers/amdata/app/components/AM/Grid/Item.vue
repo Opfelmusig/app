@@ -184,7 +184,5 @@ const isStationPending = computed(
 );
 
 const { play, pendingResource } = useResourcePlayback();
-const isPending = computed(
-  () => pendingResource.value === `${props.resource.resourceType}:${props.resource.resource.id}`,
-);
+const isPending = computed(() => pendingResource.value === props.resource.resource.id);
 </script>

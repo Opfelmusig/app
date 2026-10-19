@@ -38,7 +38,7 @@ export default function useResourceMenu(
     const groups: DropdownMenuItem[][] = [];
     const playback: DropdownMenuItem[] = [];
     const navigation: DropdownMenuItem[] = [];
-    const pending = pendingResource.value === `${res.resourceType}:${res.resource.id}`;
+    const pending = pendingResource.value === res.resource.id;
 
     const start = toValue(config.extras?.start);
     if (start) groups.push(start);
