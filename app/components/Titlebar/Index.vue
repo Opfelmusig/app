@@ -84,10 +84,14 @@
           :active="settingsStore.panel.isOpen"
           @click="settingsStore.panel.isOpen = !settingsStore.panel.isOpen"
         />
-        <USeparator v-if="!isMacos" orientation="vertical" class="h-4 shrink-0" />
+        <USeparator
+          v-if="!isMacos && !settingsStore.system.hideTitlebarControls"
+          orientation="vertical"
+          class="h-4 shrink-0"
+        />
       </div>
     </div>
-    <TitlebarControls v-if="!isMacos" />
+    <TitlebarControls v-if="!isMacos && !settingsStore.system.hideTitlebarControls" />
   </div>
 </template>
 

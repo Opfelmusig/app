@@ -2,6 +2,11 @@
   <SettingsWrapper>
     <SettingsSection title="System">
       <SettingsToggle
+        v-if="!isMacos"
+        v-model="settingsStore.system.hideTitlebarControls"
+        label="Hide titlebar controls"
+      />
+      <SettingsToggle
         v-model="settingsStore.system.minimizeToTray"
         label="Minimize to tray"
         description="Keep Öpfelmusig running in the tray when closing the window."
