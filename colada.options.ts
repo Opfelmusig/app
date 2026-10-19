@@ -1,6 +1,7 @@
 import { PiniaColadaQueryHooksPlugin, type PiniaColadaOptions } from "@pinia/colada";
 import { PiniaColadaAutoRefetch } from "@pinia/colada-plugin-auto-refetch";
 import { PiniaColadaCachePersister } from "@pinia/colada-plugin-cache-persister";
+import { parse, stringify } from "devalue";
 import { createStore, del, get, set } from "idb-keyval";
 
 import { logger } from "./app/utils/logger";
@@ -31,6 +32,8 @@ export default {
         }),
         PiniaColadaCachePersister({
           key: cacheKey,
+          stringify,
+          parse,
           filter: {
             predicate: ({ meta }) => meta.persist !== false,
           },
