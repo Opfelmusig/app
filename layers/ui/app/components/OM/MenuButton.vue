@@ -7,7 +7,6 @@
     <slot>
       <OMButtonTertiary
         icon="lucide:ellipsis"
-        aria-label="More actions"
         class="no-active text-muted"
         @click.stop
         @dblclick.stop

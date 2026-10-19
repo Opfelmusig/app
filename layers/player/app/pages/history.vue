@@ -37,7 +37,6 @@
       <UTooltip text="Clear history">
         <OMButtonTertiary
           icon="lucide:trash-2"
-          aria-label="Clear history"
           class="ml-auto"
           :disabled="!historyStore.entries.length"
           @click="historyStore.clear"

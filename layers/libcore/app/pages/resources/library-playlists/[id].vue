@@ -67,7 +67,6 @@
             <OMButtonSecondary
               :icon="playlist.extras.isPublic ? 'lucide:globe' : 'lucide:globe-lock'"
               :active="playlist.extras.isPublic"
-              :aria-label="playlist.extras.isPublic ? 'Public playlist' : 'Private playlist'"
             />
           </UTooltip>
           <OMButtonSeparator />

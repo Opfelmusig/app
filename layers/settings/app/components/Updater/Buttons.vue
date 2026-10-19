@@ -5,7 +5,6 @@
       color="neutral"
       variant="soft"
       icon="lucide:refresh-cw"
-      aria-label="Check for updates again"
       class="w-8 justify-center"
       :ui="{ leadingIcon: 'size-4' }"
       @click="updater.checkForUpdate()"

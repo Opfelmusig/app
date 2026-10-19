@@ -25,7 +25,7 @@
               @click="play(playableResource)"
             />
             <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto">
-              <AMArtworkOverlayButton icon="lucide:ellipsis" aria-label="More actions" />
+              <AMArtworkOverlayButton icon="lucide:ellipsis" />
             </OMMenuButton>
           </AMArtworkOverlay>
           <AMArtworkOverlay
@@ -43,7 +43,7 @@
               @click="queueStore.playStation(resource.resource.relationships.station)"
             />
             <OMMenuButton v-if="menuItems.length" :items="menuItems">
-              <AMArtworkOverlayButton icon="lucide:ellipsis" aria-label="More actions" />
+              <AMArtworkOverlayButton icon="lucide:ellipsis" />
             </OMMenuButton>
           </AMArtworkOverlay>
           <AMArtworkOverlay

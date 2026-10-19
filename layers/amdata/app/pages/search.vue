@@ -52,7 +52,6 @@
             icon="lucide:x"
             class="shrink-0 rounded-l-none px-2"
             :ui="{ leadingIcon: 'size-3' }"
-            :aria-label="`Remove ${entry} from search history`"
             @click="removeSearch(entry)"
           />
         </li>

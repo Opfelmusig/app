@@ -9,12 +9,7 @@
         :show="profile?.attributes.isPrivate ?? false"
       >
         <template #content>
-          <UIcon
-            name="lucide:lock-keyhole"
-            class="size-3.5 [&>g]:stroke-3"
-            mode="svg"
-            aria-label="Private profile"
-          />
+          <UIcon name="lucide:lock-keyhole" class="size-3.5 [&>g]:stroke-3" mode="svg" />
         </template>
         <UChip
           position="top-right"
@@ -24,12 +19,7 @@
           :show="profile?.attributes.isVerified ?? false"
         >
           <template #content>
-            <UIcon
-              name="lucide:check"
-              class="size-3.5 [&>path]:stroke-3"
-              mode="svg"
-              aria-label="Verified profile"
-            />
+            <UIcon name="lucide:check" class="size-3.5 [&>path]:stroke-3" mode="svg" />
           </template>
           <AMArtworkWrapper :resource="profile" context="header" round>
             <AMArtworkImage />
