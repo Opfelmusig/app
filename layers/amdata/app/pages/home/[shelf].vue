@@ -19,7 +19,6 @@ import { fetchHomeShelf } from "#layers/amdata/app/lib/queries/home";
 const shelf = useRouteParams<string>("shelf");
 
 const { data, isPending, error } = useAmQuery({
-  scope: "catalog",
   key: () => ["home", "shelf", shelf.value],
   query: () => fetchHomeShelf(shelf.value),
   staleTime: ms("5m"),
