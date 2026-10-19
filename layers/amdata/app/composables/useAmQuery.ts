@@ -1,6 +1,6 @@
 import type { UseQueryOptions, UseQueryReturn } from "@pinia/colada";
 
-type QueryScope = "catalog" | "library";
+type QueryScope = "catalog" | "library" | "social";
 
 type AmQueryOptions<T> = Pick<UseQueryOptions<T>, "key" | "query"> & {
   scope: QueryScope;
