@@ -169,14 +169,14 @@ const {
   columns,
   columnsChanged,
   reset: resetColumns,
-} = useColumns<SongColumns>(() => `albums:${id.value}`, ["artist", "length"]);
+} = useColumns<SongColumns>(id, ["artist", "length"]);
 
 const {
   sortBy,
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<SongSort>(() => `albums:${id.value}`, "discAndTrackNumber");
+} = useSorting<SongSort>(id, "discAndTrackNumber");
 
 const {
   filters,
@@ -201,7 +201,7 @@ function play(index = 0, shuffle = false) {
 }
 
 const menuItems = useResourceMenu(
-  () => (album.value ? createListResource(album.value, `albums:${id.value}`, 0) : undefined),
+  () => (album.value ? createListResource(album.value, id.value, 0) : undefined),
   { actions: { play: () => play(), shuffle: () => play(0, true) } },
 );
 </script>

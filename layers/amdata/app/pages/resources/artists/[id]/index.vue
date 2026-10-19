@@ -135,7 +135,7 @@ const { data: viewsData } = useAmQuery({
 });
 
 const menuItems = useResourceMenu(() =>
-  artist.value ? createListResource(artist.value, `artists:${id.value}`, 0) : undefined,
+  artist.value ? createListResource(artist.value, id.value, 0) : undefined,
 );
 const station = computed(() => artist.value?.relationships.station);
 const queueStore = useQueueStore();

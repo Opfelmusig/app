@@ -175,14 +175,14 @@ const {
   columns,
   columnsChanged,
   reset: resetColumns,
-} = useColumns<SongColumns>(() => `playlists:${id.value}`, defaultSongColumns);
+} = useColumns<SongColumns>(id.value, defaultSongColumns);
 
 const {
   sortBy,
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<SongSort>(() => `playlists:${id.value}`, "default");
+} = useSorting<SongSort>(id.value, "default");
 
 const {
   filters,
@@ -210,8 +210,7 @@ function play(index = 0, shuffle = false) {
 }
 
 const menuItems = useResourceMenu(
-  () =>
-    playlist.value ? createListResource(playlist.value, `playlists:${id.value}`, 0) : undefined,
+  () => (playlist.value ? createListResource(playlist.value, id.value, 0) : undefined),
   { actions: { play: () => play(), shuffle: () => play(0, true) } },
 );
 </script>

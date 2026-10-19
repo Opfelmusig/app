@@ -119,9 +119,7 @@ const {
   gcTime: ms("7d"),
 });
 
-const song = computed(() =>
-  data.value ? createListResource(data.value, `songs:${id.value}`, 0) : undefined,
-);
+const song = computed(() => (data.value ? createListResource(data.value, id.value, 0) : undefined));
 
 const queueStore = useQueueStore();
 
