@@ -12,10 +12,14 @@ use tauri::{webview::PageLoadEvent, AppHandle, Manager};
 use tauri_plugin_window_state::StateFlags;
 
 pub fn run() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _, _| {
-            focus_main_window(app)
-        }))
+    let builder = tauri::Builder::default();
+
+    #[cfg(not(debug_assertions))]
+    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, _, _| {
+        focus_main_window(app)
+    }));
+
+    builder
         .plugin(logging::plugin())
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_prevent_default::debug())
