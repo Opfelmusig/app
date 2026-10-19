@@ -19,7 +19,6 @@
         <SidebarPins />
       </SidebarSection>
       <SidebarSection
-        v-if="settingsStore.sidebarSections.library.show"
         v-model="settingsStore.sidebarSections.library.collapsed"
         label="Library"
         collapsible

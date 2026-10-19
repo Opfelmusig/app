@@ -2,7 +2,6 @@
   <SettingsWrapper>
     <SettingsSection title="Sidebar">
       <SettingsToggle v-model="settingsStore.sidebarSections.pins.show" label="Show pins" />
-      <SettingsToggle v-model="settingsStore.sidebarSections.library.show" label="Show library" />
       <SettingsToggle
         v-model="settingsStore.sidebarSections.playlists.show"
         label="Show playlists"
