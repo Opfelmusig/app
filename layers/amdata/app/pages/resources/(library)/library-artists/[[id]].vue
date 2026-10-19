@@ -22,7 +22,15 @@
           :ui="{ base: 'h-9 rounded-xl' }"
         />
       </header>
-      <div class="flex cursor-pointer flex-col text-sm select-none">
+      <div v-if="artistsPending" class="flex items-center gap-2 p-4 text-sm text-muted">
+        <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+        Loading artists
+      </div>
+      <div v-else-if="artistsError" class="flex items-center gap-2 p-4 text-sm text-error">
+        <UIcon name="lucide:x" class="size-4 shrink-0" />
+        <span>{{ artistsError.message }}</span>
+      </div>
+      <div v-else class="flex cursor-pointer flex-col text-sm select-none">
         <NuxtLink
           v-for="artist in displayedArtists"
           :key="artist.key"
@@ -53,9 +61,18 @@
             <AMArtworkImage />
             <AMArtworkPlaceholder />
           </AMArtworkWrapper>
-          <h2 class="truncate">
-            {{ currentArtist?.attributes.name ?? "Not found" }}
+          <h2 v-if="currentArtist" class="truncate">
+            {{ currentArtist.attributes.name }}
           </h2>
+          <div v-else-if="artistPending" class="flex items-center gap-2 text-sm text-muted">
+            <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+            Loading artist
+          </div>
+          <div v-else-if="artistError" class="flex min-w-0 items-center gap-2 text-sm text-error">
+            <UIcon name="lucide:x" class="size-4 shrink-0" />
+            <span>{{ artistError.message }}</span>
+          </div>
+          <p v-else class="text-sm text-muted">Artist not found.</p>
           <OMStar v-if="currentArtist?.attributes.personalRating === 1" large />
         </div>
         <div class="flex items-center gap-2">
@@ -98,7 +115,7 @@ import { artistSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
 import { fetchLibraryArtist } from "#layers/amdata/app/lib/queries/artists";
 
-const { data: artists } = useLibraryArtists();
+const { data: artists, isPending: artistsPending, error: artistsError } = useLibraryArtists();
 const resources = computed(() => createListResources(artists.value ?? [], "artists"));
 const search = ref("");
 const searchedArtists = useSearch(resources, search, artistSearchKeys);
@@ -131,7 +148,11 @@ const displayedArtists = computed(() => {
 
 const id = useRouteParams<string | undefined>("id");
 
-const { data: currentArtist } = useAmQuery({
+const {
+  data: currentArtist,
+  isPending: artistPending,
+  error: artistError,
+} = useAmQuery({
   scope: "library",
   key: () => ["artists", id.value ?? null, "resource"],
   query: () => fetchLibraryArtist(id.value!),

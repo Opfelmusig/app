@@ -12,8 +12,8 @@
           </template>
         </AMMediaEditorialVideo>
       </AMArtworkWrapper>
-      <div v-if="playlist" class="flex w-full flex-col justify-end gap-4">
-        <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
+      <div class="flex w-full min-w-0 flex-col justify-end gap-4">
+        <div v-if="playlist" class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
           <h2>{{ playlist.attributes.name }}</h2>
           <div class="flex items-center gap-2 text-sm whitespace-nowrap text-muted">
             <span v-if="playlist.attributes.curatorName" class="truncate">
@@ -55,15 +55,33 @@
             {{ playlist.attributes.description }}
           </p>
         </div>
+        <div v-else-if="isPending" class="flex items-center gap-2 text-sm text-muted">
+          <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+          Loading playlist
+        </div>
+        <div v-else-if="error" class="flex items-center gap-2 text-sm text-error">
+          <UIcon name="lucide:x" class="size-4 shrink-0" />
+          <span>{{ error.message }}</span>
+        </div>
+        <p v-else class="text-sm text-muted">Playlist not found.</p>
         <div class="flex items-center gap-2">
-          <OMButtonPlay @click="play" />
-          <OMButtonSecondary icon="lucide:shuffle" @click="play(0, true)" />
+          <OMButtonPlay :disabled="!playlist || !displayedTracks.length" @click="play()" />
           <OMButtonSecondary
+            icon="lucide:shuffle"
+            :disabled="!playlist || !displayedTracks.length"
+            @click="play(0, true)"
+          />
+          <OMButtonSecondary
+            v-if="playlist"
             fill
             icon="lucide:star"
             :active="playlist.attributes.personalRating === 1"
           />
-          <UTooltip :text="playlist.extras.isPublic ? 'Public playlist' : 'Private playlist'" arrow>
+          <UTooltip
+            v-if="playlist"
+            :text="playlist.extras.isPublic ? 'Public playlist' : 'Private playlist'"
+            arrow
+          >
             <OMButtonSecondary
               :icon="playlist.extras.isPublic ? 'lucide:globe' : 'lucide:globe-lock'"
               :active="playlist.extras.isPublic"
@@ -132,7 +150,11 @@ import {
 
 const id = useRouteParams<string>("id");
 
-const { data: playlist } = useAmQuery({
+const {
+  data: playlist,
+  isPending,
+  error,
+} = useAmQuery({
   scope: "library",
   key: () => ["playlists", id.value, "resource"],
   query: () => fetchLibraryPlaylist(id.value),

@@ -9,8 +9,8 @@
           </template>
         </AMMediaEditorialVideo>
       </AMArtworkWrapper>
-      <div v-if="album" class="flex w-full flex-col justify-end gap-4">
-        <div class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
+      <div class="flex w-full min-w-0 flex-col justify-end gap-4">
+        <div v-if="album" class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
           <div class="flex items-center gap-2">
             <h2 class="truncate">{{ album.attributes.name }}</h2>
             <OMExplicit v-if="album.attributes.contentRating === 'explicit'" />
@@ -36,10 +36,24 @@
             </span>
           </div>
         </div>
+        <div v-else-if="isPending" class="flex items-center gap-2 text-sm text-muted">
+          <UIcon name="lucide:loader-circle" class="size-4 animate-spin" />
+          Loading album
+        </div>
+        <div v-else-if="error" class="flex items-center gap-2 text-sm text-error">
+          <UIcon name="lucide:x" class="size-4 shrink-0" />
+          <span>{{ error.message }}</span>
+        </div>
+        <p v-else class="text-sm text-muted">Album not found.</p>
         <div class="flex items-center gap-2">
-          <OMButtonPlay @click="play" />
-          <OMButtonSecondary icon="lucide:shuffle" @click="play(0, true)" />
+          <OMButtonPlay :disabled="!album || !displayedTracks.length" @click="play()" />
           <OMButtonSecondary
+            icon="lucide:shuffle"
+            :disabled="!album || !displayedTracks.length"
+            @click="play(0, true)"
+          />
+          <OMButtonSecondary
+            v-if="album"
             fill
             icon="lucide:star"
             :active="album.attributes.personalRating === 1"
@@ -104,7 +118,11 @@ import { fetchLibraryAlbum, fetchLibraryAlbumTracks } from "#layers/amdata/app/l
 
 const id = useRouteParams<string>("id");
 
-const { data: album } = useAmQuery({
+const {
+  data: album,
+  isPending,
+  error,
+} = useAmQuery({
   scope: "library",
   key: () => ["albums", id.value, "resource"],
   query: () => fetchLibraryAlbum(id.value),
