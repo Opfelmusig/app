@@ -1,7 +1,12 @@
 <template>
   <SettingsWrapper>
-    <SettingsSection title="Library">
-      <SettingsConfig no-label label="Sync library" description="This can take a while." :error>
+    <SettingsSection title="Library sync">
+      <SettingsConfig
+        no-label
+        label="Sync with Apple Music"
+        description="Refresh your local library. This can take a while."
+        :error
+      >
         <UButton
           color="warning"
           variant="soft"
@@ -26,6 +31,8 @@
           </UBadge>
         </span>
       </SettingsConfig>
+    </SettingsSection>
+    <SettingsSection title="Library contents">
       <div class="flex flex-col gap-2">
         <SettingsConfig no-label label="Songs">
           <UBadge variant="soft" :color="badgeColor(progress.songs.done)">
@@ -49,23 +56,28 @@
         </SettingsConfig>
       </div>
     </SettingsSection>
-    <SettingsSection title="Data">
-      <SettingsConfig no-label label="Cached data" :error="cacheError">
+    <SettingsSection title="Local data">
+      <SettingsConfig
+        no-label
+        label="Cached Apple Music data"
+        description="Refresh cached responses from Apple Music."
+        :error="cacheError"
+      >
         <UButton
           color="warning"
           variant="soft"
           icon="lucide:refresh-cw"
-          label="Invalidate cache"
+          label="Refresh cache"
           :loading="invalidatingCache"
           @click="invalidateCache"
         />
       </SettingsConfig>
-      <SettingsConfig no-label label="Data directory">
+      <SettingsConfig no-label label="App data folder">
         <UButton
           color="neutral"
           variant="soft"
           icon="lucide:folder-open"
-          label="Open directory"
+          label="Open folder"
           :loading="openingDataDirectory"
           @click="openDataDirectory"
         />
@@ -78,8 +90,6 @@
 import type { BadgeProps } from "@nuxt/ui";
 import { appDataDir } from "@tauri-apps/api/path";
 import { openPath } from "@tauri-apps/plugin-opener";
-
-import type { UBadge } from "#components";
 
 const openingDataDirectory = ref(false);
 const queryCache = useQueryCache();

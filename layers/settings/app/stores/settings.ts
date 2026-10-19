@@ -3,20 +3,19 @@ type SidebarSectionConfig = { collapsed?: boolean; hidden?: boolean };
 type SidebarSections = Record<SidebarSectionTypes, SidebarSectionConfig>;
 
 export type SettingsPage =
-  | "general"
-  | "account"
-  | "player"
+  | "appearance"
   | "playback"
-  | "about"
-  | "storage"
-  | "shortcuts";
+  | "shortcuts"
+  | "account"
+  | "library"
+  | "application";
 
 export const useSettingsStore = defineStore(
   "opfelmusig:settings-store",
   () => {
     const isOpen = ref(false);
     const commandPaletteOpen = ref(false);
-    const page = ref<SettingsPage>("general");
+    const page = ref<SettingsPage>("appearance");
 
     const language = ref<string | undefined>();
 

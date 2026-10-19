@@ -78,7 +78,7 @@ export default defineNuxtPlugin({
             if (queueStore.isStation) return;
             queueStore.toggleShuffle();
           },
-          config: { meta: { group: "Player", name: "Toggle shuffle" } },
+          config: { meta: { group: "Playback", name: "Toggle shuffle" } },
         },
         {
           keys: "r",
@@ -86,12 +86,12 @@ export default defineNuxtPlugin({
             if (queueStore.isStation) return;
             queueStore.isLooping = !queueStore.isLooping;
           },
-          config: { meta: { group: "Player", name: "Toggle repeat" } },
+          config: { meta: { group: "Playback", name: "Toggle repeat" } },
         },
         {
           keys: "shift+r",
           run: () => playbackStore.seek(0),
-          config: { meta: { group: "Player", name: "Restart track" } },
+          config: { meta: { group: "Playback", name: "Restart track" } },
         },
         {
           keys: "i",

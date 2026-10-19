@@ -4,7 +4,7 @@
       v-model:open="settingsStore.isOpen"
       title="Settings"
       :ui="{
-        content: 'h-[min(650px,85dvh)] max-w-4xl rounded-xl',
+        content: 'h-[min(680px,85dvh)] max-w-5xl rounded-xl',
         header: 'shrink-0',
         body: 'flex min-h-0 overflow-hidden p-0 sm:p-0',
       }"
@@ -13,35 +13,33 @@
         <nav
           class="scrollbar-hide flex w-16 shrink-0 flex-col gap-1 overflow-y-auto border-r border-default bg-raised p-2 sm:w-52"
         >
-          <template v-for="item in pages" :key="item.id">
-            <span
-              v-if="'group' in item"
-              class="mt-2 hidden px-2.5 py-2 text-xs text-dimmed sm:block"
-            >
-              {{ item.group }}
+          <div v-for="group in groups" :key="group.label" class="flex flex-col gap-1">
+            <span class="mt-2 hidden px-2.5 py-2 text-xs text-dimmed sm:block">
+              {{ group.label }}
             </span>
             <UButton
+              v-for="item in group.pages"
+              :key="item.id"
               :icon="item.icon"
               :title="item.label"
               color="neutral"
               variant="ghost"
               class="h-10 shrink-0 justify-center gap-2.5 rounded-xl px-2.5 sm:justify-start"
-              :class="settingsStore.page === item.id ? 'bg-elevated text-default' : 'text-muted'"
+              :class="activePage === item.id ? 'bg-elevated text-default' : 'text-muted'"
               :ui="{ leadingIcon: 'size-4' }"
               @click="settingsStore.page = item.id"
             >
               <span class="hidden sm:inline">{{ item.label }}</span>
             </UButton>
-          </template>
+          </div>
         </nav>
-        <div :key="settingsStore.page" class="size-full min-w-0 overflow-hidden">
-          <SettingsAccount v-if="settingsStore.page === 'account'" />
-          <SettingsPlayback v-else-if="settingsStore.page === 'playback'" />
-          <SettingsPlayer v-else-if="settingsStore.page === 'player'" />
-          <SettingsAbout v-else-if="settingsStore.page === 'about'" />
-          <SettingsStorage v-else-if="settingsStore.page === 'storage'" />
-          <SettingsShortcuts v-else-if="settingsStore.page === 'shortcuts'" />
-          <SettingsGeneral v-else />
+        <div :key="activePage" class="size-full min-w-0 overflow-hidden">
+          <SettingsPlayback v-if="activePage === 'playback'" />
+          <SettingsShortcuts v-else-if="activePage === 'shortcuts'" />
+          <SettingsAccount v-else-if="activePage === 'account'" />
+          <SettingsLibrary v-else-if="activePage === 'library'" />
+          <SettingsApplication v-else-if="activePage === 'application'" />
+          <SettingsAppearance v-else />
         </div>
       </template>
     </UModal>
@@ -51,24 +49,38 @@
 <script lang="ts" setup>
 const settingsStore = useSettingsStore();
 
-const pages: { id: SettingsPage; label: string; icon: string; group?: string }[] = [
-  { id: "general", label: "General", icon: "lucide:settings-2" },
-  { id: "account", label: "Account", icon: "lucide:user" },
-  { id: "player", label: "Player", icon: "lucide:play", group: "Music" },
-  { id: "playback", label: "Playback", icon: "lucide:music" },
+const groups: {
+  label: string;
+  pages: { id: SettingsPage; label: string; icon: string }[];
+}[] = [
   {
-    id: "about",
-    label: "Updates & about",
-    icon: "lucide:info",
-    group: "Help & data",
+    label: "Preferences",
+    pages: [
+      { id: "appearance", label: "Appearance", icon: "lucide:palette" },
+      { id: "playback", label: "Playback", icon: "lucide:audio-lines" },
+    ],
   },
   {
-    id: "storage",
-    label: "Storage & library",
-    icon: "lucide:database",
+    label: "Apple Music",
+    pages: [
+      { id: "account", label: "Account & sharing", icon: "lucide:user" },
+      { id: "library", label: "Library & data", icon: "lucide:database" },
+    ],
   },
-  { id: "shortcuts", label: "Shortcuts", icon: "lucide:keyboard" },
+  {
+    label: "Application",
+    pages: [
+      { id: "application", label: "App & updates", icon: "lucide:settings-2" },
+      { id: "shortcuts", label: "Shortcuts", icon: "lucide:keyboard" },
+    ],
+  },
 ];
+
+const activePage = computed(
+  () =>
+    groups.flatMap((group) => group.pages).find((page) => page.id === settingsStore.page)?.id ??
+    "appearance",
+);
 
 onUnmounted(() => {
   settingsStore.isOpen = false;

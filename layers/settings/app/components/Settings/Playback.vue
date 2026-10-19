@@ -5,7 +5,7 @@
     </SettingsSection>
 
     <SettingsSection title="Equalizer">
-      <SettingsToggle v-model="equalizer.enabled" label="Equalizer" />
+      <SettingsToggle v-model="equalizer.enabled" label="Enable equalizer" />
 
       <div class="overflow-x-auto py-4">
         <div class="flex min-w-130 gap-4">
@@ -44,7 +44,7 @@
 
       <div class="flex justify-end">
         <UButton
-          label="Reset"
+          label="Reset bands"
           icon="lucide:rotate-ccw"
           color="neutral"
           variant="soft"

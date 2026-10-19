@@ -39,12 +39,23 @@
       <SettingsConfig
         v-if="storefront?.attributes"
         no-label
-        icon="lucide:languages"
         label="Apple Music language"
         description="This affects only Apple Music data."
       >
         <USelect v-model="settingsStore.language" :items="options" class="w-50" />
       </SettingsConfig>
+    </SettingsSection>
+    <SettingsSection title="Listening activity">
+      <SettingsToggle
+        v-model="settingsStore.player.activityReporting"
+        label="Report activity to Apple Music"
+        description="Send your playback activity to Apple Music."
+      />
+      <SettingsToggle
+        v-model="settingsStore.integrations.discordRichPresence"
+        label="Share listening activity on Discord"
+        description="Show what you are listening to with Discord Rich Presence."
+      />
     </SettingsSection>
   </SettingsWrapper>
 </template>

@@ -29,9 +29,9 @@
           text="This may take a minute. You can keep browsing the catalog while your library syncs."
           arrow
         >
-          <button v-if="state.syncing" type="button" @click="openStorage">
+          <button v-if="state.syncing" type="button" @click="openLibrarySettings">
             <TitlebarBadge
-              :label="`Syncing library (${progress.songs.count} ${progress.songs.count === 1 ? 'song' : 'songs'})`"
+              label="Syncing library"
               class="cursor-pointer"
               color="secondary"
               variant="soft"
@@ -98,14 +98,14 @@
 <script lang="ts" setup>
 const { isCollapsed, toggle } = useSidebar();
 const { canGoBack, canGoForward, goBack, goForward, reload } = useNavigation();
-const { state, progress } = useLibrary();
+const { state } = useLibrary();
 const layout = useLayout();
 
 const settingsStore = useSettingsStore();
 const volumeStore = useVolumeStore();
 
-function openStorage() {
-  settingsStore.page = "storage";
+function openLibrarySettings() {
+  settingsStore.page = "library";
   settingsStore.isOpen = true;
 }
 
