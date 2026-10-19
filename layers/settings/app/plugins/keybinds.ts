@@ -12,6 +12,7 @@ export default defineNuxtPlugin({
     const router = useRouter();
     const { goBack, goForward } = useNavigation();
     const { toggle: toggleSidebar } = useSidebar();
+    const { open: openMiniplayer } = useMiniplayer();
     const navigationRoutes = [
       "/search",
       "/",
@@ -96,6 +97,11 @@ export default defineNuxtPlugin({
           keys: "i",
           run: () => (settingsStore.immersive.isOpen = !settingsStore.immersive.isOpen),
           config: { meta: { group: "Player", name: "Toggle immersive mode" } },
+        },
+        {
+          keys: "ctrl-cmd+shift+m",
+          run: openMiniplayer,
+          config: { meta: { group: "Player", name: "Open miniplayer" } },
         },
         {
           keys: "l",
