@@ -1,4 +1,5 @@
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import type { ScrollBarStyle } from "@tauri-apps/api/window";
 
 export default function useMiniplayer() {
   const log = logger.withTag("miniplayer");
@@ -66,6 +67,7 @@ export default function useMiniplayer() {
         maximizable: false,
         minimizable: false,
         theme: "dark",
+        scrollBarStyle: "fluentOverlay" as ScrollBarStyle,
       });
 
       register(window);
