@@ -2,7 +2,7 @@
   <div class="relative z-120">
     <UModal
       v-model:open="isOpen"
-      :ui="{ content: 'top-[calc(50%-222px)] max-w-lg translate-y-0 overflow-hidden rounded-xl' }"
+      :ui="{ content: 'top-[calc(50%-192px)] max-w-lg translate-y-0 overflow-hidden rounded-xl' }"
     >
       <template #content>
         <UCommandPalette
@@ -29,8 +29,11 @@
           <template #item-trailing="{ item }">
             <UIcon v-if="item.kind" :name="resourceIcon(item.kind)" class="size-3.5" />
           </template>
-          <template v-if="query && (isPending || error || !library.state.ready)" #footer>
-            <p class="px-2.5 py-1 text-xs text-muted">
+          <template v-if="query" #footer>
+            <p
+              v-if="isPending || error || !library.state.ready"
+              class="px-2.5 py-1 text-xs text-muted"
+            >
               {{
                 error
                   ? "Could not load library results."
@@ -39,6 +42,10 @@
                     : "Loading library..."
               }}
             </p>
+            <div class="flex items-center justify-between gap-2 px-2.5 py-2 text-xs text-muted">
+              <span>Search Apple Music</span>
+              <span class="flex gap-1"><UKbd value="meta" /><UKbd value="enter" /></span>
+            </div>
           </template>
         </UCommandPalette>
       </template>
@@ -159,19 +166,23 @@ const groups = computed<CommandPaletteGroup[]>(() => {
     items: results.value.filter(({ item }) => item.group === "library").map(({ item }) => item),
   });
 
-  groups.push({
-    id: "fallback",
-    ignoreFilter: true,
-    items: [
-      {
-        label: `Search Apple Music for “${query.value}”`,
-        active: false,
-        to: { path: "/search", query: { term: query.value } },
-      },
-    ],
-  });
-
   return groups;
+});
+
+useKeybind({
+  keys: "ctrl-cmd+enter",
+  run() {
+    const term = query.value;
+    isOpen.value = false;
+    return navigateTo({ path: "/search", query: { term } });
+  },
+  config: {
+    prevent: true,
+    stop: true,
+    ignoreIfEditable: false,
+    ignoreRepeat: true,
+    when: () => isOpen.value && !!query.value,
+  },
 });
 
 watch(isOpen, (open) => {
