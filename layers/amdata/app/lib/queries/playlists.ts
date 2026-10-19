@@ -1,14 +1,19 @@
 import { collect } from "@opfelmusig/lib/helpers";
 
 import { parseCatalogArtist } from "#layers/amdata/app/lib/parsers/artists";
+import { parseLibraryPlaylistFolder } from "#layers/amdata/app/lib/parsers/folders";
 import { getUnknownProperty } from "#layers/amdata/app/lib/parsers/helpers";
-import { parseCatalogPlaylist } from "#layers/amdata/app/lib/parsers/playlists";
+import {
+  parseCatalogPlaylist,
+  parseLibraryPlaylist,
+} from "#layers/amdata/app/lib/parsers/playlists";
 import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
 import {
   catalogArtistsScopes,
   catalogPlaylistsScopes,
   catalogSongsScopes,
 } from "#layers/amdata/app/lib/scopes/catalog";
+import { libraryPlaylistsScopes } from "#layers/amdata/app/lib/scopes/library";
 
 export const playlistViews = ["featured-artists"] as const;
 export type PlaylistView = (typeof playlistViews)[number];
@@ -97,4 +102,25 @@ export async function fetchCatalogPlaylistTracks(id: string) {
     .map(parseCatalogSong);
 
   return createListResources(songs, `playlists:${id}`);
+}
+
+export async function fetchLibraryPlaylists() {
+  const client = useClient();
+
+  const playlists = await collect(
+    client.library.playlists.iterateAll({
+      limit: 100,
+      scopes: libraryPlaylistsScopes,
+    }),
+  );
+
+  return playlists.filter(hasResourceName).map(parseLibraryPlaylist);
+}
+
+export async function fetchLibraryFolders() {
+  const client = useClient();
+
+  const playlists = await collect(client.library.playlistFolders.iterateFolders());
+
+  return playlists.filter(hasResourceName).map(parseLibraryPlaylistFolder);
 }

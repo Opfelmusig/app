@@ -42,11 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-const { client } = useLibrary();
-const { data, isPending, error } = useLibraryQuery({
-  key: ["tree"],
-  query: () => client.getFolderTree(),
-});
+const { data, isPending, error } = useLibraryTree();
 
 const favoritesPlaylist = computed(() =>
   data.value
