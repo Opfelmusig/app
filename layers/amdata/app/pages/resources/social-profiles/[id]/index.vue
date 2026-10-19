@@ -75,8 +75,7 @@ import {
 } from "#layers/amdata/app/lib/queries/profiles";
 
 const client = useClient();
-const id = useRouteParams<string>("id");
-const handle = computed(() => id.value.trim().replace(/^@/, "").toLowerCase());
+const handle = useRouteParams<string>("id");
 
 const {
   data: profile,
