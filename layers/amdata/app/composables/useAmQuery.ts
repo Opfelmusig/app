@@ -10,10 +10,14 @@ type AmQueryOptions<T> = Pick<UseQueryOptions<T>, "key" | "query"> & {
 };
 
 export default function useAmQuery<T>(options: AmQueryOptions<T>): UseQueryReturn<T> {
+  return useQuery(useAmQueryOptions(options));
+}
+
+export function useAmQueryOptions<T>(options: AmQueryOptions<T>): UseQueryOptions<T> {
   const { profile, storefront, valid } = useAuth();
   const settings = useSettingsStore();
 
-  return useQuery({
+  return {
     key: () => [
       "amdata",
       options.scope,
@@ -33,5 +37,5 @@ export default function useAmQuery<T>(options: AmQueryOptions<T>): UseQueryRetur
     refetchOnReconnect: true,
     refetchOnMount: true,
     autoRefetch: true,
-  });
+  };
 }

@@ -143,10 +143,7 @@
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { defaultSongSorting } from "#layers/amdata/app/lib/controls/sorting";
-import {
-  fetchLibraryPlaylist,
-  fetchLibraryPlaylistTracks,
-} from "#layers/amdata/app/lib/queries/playlists";
+import { fetchLibraryPlaylist } from "#layers/amdata/app/lib/queries/playlists";
 
 const id = useRouteParams<string>("id");
 
@@ -161,17 +158,7 @@ const {
   staleTime: ms("6h"),
   gcTime: false,
 });
-const {
-  data: tracks,
-  isPending: tracksPending,
-  error: tracksError,
-} = useAmQuery({
-  scope: "library",
-  key: () => ["playlists", id.value, "tracks"],
-  query: () => fetchLibraryPlaylistTracks(id.value),
-  staleTime: ms("6h"),
-  gcTime: false,
-});
+const { data: tracks, isPending: tracksPending, error: tracksError } = useLibraryPlaylistTracks(id);
 
 const { columns, reset, columnsChanged } = useColumns(id, defaultSongColumns);
 

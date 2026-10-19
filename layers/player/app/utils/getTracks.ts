@@ -1,12 +1,6 @@
 import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
-import {
-  fetchCatalogAlbumTracks,
-  fetchLibraryAlbumTracks,
-} from "#layers/amdata/app/lib/queries/albums";
-import {
-  fetchCatalogPlaylistTracks,
-  fetchLibraryPlaylistTracks,
-} from "#layers/amdata/app/lib/queries/playlists";
+import { fetchCatalogAlbumTracks } from "#layers/amdata/app/lib/queries/albums";
+import { fetchCatalogPlaylistTracks } from "#layers/amdata/app/lib/queries/playlists";
 import { catalogSongsScopes } from "#layers/amdata/app/lib/scopes/catalog";
 
 export default async function getTracks(
@@ -23,16 +17,20 @@ export default async function getTracks(
 
     case "library-albums": {
       const { sortBy, direction } = getSavedSorting(resource.id, "discAndTrackNumber");
+      const queryCache = useQueryCache();
+      const entry = queryCache.ensure(useLibraryAlbumTracksOptions(resource.id));
+      const { data: tracks } = await queryCache.refresh(entry);
 
-      const tracks = await fetchLibraryAlbumTracks(resource.id);
-      return sortSongs(tracks, sortBy, direction);
+      return sortSongs(tracks ?? [], sortBy, direction);
     }
 
     case "library-playlists": {
       const { sortBy, direction } = getSavedSorting(resource.id, "default");
+      const queryCache = useQueryCache();
+      const entry = queryCache.ensure(useLibraryPlaylistTracksOptions(resource.id));
+      const { data: tracks } = await queryCache.refresh(entry);
 
-      const tracks = await fetchLibraryPlaylistTracks(resource.id);
-      return sortSongs(tracks, sortBy, direction);
+      return sortSongs(tracks ?? [], sortBy, direction);
     }
 
     case "stations": {
