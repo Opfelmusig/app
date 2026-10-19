@@ -18,7 +18,7 @@
           <template v-if="albumMode">
             <div v-if="!isActive" class="flex size-full items-center justify-center text-muted">
               <span class="truncate text-center tabular-nums group-hover:opacity-0">
-                {{ song.resource.attributes.trackNumber }}
+                {{ song.attributes.trackNumber }}
               </span>
             </div>
             <div v-else class="absolute inset-0 flex items-center justify-center">
@@ -53,47 +53,43 @@
       <OMTableData>
         <div class="flex items-center gap-2">
           <span class="truncate">
-            {{ song.resource.attributes.name }}
+            {{ song.attributes.name }}
           </span>
-          <OMStar v-if="song.resource.attributes.personalRating === 1" />
+          <OMStar v-if="song.attributes.personalRating === 1" />
           <div class="ml-auto flex gap-2 empty:hidden">
-            <OMExplicit v-if="song.resource.attributes.contentRating === 'explicit'" />
-            <OMDownloaded v-if="song.resourceType === 'songs' && song.resource.extras.libraryId" />
+            <OMExplicit v-if="song.attributes.contentRating === 'explicit'" />
+            <OMDownloaded v-if="song.type === 'songs' && song.extras.libraryId" />
           </div>
         </div>
       </OMTableData>
       <OMTableData v-if="columns.includes('album')" class="text-muted">
         <AMLinks
-          :links="song.resource.attributes.albums"
+          :links="song.attributes.albums"
           type="albums"
-          :fallback-name="song.resource.attributes.albumName"
-          :fallback-id="
-            song.resourceType === 'library-songs' ? song.resource.extras.albumId : undefined
-          "
+          :fallback-name="song.attributes.albumName"
+          :fallback-id="song.type === 'library-songs' ? song.extras.albumId : undefined"
         />
       </OMTableData>
       <OMTableData v-if="columns.includes('artist')" class="text-muted">
         <AMLinks
-          :links="song.resource.attributes.artists"
+          :links="song.attributes.artists"
           type="artists"
-          :fallback-name="song.resource.attributes.artistName"
-          :fallback-id="
-            song.resourceType === 'library-songs' ? song.resource.extras.artistId : undefined
-          "
+          :fallback-name="song.attributes.artistName"
+          :fallback-id="song.type === 'library-songs' ? song.extras.artistId : undefined"
         />
       </OMTableData>
       <OMTableData v-if="columns.includes('genre')" class="text-muted">
-        {{ song.resource.attributes.genreNames.join(", ") }}
+        {{ song.attributes.genreNames.join(", ") }}
       </OMTableData>
       <OMTableData v-if="columns.includes('year')" class="text-muted tabular-nums">
         <NuxtTime
-          v-if="song.resource.attributes.releaseDate"
-          :datetime="song.resource.attributes.releaseDate"
+          v-if="song.attributes.releaseDate"
+          :datetime="song.attributes.releaseDate"
           year="numeric"
         />
       </OMTableData>
       <OMTableData v-if="columns.includes('length')" class="text-end text-muted tabular-nums">
-        {{ msToHMS(song.resource.attributes.durationInMillis) }}
+        {{ msToHMS(song.attributes.durationInMillis) }}
       </OMTableData>
       <OMTableSimple class="pl-1">
         <OMMenuButton :items="menuItems" />
@@ -108,14 +104,14 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 const highlightedSongId = useRouteQuery<string>("song_id");
 
 const props = defineProps<{
-  song: AmListResource<AmSong>;
+  song: AmSong;
   albumMode?: boolean;
   reorderId?: string;
   extraMenuItems?: DropdownMenuItem[];
 }>();
 
 const row = useTemplateRef("row");
-const isHighlighted = computed(() => highlightedSongId.value === props.song.resource.id);
+const isHighlighted = computed(() => highlightedSongId.value === props.song.id);
 
 watch(
   [row, isHighlighted],
@@ -140,8 +136,8 @@ const emit = defineEmits<{
 const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
 
-const isActive = computed(() => queueStore.current?.entry.resource.id === props.song.resource.id);
-const disabled = computed(() => !props.song.resource.attributes.playParams);
+const isActive = computed(() => queueStore.current?.entry.id === props.song.id);
+const disabled = computed(() => !props.song.attributes.playParams);
 
 const menuItems = useResourceMenu(() => props.song, {
   actions: {

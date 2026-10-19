@@ -6,7 +6,7 @@ import { catalogSongsScopes } from "#layers/amdata/app/lib/scopes/catalog";
 export default async function getTracks(
   resource: AmAlbum | AmPlaylist | AmCatalogStation,
   limit?: number,
-): Promise<AmListResource<AmSong>[]> {
+): Promise<AmSong[]> {
   const client = useClient();
 
   switch (resource.type) {
@@ -48,7 +48,7 @@ export default async function getTracks(
         throw new Error("The station did not return enough songs");
       }
 
-      return parsed.map((song, i) => createListResource(song, `stations:${resource.id}`, i));
+      return parsed;
     }
   }
 }

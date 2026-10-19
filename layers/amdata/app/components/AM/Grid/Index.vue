@@ -1,7 +1,7 @@
 <template>
-  <template v-for="item in items" :key="item.key">
+  <template v-for="(item, i) in items" :key="`${item.id}:${i}`">
     <AMGridItem
-      v-if="item.resourceType !== 'library-playlist-folders'"
+      v-if="item.type !== 'library-playlist-folders'"
       :resource="item"
       :show-artists
       :show-year
@@ -12,9 +12,14 @@
 
 <script lang="ts" setup>
 defineProps<{
-  items?: AmListResource<
-    AmAlbum | AmPlaylist | AmArtist | AmLibraryPlaylistFolder | AmSocialProfile | AmCatalogStation
-  >[];
+  items?: (
+    | AmAlbum
+    | AmPlaylist
+    | AmArtist
+    | AmLibraryPlaylistFolder
+    | AmSocialProfile
+    | AmCatalogStation
+  )[];
   showArtists?: boolean;
   showYear?: boolean;
 }>();

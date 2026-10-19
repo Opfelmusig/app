@@ -97,10 +97,10 @@ const search = ref("");
 const tracks = computed(() => historyStore.entries.map((entry) => entry.track));
 const searchedSongs = useSearch(tracks, search, songSearchKeys);
 const displayedEntries = computed(() => {
-  const entriesByKey = new Map(historyStore.entries.map((entry) => [entry.track.key, entry]));
+  const entriesById = new Map(historyStore.entries.map((entry) => [entry.track.id, entry]));
 
   return filterResources<AmSong>(searchedSongs.value, filters.value).flatMap((song) => {
-    const entry = entriesByKey.get(song.key);
+    const entry = entriesById.get(song.id);
     return entry ? [entry] : [];
   });
 });

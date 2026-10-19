@@ -19,6 +19,6 @@ defineProps<{
   isPending: boolean;
   error: Error | null;
   total?: number;
-  songs?: AmListResource<AmSong>[];
+  songs?: AmSong[];
 }>();
 </script>

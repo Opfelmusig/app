@@ -21,13 +21,3 @@ export type AmResource =
   | AmCatalogStation
   | AmLibraryPlaylistFolder
   | AmSocialProfile;
-
-export type AmListResource<TResource extends AmResource> = TResource extends AmResource
-  ? {
-      key: string;
-      type: "list-resources";
-      position: number;
-      resourceType: TResource["type"];
-      resource: TResource;
-    }
-  : never;

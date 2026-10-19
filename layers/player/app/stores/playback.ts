@@ -87,7 +87,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
 
   function fail(id: string, cause: unknown) {
     if (session?.id !== id) return;
-    const song = session.entry.entry.resource;
+    const song = session.entry.entry;
     log.error("Native playback failed", {
       cause,
       sessionId: id,
@@ -156,7 +156,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     stop(entry ? "select" : "stop");
     if (!entry) return;
 
-    const resource = entry.entry.resource;
+    const resource = entry.entry;
     const current: PlaybackSession = {
       id: crypto.randomUUID(),
       entry,
@@ -275,7 +275,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       activity.reset();
       if (valid && session) {
         activity.setItem(
-          session.entry.entry.resource,
+          session.entry.entry,
           session.entry.fromContext ? queueStore.context : null,
         );
       }

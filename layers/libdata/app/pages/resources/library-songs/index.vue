@@ -70,7 +70,6 @@ import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { librarySongSorting } from "#layers/amdata/app/lib/controls/sorting";
 
 const { data: songs, isPending: songsPending, error: songsError } = useLibrarySongs();
-const resources = computed(() => createListResources(songs.value ?? [], "songs"));
 
 const { columns, reset, columnsChanged } = useColumns<SongColumns>("songs", defaultSongColumns);
 
@@ -91,7 +90,7 @@ const {
 } = useFilters();
 
 const search = ref("");
-const searchedSongs = useSearch(resources, search, songSearchKeys);
+const searchedSongs = useSearch(songs, search, songSearchKeys);
 
 const displayedSongs = computed(() => {
   const filteredSongs = filterResources(searchedSongs.value, filters.value);

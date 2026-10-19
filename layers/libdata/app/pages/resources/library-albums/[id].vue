@@ -169,8 +169,7 @@ function play(index: number = 0, shuffle: boolean = false) {
   );
 }
 
-const menuItems = useResourceMenu(
-  () => (album.value ? createListResource(album.value, id.value, 0) : undefined),
-  { actions: { play: () => play(), shuffle: () => play(0, true) } },
-);
+const menuItems = useResourceMenu(() => album.value, {
+  actions: { play: () => play(), shuffle: () => play(0, true) },
+});
 </script>

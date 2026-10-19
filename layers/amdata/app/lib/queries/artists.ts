@@ -73,10 +73,9 @@ export async function fetchCatalogArtistViews(id: string) {
   return artistViews.map((view) => {
     const collection = artist.views?.[view];
     const title = getUnknownProperty(collection?.attributes, "title");
-    const items = createListResources(
-      (collection?.data ?? []).filter(hasResourceName).map((item) => parseResource(item)),
-      `artists:${id}:${view}`,
-    );
+    const items = (collection?.data ?? [])
+      .filter(hasResourceName)
+      .map((item) => parseResource(item));
 
     return {
       view,
@@ -94,8 +93,5 @@ export async function fetchCatalogArtistView(id: string, view: ArtistView) {
     limit: 100,
     scopes: artistViewScopes,
   });
-  return createListResources(
-    response.data.filter(hasResourceName).map((item) => parseResource(item)),
-    `artists:${id}:${view}`,
-  );
+  return response.data.filter(hasResourceName).map((item) => parseResource(item));
 }

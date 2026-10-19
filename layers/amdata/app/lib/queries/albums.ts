@@ -70,10 +70,7 @@ export async function fetchCatalogAlbumViews(id: string) {
     return {
       view,
       title: typeof title === "string" ? title : view,
-      items: createListResources(
-        (collection?.data ?? []).filter(hasResourceName).map((item) => parseResource(item)),
-        `albums:${id}:${view}`,
-      ),
+      items: (collection?.data ?? []).filter(hasResourceName).map((item) => parseResource(item)),
       hasMore: !!collection?.next,
     };
   });
@@ -89,10 +86,7 @@ export async function fetchCatalogAlbumView(id: string, view: AlbumView) {
     }),
   );
 
-  return createListResources(
-    resources.filter(hasResourceName).map((item) => parseResource(item)),
-    `albums:${id}:${view}`,
-  );
+  return resources.filter(hasResourceName).map((item) => parseResource(item));
 }
 
 export async function fetchCatalogAlbumTracks(id: string) {
@@ -115,5 +109,5 @@ export async function fetchCatalogAlbumTracks(id: string) {
     .filter(hasResourceName)
     .map(parseCatalogSong);
 
-  return createListResources(songs, `albums:${id}`);
+  return songs;
 }

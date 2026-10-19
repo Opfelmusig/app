@@ -44,8 +44,8 @@ const { data, isPending, error } = useAmQuery({
   gcTime: ms("6h"),
 });
 
-const songs = computed(() => data.value?.filter((item) => item.resourceType === "songs") ?? []);
-const gridItems = computed(() => data.value?.filter((item) => item.resourceType !== "songs") ?? []);
+const songs = computed(() => data.value?.filter((item) => item.type === "songs") ?? []);
+const gridItems = computed(() => data.value?.filter((item) => item.type !== "songs") ?? []);
 
 const queueStore = useQueueStore();
 const route = useRoute();

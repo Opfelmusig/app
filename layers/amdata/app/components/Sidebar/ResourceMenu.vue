@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 const props = defineProps<{
-  resource: AmListResource<AmResource>;
+  resource: AmResource;
 }>();
 
 const menuItems = useResourceMenu(() => props.resource);

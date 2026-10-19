@@ -21,7 +21,7 @@ interface ResourceMenuConfiguration {
 }
 
 export default function useResourceMenu(
-  resource: MaybeRefOrGetter<AmListResource<AmResource> | undefined>,
+  resource: MaybeRefOrGetter<AmResource | null | undefined>,
   config: ResourceMenuConfiguration = {},
 ) {
   const queueStore = useQueueStore();
@@ -33,18 +33,18 @@ export default function useResourceMenu(
   return computed<DropdownMenuItem[][]>(() => {
     const res = toValue(resource);
 
-    if (!res || res.resourceType === "stations") return [];
+    if (!res || res.type === "stations") return [];
 
     const groups: DropdownMenuItem[][] = [];
     const playback: DropdownMenuItem[] = [];
     const navigation: DropdownMenuItem[] = [];
-    const pending = pendingResource.value === res.resource.id;
+    const pending = pendingResource.value === res.id;
 
     const start = toValue(config.extras?.start);
     if (start) groups.push(start);
 
-    if (res.resourceType === "songs" || res.resourceType === "library-songs") {
-      const song = res.resource;
+    if (res.type === "songs" || res.type === "library-songs") {
+      const song = res;
       const albumLink = songAlbumLink(song);
 
       if (!config.sections?.hidePlayback && song.attributes.playParams && config.actions?.play) {
@@ -83,12 +83,12 @@ export default function useResourceMenu(
     }
 
     if (
-      res.resourceType === "albums" ||
-      res.resourceType === "library-albums" ||
-      res.resourceType === "playlists" ||
-      res.resourceType === "library-playlists"
+      res.type === "albums" ||
+      res.type === "library-albums" ||
+      res.type === "playlists" ||
+      res.type === "library-playlists"
     ) {
-      const collection = res.resource;
+      const collection = res;
       if (!config.sections?.hidePlayback && !pending) {
         playback.push(
           { label: "Play", onSelect: config.actions?.play ?? (() => play(collection)) },
@@ -103,14 +103,14 @@ export default function useResourceMenu(
     }
 
     if (
-      res.resourceType === "songs" ||
-      res.resourceType === "library-songs" ||
-      res.resourceType === "albums" ||
-      res.resourceType === "library-albums" ||
-      res.resourceType === "artists" ||
-      res.resourceType === "library-artists"
+      res.type === "songs" ||
+      res.type === "library-songs" ||
+      res.type === "albums" ||
+      res.type === "library-albums" ||
+      res.type === "artists" ||
+      res.type === "library-artists"
     ) {
-      const seed = res.resource;
+      const seed = res;
       const catalogId =
         seed.type === "songs" || seed.type === "albums" || seed.type === "artists"
           ? seed.id
@@ -121,12 +121,12 @@ export default function useResourceMenu(
     }
 
     if (
-      res.resourceType === "songs" ||
-      res.resourceType === "library-songs" ||
-      res.resourceType === "albums" ||
-      res.resourceType === "library-albums"
+      res.type === "songs" ||
+      res.type === "library-songs" ||
+      res.type === "albums" ||
+      res.type === "library-albums"
     ) {
-      const artistLinks = resourceArtistLinks(res.resource);
+      const artistLinks = resourceArtistLinks(res);
       if (artistLinks.length) {
         navigation.push({
           label: "Go to artist",
@@ -136,8 +136,8 @@ export default function useResourceMenu(
       }
     }
 
-    if (res.resourceType === "songs" || res.resourceType === "library-songs") {
-      const song = res.resource;
+    if (res.type === "songs" || res.type === "library-songs") {
+      const song = res;
       if (song.type === "songs" && song.extras.libraryId) {
         navigation.push({
           label: "Show in library",
@@ -157,19 +157,17 @@ export default function useResourceMenu(
     }
 
     if (
-      res.resourceType === "albums" ||
-      res.resourceType === "library-albums" ||
-      res.resourceType === "artists" ||
-      res.resourceType === "library-artists" ||
-      res.resourceType === "playlists" ||
-      res.resourceType === "library-playlists"
+      res.type === "albums" ||
+      res.type === "library-albums" ||
+      res.type === "artists" ||
+      res.type === "library-artists" ||
+      res.type === "playlists" ||
+      res.type === "library-playlists"
     ) {
-      const counterpartLink = resourceRelationLink(res.resource);
+      const counterpartLink = resourceRelationLink(res);
       if (counterpartLink) {
         navigation.push({
-          label: res.resourceType.startsWith("library-")
-            ? "Show in Apple Music"
-            : "Show in library",
+          label: res.type.startsWith("library-") ? "Show in Apple Music" : "Show in library",
           to: counterpartLink,
         });
       }
@@ -177,11 +175,11 @@ export default function useResourceMenu(
 
     groups.push(playback, navigation);
 
-    if (appleMusicLink(res.resource, auth.storefront.value?.id)) {
+    if (appleMusicLink(res, auth.storefront.value?.id)) {
       groups.push([
         {
           label: "Copy link",
-          onSelect: () => copyLink(res.resource),
+          onSelect: () => copyLink(res),
         },
       ]);
     }

@@ -31,8 +31,5 @@ export async function fetchSocialProfileSharedPlaylists(id: string) {
     }),
   );
 
-  return createListResources(
-    playlists.filter(hasResourceName).map(parseCatalogPlaylist),
-    `social-profiles:${id}:shared-playlists`,
-  );
+  return playlists.filter(hasResourceName).map(parseCatalogPlaylist);
 }

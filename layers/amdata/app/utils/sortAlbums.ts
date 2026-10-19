@@ -3,10 +3,10 @@ import { sort as sortWith, sortBy } from "remeda";
 import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
 
 export default function sortAlbums(
-  albums: AmListResource<AmAlbum>[],
+  albums: AmAlbum[],
   sort: AlbumSort,
   dir: SortingDirection,
-): AmListResource<AmAlbum>[] {
+): AmAlbum[] {
   const direction = dir === "asc" ? 1 : -1;
 
   function compare(left: string = "", right: string = "") {
@@ -23,15 +23,13 @@ export default function sortAlbums(
 
   switch (sort) {
     case "default":
-      return sortBy(albums, [(album) => album.position, dir]);
+      return dir === "asc" ? [...albums] : albums.toReversed();
     case "title":
     case "artist": {
       const field = sort === "title" ? "name" : "artistName";
-      return sortWith(albums, (a, b) =>
-        compare(a.resource.attributes[field], b.resource.attributes[field]),
-      );
+      return sortWith(albums, (a, b) => compare(a.attributes[field], b.attributes[field]));
     }
     case "year":
-      return sortBy(albums, [(album) => year(album.resource.attributes.releaseDate), dir]);
+      return sortBy(albums, [(album) => year(album.attributes.releaseDate), dir]);
   }
 }

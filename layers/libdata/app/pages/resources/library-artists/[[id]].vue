@@ -33,9 +33,9 @@
       <div v-else class="flex cursor-pointer flex-col text-sm select-none">
         <NuxtLink
           v-for="artist in displayedArtists"
-          :key="artist.key"
+          :key="artist.id"
           class="group flex h-14 items-center gap-2 border-b border-default px-2 last:border-b-0 hover:bg-raised route:bg-muted/40 [&:active:not(:has(.no-active:active))]:bg-muted/60"
-          :to="rawResourceLink('library-artists', artist.resource.id)"
+          :to="rawResourceLink('library-artists', artist.id)"
         >
           <AMArtworkWrapper :resource="artist" context="list">
             <AMArtworkImage />
@@ -43,9 +43,9 @@
           </AMArtworkWrapper>
           <div class="flex w-full min-w-0 items-center gap-2 overflow-hidden">
             <span class="truncate">
-              {{ artist.resource.attributes.name }}
+              {{ artist.attributes.name }}
             </span>
-            <OMStar v-if="artist.resource.attributes.personalRating === 1" />
+            <OMStar v-if="artist.attributes.personalRating === 1" />
           </div>
         </NuxtLink>
       </div>
@@ -108,17 +108,14 @@
 </template>
 
 <script lang="ts" setup>
-import { reverse, sortBy as sortArtists } from "remeda";
-
 import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/controls/filters";
 import { artistSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
 import { fetchLibraryArtist } from "#layers/libdata/app/lib/queries/artists";
 
 const { data: artists, isPending: artistsPending, error: artistsError } = useLibraryArtists();
-const resources = computed(() => createListResources(artists.value ?? [], "artists"));
 const search = ref("");
-const searchedArtists = useSearch(resources, search, artistSearchKeys);
+const searchedArtists = useSearch(artists, search, artistSearchKeys);
 
 const descending = ref(false);
 const selectedRatings = ref<FilterRating[]>([]);
@@ -133,17 +130,16 @@ function resetFilters() {
 const displayedArtists = computed(() => {
   const selectedRatingValues = selectedRatings.value.map(Number);
   const filteredArtists = searchedArtists.value.filter((artist) => {
-    const rating = artist.resource.attributes.personalRating ?? 0;
+    const rating = artist.attributes.personalRating ?? 0;
     if (selectedRatingValues.length > 0 && !selectedRatingValues.includes(rating)) return false;
-    if (hasCatalog.value && !artist.resource.extras.catalogId) return false;
+    if (hasCatalog.value && !artist.extras.catalogId) return false;
 
     return true;
   });
 
   if (search.value.trim()) return filteredArtists;
 
-  const sortedArtists = sortArtists(filteredArtists, (artist) => artist.position);
-  return descending.value ? reverse(sortedArtists) : sortedArtists;
+  return descending.value ? filteredArtists.toReversed() : filteredArtists;
 });
 
 const id = useRouteParams<string | undefined>("id");
@@ -159,11 +155,7 @@ const {
   staleTime: ms("6h"),
   gcTime: false,
 });
-const menuItems = useResourceMenu(() =>
-  currentArtist.value
-    ? createListResource(currentArtist.value, currentArtist.value.id, 0)
-    : undefined,
-);
+const menuItems = useResourceMenu(() => currentArtist.value);
 const {
   data: albums,
   isPending: currentArtistAlbumsPending,
@@ -174,10 +166,7 @@ const currentArtistAlbums = computed(() => {
   const artistId = id.value;
   if (!artistId) return [];
 
-  return createListResources(
-    (albums.value ?? []).filter((album) => album.extras.artistId === artistId),
-    artistId,
-  );
+  return (albums.value ?? []).filter((album) => album.extras.artistId === artistId);
 });
 
 const {

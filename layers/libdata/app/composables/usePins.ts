@@ -14,7 +14,7 @@ export default function usePins() {
     () =>
       new Set(
         (query.data.value ?? [])
-          .flatMap(({ resource }) => [resource.id, resource.extras.catalogId])
+          .flatMap((resource) => [resource.id, resource.extras.catalogId])
           .filter(isDefined),
       ),
   );

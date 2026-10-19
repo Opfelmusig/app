@@ -20,11 +20,8 @@ export async function fetchLibraryPins() {
     },
   });
 
-  return createListResources(
-    pins.data
-      .filter((resource) => isNotResourceType(resource, "library-music-videos"))
-      .filter(hasResourceName)
-      .map((resource) => parseResource(resource)),
-    "pins",
-  );
+  return pins.data
+    .filter((resource) => isNotResourceType(resource, "library-music-videos"))
+    .filter(hasResourceName)
+    .map((resource) => parseResource(resource));
 }

@@ -1,12 +1,12 @@
 import type { ResourceFilters } from "#layers/amdata/app/lib/controls/filters";
 
 export default function filterResources<T extends AmSong | AmAlbum>(
-  resources: AmListResource<T>[],
+  resources: T[],
   filters: ResourceFilters,
-): AmListResource<T>[] {
+): T[] {
   const selectedRatings = filters.personalRating.map(Number);
 
-  return resources.filter(({ resource }) => {
+  return resources.filter((resource) => {
     if (
       filters.inLibrary &&
       resource.type !== "library-songs" &&

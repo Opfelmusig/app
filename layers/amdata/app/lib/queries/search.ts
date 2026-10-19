@@ -29,21 +29,11 @@ export async function fetchCatalogSearch(term: string, filter: SearchFilter) {
   });
 
   return {
-    songs: createListResources(
-      (response.results.song?.data ?? []).filter(hasResourceName).map(parseCatalogSong),
-      `search:${term}:songs`,
-    ),
-    albums: createListResources(
-      (response.results.album?.data ?? []).filter(hasResourceName).map(parseCatalogAlbum),
-      `search:${term}:albums`,
-    ),
-    artists: createListResources(
-      (response.results.artist?.data ?? []).filter(hasResourceName).map(parseCatalogArtist),
-      `search:${term}:artists`,
-    ),
-    playlists: createListResources(
-      (response.results.playlist?.data ?? []).filter(hasResourceName).map(parseCatalogPlaylist),
-      `search:${term}:playlists`,
-    ),
+    songs: (response.results.song?.data ?? []).filter(hasResourceName).map(parseCatalogSong),
+    albums: (response.results.album?.data ?? []).filter(hasResourceName).map(parseCatalogAlbum),
+    artists: (response.results.artist?.data ?? []).filter(hasResourceName).map(parseCatalogArtist),
+    playlists: (response.results.playlist?.data ?? [])
+      .filter(hasResourceName)
+      .map(parseCatalogPlaylist),
   };
 }

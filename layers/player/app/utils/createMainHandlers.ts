@@ -12,7 +12,7 @@ export default function createMainHandlers(): MainFunctions {
       return {
         layout: settingsStore.player.miniplayerLayout,
         playback: {
-          track: queueStore.current?.entry.resource ?? null,
+          track: queueStore.current?.entry ?? null,
           loading: playbackStore.loading,
           paused: playbackStore.paused,
           position: playbackStore.position,

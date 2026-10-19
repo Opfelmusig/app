@@ -33,7 +33,7 @@
     <USeparator />
     <AMGridWrapper>
       <AMGridStatus :is-pending="isPending" :error="error" :resources="children">
-        <AMGrid :items="createListResources(children, `playlist-folder:${id}`)" />
+        <AMGrid :items="children" />
       </AMGridStatus>
     </AMGridWrapper>
     <AMFooter>

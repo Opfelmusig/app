@@ -4,13 +4,13 @@
       No pins
     </SidebarItemIcon>
     <template v-else-if="data">
-      <SidebarResourceMenu v-for="pin in data" :key="pin.resource.id" :resource="pin">
-        <SidebarItemWrapper :to="resourceLink(pin.resource)">
-          <AMArtworkWrapper :artwork="pin.resource.attributes.artwork" context="small">
+      <SidebarResourceMenu v-for="pin in data" :key="pin.id" :resource="pin">
+        <SidebarItemWrapper :to="resourceLink(pin)">
+          <AMArtworkWrapper :artwork="pin.attributes.artwork" context="small">
             <AMArtworkImage />
             <AMArtworkPlaceholder />
           </AMArtworkWrapper>
-          <SidebarItemLabel>{{ pin.resource.attributes.name }}</SidebarItemLabel>
+          <SidebarItemLabel>{{ pin.attributes.name }}</SidebarItemLabel>
         </SidebarItemWrapper>
       </SidebarResourceMenu>
     </template>

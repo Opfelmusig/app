@@ -52,7 +52,7 @@ function revealArtwork(event: Event) {
   });
 }
 
-const resource = computed(() => queueStore.current?.entry.resource);
+const resource = computed(() => queueStore.current?.entry);
 
 const stops = Array.from({ length: 15 }, (_, i) => {
   const t = i / 14;

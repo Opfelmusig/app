@@ -2,7 +2,7 @@
   <template v-if="!albumMode || discs.length <= 1 || !albumSort">
     <AMSongsItem
       v-for="(song, i) in songs"
-      :key="song.key"
+      :key="`${song.id}:${i}`"
       :song
       :album-mode
       @play="$emit('play', i)"
@@ -12,7 +12,7 @@
     <OMTableSeparator>Disc {{ disc.number }}</OMTableSeparator>
     <AMSongsItem
       v-for="song in disc.songs"
-      :key="song.item.key"
+      :key="`${song.item.id}:${song.index}`"
       :song="song.item"
       :album-mode
       @play="$emit('play', song.index)"
@@ -24,7 +24,7 @@
 import { groupBy, map, pipe, values } from "remeda";
 
 const props = defineProps<{
-  songs?: AmListResource<AmSong>[];
+  songs?: AmSong[];
   albumMode?: boolean;
   albumSort?: boolean;
 }>();
@@ -33,9 +33,9 @@ const discs = computed(() =>
   pipe(
     props.songs ?? [],
     map((item, index) => ({ item, index })),
-    groupBy(({ item }) => item.resource.attributes.discNumber ?? 1),
+    groupBy(({ item }) => item.attributes.discNumber ?? 1),
     values(),
-    map((songs) => ({ number: songs[0].item.resource.attributes.discNumber ?? 1, songs })),
+    map((songs) => ({ number: songs[0].item.attributes.discNumber ?? 1, songs })),
   ),
 );
 

@@ -88,10 +88,7 @@ const currentGenreAlbums = computed(() => {
   const genre = name.value;
   if (!genre) return [];
 
-  return createListResources(
-    (albums.value ?? []).filter((album) => album.attributes.genreNames.includes(genre)),
-    genre,
-  );
+  return (albums.value ?? []).filter((album) => album.attributes.genreNames.includes(genre));
 });
 
 const search = ref("");

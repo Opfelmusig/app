@@ -3,7 +3,6 @@ import type {
   CreateQueueContext,
   QueueContext,
   QueueEntry,
-  QueueTrack,
 } from "~~/layers/player/app/types/queue";
 
 export const useQueueStore = defineStore(
@@ -47,7 +46,7 @@ export const useQueueStore = defineStore(
         : [...queue.value, ...contextQueue.value];
 
       const playable = entries.flatMap((entry, i) =>
-        entry.entry.resource.attributes.playParams ? [i] : [],
+        entry.entry.attributes.playParams ? [i] : [],
       );
       const target =
         direction === 1 ? playable.find((i) => i >= start) : playable.findLast((i) => i <= start);
@@ -57,31 +56,26 @@ export const useQueueStore = defineStore(
       return (direction === 1 ? playable[0] : playable.at(-1)) ?? null;
     }
 
-    function createQueueFromTrack(
-      track: QueueTrack,
-      position: number,
-      fromContext = false,
-    ): QueueEntry {
+    function createQueueFromTrack(track: AmSong, fromContext = false): QueueEntry {
       return {
         id: crypto.randomUUID(),
         fromContext,
-        position,
         entry: track,
       };
     }
 
-    function createQueueFromTracks(tracks: QueueTrack[], fromContext = false): QueueEntry[] {
-      return tracks.map((track, i) => createQueueFromTrack(track, i, fromContext));
+    function createQueueFromTracks(tracks: AmSong[], fromContext = false): QueueEntry[] {
+      return tracks.map((track) => createQueueFromTrack(track, fromContext));
     }
 
-    function play(track: QueueTrack) {
+    function play(track: AmSong) {
       requestedStation.value = null;
       contextQueue.value = [];
       index.value = null;
       context.value = null;
       resetShuffle();
 
-      queue.value = [createQueueFromTrack(track, 0)];
+      queue.value = [createQueueFromTrack(track)];
       index.value = findPlayableIndex(0);
     }
 
@@ -141,7 +135,7 @@ export const useQueueStore = defineStore(
       resetShuffle();
     }
 
-    function playNext(tracks: QueueTrack[]) {
+    function playNext(tracks: AmSong[]) {
       if (tracks.length === 0) return;
 
       const entries = createQueueFromTracks(tracks);
@@ -165,7 +159,7 @@ export const useQueueStore = defineStore(
       if (isShuffling.value) shuffledQueue.value.splice(index.value! + 1, 0, ...entries);
     }
 
-    function playAfter(tracks: QueueTrack[]) {
+    function playAfter(tracks: AmSong[]) {
       if (!current.value || inContext.value || queue.value.length === 0) return;
 
       const entries = createQueueFromTracks(tracks);

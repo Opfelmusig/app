@@ -45,5 +45,5 @@ export async function fetchLibraryPlaylistTracks(id: string) {
     .filter(hasResourceName)
     .map(parseLibrarySong);
 
-  return createListResources(songs, id);
+  return songs;
 }

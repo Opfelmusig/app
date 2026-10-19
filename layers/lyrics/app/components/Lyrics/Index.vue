@@ -10,7 +10,7 @@ const playbackStore = usePlaybackStore();
 
 const client = useClient();
 
-const currentSong = computed(() => queueStore.current?.entry.resource);
+const currentSong = computed(() => queueStore.current?.entry);
 
 const { data, error, isPending } = useAmQuery({
   key: () => ["songs", currentSong.value?.id ?? null, "syllable-lyrics"],

@@ -14,7 +14,7 @@ export function useArtworkTheme() {
   const cssVars = ref(defaultCssVars);
   const cache = new Map<string, typeof defaultCssVars>();
   const artworkUrl = computed(() =>
-    getArtworkUrl(queueStore.current?.entry.resource.attributes.artwork, { width: 512 }),
+    getArtworkUrl(queueStore.current?.entry.attributes.artwork, { width: 512 }),
   );
 
   watch(

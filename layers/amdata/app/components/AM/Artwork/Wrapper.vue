@@ -42,13 +42,11 @@ const props = defineProps<{
   transparent?: boolean;
   round?: boolean;
   class?: string;
-  resource?: Resources | AmListResource<Resources> | null;
+  resource?: Resources | null;
   artwork?: Artwork;
 }>();
 
-const resource = computed(() =>
-  props.resource?.type === "list-resources" ? props.resource.resource : props.resource,
-);
+const resource = computed(() => props.resource);
 
 const isRoundedResource = computed(
   () =>

@@ -200,8 +200,7 @@ function play(index = 0, shuffle = false) {
   queueStore.playContext({ index, context: album.value, tracks: displayedTracks.value }, shuffle);
 }
 
-const menuItems = useResourceMenu(
-  () => (album.value ? createListResource(album.value, id.value, 0) : undefined),
-  { actions: { play: () => play(), shuffle: () => play(0, true) } },
-);
+const menuItems = useResourceMenu(() => album.value, {
+  actions: { play: () => play(), shuffle: () => play(0, true) },
+});
 </script>

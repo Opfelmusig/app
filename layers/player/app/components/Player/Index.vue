@@ -122,13 +122,13 @@ import { withQuery } from "ufo";
 const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
 const settingsStore = useSettingsStore();
-const resource = computed(() => queueStore.current?.entry.resource);
+const resource = computed(() => queueStore.current?.entry);
 const playbackSourceLink = computed(() => {
   const context = queueStore.context;
   const current = queueStore.current;
   if (!current?.fromContext || !context || context.type === "stations") return;
 
-  const songId = current.entry.resource.id;
+  const songId = current.entry.id;
   if (context.type === "generic") {
     return context.link ? withQuery(context.link, { song_id: songId }) : undefined;
   }

@@ -44,17 +44,14 @@ export function parseMeRecommendation(resource: MeRecommendationScopes): AmMeRec
     },
 
     relationships: {
-      content: createListResources(
-        content.map((item) => {
-          const reason = getUnknownProperty(item.meta, "reason", "stringForDisplay");
+      content: content.map((item) => {
+        const reason = getUnknownProperty(item.meta, "reason", "stringForDisplay");
 
-          return {
-            ...parseResource(item),
-            shared: { reasonForDisplay: typeof reason === "string" ? reason : undefined },
-          };
-        }),
-        `home:${resource.id}`,
-      ),
+        return {
+          ...parseResource(item),
+          shared: { reasonForDisplay: typeof reason === "string" ? reason : undefined },
+        };
+      }),
     },
   };
 }

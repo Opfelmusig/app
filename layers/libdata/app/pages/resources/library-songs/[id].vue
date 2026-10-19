@@ -2,10 +2,7 @@
   <PageWrapper>
     <header class="flex flex-col gap-4 p-4 lg:flex-row">
       <AMArtworkWrapper :resource="song" context="header">
-        <AMMediaEditorialVideo
-          :editorial-video="song?.resource.attributes.editorialVideo"
-          variant="square"
-        >
+        <AMMediaEditorialVideo :editorial-video="song?.attributes.editorialVideo" variant="square">
           <template #fallback>
             <AMArtworkImage />
             <AMArtworkPlaceholder />
@@ -15,37 +12,34 @@
       <div class="flex w-full min-w-0 flex-col justify-end gap-4">
         <div v-if="song" class="flex min-w-0 flex-col gap-1">
           <div class="flex items-center gap-2">
-            <h2 class="truncate">{{ song.resource.attributes.name }}</h2>
-            <OMExplicit v-if="song.resource.attributes.contentRating === 'explicit'" />
+            <h2 class="truncate">{{ song.attributes.name }}</h2>
+            <OMExplicit v-if="song.attributes.contentRating === 'explicit'" />
             <OMDownloaded />
           </div>
           <div class="flex items-center gap-2 text-sm whitespace-nowrap text-muted">
             <AMLinks
-              :links="song.resource.attributes.albums"
+              :links="song.attributes.albums"
               type="albums"
-              :fallback-name="song.resource.attributes.albumName"
-              :fallback-id="song.resource.extras.albumId"
+              :fallback-name="song.attributes.albumName"
+              :fallback-id="song.extras.albumId"
             />
             <div class="size-1 shrink-0 rounded-full bg-accented first:hidden" />
             <AMLinks
-              :links="song.resource.attributes.artists"
+              :links="song.attributes.artists"
               type="artists"
-              :fallback-name="song.resource.attributes.artistName"
-              :fallback-id="song.resource.extras.artistId"
+              :fallback-name="song.attributes.artistName"
+              :fallback-id="song.extras.artistId"
             />
-            <template v-if="song.resource.attributes.releaseDate">
+            <template v-if="song.attributes.releaseDate">
               <div class="size-1 shrink-0 rounded-full bg-accented first:hidden" />
               <span>
                 Released
-                <AMReleaseDate
-                  :release-date="song.resource.attributes.releaseDate"
-                  date-style="long"
-                />
+                <AMReleaseDate :release-date="song.attributes.releaseDate" date-style="long" />
               </span>
             </template>
-            <template v-if="song.resource.attributes.genreNames.length">
+            <template v-if="song.attributes.genreNames.length">
               <div class="size-1 shrink-0 rounded-full bg-accented first:hidden" />
-              <span>{{ song.resource.attributes.genreNames.join(", ") }}</span>
+              <span>{{ song.attributes.genreNames.join(", ") }}</span>
             </template>
           </div>
         </div>
@@ -64,7 +58,7 @@
             v-if="song"
             fill
             icon="lucide:star"
-            :active="song.resource.attributes.personalRating === 1"
+            :active="song.attributes.personalRating === 1"
           />
           <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
@@ -104,14 +98,18 @@ import { fetchLibrarySong } from "#layers/libdata/app/lib/queries/songs";
 
 const id = useRouteParams<string>("id");
 
-const { data, isPending, error } = useLibraryQuery({
+const {
+  data: song,
+  isPending,
+  error,
+} = useLibraryQuery({
   key: () => ["songs", id.value, "resource"],
   query: () => fetchLibrarySong(id.value),
   staleTime: ms("6h"),
   gcTime: false,
 });
 
-const catalogId = computed(() => data.value?.extras.catalogId);
+const catalogId = computed(() => song.value?.extras.catalogId);
 
 const {
   data: lyrics,
@@ -124,8 +122,6 @@ const {
   staleTime: ms("1d"),
   gcTime: ms("7d"),
 });
-
-const song = computed(() => (data.value ? createListResource(data.value, id.value, 0) : undefined));
 
 const queueStore = useQueueStore();
 

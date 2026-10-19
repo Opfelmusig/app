@@ -3,7 +3,7 @@ import { pipe, take, uniqueBy } from "remeda";
 export interface HistoryEntry {
   id: string;
   playedAt: string;
-  track: QueueTrack;
+  track: AmSong;
 }
 
 export const useHistoryStore = defineStore(
@@ -11,10 +11,10 @@ export const useHistoryStore = defineStore(
   () => {
     const entries = ref<HistoryEntry[]>([]);
 
-    function record(track: QueueTrack) {
+    function record(track: AmSong) {
       entries.value = pipe(
         [{ id: crypto.randomUUID(), playedAt: new Date().toISOString(), track }, ...entries.value],
-        uniqueBy(({ track }) => track.resource.id),
+        uniqueBy(({ track }) => track.id),
         take(500),
       );
     }

@@ -3,10 +3,10 @@ import { sort as sortWith, sortBy } from "remeda";
 import type { SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
 
 export default function sortSongs(
-  songs: AmListResource<AmSong>[],
+  songs: AmSong[],
   sort: SongSort,
   dir: SortingDirection,
-): AmListResource<AmSong>[] {
+): AmSong[] {
   const direction = dir === "asc" ? 1 : -1;
 
   function compare(left: string = "", right: string = "") {
@@ -23,24 +23,22 @@ export default function sortSongs(
 
   switch (sort) {
     case "default":
-      return sortBy(songs, [(song) => song.position, dir]);
+      return dir === "asc" ? [...songs] : songs.toReversed();
     case "discAndTrackNumber":
       return sortBy(
         songs,
-        [(song) => song.resource.attributes.discNumber ?? 0, dir],
-        [(song) => song.resource.attributes.trackNumber ?? 0, dir],
+        [(song) => song.attributes.discNumber ?? 0, dir],
+        [(song) => song.attributes.trackNumber ?? 0, dir],
       );
     case "title":
     case "artist":
     case "album": {
       const field = sort === "title" ? "name" : sort === "artist" ? "artistName" : "albumName";
-      return sortWith(songs, (a, b) =>
-        compare(a.resource.attributes[field], b.resource.attributes[field]),
-      );
+      return sortWith(songs, (a, b) => compare(a.attributes[field], b.attributes[field]));
     }
     case "year":
-      return sortBy(songs, [(song) => year(song.resource.attributes.releaseDate), dir]);
+      return sortBy(songs, [(song) => year(song.attributes.releaseDate), dir]);
     case "length":
-      return sortBy(songs, [(song) => song.resource.attributes.durationInMillis, dir]);
+      return sortBy(songs, [(song) => song.attributes.durationInMillis, dir]);
   }
 }

@@ -68,5 +68,5 @@ defineProps<{
 const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
 
-const resource = computed(() => queueStore.current?.entry.resource);
+const resource = computed(() => queueStore.current?.entry);
 </script>

@@ -42,8 +42,8 @@
       class="scrollbar-hide flex snap-x snap-proximity scroll-pl-4 gap-4 overflow-x-auto px-4"
     >
       <div
-        v-for="item in gridItems"
-        :key="item.key"
+        v-for="(item, i) in gridItems"
+        :key="`${item.id}:${i}`"
         class="flex w-44 shrink-0 snap-start flex-col gap-1 sm:w-36 lg:w-44"
       >
         <AMGridItem :resource="item" :show-artists :show-year />
@@ -61,7 +61,7 @@ type GridResource = Exclude<ShelfResource, AmSong>;
 const props = defineProps<{
   title: string;
   description?: string;
-  items: AmListResource<ShelfResource>[];
+  items: ShelfResource[];
   seeMoreTo?: RouteLocationRaw;
   showArtists?: boolean;
   showYear?: boolean;
@@ -69,14 +69,12 @@ const props = defineProps<{
 
 const songs = computed(() =>
   props.items.filter(
-    (item): item is AmListResource<AmSong> =>
-      item.resourceType === "songs" || item.resourceType === "library-songs",
+    (item): item is AmSong => item.type === "songs" || item.type === "library-songs",
   ),
 );
 const gridItems = computed(() =>
   props.items.filter(
-    (item): item is AmListResource<GridResource> =>
-      item.resourceType !== "songs" && item.resourceType !== "library-songs",
+    (item): item is GridResource => item.type !== "songs" && item.type !== "library-songs",
   ),
 );
 

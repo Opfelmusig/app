@@ -14,6 +14,6 @@ export interface AmMeRecommendation extends AmResourceBase {
   };
 
   relationships: {
-    content: AmListResource<AmMeRecommendationContent>[];
+    content: AmMeRecommendationContent[];
   };
 }

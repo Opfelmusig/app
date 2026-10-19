@@ -17,7 +17,7 @@ export function useDiscordPresence(playback: DiscordPlayback) {
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   const presence = computed(() => {
-    const song = queueStore.current?.entry.resource;
+    const song = queueStore.current?.entry;
     if (!settingsStore.integrations.discordRichPresence || !song || !playback.playing.value) {
       return null;
     }

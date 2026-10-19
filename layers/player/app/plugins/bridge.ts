@@ -26,7 +26,7 @@ export default defineNuxtPlugin({
     watch(
       [
         () => queueStore.current?.id,
-        () => queueStore.current?.entry.resource,
+        () => queueStore.current?.entry,
         () => playbackStore.paused,
         () => playbackStore.loading,
       ],
@@ -34,7 +34,7 @@ export default defineNuxtPlugin({
         if (!isOpen.value) return;
         bridge
           .setPlayback({
-            track: queueStore.current?.entry.resource ?? null,
+            track: queueStore.current?.entry ?? null,
             loading: playbackStore.loading,
             paused: playbackStore.paused,
             position: playbackStore.position,

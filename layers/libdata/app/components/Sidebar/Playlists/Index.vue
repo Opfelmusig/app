@@ -3,10 +3,7 @@
     <SidebarItemIcon to="/resources/library-playlist-folders" icon="lucide:layout-grid">
       All playlists
     </SidebarItemIcon>
-    <SidebarResourceMenu
-      v-if="favoritesPlaylist"
-      :resource="createListResource(favoritesPlaylist, 'sidebar-playlists', 0)"
-    >
+    <SidebarResourceMenu v-if="favoritesPlaylist" :resource="favoritesPlaylist">
       <SidebarItemWrapper :to="resourceLink(favoritesPlaylist)">
         <div
           class="flex aspect-square size-5 shrink-0 items-center justify-center overflow-hidden rounded-md text-muted select-none"

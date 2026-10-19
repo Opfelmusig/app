@@ -1,5 +1,5 @@
 <template>
-  <SidebarResourceMenu :resource="createListResource(node, 'sidebar-playlists', 0)">
+  <SidebarResourceMenu :resource="node">
     <SidebarItemWrapper :to="resourceLink(node)" :inset>
       <AMArtworkWrapper :resource="node" context="small">
         <AMArtworkImage />

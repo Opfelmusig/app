@@ -134,9 +134,7 @@ const { data: viewsData } = useAmQuery({
   gcTime: ms("6h"),
 });
 
-const menuItems = useResourceMenu(() =>
-  artist.value ? createListResource(artist.value, id.value, 0) : undefined,
-);
+const menuItems = useResourceMenu(() => (artist.value ? artist.value : undefined));
 const station = computed(() => artist.value?.relationships.station);
 const queueStore = useQueueStore();
 
@@ -147,7 +145,7 @@ const latestReleaseView = computed(() =>
   viewsData.value?.find((section) => section.view === "latest-release"),
 );
 const latestRelease = computed(() => {
-  const resource = latestReleaseView.value?.items[0]?.resource;
+  const resource = latestReleaseView.value?.items[0];
   return resource?.type === "albums" ? resource : undefined;
 });
 

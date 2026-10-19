@@ -47,9 +47,8 @@ import { albumSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { libraryAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
 
 const { data: albums, isPending, error } = useLibraryAlbums();
-const resources = computed(() => createListResources(albums.value ?? [], "albums"));
 const search = ref("");
-const searchedAlbums = useSearch(resources, search, albumSearchKeys);
+const searchedAlbums = useSearch(albums, search, albumSearchKeys);
 
 const {
   sortBy,
