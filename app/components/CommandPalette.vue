@@ -9,15 +9,7 @@
           v-model:search-term="search"
           placeholder="Go to..."
           :groups="groups"
-          :fuse="{
-            fuseOptions: {
-              ignoreLocation: true,
-              threshold: 0.2,
-              keys: [{ name: 'label', weight: 2 }, 'suffix'],
-            },
-            resultLimit: 6,
-            matchAllWhenSearchEmpty: false,
-          }"
+          :fuse="{ resultLimit: 6 }"
           preserve-group-order
           :class="query ? '' : 'divide-y-0'"
           :ui="{
@@ -56,6 +48,7 @@
 
 <script lang="ts" setup>
 import type { CommandPaletteGroup, CommandPaletteItem } from "@nuxt/ui";
+import { useFuse } from "@vueuse/integrations/useFuse";
 
 import { DbListId } from "#layers/libcore/app/database/types";
 
@@ -117,6 +110,21 @@ const libraryItems = computed<CommandPaletteItem[]>(() => {
   });
 });
 
+const searchableItems = computed(() => [
+  ...pages.map((item) => ({ ...item, active: false, group: "app" })),
+  ...libraryItems.value.map((item) => ({ ...item, group: "library" })),
+]);
+
+const { results } = useFuse(query, searchableItems, {
+  fuseOptions: {
+    ignoreLocation: true,
+    threshold: 0.2,
+    keys: [{ name: "label", weight: 2 }, "suffix"],
+  },
+  resultLimit: 6,
+  matchAllWhenSearchEmpty: false,
+});
+
 const groups = computed<CommandPaletteGroup[]>(() => {
   if (!query.value) return [];
 
@@ -140,9 +148,16 @@ const groups = computed<CommandPaletteGroup[]>(() => {
   groups.push({
     id: "app",
     label: "App",
-    items: pages.map((item) => ({ ...item, active: false })),
+    ignoreFilter: true,
+    items: results.value.filter(({ item }) => item.group === "app").map(({ item }) => item),
   });
-  groups.push({ id: "library", label: "Library", items: libraryItems.value });
+
+  groups.push({
+    id: "library",
+    label: "Library",
+    ignoreFilter: true,
+    items: results.value.filter(({ item }) => item.group === "library").map(({ item }) => item),
+  });
 
   groups.push({
     id: "fallback",
