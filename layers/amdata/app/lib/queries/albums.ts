@@ -1,14 +1,15 @@
 import { collect } from "@opfelmusig/lib/helpers";
 
 import { parseResource } from "#layers/amdata/app/lib/parsers";
-import { parseCatalogAlbum } from "#layers/amdata/app/lib/parsers/albums";
+import { parseCatalogAlbum, parseLibraryAlbum } from "#layers/amdata/app/lib/parsers/albums";
 import { getUnknownProperty } from "#layers/amdata/app/lib/parsers/helpers";
-import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
+import { parseCatalogSong, parseLibrarySong } from "#layers/amdata/app/lib/parsers/songs";
 import {
   catalogAlbumsScopes,
   catalogPlaylistsScopes,
   catalogSongsScopes,
 } from "#layers/amdata/app/lib/scopes/catalog";
+import { libraryAlbumsScopes, librarySongsScopes } from "#layers/amdata/app/lib/scopes/library";
 
 export const albumViews = [
   "more-by-artist",
@@ -116,4 +117,49 @@ export async function fetchCatalogAlbumTracks(id: string) {
     .map(parseCatalogSong);
 
   return createListResources(songs, `albums:${id}`);
+}
+
+export async function fetchLibraryAlbums() {
+  const client = useClient();
+
+  const albums = await collect(
+    client.library.albums.iterateAll({
+      limit: 100,
+      scopes: libraryAlbumsScopes,
+      sort: "-dateAdded",
+    }),
+  );
+
+  return albums.filter(hasResourceName).map(parseLibraryAlbum);
+}
+
+export async function fetchLibraryAlbum(id: string) {
+  const client = useClient();
+
+  const response = await client.library.albums.get(id, {
+    scopes: libraryAlbumsScopes,
+  });
+
+  const album = response.data[0];
+  if (!hasResourceName(album)) return null;
+
+  return parseLibraryAlbum(album);
+}
+
+export async function fetchLibraryAlbumTracks(id: string) {
+  const client = useClient();
+
+  const tracks = await collect(
+    client.library.albums.iterateRelationship(id, "tracks", {
+      limit: 100,
+      scopes: librarySongsScopes,
+    }),
+  );
+
+  const songs = tracks
+    .filter((track) => track.type === "library-songs")
+    .filter(hasResourceName)
+    .map(parseLibrarySong);
+
+  return createListResources(songs, id);
 }

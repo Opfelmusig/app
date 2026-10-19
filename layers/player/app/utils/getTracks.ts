@@ -1,5 +1,8 @@
 import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
-import { fetchCatalogAlbumTracks } from "#layers/amdata/app/lib/queries/albums";
+import {
+  fetchCatalogAlbumTracks,
+  fetchLibraryAlbumTracks,
+} from "#layers/amdata/app/lib/queries/albums";
 import {
   fetchCatalogPlaylistTracks,
   fetchLibraryPlaylistTracks,
@@ -19,10 +22,9 @@ export default async function getTracks(
       return fetchCatalogPlaylistTracks(resource.id);
 
     case "library-albums": {
-      const library = useLibrary();
       const { sortBy, direction } = getSavedSorting(resource.id, "discAndTrackNumber");
 
-      const tracks = await library.client.getAlbumTracks(resource.id);
+      const tracks = await fetchLibraryAlbumTracks(resource.id);
       return sortSongs(tracks, sortBy, direction);
     }
 

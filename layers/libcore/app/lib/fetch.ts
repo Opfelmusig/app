@@ -2,10 +2,8 @@ import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect } from "@opfelmusig/lib/helpers";
 
 import {
-  libraryAlbumsScopes,
   libraryArtistsScopes,
   librarySongsScopes,
-  type LibraryAlbumsScopes,
   type LibraryArtistsScopes,
   type LibrarySongsScopes,
 } from "#layers/amdata/app/lib/scopes/library";
@@ -29,7 +27,6 @@ export async function fetchAppleMusicLibrary(
 
 export interface LibraryPages {
   songs: LibrarySongsScopes[];
-  albums: LibraryAlbumsScopes[];
   artists: LibraryArtistsScopes[];
 }
 
@@ -55,23 +52,6 @@ function fetchAllLibraryPages(
     ).then((resources) => {
       progress.songs.done = true;
       return resources.filter(hasResourceName);
-    }),
-    albums: collect(
-      client.library.albums.iterateAll({
-        limit: 100,
-        scopes: libraryAlbumsScopes,
-        sort: "-dateAdded",
-        config: { signal },
-      }),
-      {
-        signal,
-        onItem: () => {
-          progress.albums.count++;
-        },
-      },
-    ).then((result) => {
-      progress.albums.done = true;
-      return result.filter(hasResourceName);
     }),
     artists: collect(
       client.library.artists.iterateAll({

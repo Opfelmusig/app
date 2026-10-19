@@ -142,13 +142,19 @@ const menuItems = useResourceMenu(() =>
     : undefined,
 );
 const {
-  data: currentArtistAlbums,
+  data: albums,
   isPending: currentArtistAlbumsPending,
   error: currentArtistAlbumsError,
-} = useLibraryQuery({
-  key: () => ["artist", id.value ?? null, "albums"],
-  query: () => library.client.getArtistAlbums(id.value!),
-  enabled: id,
+} = useLibraryAlbums();
+
+const currentArtistAlbums = computed(() => {
+  const artistId = id.value;
+  if (!artistId) return [];
+
+  return createListResources(
+    (albums.value ?? []).filter((album) => album.extras.artistId === artistId),
+    artistId,
+  );
 });
 
 const {
@@ -156,7 +162,7 @@ const {
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<AlbumSort>(() => `artist:${id.value}:albums`, "title");
+} = useSorting<AlbumSort>(() => id.value ?? "artists", "title");
 
 const displayedAlbums = computed(() => {
   return sortAlbums(currentArtistAlbums.value ?? [], sortBy.value, direction.value);

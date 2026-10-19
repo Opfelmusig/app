@@ -100,34 +100,37 @@
 import { songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { albumSongSorting } from "#layers/amdata/app/lib/controls/sorting";
+import { fetchLibraryAlbum, fetchLibraryAlbumTracks } from "#layers/amdata/app/lib/queries/albums";
 
-const library = useLibrary();
 const id = useRouteParams<string>("id");
 
-const { data: album } = useLibraryQuery({
-  key: () => ["album", id.value, "resource"],
-  query: () => library.client.getAlbum(id.value),
+const { data: album } = useAmQuery({
+  scope: "library",
+  key: () => ["albums", id.value, "resource"],
+  query: () => fetchLibraryAlbum(id.value),
+  staleTime: ms("6h"),
+  gcTime: false,
 });
 const {
   data: tracks,
   isPending: tracksPending,
   error: tracksError,
-} = useLibraryQuery({
+} = useAmQuery({
+  scope: "library",
   key: () => ["albums", id.value, "tracks"],
-  query: () => library.client.getAlbumTracks(id.value),
+  query: () => fetchLibraryAlbumTracks(id.value),
+  staleTime: ms("6h"),
+  gcTime: false,
 });
 
-const { columns, reset, columnsChanged } = useColumns(
-  () => `album:${id.value}`,
-  ["artist", "length"],
-);
+const { columns, reset, columnsChanged } = useColumns(id, ["artist", "length"]);
 
 const {
   sortBy,
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<SongSort>(() => `album:${id.value}`, "discAndTrackNumber");
+} = useSorting<SongSort>(id, "discAndTrackNumber");
 
 const {
   filters,
@@ -160,8 +163,7 @@ function play(index: number = 0, shuffle: boolean = false) {
 }
 
 const menuItems = useResourceMenu(
-  () =>
-    album.value ? createListResource(album.value, `library-albums:${id.value}`, 0) : undefined,
+  () => (album.value ? createListResource(album.value, id.value, 0) : undefined),
   { actions: { play: () => play(), shuffle: () => play(0, true) } },
 );
 </script>

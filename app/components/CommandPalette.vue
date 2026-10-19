@@ -67,6 +67,7 @@ const query = computed(() => search.value.trim());
 const linkTarget = computed(() => parseAppleMusicLink(query.value));
 
 const playlists = useLibraryPlaylists();
+const albums = useLibraryAlbums();
 const {
   data,
   isPending: libraryPending,
@@ -77,7 +78,6 @@ const {
   query: async () => {
     const resources = await Promise.all([
       library.client.getListResources(DbListId.Songs),
-      library.client.getListResources(DbListId.Albums),
       library.client.getListResources(DbListId.Artists),
     ]);
 
@@ -85,8 +85,10 @@ const {
   },
 });
 
-const isPending = computed(() => libraryPending.value || playlists.isPending.value);
-const error = computed(() => libraryError.value ?? playlists.error.value);
+const isPending = computed(
+  () => libraryPending.value || playlists.isPending.value || albums.isPending.value,
+);
+const error = computed(() => libraryError.value ?? playlists.error.value ?? albums.error.value);
 
 const pages: CommandPaletteItem[] = [
   { label: "Search", to: "/search" },
@@ -107,7 +109,11 @@ const pages: CommandPaletteItem[] = [
 const libraryItems = computed<CommandPaletteItem[]>(() => {
   if (!isOpen.value) return [];
 
-  return [...(data.value ?? []), ...(playlists.data.value ?? [])].flatMap((resource) => {
+  return [
+    ...(data.value ?? []),
+    ...(albums.data.value ?? []),
+    ...(playlists.data.value ?? []),
+  ].flatMap((resource) => {
     const to = resourceLink(resource);
     if (!to) return [];
 

@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 const props = defineProps<{
-  resource?: AmLibraryAlbum | AmLibraryArtist | AmLibraryPlaylist;
+  resource?: AmLibraryAlbum | AmLibraryArtist | AmLibraryPlaylist | null;
 }>();
 
 const link = computed(() => resourceRelationLink(props.resource));

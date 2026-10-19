@@ -27,7 +27,7 @@ export async function refreshArtworks(
 
   await db.resources
     .where("type")
-    .anyOf(["library-songs", "library-albums"])
+    .equals("library-songs")
     .each((resource) => {
       if (!("artwork" in resource.attributes)) return;
 
@@ -67,7 +67,6 @@ export async function refreshArtworks(
       return client.library.getMany(
         {
           "library-songs": idsByType["library-songs"] ?? [],
-          "library-albums": idsByType["library-albums"] ?? [],
         },
         {
           config: { signal },
@@ -87,7 +86,7 @@ export async function refreshArtworks(
   signal.throwIfAborted();
 
   const filteredResources = resources.filter((resource) =>
-    isResourceType(resource, "library-songs", "library-albums"),
+    isResourceType(resource, "library-songs"),
   );
 
   const writeStartedAt = performance.now();

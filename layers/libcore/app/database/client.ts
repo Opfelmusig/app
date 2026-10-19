@@ -1,5 +1,5 @@
 import type { Collection } from "dexie";
-import { filter, flatMap, isDefined, isTruthy, pipe, sort, unique } from "remeda";
+import { isDefined } from "remeda";
 
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
@@ -14,8 +14,6 @@ function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceT
   switch (listId) {
     case DbListId.Songs:
       return ["library-songs"];
-    case DbListId.Albums:
-      return ["library-albums"];
     case DbListId.Artists:
       return ["library-artists"];
   }
@@ -37,25 +35,19 @@ export class LibraryClient {
   }
 
   async stats() {
-    const [songs, albums, artists] = await Promise.all([
+    const [songs, artists] = await Promise.all([
       this.resourcesByType("library-songs").count(),
-      this.resourcesByType("library-albums").count(),
       this.resourcesByType("library-artists").count(),
     ]);
 
     return {
       songs,
-      albums,
       artists,
     };
   }
 
   getSong(id: string) {
     return this.resourceByType(id, "library-songs");
-  }
-
-  getAlbum(id: string) {
-    return this.resourceByType(id, "library-albums");
   }
 
   getArtist(id: string) {
@@ -95,43 +87,5 @@ export class LibraryClient {
     );
 
     return results.filter(isDefined) as DbListResourceByList<L>[];
-  }
-
-  async getArtistAlbums(id: string) {
-    const albums = await this.resourcesByType("library-albums")
-      .filter((album) => album.extras.artistId === id)
-      .reverse()
-      .sortBy("extras.dateAdded");
-
-    return createListResources(albums, `library-artists:${id}`);
-  }
-
-  async getAlbumTracks(id: string): Promise<AmListResource<AmLibrarySong>[]> {
-    const songs = await this.resourcesByType("library-songs")
-      .filter((song) => song.extras.albumId === id)
-      .toArray();
-
-    return createListResources(songs, `library-albums:${id}`);
-  }
-
-  async getGenres() {
-    const albums = await this.resourcesByType("library-albums").toArray();
-
-    return pipe(
-      albums,
-      flatMap((album) => album.attributes.genreNames),
-      filter(isTruthy),
-      unique(),
-      sort((a, b) => a.localeCompare(b)),
-    );
-  }
-
-  async getGenreAlbums(genre: string) {
-    const albums = await this.resourcesByType("library-albums")
-      .filter((album) => album.attributes.genreNames.includes(genre))
-      .reverse()
-      .sortBy("extras.dateAdded");
-
-    return createListResources(albums, `library-genre:${genre}`);
   }
 }

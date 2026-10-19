@@ -39,11 +39,6 @@
             {{ progress.state === "idle" ? (stats?.songs ?? 0) : progress.songs.count }}
           </UBadge>
         </SettingsConfig>
-        <SettingsConfig no-label label="Albums">
-          <UBadge variant="soft" :color="badgeColor(progress.albums.done)">
-            {{ progress.state === "idle" ? (stats?.albums ?? 0) : progress.albums.count }}
-          </UBadge>
-        </SettingsConfig>
         <SettingsConfig no-label label="Artists">
           <UBadge variant="soft" :color="badgeColor(progress.artists.done)">
             {{ progress.state === "idle" ? (stats?.artists ?? 0) : progress.artists.count }}

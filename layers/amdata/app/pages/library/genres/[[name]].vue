@@ -71,21 +71,27 @@
 <script lang="ts" setup>
 import { defaultAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
 
-const library = useLibrary();
-const { data: genres } = useLibraryQuery({
-  key: ["genres"],
-  query: () => library.client.getGenres(),
-});
-
-const name = useRouteParams<string | undefined>("name");
 const {
-  data: currentGenreAlbums,
+  data: albums,
   isPending: currentGenreAlbumsPending,
   error: currentGenreAlbumsError,
-} = useLibraryQuery({
-  key: () => ["genre", name.value ?? null, "albums"],
-  query: () => library.client.getGenreAlbums(name.value!),
-  enabled: name,
+} = useLibraryAlbums();
+
+const genres = computed(() =>
+  [...new Set((albums.value ?? []).flatMap((album) => album.attributes.genreNames))]
+    .filter(Boolean)
+    .toSorted((left, right) => left.localeCompare(right)),
+);
+
+const name = useRouteParams<string | undefined>("name");
+const currentGenreAlbums = computed(() => {
+  const genre = name.value;
+  if (!genre) return [];
+
+  return createListResources(
+    (albums.value ?? []).filter((album) => album.attributes.genreNames.includes(genre)),
+    genre,
+  );
 });
 
 const search = ref("");
@@ -103,7 +109,7 @@ const {
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<AlbumSort>(() => `genre:${name.value}:albums`, "title");
+} = useSorting<AlbumSort>(() => name.value ?? "genres", "title");
 
 const displayedAlbums = computed(() => {
   return sortAlbums(currentGenreAlbums.value ?? [], sortBy.value, direction.value);

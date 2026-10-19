@@ -45,18 +45,18 @@
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { albumSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { libraryAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
-import { DbListId } from "#layers/libcore/app/database/types";
 
-const { data: albums, isPending, error } = useLibraryList(DbListId.Albums);
+const { data: albums, isPending, error } = useLibraryAlbums();
+const resources = computed(() => createListResources(albums.value ?? [], "albums"));
 const search = ref("");
-const searchedAlbums = useSearch(albums, search, albumSearchKeys);
+const searchedAlbums = useSearch(resources, search, albumSearchKeys);
 
 const {
   sortBy,
   direction,
   sortChanged,
   reset: resetSorting,
-} = useSorting<AlbumSort>(() => DbListId.Albums, "default");
+} = useSorting<AlbumSort>("albums", "default");
 
 const {
   filters,

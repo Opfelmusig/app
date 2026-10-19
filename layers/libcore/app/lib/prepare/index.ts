@@ -6,7 +6,5 @@ import type { AppleMusicLibrary } from "#layers/libcore/app/lib/types";
 export function prepareAppleMusicLibrary(target: AppleMusicLibrary, pages: LibraryPages) {
   addResources(target, pages.songs, DbListId.Songs);
 
-  addResources(target, pages.albums, DbListId.Albums);
-
   addResources(target, pages.artists, DbListId.Artists);
 }

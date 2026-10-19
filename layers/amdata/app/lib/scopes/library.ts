@@ -121,6 +121,4 @@ export type LibraryPlaylistsScopes = ScopedResourceOf<
 export const libraryArtworkScopes = defineScopes({
   "library-songs": { fields: ["artwork"], relationships: { catalog: "include" } },
   songs: { fields: ["artwork"] },
-  "library-albums": { fields: ["artwork"], relationships: { catalog: "include" } },
-  albums: { fields: ["artwork"] },
 });

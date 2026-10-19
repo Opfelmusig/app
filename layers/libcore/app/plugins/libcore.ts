@@ -20,7 +20,6 @@ export interface LibraryProgressResource {
 export interface LibraryProgress {
   state: "idle" | "fetching" | "writing";
   songs: LibraryProgressResource;
-  albums: LibraryProgressResource;
   artists: LibraryProgressResource;
 }
 
@@ -53,7 +52,6 @@ export default defineNuxtPlugin({
     const progress = reactive<LibraryProgress>({
       state: "idle",
       songs: { count: 0, done: false },
-      albums: { count: 0, done: false },
       artists: { count: 0, done: false },
     });
     const isRefreshingArtworks = ref(false);
@@ -66,7 +64,6 @@ export default defineNuxtPlugin({
     function resetProgress() {
       progress.state = "idle";
       progress.songs = { count: 0, done: false };
-      progress.albums = { count: 0, done: false };
       progress.artists = { count: 0, done: false };
     }
 
@@ -183,7 +180,6 @@ export default defineNuxtPlugin({
         log.info("Library sync completed", {
           durationMs: Math.round(performance.now() - startedAt),
           songs: progress.songs,
-          albums: progress.albums,
           artists: progress.artists,
         });
       } catch (cause) {
