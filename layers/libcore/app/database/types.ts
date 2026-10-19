@@ -2,12 +2,9 @@ export enum DbListId {
   Songs = "songs",
   Albums = "albums",
   Artists = "artists",
-  Playlists = "playlists",
-  PlaylistFolders = "playlist-folders",
 }
 
-export type DbPlaylistTracksListId = `library-playlists:${string}`;
-export type DbListIdentifier = DbListId | DbPlaylistTracksListId;
+export type DbListIdentifier = DbListId;
 
 export interface DbLibraryState {
   id: "library";
@@ -16,12 +13,7 @@ export interface DbLibraryState {
   lastSyncedAt?: Date;
 }
 
-export type DbResource =
-  | AmLibrarySong
-  | AmLibraryAlbum
-  | AmLibraryArtist
-  | AmLibraryPlaylist
-  | AmLibraryPlaylistFolder;
+export type DbResource = AmLibrarySong | AmLibraryAlbum | AmLibraryArtist;
 
 export interface DbListResource {
   id: string;
@@ -34,9 +26,6 @@ type DbResourceByList = {
   [DbListId.Songs]: AmLibrarySong;
   [DbListId.Albums]: AmLibraryAlbum;
   [DbListId.Artists]: AmLibraryArtist;
-  [DbListId.Playlists]: AmLibraryPlaylist;
-  [DbListId.PlaylistFolders]: AmLibraryPlaylistFolder;
-  [listId: DbPlaylistTracksListId]: AmLibrarySong;
 };
 
 export type DbListResourceByList<L extends DbListIdentifier> = AmListResource<DbResourceByList[L]>;

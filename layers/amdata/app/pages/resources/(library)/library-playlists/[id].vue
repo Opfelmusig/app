@@ -116,7 +116,7 @@
         </span>
       </span>
 
-      <AMFooterLink :resource="playlist" />
+      <AMFooterLink :resource="playlist ?? undefined" />
     </AMFooter>
   </PageWrapper>
 </template>
@@ -125,32 +125,35 @@
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { defaultSongSorting } from "#layers/amdata/app/lib/controls/sorting";
-import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
+import {
+  fetchLibraryPlaylist,
+  fetchLibraryPlaylistTracks,
+} from "#layers/amdata/app/lib/queries/playlists";
 
 const id = useRouteParams<string>("id");
 
-const library = useLibrary();
-const { data: playlist } = useLibraryQuery({
-  key: () => ["playlist", id.value, "resource"],
-  query: () => library.client.getPlaylist(id.value),
+const { data: playlist } = useAmQuery({
+  scope: "library",
+  key: () => ["playlists", id.value, "resource"],
+  query: () => fetchLibraryPlaylist(id.value),
+  staleTime: ms("6h"),
+  gcTime: false,
 });
 const {
   data: tracks,
   isPending: tracksPending,
   error: tracksError,
-} = useLibraryList(() => playlistTracksListId(id.value));
+} = useAmQuery({
+  scope: "library",
+  key: () => ["playlists", id.value, "tracks"],
+  query: () => fetchLibraryPlaylistTracks(id.value),
+  staleTime: ms("6h"),
+  gcTime: false,
+});
 
-const { columns, reset, columnsChanged } = useColumns(
-  () => playlistTracksListId(toValue(id)),
-  defaultSongColumns,
-);
+const { columns, reset, columnsChanged } = useColumns(id, defaultSongColumns);
 
-const {
-  sortBy,
-  direction,
-  sortChanged,
-  reset: resetSorting,
-} = useSorting<SongSort>(() => playlistTracksListId(toValue(id)), "default");
+const { sortBy, direction, sortChanged, reset: resetSorting } = useSorting<SongSort>(id, "default");
 
 const {
   filters,
@@ -183,24 +186,7 @@ function play(index: number = 0, shuffle: boolean = false) {
 }
 
 const menuItems = useResourceMenu(
-  () =>
-    playlist.value
-      ? createListResource(playlist.value, `library-playlists:${id.value}`, 0)
-      : undefined,
+  () => (playlist.value ? createListResource(playlist.value, id.value, 0) : undefined),
   { actions: { play: () => play(), shuffle: () => play(0, true) } },
-);
-
-const { mutate: refreshPlaylist } = useMutation({
-  mutation: (playlistId: string) => library.refreshPlaylist(playlistId),
-});
-
-watch(
-  [id, () => library.state.ready],
-  ([playlistId, ready]) => {
-    if (ready && playlistId) {
-      refreshPlaylist(playlistId);
-    }
-  },
-  { immediate: true },
 );
 </script>

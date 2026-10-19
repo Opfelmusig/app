@@ -15,8 +15,8 @@
     </header>
     <USeparator />
     <AMGridWrapper>
-      <AMGridStatus :is-pending="childrenPending" :error="childrenError" :resources="children">
-        <AMGrid :items="children" />
+      <AMGridStatus :is-pending="isPending" :error="error" :resources="children">
+        <AMGrid :items="createListResources(children, `playlist-folder:${id}`)" />
       </AMGridStatus>
     </AMGridWrapper>
     <AMFooter>
@@ -30,17 +30,7 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 
 const id = useRouteParams<string>("id", ROOT_FOLDER_ID);
 
-const library = useLibrary();
-const { data: folder } = useLibraryQuery({
-  key: () => ["folders", id.value, "resource"],
-  query: () => library.client.getFolder(id.value),
-});
-const {
-  data: children,
-  isPending: childrenPending,
-  error: childrenError,
-} = useLibraryQuery({
-  key: () => ["folders", id.value, "children"],
-  query: () => library.client.getFolderChildren(id.value),
-});
+const { data } = useLibraryFolders();
+const folder = computed(() => data.value?.find((folder) => folder.id === id.value));
+const { data: children, isPending, error } = useFolderChildren(id);
 </script>

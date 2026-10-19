@@ -1,5 +1,5 @@
 import { defineScopes } from "@opfelmusig/lib";
-import type { LibraryPlaylistFolderTreeScopes, ScopedResourceOf } from "@opfelmusig/lib/types";
+import type { ScopedResourceOf } from "@opfelmusig/lib/types";
 
 export const librarySongsScopes = defineScopes({
   "library-songs": {
@@ -118,16 +118,9 @@ export type LibraryPlaylistsScopes = ScopedResourceOf<
   typeof libraryPlaylistsScopes
 >;
 
-export type LibraryPlaylistFoldersScopes = ScopedResourceOf<
-  "library-playlist-folders",
-  LibraryPlaylistFolderTreeScopes
->;
-
 export const libraryArtworkScopes = defineScopes({
   "library-songs": { fields: ["artwork"], relationships: { catalog: "include" } },
   songs: { fields: ["artwork"] },
   "library-albums": { fields: ["artwork"], relationships: { catalog: "include" } },
   albums: { fields: ["artwork"] },
-  "library-playlists": { fields: ["artwork"], relationships: { catalog: "include" } },
-  playlists: { fields: ["artwork"] },
 });

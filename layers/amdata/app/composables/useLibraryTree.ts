@@ -2,17 +2,15 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import { groupBy, sort } from "remeda";
 
 export default function useLibraryTree(id: MaybeRefOrGetter<string> = ROOT_FOLDER_ID) {
-  const { playlists, folders } = useLibraryPlaylists();
+  const { playlists, folders, error, isPending } = useLibraryPlaylistAndFolders();
 
   const data = computed<AmLibraryTreeNode[] | undefined>(() => {
     if (!folders.data.value || !playlists.data.value) return;
 
-    const byName = (
-      left: AmLibraryPlaylist | AmLibraryPlaylistFolder,
-      right: AmLibraryPlaylist | AmLibraryPlaylistFolder,
-    ) => left.attributes.name.localeCompare(right.attributes.name);
-
-    const foldersByParent = groupBy(folders.data.value, (item) => item.extras.parentId);
+    const foldersByParent = groupBy(
+      folders.data.value.filter((folder) => folder.id !== ROOT_FOLDER_ID),
+      (item) => item.extras.parentId,
+    );
     const playlistsByParent = groupBy(playlists.data.value, (item) => item.extras.parentId);
 
     function build(parentId: string): AmLibraryTreeNode[] {
@@ -34,7 +32,7 @@ export default function useLibraryTree(id: MaybeRefOrGetter<string> = ROOT_FOLDE
 
   return {
     data,
-    isPending: computed(() => playlists.isPending.value ?? folders.isPending.value),
-    error: computed(() => playlists.error.value ?? folders.error.value),
+    error,
+    isPending,
   };
 }

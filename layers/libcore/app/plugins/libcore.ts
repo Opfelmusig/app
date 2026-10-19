@@ -1,8 +1,6 @@
 import { LibraryClient } from "#layers/libcore/app/database/client";
 import { LibraryDatabase } from "#layers/libcore/app/database/dexie";
-import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 import { refreshArtworks } from "#layers/libcore/app/lib/refreshArtworks";
-import { refreshPlaylist } from "#layers/libcore/app/lib/refreshPlaylist";
 import { syncAppleMusicLibrary } from "#layers/libcore/app/lib/sync";
 
 export const OPFELMUSIG_LIBRARY_VERSION = 0;
@@ -24,7 +22,6 @@ export interface LibraryProgress {
   songs: LibraryProgressResource;
   albums: LibraryProgressResource;
   artists: LibraryProgressResource;
-  playlists: LibraryProgressResource;
 }
 
 export default defineNuxtPlugin({
@@ -58,7 +55,6 @@ export default defineNuxtPlugin({
       songs: { count: 0, done: false },
       albums: { count: 0, done: false },
       artists: { count: 0, done: false },
-      playlists: { count: 0, done: false },
     });
     const isRefreshingArtworks = ref(false);
     const error = ref<Error | null>(null);
@@ -72,7 +68,6 @@ export default defineNuxtPlugin({
       progress.songs = { count: 0, done: false };
       progress.albums = { count: 0, done: false };
       progress.artists = { count: 0, done: false };
-      progress.playlists = { count: 0, done: false };
     }
 
     function initialize() {
@@ -190,7 +185,6 @@ export default defineNuxtPlugin({
           songs: progress.songs,
           albums: progress.albums,
           artists: progress.artists,
-          playlists: progress.playlists,
         });
       } catch (cause) {
         log.error("Library sync failed", { cause });
@@ -293,14 +287,6 @@ export default defineNuxtPlugin({
 
     setInterval(startArtworkRefresh, ms("1h"));
 
-    async function refreshAndInvalidatePlaylist(id: string) {
-      await refreshPlaylist(id, db, opfelmusig);
-      await Promise.all([
-        queryCache.invalidateQueries({ key: ["libcore", "playlist", id, "resource"] }),
-        queryCache.invalidateQueries({ key: ["libcore", "list", playlistTracksListId(id)] }),
-      ]);
-    }
-
     return {
       provide: {
         library: {
@@ -310,7 +296,6 @@ export default defineNuxtPlugin({
           progress: readonly(progress),
           error: readonly(error),
           hasFailed,
-          refreshPlaylist: refreshAndInvalidatePlaylist,
         },
       },
     };

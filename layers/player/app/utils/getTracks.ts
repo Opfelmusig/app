@@ -1,14 +1,15 @@
 import { parseCatalogSong } from "#layers/amdata/app/lib/parsers/songs";
 import { fetchCatalogAlbumTracks } from "#layers/amdata/app/lib/queries/albums";
-import { fetchCatalogPlaylistTracks } from "#layers/amdata/app/lib/queries/playlists";
+import {
+  fetchCatalogPlaylistTracks,
+  fetchLibraryPlaylistTracks,
+} from "#layers/amdata/app/lib/queries/playlists";
 import { catalogSongsScopes } from "#layers/amdata/app/lib/scopes/catalog";
-import { playlistTracksListId } from "#layers/libcore/app/lib/prepare/ids";
 
 export default async function getTracks(
   resource: AmAlbum | AmPlaylist | AmCatalogStation,
   limit?: number,
 ): Promise<AmListResource<AmSong>[]> {
-  const library = useLibrary();
   const client = useClient();
 
   switch (resource.type) {
@@ -18,18 +19,17 @@ export default async function getTracks(
       return fetchCatalogPlaylistTracks(resource.id);
 
     case "library-albums": {
-      const { sortBy, direction } = getSavedSorting(`album:${resource.id}`, "discAndTrackNumber");
+      const library = useLibrary();
+      const { sortBy, direction } = getSavedSorting(resource.id, "discAndTrackNumber");
 
       const tracks = await library.client.getAlbumTracks(resource.id);
       return sortSongs(tracks, sortBy, direction);
     }
 
     case "library-playlists": {
-      const listId = playlistTracksListId(resource.id);
-      const { sortBy, direction } = getSavedSorting(listId, "default");
+      const { sortBy, direction } = getSavedSorting(resource.id, "default");
 
-      await library.refreshPlaylist(resource.id);
-      const tracks = await library.client.getListResources(listId);
+      const tracks = await fetchLibraryPlaylistTracks(resource.id);
       return sortSongs(tracks, sortBy, direction);
     }
 

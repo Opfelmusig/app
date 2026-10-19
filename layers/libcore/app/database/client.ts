@@ -1,6 +1,5 @@
-import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import type { Collection } from "dexie";
-import { filter, flatMap, groupBy, isDefined, isTruthy, pipe, sort, unique } from "remeda";
+import { filter, flatMap, isDefined, isTruthy, pipe, sort, unique } from "remeda";
 
 import type { LibraryDatabase } from "#layers/libcore/app/database/dexie";
 import {
@@ -19,12 +18,6 @@ function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceT
       return ["library-albums"];
     case DbListId.Artists:
       return ["library-artists"];
-    case DbListId.Playlists:
-      return ["library-playlists"];
-    case DbListId.PlaylistFolders:
-      return ["library-playlist-folders"];
-    default:
-      return ["library-songs"];
   }
 }
 
@@ -44,18 +37,16 @@ export class LibraryClient {
   }
 
   async stats() {
-    const [songs, albums, artists, playlists] = await Promise.all([
+    const [songs, albums, artists] = await Promise.all([
       this.resourcesByType("library-songs").count(),
       this.resourcesByType("library-albums").count(),
       this.resourcesByType("library-artists").count(),
-      this.resourcesByType("library-playlists").count(),
     ]);
 
     return {
       songs,
       albums,
       artists,
-      playlists,
     };
   }
 
@@ -69,14 +60,6 @@ export class LibraryClient {
 
   getArtist(id: string) {
     return this.resourceByType(id, "library-artists");
-  }
-
-  getPlaylist(id: string) {
-    return this.resourceByType(id, "library-playlists");
-  }
-
-  getFolder(id: string) {
-    return this.resourceByType(id, "library-playlist-folders");
   }
 
   async resourceByType<T extends DbResourceType>(
@@ -95,37 +78,6 @@ export class LibraryClient {
 
   getResource(id: string) {
     return this.db.resources.get(id);
-  }
-
-  async getFolderTree(rootId: string = ROOT_FOLDER_ID) {
-    const [folders, playlists] = await Promise.all([
-      this.resourcesByType("library-playlist-folders").toArray(),
-      this.resourcesByType("library-playlists").toArray(),
-    ]);
-
-    const byName = (
-      left: AmLibraryPlaylist | AmLibraryPlaylistFolder,
-      right: AmLibraryPlaylist | AmLibraryPlaylistFolder,
-    ) => left.attributes.name.localeCompare(right.attributes.name);
-
-    const foldersByParent = groupBy(folders, (item) => item.extras.parentId);
-    const playlistsByParent = groupBy(playlists, (item) => item.extras.parentId);
-
-    function build(parentId: string): AmLibraryTreeNode[] {
-      return [
-        ...sort(foldersByParent[parentId] ?? [], byName).map((item) => ({
-          type: item.type,
-          item,
-          children: build(item.id),
-        })),
-        ...sort(playlistsByParent[parentId] ?? [], byName).map((item) => ({
-          type: item.type,
-          item,
-        })),
-      ];
-    }
-
-    return build(rootId);
   }
 
   async getListResources<L extends DbListIdentifier>(listId: L) {
@@ -160,28 +112,6 @@ export class LibraryClient {
       .toArray();
 
     return createListResources(songs, `library-albums:${id}`);
-  }
-
-  async getFolderChildren(
-    id: string,
-  ): Promise<AmListResource<AmLibraryPlaylist | AmLibraryPlaylistFolder>[]> {
-    const folders = await this.resourcesByType("library-playlist-folders")
-      .filter((song) => song.extras.parentId === id)
-      .toArray();
-
-    const playlists = await this.resourcesByType("library-playlists")
-      .filter((song) => song.extras.parentId === id)
-      .sortBy("attributes.name");
-
-    return createListResources([...folders, ...playlists], `library-playlist-folders:${id}`);
-  }
-
-  async getFolderPreview(id: string): Promise<AmListResource<AmLibraryPlaylist>[]> {
-    const playlists = await this.resourcesByType("library-playlists")
-      .filter((song) => song.extras.parentId === id)
-      .sortBy("attributes.name");
-
-    return createListResources(playlists.slice(0, 4), `library-playlist-folders:${id}:preview`);
   }
 
   async getGenres() {

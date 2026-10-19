@@ -1,16 +1,12 @@
 import type { OpfelMusigClient } from "@opfelmusig/lib";
-import { collect, isResourceType } from "@opfelmusig/lib/helpers";
-import { pullObject } from "remeda";
+import { collect } from "@opfelmusig/lib/helpers";
 
 import {
   libraryAlbumsScopes,
   libraryArtistsScopes,
-  libraryPlaylistsScopes,
   librarySongsScopes,
   type LibraryAlbumsScopes,
   type LibraryArtistsScopes,
-  type LibraryPlaylistFoldersScopes,
-  type LibraryPlaylistsScopes,
   type LibrarySongsScopes,
 } from "#layers/amdata/app/lib/scopes/library";
 import { prepareAppleMusicLibrary } from "#layers/libcore/app/lib/prepare";
@@ -26,11 +22,7 @@ export async function fetchAppleMusicLibrary(
   const target = createEmptyLibrary();
 
   const pages = await fetchAllLibraryPages(client, signal, progress);
-  const playlistTracks = await fetchPlaylistTracks(client, signal, pages, progress);
-
-  progress.songs.done = true;
-
-  prepareAppleMusicLibrary(target, pages, playlistTracks);
+  prepareAppleMusicLibrary(target, pages);
 
   return target;
 }
@@ -39,8 +31,6 @@ export interface LibraryPages {
   songs: LibrarySongsScopes[];
   albums: LibraryAlbumsScopes[];
   artists: LibraryArtistsScopes[];
-  playlists: LibraryPlaylistsScopes[];
-  playlistFolders: LibraryPlaylistFoldersScopes[];
 }
 
 function fetchAllLibraryPages(
@@ -62,7 +52,10 @@ function fetchAllLibraryPages(
           progress.songs.count++;
         },
       },
-    ).then((resources) => resources.filter(hasResourceName)),
+    ).then((resources) => {
+      progress.songs.done = true;
+      return resources.filter(hasResourceName);
+    }),
     albums: collect(
       client.library.albums.iterateAll({
         limit: 100,
@@ -96,62 +89,5 @@ function fetchAllLibraryPages(
       progress.artists.done = true;
       return result.filter(hasResourceName);
     }),
-    playlists: collect(
-      client.library.playlists.iterateAll({
-        limit: 100,
-        scopes: libraryPlaylistsScopes,
-        config: { signal },
-      }),
-      {
-        signal,
-        onItem: () => {
-          progress.playlists.count++;
-        },
-      },
-    ).then((result) => {
-      progress.playlists.done = true;
-      return result.filter(hasResourceName);
-    }),
-    playlistFolders: collect(
-      client.library.playlistFolders.iterateFolders({ config: { signal } }),
-      {
-        signal,
-      },
-    ).then((resources) => resources.filter(hasResourceName)),
   });
-}
-
-function fetchPlaylistTracks(
-  client: OpfelMusigClient,
-  signal: AbortSignal,
-  pages: LibraryPages,
-  progress: LibraryProgress,
-): Promise<Record<string, LibrarySongsScopes[]>> {
-  const seenSongIds = new Set(pages.songs.map((song) => song.id));
-
-  return Promise.allKeyed(
-    pullObject(
-      pages.playlists,
-      (playlist) => playlist.id,
-      (playlist) =>
-        collect(
-          client.library.playlists.iterateRelationship(playlist.id, "tracks", {
-            limit: 100,
-            scopes: librarySongsScopes,
-            config: { signal },
-          }),
-          {
-            signal,
-            onItem: (item) => {
-              if (isResourceType(item, "library-songs") && !seenSongIds.has(item.id)) {
-                seenSongIds.add(item.id);
-                progress.songs.count++;
-              }
-            },
-          },
-        ).then((tracks) =>
-          tracks.filter((track) => isResourceType(track, "library-songs")).filter(hasResourceName),
-        ),
-    ),
-  );
 }

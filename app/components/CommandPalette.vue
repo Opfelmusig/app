@@ -66,7 +66,12 @@ const search = ref("");
 const query = computed(() => search.value.trim());
 const linkTarget = computed(() => parseAppleMusicLink(query.value));
 
-const { data, isPending, error } = useLibraryQuery({
+const playlists = useLibraryPlaylists();
+const {
+  data,
+  isPending: libraryPending,
+  error: libraryError,
+} = useLibraryQuery({
   key: ["command-palette"],
   enabled: isOpen,
   query: async () => {
@@ -74,12 +79,14 @@ const { data, isPending, error } = useLibraryQuery({
       library.client.getListResources(DbListId.Songs),
       library.client.getListResources(DbListId.Albums),
       library.client.getListResources(DbListId.Artists),
-      library.client.getListResources(DbListId.Playlists),
     ]);
 
     return resources.flat().map((item) => item.resource);
   },
 });
+
+const isPending = computed(() => libraryPending.value || playlists.isPending.value);
+const error = computed(() => libraryError.value ?? playlists.error.value);
 
 const pages: CommandPaletteItem[] = [
   { label: "Search", to: "/search" },
@@ -98,9 +105,9 @@ const pages: CommandPaletteItem[] = [
 ];
 
 const libraryItems = computed<CommandPaletteItem[]>(() => {
-  if (!isOpen.value || !library.state.ready) return [];
+  if (!isOpen.value) return [];
 
-  return (data.value ?? []).flatMap((resource) => {
+  return [...(data.value ?? []), ...(playlists.data.value ?? [])].flatMap((resource) => {
     const to = resourceLink(resource);
     if (!to) return [];
 

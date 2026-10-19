@@ -6,11 +6,11 @@
           <div class="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-3 p-3">
             <AMArtworkWrapper
               v-for="child in children"
-              :key="child.key"
+              :key="child.id"
               :resource="child"
               context="folder-preview"
               class="border"
-              :class="child.resource.attributes.artwork ? 'border-transparent' : 'border-muted'"
+              :class="child.attributes.artwork ? 'border-transparent' : 'border-muted'"
             >
               <AMArtworkImage />
               <AMArtworkPlaceholder />
@@ -32,13 +32,14 @@
 </template>
 
 <script lang="ts" setup>
+import { isResourceType } from "@opfelmusig/lib/helpers";
+
 const props = defineProps<{
   resource: AmListResource<AmLibraryPlaylistFolder>;
 }>();
 
-const library = useLibrary();
-const { data: children } = useLibraryQuery({
-  key: () => ["folders", props.resource.resource.id, "preview"],
-  query: () => library.client.getFolderPreview(props.resource.resource.id),
-});
+const { data } = useFolderChildren(() => props.resource.resource.id);
+const children = computed(() =>
+  data.value.filter((child) => isResourceType(child, "library-playlists")).slice(0, 4),
+);
 </script>
