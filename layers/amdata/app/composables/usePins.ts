@@ -7,7 +7,7 @@ export default function usePins() {
     scope: "library",
     key: () => ["pins"],
     query: () => fetchLibraryPins(),
-    staleTime: ms("5m"),
+    staleTime: ms("6h"),
     gcTime: false,
   });
 
