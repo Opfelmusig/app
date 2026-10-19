@@ -74,7 +74,6 @@ import {
   fetchSocialProfileSharedPlaylists,
 } from "#layers/amdata/app/lib/queries/profiles";
 
-const client = useClient();
 const handle = useRouteParams<string>("id");
 
 const {
@@ -84,7 +83,7 @@ const {
 } = useAmQuery({
   scope: "social",
   key: () => ["social-profiles", handle.value, "resource", "v2"],
-  query: () => fetchSocialProfile(client, handle.value),
+  query: () => fetchSocialProfile(handle.value),
   staleTime: ms("1h"),
   gcTime: ms("1d"),
 });
@@ -98,7 +97,7 @@ const {
   key: () => ["social-profiles", profile.value?.id ?? null, "shared-playlists"],
   query: async () => {
     if (!profile.value) return [];
-    return fetchSocialProfileSharedPlaylists(client, profile.value.id);
+    return fetchSocialProfileSharedPlaylists(profile.value.id);
   },
   enabled: () => !!profile.value,
   staleTime: ms("10m"),

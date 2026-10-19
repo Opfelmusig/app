@@ -13,9 +13,9 @@ export default async function getTracks(
 
   switch (resource.type) {
     case "albums":
-      return fetchCatalogAlbumTracks(client, resource.id);
+      return fetchCatalogAlbumTracks(resource.id);
     case "playlists":
-      return fetchCatalogPlaylistTracks(client, resource.id);
+      return fetchCatalogPlaylistTracks(resource.id);
 
     case "library-albums": {
       const { sortBy, direction } = getSavedSorting(`album:${resource.id}`, "discAndTrackNumber");

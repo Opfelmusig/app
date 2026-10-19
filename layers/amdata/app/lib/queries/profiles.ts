@@ -1,11 +1,12 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect } from "@opfelmusig/lib/helpers";
 
 import { parseCatalogPlaylist } from "#layers/amdata/app/lib/parsers/playlists";
 import { parseProfile } from "#layers/amdata/app/lib/parsers/profiles";
 import { catalogPlaylistsScopes } from "#layers/amdata/app/lib/scopes/catalog";
 
-export async function fetchSocialProfile(client: OpfelMusigClient, handle: string) {
+export async function fetchSocialProfile(handle: string) {
+  const client = useClient();
+
   const response = await client.social.profiles.getByHandle(handle, {
     scopes: {
       "social-profiles": {
@@ -20,7 +21,9 @@ export async function fetchSocialProfile(client: OpfelMusigClient, handle: strin
   return parseProfile(profile);
 }
 
-export async function fetchSocialProfileSharedPlaylists(client: OpfelMusigClient, id: string) {
+export async function fetchSocialProfileSharedPlaylists(id: string) {
+  const client = useClient();
+
   const playlists = await collect(
     client.social.profiles.iterateRelationship(id, "shared-playlists", {
       limit: 50,

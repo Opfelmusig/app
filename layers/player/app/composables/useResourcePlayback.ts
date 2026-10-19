@@ -2,7 +2,6 @@ import { fetchResourceStation } from "#layers/amdata/app/lib/queries/stations";
 
 export default function useResourcePlayback() {
   const queueStore = useQueueStore();
-  const client = useClient();
   const toast = useToast();
   const requestId = useState("player:resource-request", () => 0);
   const pendingResource = useState<string | null>("player:pending-resource", () => null);
@@ -52,7 +51,7 @@ export default function useResourcePlayback() {
     pendingResource.value = resource.id;
 
     try {
-      const station = await fetchResourceStation(client, resource);
+      const station = await fetchResourceStation(resource);
       if (!station || currentRequest !== requestId.value) return;
 
       await queueStore.playStation(station);

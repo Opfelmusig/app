@@ -1,4 +1,3 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { collect } from "@opfelmusig/lib/helpers";
 
 import { parseCatalogArtist } from "#layers/amdata/app/lib/parsers/artists";
@@ -19,7 +18,9 @@ const playlistViewScopes = {
   ...catalogArtistsScopes,
 };
 
-export async function fetchCatalogPlaylist(client: OpfelMusigClient, id: string) {
+export async function fetchCatalogPlaylist(id: string) {
+  const client = useClient();
+
   const response = await client.catalog.playlists.get(id, {
     scopes: catalogPlaylistsScopes,
   });
@@ -30,7 +31,9 @@ export async function fetchCatalogPlaylist(client: OpfelMusigClient, id: string)
   return parseCatalogPlaylist(playlist);
 }
 
-export async function fetchCatalogPlaylistViews(client: OpfelMusigClient, id: string) {
+export async function fetchCatalogPlaylistViews(id: string) {
+  const client = useClient();
+
   const response = await client.catalog.playlists.get(id, {
     scopes: {
       ...playlistViewScopes,
@@ -62,11 +65,9 @@ export async function fetchCatalogPlaylistViews(client: OpfelMusigClient, id: st
   });
 }
 
-export async function fetchCatalogPlaylistView(
-  client: OpfelMusigClient,
-  id: string,
-  view: PlaylistView,
-) {
+export async function fetchCatalogPlaylistView(id: string, view: PlaylistView) {
+  const client = useClient();
+
   const resources = await collect(
     client.catalog.playlists.iterateView(id, view, {
       limit: 100,
@@ -80,7 +81,9 @@ export async function fetchCatalogPlaylistView(
   );
 }
 
-export async function fetchCatalogPlaylistTracks(client: OpfelMusigClient, id: string) {
+export async function fetchCatalogPlaylistTracks(id: string) {
+  const client = useClient();
+
   const tracks = await collect(
     client.catalog.playlists.iterateRelationship(id, "tracks", {
       limit: 100,

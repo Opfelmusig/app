@@ -24,7 +24,6 @@ definePageMeta({
   validate: (route) => playlistViews.some((view) => view === route.params.view),
 });
 
-const client = useClient();
 const id = useRouteParams<string>("id");
 const view = useRouteParams<PlaylistView>("view");
 
@@ -34,7 +33,7 @@ const title = computed(() => queryTitle.value || view.value);
 const { data, isPending, error } = useAmQuery({
   scope: "catalog",
   key: () => ["playlists", id.value, "views", view.value],
-  query: () => fetchCatalogPlaylistView(client, id.value, view.value),
+  query: () => fetchCatalogPlaylistView(id.value, view.value),
   staleTime: ms("10m"),
   gcTime: ms("6h"),
 });

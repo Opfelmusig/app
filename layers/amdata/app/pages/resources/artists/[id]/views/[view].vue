@@ -29,7 +29,6 @@ definePageMeta({
   validate: (route) => artistViews.some((view) => view === route.params.view),
 });
 
-const client = useClient();
 const id = useRouteParams<string>("id");
 const view = useRouteParams<ArtistView>("view");
 
@@ -41,7 +40,7 @@ const contextName = computed(() => [resourceName.value, title.value].filter(Bool
 const { data, isPending, error } = useAmQuery({
   scope: "catalog",
   key: () => ["artists", id.value, "views", view.value],
-  query: () => fetchCatalogArtistView(client, id.value, view.value),
+  query: () => fetchCatalogArtistView(id.value, view.value),
   staleTime: ms("10m"),
   gcTime: ms("6h"),
 });

@@ -3,12 +3,10 @@ import { isDefined } from "remeda";
 import { fetchLibraryPins } from "#layers/amdata/app/lib/queries/pins";
 
 export default function usePins() {
-  const client = useClient();
-
   const query = useAmQuery({
     scope: "library",
     key: () => ["pins"],
-    query: () => fetchLibraryPins(client),
+    query: () => fetchLibraryPins(),
     staleTime: ms("5m"),
     gcTime: false,
   });

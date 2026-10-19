@@ -99,13 +99,12 @@
 <script lang="ts" setup>
 import { fetchCatalogSong, fetchCatalogSongLyrics } from "#layers/amdata/app/lib/queries/songs";
 
-const client = useClient();
 const id = useRouteParams<string>("id");
 
 const { data, isPending, error } = useAmQuery({
   scope: "catalog",
   key: () => ["songs", id.value, "resource"],
-  query: () => fetchCatalogSong(client, id.value),
+  query: () => fetchCatalogSong(id.value),
   staleTime: ms("1h"),
   gcTime: ms("1d"),
 });
@@ -117,7 +116,7 @@ const {
 } = useAmQuery({
   scope: "catalog",
   key: () => ["songs", id.value, "lyrics"],
-  query: () => fetchCatalogSongLyrics(client, id.value),
+  query: () => fetchCatalogSongLyrics(id.value),
   staleTime: ms("1d"),
   gcTime: ms("7d"),
 });

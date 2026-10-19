@@ -1,11 +1,8 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
-
 import { parseCatalogStation } from "#layers/amdata/app/lib/parsers/stations";
 
-export async function fetchResourceStation(
-  client: OpfelMusigClient,
-  resource: AmSong | AmAlbum | AmArtist,
-) {
+export async function fetchResourceStation(resource: AmSong | AmAlbum | AmArtist) {
+  const client = useClient();
+
   const catalogId =
     resource.type === "songs" || resource.type === "albums" || resource.type === "artists"
       ? resource.id

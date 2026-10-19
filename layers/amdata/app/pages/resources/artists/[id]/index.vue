@@ -114,7 +114,6 @@ import {
   fetchCatalogArtistViews,
 } from "#layers/amdata/app/lib/queries/artists";
 
-const client = useClient();
 const id = useRouteParams<string>("id");
 
 const {
@@ -124,7 +123,7 @@ const {
 } = useAmQuery({
   scope: "catalog",
   key: () => ["artists", id.value, "resource"],
-  query: () => fetchCatalogArtist(client, id.value),
+  query: () => fetchCatalogArtist(id.value),
   staleTime: ms("1h"),
   gcTime: ms("1d"),
 });
@@ -132,7 +131,7 @@ const {
 const { data: viewsData } = useAmQuery({
   scope: "catalog",
   key: () => ["artists", id.value, "views"],
-  query: () => fetchCatalogArtistViews(client, id.value),
+  query: () => fetchCatalogArtistViews(id.value),
   staleTime: ms("10m"),
   gcTime: ms("6h"),
 });

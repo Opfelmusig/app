@@ -31,12 +31,10 @@
 <script lang="ts" setup>
 import { fetchHome } from "#layers/amdata/app/lib/queries/home";
 
-const client = useClient();
-
 const { data, isPending, error } = useAmQuery({
   scope: "catalog",
   key: () => ["home"],
-  query: () => fetchHome(client),
+  query: () => fetchHome(),
   staleTime: ms("2m"),
   gcTime: ms("6h"),
 });

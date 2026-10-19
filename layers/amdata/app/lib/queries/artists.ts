@@ -1,5 +1,3 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
-
 import { parseResource } from "#layers/amdata/app/lib/parsers";
 import { parseCatalogArtist } from "#layers/amdata/app/lib/parsers/artists";
 import { getUnknownProperty } from "#layers/amdata/app/lib/parsers/helpers";
@@ -32,7 +30,9 @@ const artistViewScopes = {
   ...catalogArtistsScopes,
 };
 
-export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
+export async function fetchCatalogArtist(id: string) {
+  const client = useClient();
+
   const response = await client.catalog.artists.get(id, {
     scopes: catalogArtistsScopes,
   });
@@ -43,7 +43,9 @@ export async function fetchCatalogArtist(client: OpfelMusigClient, id: string) {
   return parseCatalogArtist(artist);
 }
 
-export async function fetchCatalogArtistViews(client: OpfelMusigClient, id: string) {
+export async function fetchCatalogArtistViews(id: string) {
+  const client = useClient();
+
   const response = await client.catalog.artists.get(id, {
     scopes: {
       ...artistViewScopes,
@@ -85,11 +87,9 @@ export async function fetchCatalogArtistViews(client: OpfelMusigClient, id: stri
   });
 }
 
-export async function fetchCatalogArtistView(
-  client: OpfelMusigClient,
-  id: string,
-  view: ArtistView,
-) {
+export async function fetchCatalogArtistView(id: string, view: ArtistView) {
+  const client = useClient();
+
   const response = await client.catalog.artists.getView(id, view, {
     limit: 100,
     scopes: artistViewScopes,

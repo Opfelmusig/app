@@ -1,4 +1,3 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
 import { isNotResourceType } from "@opfelmusig/lib/helpers";
 
 import { parseResource } from "#layers/amdata/app/lib/parsers";
@@ -9,7 +8,9 @@ import {
   libraryPlaylistsScopes,
 } from "#layers/amdata/app/lib/scopes/library";
 
-export async function fetchLibraryPins(client: OpfelMusigClient) {
+export async function fetchLibraryPins() {
+  const client = useClient();
+
   const pins = await client.library.getPins({
     scopes: {
       ...librarySongsScopes,

@@ -98,7 +98,6 @@ import {
   type SearchFilter,
 } from "#layers/amdata/app/lib/queries/search";
 
-const client = useClient();
 const queueStore = useQueueStore();
 const searchHistory = useLocalStorage<string[]>("opfelmusig:search-history", []);
 
@@ -135,7 +134,7 @@ function removeSearch(value: string) {
 const { data, isPending, error } = useAmQuery({
   scope: "catalog",
   key: () => ["search", term.value, filter.value],
-  query: () => fetchCatalogSearch(client, term.value, filter.value),
+  query: () => fetchCatalogSearch(term.value, filter.value),
   enabled: () => !!term.value.trim(),
   staleTime: ms("5m"),
   gcTime: ms("30m"),

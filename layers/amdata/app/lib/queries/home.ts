@@ -1,9 +1,9 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
-
 import { parseMeRecommendation } from "#layers/amdata/app/lib/parsers/home";
 import { homeScopes } from "#layers/amdata/app/lib/scopes/home";
 
-export async function fetchHome(client: OpfelMusigClient) {
+export async function fetchHome() {
+  const client = useClient();
+
   const timezone = currentAppleTimezoneOffset();
 
   const recommendations = await client.me.recommendations.getDefault({
@@ -29,7 +29,9 @@ export async function fetchHome(client: OpfelMusigClient) {
     );
 }
 
-export async function fetchHomeShelf(client: OpfelMusigClient, shelf: string) {
+export async function fetchHomeShelf(shelf: string) {
+  const client = useClient();
+
   const response = await client.me.recommendations.getView(shelf, "see-all", {
     scopes: homeScopes,
 

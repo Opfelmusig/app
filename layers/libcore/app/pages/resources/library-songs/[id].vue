@@ -102,7 +102,6 @@
 import { fetchCatalogSongLyrics } from "#layers/amdata/app/lib/queries/songs";
 
 const library = useLibrary();
-const client = useClient();
 const id = useRouteParams<string>("id");
 
 const { data, isPending, error } = useLibraryQuery({
@@ -119,8 +118,7 @@ const {
 } = useAmQuery({
   scope: "catalog",
   key: () => ["songs", catalogId.value ?? null, "lyrics"],
-  query: async () =>
-    catalogId.value ? fetchCatalogSongLyrics(client, catalogId.value) : undefined,
+  query: async () => (catalogId.value ? fetchCatalogSongLyrics(catalogId.value) : undefined),
   enabled: catalogId,
   staleTime: ms("1d"),
   gcTime: ms("7d"),

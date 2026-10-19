@@ -140,7 +140,6 @@ import {
   fetchCatalogPlaylistViews,
 } from "#layers/amdata/app/lib/queries/playlists";
 
-const client = useClient();
 const id = useRouteParams<string>("id");
 
 const {
@@ -150,7 +149,7 @@ const {
 } = useAmQuery({
   scope: "catalog",
   key: () => ["playlists", id.value, "resource"],
-  query: () => fetchCatalogPlaylist(client, id.value),
+  query: () => fetchCatalogPlaylist(id.value),
   staleTime: ms("1h"),
   gcTime: ms("1d"),
 });
@@ -158,7 +157,7 @@ const {
 const { data: views } = useAmQuery({
   scope: "catalog",
   key: () => ["playlists", id.value, "views"],
-  query: () => fetchCatalogPlaylistViews(client, id.value),
+  query: () => fetchCatalogPlaylistViews(id.value),
   staleTime: ms("10m"),
   gcTime: ms("6h"),
 });
@@ -170,7 +169,7 @@ const {
 } = useAmQuery({
   scope: "catalog",
   key: () => ["playlists", id.value, "tracks"],
-  query: () => fetchCatalogPlaylistTracks(client, id.value),
+  query: () => fetchCatalogPlaylistTracks(id.value),
   staleTime: ms("10m"),
   gcTime: ms("6h"),
 });

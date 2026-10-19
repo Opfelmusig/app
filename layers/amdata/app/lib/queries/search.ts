@@ -1,5 +1,3 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
-
 import { parseCatalogAlbum } from "#layers/amdata/app/lib/parsers/albums";
 import { parseCatalogArtist } from "#layers/amdata/app/lib/parsers/artists";
 import { parseCatalogPlaylist } from "#layers/amdata/app/lib/parsers/playlists";
@@ -14,11 +12,9 @@ import {
 export const searchFilters = ["all", "songs", "albums", "artists", "playlists"] as const;
 export type SearchFilter = (typeof searchFilters)[number];
 
-export async function fetchCatalogSearch(
-  client: OpfelMusigClient,
-  term: string,
-  filter: SearchFilter,
-) {
+export async function fetchCatalogSearch(term: string, filter: SearchFilter) {
+  const client = useClient();
+
   const response = await client.catalog.search(term, {
     shape: {
       types: filter === "all" ? ["songs", "albums", "artists", "playlists"] : [filter],
