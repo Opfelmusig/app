@@ -1,5 +1,5 @@
 type SidebarSectionTypes = "library" | "pins" | "playlists";
-type SidebarSectionConfig = { collapsed?: boolean; hidden?: boolean };
+type SidebarSectionConfig = { collapsed?: boolean; show: boolean };
 type SidebarSections = Record<SidebarSectionTypes, SidebarSectionConfig>;
 
 export type SettingsPage =
@@ -31,9 +31,9 @@ export const useSettingsStore = defineStore(
     });
 
     const sidebarSections = reactive<SidebarSections>({
-      library: {},
-      pins: {},
-      playlists: {},
+      library: { show: true },
+      pins: { show: true },
+      playlists: { show: true },
     });
 
     const player = reactive({

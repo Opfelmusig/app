@@ -11,7 +11,7 @@
       <SidebarItemIcon icon="lucide:house" to="/">Home</SidebarItemIcon>
       <SidebarItemIcon icon="lucide:list-video" to="/history">History</SidebarItemIcon>
       <SidebarSection
-        v-if="!settingsStore.sidebarSections.pins.hidden"
+        v-if="settingsStore.sidebarSections.pins.show"
         v-model="settingsStore.sidebarSections.pins.collapsed"
         label="Pins"
         collapsible
@@ -19,7 +19,7 @@
         <SidebarPins />
       </SidebarSection>
       <SidebarSection
-        v-if="!settingsStore.sidebarSections.library.hidden"
+        v-if="settingsStore.sidebarSections.library.show"
         v-model="settingsStore.sidebarSections.library.collapsed"
         label="Library"
         collapsible
@@ -35,7 +35,7 @@
         </SidebarItemIcon>
         <SidebarItemIcon icon="lucide:guitar" to="/library/genres">Genres</SidebarItemIcon>
         <SidebarItemIcon
-          v-if="isCollapsed || settingsStore.sidebarSections.playlists.hidden"
+          v-if="isCollapsed || !settingsStore.sidebarSections.playlists.show"
           to="/resources/library-playlist-folders"
           icon="lucide:list-music"
         >
@@ -43,7 +43,7 @@
         </SidebarItemIcon>
       </SidebarSection>
       <SidebarSection
-        v-if="!isCollapsed && !settingsStore.sidebarSections.playlists.hidden"
+        v-if="!isCollapsed && settingsStore.sidebarSections.playlists.show"
         v-model="settingsStore.sidebarSections.playlists.collapsed"
         label="Playlists"
         collapsible

@@ -1,11 +1,11 @@
 <template>
   <SettingsWrapper>
     <SettingsSection title="Sidebar">
-      <SettingsToggle v-model="settingsStore.sidebarSections.pins.hidden" label="Hide pins" />
-      <SettingsToggle v-model="settingsStore.sidebarSections.library.hidden" label="Hide library" />
+      <SettingsToggle v-model="settingsStore.sidebarSections.pins.show" label="Show pins" />
+      <SettingsToggle v-model="settingsStore.sidebarSections.library.show" label="Show library" />
       <SettingsToggle
-        v-model="settingsStore.sidebarSections.playlists.hidden"
-        label="Hide playlists"
+        v-model="settingsStore.sidebarSections.playlists.show"
+        label="Show playlists"
       />
     </SettingsSection>
     <SettingsSection title="Player">
