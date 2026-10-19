@@ -148,6 +148,7 @@ const {
   isPending,
   error,
 } = useAmQuery({
+  scope: "catalog",
   key: () => ["playlists", id.value, "resource"],
   query: () => fetchCatalogPlaylist(client, id.value),
   staleTime: ms("1h"),
@@ -155,6 +156,7 @@ const {
 });
 
 const { data: views } = useAmQuery({
+  scope: "catalog",
   key: () => ["playlists", id.value, "views"],
   query: () => fetchCatalogPlaylistViews(client, id.value),
   staleTime: ms("10m"),
@@ -166,6 +168,7 @@ const {
   isPending: tracksPending,
   error: tracksError,
 } = useAmQuery({
+  scope: "catalog",
   key: () => ["playlists", id.value, "tracks"],
   query: () => fetchCatalogPlaylistTracks(client, id.value),
   staleTime: ms("10m"),

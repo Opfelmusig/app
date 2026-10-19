@@ -122,6 +122,7 @@ const {
   isPending,
   error,
 } = useAmQuery({
+  scope: "catalog",
   key: () => ["artists", id.value, "resource"],
   query: () => fetchCatalogArtist(client, id.value),
   staleTime: ms("1h"),
@@ -129,6 +130,7 @@ const {
 });
 
 const { data: viewsData } = useAmQuery({
+  scope: "catalog",
   key: () => ["artists", id.value, "views"],
   query: () => fetchCatalogArtistViews(client, id.value),
   staleTime: ms("10m"),

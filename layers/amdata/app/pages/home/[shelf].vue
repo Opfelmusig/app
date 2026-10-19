@@ -20,6 +20,7 @@ const client = useClient();
 const shelf = useRouteParams<string>("shelf");
 
 const { data, isPending, error } = useAmQuery({
+  scope: "catalog",
   key: () => ["home", "shelf", shelf.value],
   query: () => fetchHomeShelf(client, shelf.value),
   staleTime: ms("5m"),

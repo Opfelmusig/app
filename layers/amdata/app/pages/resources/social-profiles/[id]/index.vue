@@ -82,6 +82,7 @@ const {
   isPending,
   error,
 } = useAmQuery({
+  scope: "catalog",
   key: () => ["social-profiles", handle.value, "resource", "v2"],
   query: () => fetchSocialProfile(client, handle.value),
   staleTime: ms("1h"),
@@ -93,6 +94,7 @@ const {
   isPending: sharedPlaylistsPending,
   error: sharedPlaylistsError,
 } = useAmQuery({
+  scope: "catalog",
   key: () => ["social-profiles", profile.value?.id ?? null, "shared-playlists"],
   query: async () => {
     if (!profile.value) return [];

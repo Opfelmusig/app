@@ -39,6 +39,7 @@ const title = computed(() => queryTitle.value || view.value);
 const contextName = computed(() => [resourceName.value, title.value].filter(Boolean).join(" · "));
 
 const { data, isPending, error } = useAmQuery({
+  scope: "catalog",
   key: () => ["artists", id.value, "views", view.value],
   query: () => fetchCatalogArtistView(client, id.value, view.value),
   staleTime: ms("10m"),

@@ -3,7 +3,7 @@ import type { UseQueryOptions, UseQueryReturn } from "@pinia/colada";
 type QueryScope = "catalog" | "library";
 
 type AmQueryOptions<T> = Pick<UseQueryOptions<T>, "key" | "query"> & {
-  scope?: QueryScope;
+  scope: QueryScope;
   enabled?: MaybeRefOrGetter<boolean | string | null | undefined>;
   staleTime: number;
   gcTime: number | false;
@@ -16,7 +16,7 @@ export default function useAmQuery<T>(options: AmQueryOptions<T>): UseQueryRetur
   return useQuery({
     key: () => [
       "amdata",
-      options.scope ?? ("catalog" as QueryScope),
+      options.scope,
       ...toValue(options.key),
       profile.value?.id ?? null,
       storefront.value?.id ?? null,

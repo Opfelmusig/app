@@ -117,6 +117,7 @@ const {
   isPending: lyricsPending,
   error: lyricsError,
 } = useAmQuery({
+  scope: "catalog",
   key: () => ["songs", catalogId.value ?? null, "lyrics"],
   query: async () =>
     catalogId.value ? fetchCatalogSongLyrics(client, catalogId.value) : undefined,

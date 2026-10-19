@@ -103,6 +103,7 @@ const client = useClient();
 const id = useRouteParams<string>("id");
 
 const { data, isPending, error } = useAmQuery({
+  scope: "catalog",
   key: () => ["songs", id.value, "resource"],
   query: () => fetchCatalogSong(client, id.value),
   staleTime: ms("1h"),
@@ -114,6 +115,7 @@ const {
   isPending: lyricsPending,
   error: lyricsError,
 } = useAmQuery({
+  scope: "catalog",
   key: () => ["songs", id.value, "lyrics"],
   query: () => fetchCatalogSongLyrics(client, id.value),
   staleTime: ms("1d"),

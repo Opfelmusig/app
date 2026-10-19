@@ -32,6 +32,7 @@ const queryTitle = useRouteQuery<string>("title", "");
 const title = computed(() => queryTitle.value || view.value);
 
 const { data, isPending, error } = useAmQuery({
+  scope: "catalog",
   key: () => ["playlists", id.value, "views", view.value],
   query: () => fetchCatalogPlaylistView(client, id.value, view.value),
   staleTime: ms("10m"),
