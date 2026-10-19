@@ -68,6 +68,7 @@ const linkTarget = computed(() => parseAppleMusicLink(query.value));
 
 const playlists = useLibraryPlaylists();
 const albums = useLibraryAlbums();
+const artists = useLibraryArtists();
 const {
   data,
   isPending: libraryPending,
@@ -76,19 +77,21 @@ const {
   key: ["command-palette"],
   enabled: isOpen,
   query: async () => {
-    const resources = await Promise.all([
-      library.client.getListResources(DbListId.Songs),
-      library.client.getListResources(DbListId.Artists),
-    ]);
-
-    return resources.flat().map((item) => item.resource);
+    const resources = await library.client.getListResources(DbListId.Songs);
+    return resources.map((item) => item.resource);
   },
 });
 
 const isPending = computed(
-  () => libraryPending.value || playlists.isPending.value || albums.isPending.value,
+  () =>
+    libraryPending.value ||
+    playlists.isPending.value ||
+    albums.isPending.value ||
+    artists.isPending.value,
 );
-const error = computed(() => libraryError.value ?? playlists.error.value ?? albums.error.value);
+const error = computed(
+  () => libraryError.value ?? playlists.error.value ?? albums.error.value ?? artists.error.value,
+);
 
 const pages: CommandPaletteItem[] = [
   { label: "Search", to: "/search" },
@@ -112,6 +115,7 @@ const libraryItems = computed<CommandPaletteItem[]>(() => {
   return [
     ...(data.value ?? []),
     ...(albums.data.value ?? []),
+    ...(artists.data.value ?? []),
     ...(playlists.data.value ?? []),
   ].flatMap((resource) => {
     const to = resourceLink(resource);

@@ -1,6 +1,5 @@
 export enum DbListId {
   Songs = "songs",
-  Artists = "artists",
 }
 
 export type DbListIdentifier = DbListId;
@@ -12,7 +11,7 @@ export interface DbLibraryState {
   lastSyncedAt?: Date;
 }
 
-export type DbResource = AmLibrarySong | AmLibraryArtist;
+export type DbResource = AmLibrarySong;
 
 export interface DbListResource {
   id: string;
@@ -23,7 +22,6 @@ export interface DbListResource {
 
 type DbResourceByList = {
   [DbListId.Songs]: AmLibrarySong;
-  [DbListId.Artists]: AmLibraryArtist;
 };
 
 export type DbListResourceByList<L extends DbListIdentifier> = AmListResource<DbResourceByList[L]>;

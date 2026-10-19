@@ -14,8 +14,6 @@ function getAllowedResourceTypes(listId: DbListIdentifier): readonly DbResourceT
   switch (listId) {
     case DbListId.Songs:
       return ["library-songs"];
-    case DbListId.Artists:
-      return ["library-artists"];
   }
 }
 
@@ -35,23 +33,13 @@ export class LibraryClient {
   }
 
   async stats() {
-    const [songs, artists] = await Promise.all([
-      this.resourcesByType("library-songs").count(),
-      this.resourcesByType("library-artists").count(),
-    ]);
-
     return {
-      songs,
-      artists,
+      songs: await this.resourcesByType("library-songs").count(),
     };
   }
 
   getSong(id: string) {
     return this.resourceByType(id, "library-songs");
-  }
-
-  getArtist(id: string) {
-    return this.resourceByType(id, "library-artists");
   }
 
   async resourceByType<T extends DbResourceType>(

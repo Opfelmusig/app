@@ -1,5 +1,7 @@
+import { collect } from "@opfelmusig/lib/helpers";
+
 import { parseResource } from "#layers/amdata/app/lib/parsers";
-import { parseCatalogArtist } from "#layers/amdata/app/lib/parsers/artists";
+import { parseCatalogArtist, parseLibraryArtist } from "#layers/amdata/app/lib/parsers/artists";
 import { getUnknownProperty } from "#layers/amdata/app/lib/parsers/helpers";
 import {
   catalogAlbumsScopes,
@@ -7,6 +9,7 @@ import {
   catalogPlaylistsScopes,
   catalogSongsScopes,
 } from "#layers/amdata/app/lib/scopes/catalog";
+import { libraryArtistsScopes } from "#layers/amdata/app/lib/scopes/library";
 
 export const artistViews = [
   "top-songs",
@@ -98,4 +101,30 @@ export async function fetchCatalogArtistView(id: string, view: ArtistView) {
     response.data.filter(hasResourceName).map((item) => parseResource(item)),
     `artists:${id}:${view}`,
   );
+}
+
+export async function fetchLibraryArtists() {
+  const client = useClient();
+
+  const artists = await collect(
+    client.library.artists.iterateAll({
+      limit: 100,
+      scopes: libraryArtistsScopes,
+    }),
+  );
+
+  return artists.filter(hasResourceName).map(parseLibraryArtist);
+}
+
+export async function fetchLibraryArtist(id: string) {
+  const client = useClient();
+
+  const response = await client.library.artists.get(id, {
+    scopes: libraryArtistsScopes,
+  });
+
+  const artist = response.data[0];
+  if (!hasResourceName(artist)) return null;
+
+  return parseLibraryArtist(artist);
 }

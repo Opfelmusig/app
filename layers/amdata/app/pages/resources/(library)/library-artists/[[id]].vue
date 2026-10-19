@@ -96,11 +96,12 @@ import { filter, pipe, reverse, sortBy as sortArtists } from "remeda";
 import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/controls/filters";
 import { artistSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
-import { DbListId } from "#layers/libcore/app/database/types";
+import { fetchLibraryArtist } from "#layers/amdata/app/lib/queries/artists";
 
-const { data: artists } = useLibraryList(DbListId.Artists);
+const { data: artists } = useLibraryArtists();
+const resources = computed(() => createListResources(artists.value ?? [], "artists"));
 const search = ref("");
-const searchedArtists = useSearch(artists, search, artistSearchKeys);
+const searchedArtists = useSearch(resources, search, artistSearchKeys);
 
 const descending = ref(false);
 const selectedRatings = ref<FilterRating[]>([]);
@@ -130,15 +131,17 @@ const displayedArtists = computed(() => {
 
 const id = useRouteParams<string | undefined>("id");
 
-const library = useLibrary();
-const { data: currentArtist } = useLibraryQuery({
-  key: () => ["artist", id.value ?? null, "resource"],
-  query: () => library.client.getArtist(id.value!),
+const { data: currentArtist } = useAmQuery({
+  scope: "library",
+  key: () => ["artists", id.value ?? null, "resource"],
+  query: () => fetchLibraryArtist(id.value!),
   enabled: id,
+  staleTime: ms("6h"),
+  gcTime: false,
 });
 const menuItems = useResourceMenu(() =>
   currentArtist.value
-    ? createListResource(currentArtist.value, `library-artists:${id.value}`, 0)
+    ? createListResource(currentArtist.value, currentArtist.value.id, 0)
     : undefined,
 );
 const {
