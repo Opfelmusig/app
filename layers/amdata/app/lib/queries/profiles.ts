@@ -23,7 +23,7 @@ export async function fetchSocialProfile(client: OpfelMusigClient, handle: strin
 export async function fetchSocialProfileSharedPlaylists(client: OpfelMusigClient, id: string) {
   const playlists = await collect(
     client.social.profiles.iterateRelationship(id, "shared-playlists", {
-      limit: 100,
+      limit: 50,
       scopes: catalogPlaylistsScopes,
     }),
   );
