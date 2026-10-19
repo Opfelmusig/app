@@ -13,9 +13,9 @@ use tauri_plugin_window_state::StateFlags;
 
 pub fn run() {
     tauri::Builder::default()
-        /* .plugin(tauri_plugin_single_instance::init(|app, _, _| {
+        .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             focus_main_window(app)
-        })) */
+        }))
         .plugin(logging::plugin())
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_prevent_default::debug())
