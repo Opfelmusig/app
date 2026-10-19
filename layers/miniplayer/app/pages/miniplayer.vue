@@ -3,7 +3,7 @@
     <button
       v-if="!isMacos"
       type="button"
-      class="absolute top-2 right-2 z-20 flex size-5 items-center justify-center rounded-md text-white/60 hover:bg-white/10 hover:text-white"
+      class="absolute top-1 right-1 z-20 flex size-5 items-center justify-center rounded-md text-white/60 hover:bg-white/10 hover:text-white"
       @click="close"
     >
       <OMIcon name="lucide:x" class="size-3.5" />
@@ -37,7 +37,7 @@
 
       <div
         class="relative flex min-w-0 flex-1 flex-col"
-        :class="artworkLayout ? 'justify-end gap-3 p-3 pt-8' : 'justify-between gap-1 p-2'"
+        :class="artworkLayout ? 'justify-end gap-3 p-3 pt-8' : 'justify-between gap-1 p-2 pt-1'"
         data-tauri-drag-region
       >
         <div
