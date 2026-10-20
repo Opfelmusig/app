@@ -63,6 +63,16 @@ export class LibraryMutations {
     await this.invalidate(["libdata", "pins"]);
   }
 
+  async addToLibrary(id: string, type: "songs" | "albums") {
+    await this.mutate("library:add", () => this.client.library.add({ [type]: [id] }));
+    await this.invalidate(...invalidate.library);
+  }
+
+  async removeFromLibrary(id: string, type: "songs" | "albums") {
+    await this.mutate("library:remove", () => this.client.library.remove(id, type));
+    await this.invalidate(...invalidate.library);
+  }
+
   private async invalidateResourceType(type: RateableResourceTypes) {
     if (type === "songs" || type === "library-songs") {
       await this.invalidate(...invalidate.songs);

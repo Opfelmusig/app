@@ -95,6 +95,13 @@ export default function useResourceMenu(
           onSelect: () => mutationClient.setRating(res.id, res.type, -1),
         });
       }
+
+      if ((res.type === "songs" || res.type === "albums") && !res.extras.libraryId) {
+        mutations.push({
+          label: "Add to library",
+          onSelect: () => mutationClient.addToLibrary(res.id, res.type),
+        });
+      }
     }
 
     groups.push(mutations);
@@ -238,6 +245,27 @@ export default function useResourceMenu(
           onSelect: () => copyLink(res),
         },
       ]);
+    }
+
+    if (
+      res.type === "songs" ||
+      res.type === "albums" ||
+      res.type === "library-songs" ||
+      res.type === "library-albums"
+    ) {
+      const libraryId =
+        res.type === "songs" || res.type === "albums" ? res.extras.libraryId : res.id;
+      const type = res.type === "songs" || res.type === "library-songs" ? "songs" : "albums";
+
+      if (libraryId) {
+        groups.push([
+          {
+            label: "Remove from library",
+            color: "error",
+            onSelect: () => mutationClient.removeFromLibrary(libraryId, type),
+          },
+        ]);
+      }
     }
 
     const end = toValue(config.extras?.end);

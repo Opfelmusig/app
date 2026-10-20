@@ -1,6 +1,17 @@
 import type { EntryKey } from "@pinia/colada";
 
 export const invalidate = {
+  library: [
+    ["libdata"],
+    ["amdata", "songs", "resource"],
+    ["amdata", "albums", "resource"],
+    ["amdata", "albums", "tracks"],
+    ["amdata", "albums", "views"],
+    ["amdata", "artists", "views"],
+    ["amdata", "playlists", "tracks"],
+    ["amdata", "home"],
+    ["amdata", "search"],
+  ],
   songs: [
     ["libdata", "songs", "list"],
     ["libdata", "songs", "resource"],
