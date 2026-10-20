@@ -43,6 +43,7 @@
         />
       </UTooltip>
     </header>
+    <USeparator v-if="!historyStore.entries.length || !displayedEntries.length" />
     <p v-if="!historyStore.entries.length" class="p-4 text-sm text-muted">
       No listening history yet.
     </p>
