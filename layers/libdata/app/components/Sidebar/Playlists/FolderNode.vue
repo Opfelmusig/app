@@ -1,11 +1,13 @@
 <template>
-  <SidebarItemIcon
-    v-model="sidebarFolderOpen"
-    :icon="sidebarFolderOpen ? 'lucide:folder-open' : 'lucide:folder'"
-    :inset
-  >
-    {{ node.item.attributes.name }}
-  </SidebarItemIcon>
+  <SidebarResourceMenu :resource="node.item">
+    <SidebarItemIcon
+      v-model="sidebarFolderOpen"
+      :icon="sidebarFolderOpen ? 'lucide:folder-open' : 'lucide:folder'"
+      :inset
+    >
+      {{ node.item.attributes.name }}
+    </SidebarItemIcon>
+  </SidebarResourceMenu>
   <Collapse :when="sidebarFolderOpen" class="transition-[height]">
     <div class="flex w-full flex-col gap-1">
       <SidebarItemIcon
