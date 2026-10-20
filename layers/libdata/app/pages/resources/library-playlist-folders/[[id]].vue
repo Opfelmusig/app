@@ -57,7 +57,6 @@ const {
   key: () => ["playlist-folders", id.value, "resource"],
   query: () => fetchLibraryFolder(id.value),
   staleTime: ms("6h"),
-  gcTime: false,
 });
 const { data: children, isPending, error } = useFolderChildren(id);
 </script>

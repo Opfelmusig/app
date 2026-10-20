@@ -155,7 +155,6 @@ const {
   key: () => ["playlists", id.value, "resource"],
   query: () => fetchLibraryPlaylist(id.value),
   staleTime: ms("6h"),
-  gcTime: false,
 });
 const { data: tracks, isPending: tracksPending, error: tracksError } = useLibraryPlaylistTracks(id);
 

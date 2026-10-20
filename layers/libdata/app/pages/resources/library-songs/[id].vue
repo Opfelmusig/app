@@ -106,7 +106,6 @@ const {
   key: () => ["songs", id.value, "resource"],
   query: () => fetchLibrarySong(id.value),
   staleTime: ms("6h"),
-  gcTime: false,
 });
 
 const catalogId = computed(() => song.value?.extras.catalogId);

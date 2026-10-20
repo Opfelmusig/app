@@ -5,6 +5,5 @@ export default function useLibraryFolders() {
     key: () => ["playlist-folders"],
     query: () => fetchLibraryFolders(),
     staleTime: ms("6h"),
-    gcTime: false,
   });
 }
