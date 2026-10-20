@@ -2,7 +2,7 @@ import { isDefined } from "remeda";
 
 import { fetchLibraryPins } from "#layers/libdata/app/lib/queries/pins";
 
-export default function usePins() {
+export default function useLibraryPins() {
   const query = useLibraryQuery({
     key: () => ["pins"],
     query: () => fetchLibraryPins(),

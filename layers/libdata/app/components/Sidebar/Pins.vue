@@ -24,5 +24,5 @@
 </template>
 
 <script lang="ts" setup>
-const { data, isPending, error } = usePins();
+const { data, isPending, error } = useLibraryPins();
 </script>
