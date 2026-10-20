@@ -75,6 +75,27 @@ export class LibraryMutations {
     await this.invalidate(["libdata", "playlists", "list"]);
   }
 
+  async editPlaylist(playlist: AmLibraryPlaylist, attributes: MutateLibraryPlaylist["attributes"]) {
+    await this.mutate("playlist:edit", () =>
+      this.client.library.playlists.edit(playlist.id, attributes),
+    );
+    await this.invalidate(
+      ["libdata", "playlists", "list"],
+      ["libdata", "playlists", "resource", playlist.id],
+      ["libdata", "pins"],
+    );
+  }
+
+  async deletePlaylist(playlist: AmLibraryPlaylist) {
+    await this.mutate("playlist:delete", () => this.client.library.playlists.delete(playlist.id));
+    await this.invalidate(
+      ["libdata", "playlists", "list"],
+      ["libdata", "playlists", "resource", playlist.id],
+      ["libdata", "playlists", "tracks", playlist.id],
+      ["libdata", "pins"],
+    );
+  }
+
   async createPlaylistFolder(
     attributes: MutateLibraryPlaylistFolder["attributes"],
     parentId: string,
@@ -83,6 +104,24 @@ export class LibraryMutations {
       this.client.library.playlistFolders.create(attributes, { parentId }),
     );
     await this.invalidate(["libdata", "playlist-folders", "list"]);
+  }
+
+  async editPlaylistFolder(id: string, attributes: MutateLibraryPlaylistFolder["attributes"]) {
+    await this.mutate("playlist-folder:edit", () =>
+      this.client.library.playlistFolders.edit(id, attributes),
+    );
+    await this.invalidate(["libdata", "playlist-folders"]);
+  }
+
+  async deletePlaylistFolder(id: string) {
+    await this.mutate("playlist-folder:delete", () =>
+      this.client.library.playlistFolders.delete(id),
+    );
+    await this.invalidate(
+      ["libdata", "playlist-folders"],
+      ["libdata", "playlists"],
+      ["libdata", "pins"],
+    );
   }
 
   async addToLibrary(id: string, type: "songs" | "albums") {

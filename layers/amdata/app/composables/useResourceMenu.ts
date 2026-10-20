@@ -1,4 +1,10 @@
 import type { DropdownMenuItem } from "@nuxt/ui";
+import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
+
+import MutationFolderDelete from "#layers/libdata/app/components/Mutation/Folder/Delete.vue";
+import MutationFolderEdit from "#layers/libdata/app/components/Mutation/Folder/Edit.vue";
+import MutationPlaylistDelete from "#layers/libdata/app/components/Mutation/Playlist/Delete.vue";
+import MutationPlaylistEdit from "#layers/libdata/app/components/Mutation/Playlist/Edit.vue";
 
 interface ResourceMenuActions {
   play?: () => void;
@@ -31,11 +37,15 @@ export default function useResourceMenu(
   const mutationClient = useMutations();
   const { pinnedIds } = useLibraryPins();
   const auth = useAuth();
+  const overlay = useOverlay();
 
   return computed<DropdownMenuItem[][]>(() => {
     const res = toValue(resource);
+    const start = toValue(config.extras?.start);
+    const end = toValue(config.extras?.end);
 
-    if (!res || res.type === "stations") return [];
+    if (!res) return [start ?? [], end ?? []].filter((group) => group.length);
+    if (res.type === "stations") return [];
 
     const groups: DropdownMenuItem[][] = [];
     const playback: DropdownMenuItem[] = [];
@@ -43,7 +53,6 @@ export default function useResourceMenu(
     const mutations: DropdownMenuItem[] = [];
     const pending = pendingResource.value === res.id;
 
-    const start = toValue(config.extras?.start);
     if (start) groups.push(start);
 
     if (
@@ -254,6 +263,55 @@ export default function useResourceMenu(
       ]);
     }
 
+    if (res.type === "library-playlists" && !res.extras.tags.includes("favorited")) {
+      if (res.extras.canEdit) {
+        groups.push([
+          {
+            label: "Edit playlist",
+            onSelect: () => {
+              overlay
+                .create(MutationPlaylistEdit, { destroyOnClose: true })
+                .open({ playlist: res });
+            },
+          },
+        ]);
+      }
+
+      groups.push([
+        {
+          label: "Delete playlist",
+          color: "error",
+          onSelect: () => {
+            overlay
+              .create(MutationPlaylistDelete, { destroyOnClose: true })
+              .open({ playlist: res });
+          },
+        },
+      ]);
+    }
+
+    if (res.type === "library-playlist-folders" && res.id !== ROOT_FOLDER_ID) {
+      groups.push(
+        [
+          {
+            label: "Edit folder",
+            onSelect: () => {
+              overlay.create(MutationFolderEdit, { destroyOnClose: true }).open({ folder: res });
+            },
+          },
+        ],
+        [
+          {
+            label: "Delete folder",
+            color: "error",
+            onSelect: () => {
+              overlay.create(MutationFolderDelete, { destroyOnClose: true }).open({ folder: res });
+            },
+          },
+        ],
+      );
+    }
+
     if (
       res.type === "songs" ||
       res.type === "albums" ||
@@ -277,7 +335,6 @@ export default function useResourceMenu(
       }
     }
 
-    const end = toValue(config.extras?.end);
     if (end) groups.push(end);
 
     return groups.filter((group) => group.length);
