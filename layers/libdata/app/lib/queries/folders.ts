@@ -7,7 +7,7 @@ export async function fetchLibraryFolders(signal: AbortSignal) {
   const client = useClient();
 
   const playlists = await collect(
-    client.library.playlistFolders.iterateFolders({ config: { signal } }),
+    client.library.playlistFolders.iterateAll({ config: { signal } }),
     { signal },
   );
 
