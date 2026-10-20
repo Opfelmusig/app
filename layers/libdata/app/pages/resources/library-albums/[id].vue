@@ -52,12 +52,7 @@
             :disabled="!album || !displayedTracks.length"
             @click="play(0, true)"
           />
-          <OMButtonSecondary
-            v-if="album"
-            fill
-            icon="lucide:star"
-            :active="album.attributes.personalRating === 1"
-          />
+          <AMFavoriteButton v-if="album" :resource="album" />
           <OMButtonSeparator />
           <AMControlsSorting
             v-model="sortBy"

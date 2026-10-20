@@ -38,11 +38,7 @@
             @click="station && queueStore.playStation(station)"
           />
           <template v-if="artist">
-            <OMButtonSecondary
-              fill
-              icon="lucide:star"
-              :active="artist.attributes.personalRating === 1"
-            />
+            <AMFavoriteButton :resource="artist" />
             <template v-if="latestRelease">
               <OMButtonSeparator class="shrink-0" />
               <OMContextMenu :items="latestReleaseMenuItems">

@@ -52,12 +52,7 @@
         <p v-else class="text-sm text-muted">Song not found.</p>
         <div class="flex items-center gap-2">
           <OMButtonPlay :disabled="!song" @click="play()" />
-          <OMButtonSecondary
-            v-if="song"
-            fill
-            icon="lucide:star"
-            :active="song.attributes.personalRating === 1"
-          />
+          <AMFavoriteButton v-if="song" :resource="song" />
           <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </div>

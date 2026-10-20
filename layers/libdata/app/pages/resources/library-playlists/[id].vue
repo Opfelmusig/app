@@ -71,12 +71,7 @@
             :disabled="!playlist || !displayedTracks.length"
             @click="play(0, true)"
           />
-          <OMButtonSecondary
-            v-if="playlist"
-            fill
-            icon="lucide:star"
-            :active="playlist.attributes.personalRating === 1"
-          />
+          <AMFavoriteButton v-if="playlist" :resource="playlist" />
           <UTooltip
             v-if="playlist"
             :text="playlist.extras.isPublic ? 'Public playlist' : 'Private playlist'"
