@@ -50,7 +50,12 @@
                 class="flex h-9 min-w-0 items-center gap-2 rounded-xl pr-2.5 text-muted select-none hover:bg-muted"
               >
                 <div class="size-9 shrink-0 overflow-hidden p-1">
-                  <AMArtworkWrapper class="rounded-lg" :resource="latestRelease" context="list">
+                  <AMArtworkWrapper
+                    class="size-full rounded-lg"
+                    :resource="latestRelease"
+                    context="list"
+                  >
+                    <AMArtworkImage />
                     <AMArtworkPlaceholder />
                     <AMArtworkOverlay
                       class="cursor-default p-0"
