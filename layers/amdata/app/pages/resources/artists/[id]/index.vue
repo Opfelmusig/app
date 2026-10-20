@@ -80,7 +80,10 @@
                       {{ latestRelease.attributes.name }}
                     </span>
                     <span v-if="latestRelease.attributes.releaseDate" class="shrink-0">
-                      (<AMReleaseDate :release-date="latestRelease.attributes.releaseDate" />)
+                      <AMReleaseDate
+                        :release-date="latestRelease.attributes.releaseDate"
+                        date-style="short"
+                      />
                     </span>
                   </span>
                   <OMIcon name="lucide:chevron-right" class="size-4 shrink-0" />
