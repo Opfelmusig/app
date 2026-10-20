@@ -24,7 +24,7 @@
           }}
         </h2>
         <OMButtonTertiary
-          v-if="folder && !folderPending && !folderError"
+          v-if="(folder || id === ROOT_FOLDER_ID) && !folderPending && !folderError"
           icon="lucide:ellipsis"
           class="ml-auto"
         />
