@@ -2,7 +2,7 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import { groupBy, sort } from "remeda";
 
 export default function useLibraryTree(id: MaybeRefOrGetter<string> = ROOT_FOLDER_ID) {
-  const { playlists, folders, error, isPending } = useLibraryPlaylistAndFolders();
+  const { playlists, folders, error, isPending } = useLibraryPlaylistsAndFolders();
 
   const data = computed<AmLibraryTreeNode[] | undefined>(() => {
     if (!folders.data.value || !playlists.data.value) return;

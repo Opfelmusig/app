@@ -4,7 +4,7 @@
       <SettingsToggle
         v-if="!isMacos"
         v-model="settingsStore.system.hideTitlebarControls"
-        label="Hide titlebar controls"
+        label="Hide title bar controls"
       />
       <SettingsToggle
         v-model="settingsStore.system.minimizeToTray"

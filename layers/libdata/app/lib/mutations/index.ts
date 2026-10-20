@@ -48,14 +48,14 @@ export class LibraryMutations {
     }
   }
 
-  private async mutate<T>(name: string, mutation: () => Promise<T>): Promise<T> {
+  private async mutate<T>(action: string, mutation: () => Promise<T>): Promise<T> {
     try {
       return await mutation();
     } catch (cause) {
-      log.error("Could not execute mutation", { name, cause });
+      log.error("Could not execute mutation", { action, cause });
       this.toast.add({
         title: "Action failed",
-        description: `Could not execute action '${name}'.`,
+        description: `Could not ${action}.`,
         color: "error",
       });
       throw cause;
@@ -63,21 +63,21 @@ export class LibraryMutations {
   }
 
   async setPinned(id: string, pinned: boolean) {
-    if (pinned) await this.mutate("pin", () => this.client.library.pin(id));
-    else await this.mutate("unpin", () => this.client.library.unpin(id));
+    if (pinned) await this.mutate("pin this item", () => this.client.library.pin(id));
+    else await this.mutate("unpin this item", () => this.client.library.unpin(id));
 
     await this.invalidate(["libdata", "pins"]);
   }
 
   async createPlaylist(attributes: MutateLibraryPlaylist["attributes"], parentId: string) {
-    await this.mutate("playlist:create", () =>
+    await this.mutate("create the playlist", () =>
       this.client.library.playlists.create(attributes, { parentId }),
     );
     await this.invalidate(["libdata", "playlists", "list"]);
   }
 
   async editPlaylist(playlist: AmLibraryPlaylist, attributes: MutateLibraryPlaylist["attributes"]) {
-    await this.mutate("playlist:edit", () =>
+    await this.mutate("save changes to the playlist", () =>
       this.client.library.playlists.edit(playlist.id, attributes),
     );
     await this.invalidate(
@@ -88,7 +88,9 @@ export class LibraryMutations {
   }
 
   async deletePlaylist(playlist: AmLibraryPlaylist) {
-    await this.mutate("playlist:delete", () => this.client.library.playlists.delete(playlist.id));
+    await this.mutate("delete the playlist", () =>
+      this.client.library.playlists.delete(playlist.id),
+    );
     await this.invalidate(
       ["libdata", "playlists", "list"],
       ["libdata", "playlists", "resource", playlist.id],
@@ -98,7 +100,7 @@ export class LibraryMutations {
   }
 
   async removePlaylistTrack(id: string, songId: string) {
-    await this.mutate("playlist-track:remove", () =>
+    await this.mutate("remove the song from the playlist", () =>
       this.client.library.playlists.removeTracks(id, [songId]),
     );
     await this.invalidate(
@@ -110,7 +112,9 @@ export class LibraryMutations {
   }
 
   async movePlaylist(id: string, parentId: string) {
-    await this.mutate("playlist:move", () => this.client.library.playlists.setParent(id, parentId));
+    await this.mutate("move the playlist", () =>
+      this.client.library.playlists.setParent(id, parentId),
+    );
     await this.invalidate(
       ["libdata", "playlists", "list"],
       ["libdata", "playlists", "resource", id],
@@ -123,7 +127,7 @@ export class LibraryMutations {
     original: readonly AmLibrarySong[],
     tracks: readonly AmLibrarySong[],
   ) {
-    await this.mutate("playlist-tracks:reorder", async () => {
+    await this.mutate("reorder the playlist tracks", async () => {
       const current = await collect(
         this.client.library.playlists.iterateRelationship(id, "tracks", { limit: 100 }),
       );
@@ -153,23 +157,21 @@ export class LibraryMutations {
     attributes: MutateLibraryPlaylistFolder["attributes"],
     parentId: string,
   ) {
-    await this.mutate("playlist-folder:create", () =>
+    await this.mutate("create the folder", () =>
       this.client.library.playlistFolders.create(attributes, { parentId }),
     );
     await this.invalidate(["libdata", "playlist-folders", "list"]);
   }
 
   async editPlaylistFolder(id: string, attributes: MutateLibraryPlaylistFolder["attributes"]) {
-    await this.mutate("playlist-folder:edit", () =>
+    await this.mutate("save changes to the folder", () =>
       this.client.library.playlistFolders.edit(id, attributes),
     );
     await this.invalidate(["libdata", "playlist-folders"]);
   }
 
   async deletePlaylistFolder(id: string) {
-    await this.mutate("playlist-folder:delete", () =>
-      this.client.library.playlistFolders.delete(id),
-    );
+    await this.mutate("delete the folder", () => this.client.library.playlistFolders.delete(id));
     await this.invalidate(
       ["libdata", "playlist-folders"],
       ["libdata", "playlists"],
@@ -178,19 +180,23 @@ export class LibraryMutations {
   }
 
   async movePlaylistFolder(id: string, parentId: string) {
-    await this.mutate("playlist-folder:move", () =>
+    await this.mutate("move the folder", () =>
       this.client.library.playlistFolders.setParent(id, parentId),
     );
     await this.invalidate(["libdata", "playlist-folders"]);
   }
 
   async addToLibrary(id: string, type: "songs" | "albums") {
-    await this.mutate("library:add", () => this.client.library.add({ [type]: [id] }));
+    await this.mutate("add the item to your library", () =>
+      this.client.library.add({ [type]: [id] }),
+    );
     await this.invalidate(...invalidate.library(type, id));
   }
 
   async removeFromLibrary(id: string, type: "songs" | "albums", catalogId?: string) {
-    await this.mutate("library:remove", () => this.client.library.remove(id, type));
+    await this.mutate("remove the item from your library", () =>
+      this.client.library.remove(id, type),
+    );
     await this.invalidate(...invalidate.library(type, catalogId));
   }
 
@@ -220,7 +226,7 @@ export class LibraryMutations {
     rating: RatingValue,
     counterpartId?: string,
   ) {
-    await this.mutate("rating:add", () => this.client.me.ratings.set(id, type, rating));
+    await this.mutate("set the rating", () => this.client.me.ratings.set(id, type, rating));
     if (type === "songs" || type === "library-songs") {
       this.queue.updateRating(id, rating);
       this.history.updateRating(id, rating);
@@ -229,7 +235,7 @@ export class LibraryMutations {
   }
 
   async deleteRating(id: string, type: RateableResourceTypes, counterpartId?: string) {
-    await this.mutate("rating:remove", () => this.client.me.ratings.delete(id, type));
+    await this.mutate("remove the rating", () => this.client.me.ratings.delete(id, type));
     if (type === "songs" || type === "library-songs") {
       this.queue.updateRating(id, null);
       this.history.updateRating(id, null);

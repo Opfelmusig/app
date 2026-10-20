@@ -1,4 +1,4 @@
-export default function useLibraryPlaylistAndFolders() {
+export default function useLibraryPlaylistsAndFolders() {
   const playlists = useLibraryPlaylists();
   const folders = useLibraryFolders();
 

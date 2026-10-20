@@ -34,7 +34,7 @@
         :inset="nestedInset"
         :to="resourceLink(node.item)"
       >
-        {{ overflow }} More
+        {{ overflow }} more
       </SidebarItemIcon>
     </div>
   </Collapse>

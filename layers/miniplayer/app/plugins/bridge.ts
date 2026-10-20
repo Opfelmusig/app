@@ -14,7 +14,7 @@ export default defineNuxtPlugin({
       miniplayerStore.setLayout(sync.layout);
       miniplayerStore.setPlayback(sync.playback);
     } catch (cause) {
-      log.error("Failed to sync with main window", { cause });
+      log.error("Failed to sync with the main window", { cause });
     }
 
     return {

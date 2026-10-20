@@ -28,7 +28,7 @@ const open = defineModel<boolean>("open", { default: false });
 
 const mutations = useMutations();
 const route = useRoute();
-const { playlists, folders } = useLibraryPlaylistAndFolders();
+const { playlists, folders } = useLibraryPlaylistsAndFolders();
 
 const { mutate, isLoading } = useMutation({
   mutation: async (input: { from: string; returnTo?: string }) => {
