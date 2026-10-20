@@ -132,7 +132,7 @@ function removeSearch(value: string) {
 }
 
 const { data, isPending, error } = useAmQuery({
-  key: () => ["search", term.value, filter.value],
+  key: () => ["search", filter.value, term.value],
   query: () => fetchCatalogSearch(term.value, filter.value),
   enabled: () => !!term.value.trim(),
   staleTime: Infinity,
