@@ -4,6 +4,7 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import MutationFolderDelete from "#layers/libdata/app/components/Mutation/Folder/Delete.vue";
 import MutationFolderEdit from "#layers/libdata/app/components/Mutation/Folder/Edit.vue";
 import MutationFolderMove from "#layers/libdata/app/components/Mutation/Folder/Move.vue";
+import MutationPlaylistAdd from "#layers/libdata/app/components/Mutation/Playlist/Add.vue";
 import MutationPlaylistDelete from "#layers/libdata/app/components/Mutation/Playlist/Delete.vue";
 import MutationPlaylistEdit from "#layers/libdata/app/components/Mutation/Playlist/Edit.vue";
 import MutationPlaylistMove from "#layers/libdata/app/components/Mutation/Playlist/Move.vue";
@@ -132,6 +133,15 @@ export default function useResourceMenu(
           onSelect: () => mutationClient.addToLibrary(res.id, res.type),
         });
       }
+    }
+
+    if (res.type === "songs" || res.type === "library-songs") {
+      mutations.push({
+        label: "Add to playlist…",
+        onSelect: () => {
+          overlay.create(MutationPlaylistAdd, { destroyOnClose: true }).open({ song: res });
+        },
+      });
     }
 
     groups.push(mutations);

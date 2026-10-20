@@ -2,6 +2,7 @@ import { collect } from "@opfelmusig/lib/helpers";
 import type {
   MutateLibraryPlaylist,
   MutateLibraryPlaylistFolder,
+  MutateRelationshipItems,
   RateableResourceTypes,
   RatingValue,
 } from "@opfelmusig/lib/types";
@@ -96,6 +97,19 @@ export class LibraryMutations {
       ["libdata", "playlists", "resource", playlist.id],
       ["libdata", "playlists", "tracks", playlist.id],
       ["libdata", "pins"],
+    );
+  }
+
+  async addPlaylistTracks(
+    id: string,
+    tracks: MutateRelationshipItems<MutateLibraryPlaylist, "tracks">,
+  ) {
+    await this.mutate("add the song to the playlist", () =>
+      this.client.library.playlists.appendTracks(id, tracks),
+    );
+    await this.invalidate(
+      ["libdata", "playlists", "tracks", id],
+      ["libdata", "playlists", "resource", id],
     );
   }
 
