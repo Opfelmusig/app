@@ -33,8 +33,9 @@
     <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
       Loading playlists
     </SidebarItemIcon>
-
-    {{ error }}
+    <SidebarItemIcon v-else-if="error" :title="error.message" icon="lucide:x" variant="error">
+      {{ error.name }}
+    </SidebarItemIcon>
   </div>
 </template>
 

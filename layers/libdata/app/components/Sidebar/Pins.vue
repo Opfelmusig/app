@@ -18,8 +18,8 @@
     <SidebarItemIcon v-else-if="isPending" icon="lucide:loader-circle" spin variant="disabled">
       Loading pins
     </SidebarItemIcon>
-    <SidebarItemIcon v-else-if="error" icon="lucide:x" variant="error">
-      {{ error.message }}
+    <SidebarItemIcon v-else-if="error" :title="error.message" icon="lucide:x" variant="error">
+      {{ error.name }}
     </SidebarItemIcon>
   </div>
 </template>

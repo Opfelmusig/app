@@ -40,7 +40,7 @@ const link = cva(
       variant: {
         default: "text-muted hover:bg-elevated",
         dimmed: "text-dimmed hover:bg-elevated",
-        error: "bg-error/20 text-error",
+        error: "text-error",
         disabled: "pointer-events-none text-muted opacity-40",
       },
       minimized: {
