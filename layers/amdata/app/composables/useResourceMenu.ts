@@ -45,7 +45,19 @@ export default function useResourceMenu(
     const end = toValue(config.extras?.end);
 
     if (!res) return [start ?? [], end ?? []].filter((group) => group.length);
-    if (res.type === "stations") return [];
+    if (res.type === "stations") {
+      if (config.sections?.hidePlayback) return [];
+
+      return [
+        [
+          {
+            label: "Play",
+            disabled: queueStore.requestedStation?.id === res.id,
+            onSelect: config.actions?.play ?? (() => queueStore.playStation(res)),
+          },
+        ],
+      ];
+    }
 
     const groups: DropdownMenuItem[][] = [];
     const playback: DropdownMenuItem[] = [];
