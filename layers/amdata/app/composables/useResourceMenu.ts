@@ -28,7 +28,7 @@ export default function useResourceMenu(
   const { play, shuffle, playNext, playAfter, createStation, pendingResource } =
     useResourcePlayback();
   const { copyLink } = useResourceSharing();
-  const mutations = useMutations();
+  const mutationClient = useMutations();
   const { pinnedIds } = useLibraryPins();
   const auth = useAuth();
 
@@ -40,6 +40,7 @@ export default function useResourceMenu(
     const groups: DropdownMenuItem[][] = [];
     const playback: DropdownMenuItem[] = [];
     const navigation: DropdownMenuItem[] = [];
+    const mutations: DropdownMenuItem[] = [];
     const pending = pendingResource.value === res.id;
 
     const start = toValue(config.extras?.start);
@@ -55,52 +56,48 @@ export default function useResourceMenu(
       res.type === "artists" ||
       res.type === "playlists"
     ) {
-      const mutation: DropdownMenuItem[] = [];
+      if (
+        res.type === "library-songs" ||
+        res.type === "library-albums" ||
+        res.type === "library-artists" ||
+        res.type === "library-playlists"
+      ) {
+        const pinned = pinnedIds.value.has(res.id);
 
-      const pinned = pinnedIds.value.has(res.id);
-      const rating = res.attributes.personalRating;
-
-      mutation.push({
-        label: pinned ? "Unpin" : "Pin",
-        onSelect: () => mutations.setPinned(res.id, !pinned),
-      });
-
-      if (rating) {
-        mutation.push({
-          label: res.attributes.personalRating === 1 ? "Undo favorite" : "Undo suggest less",
-          onSelect: () => mutations.deleteRating(res.id, res.type),
+        mutations.push({
+          label: pinned ? "Unpin" : "Pin",
+          onSelect: () => mutationClient.setPinned(res.id, !pinned),
         });
-      } else {
-        mutation.push({
-          label: "Favorite",
-          onSelect: () => mutations.setRating(res.id, res.type, 1),
-        });
-        mutation.push({
-          label: "Suggest less",
-          onSelect: () => mutations.setRating(res.id, res.type, -1),
+      } else if (res.extras.libraryId) {
+        const id = res.extras.libraryId;
+        const pinned = pinnedIds.value.has(id);
+
+        mutations.push({
+          label: pinned ? "Unpin" : "Pin",
+          onSelect: () => mutationClient.setPinned(id, !pinned),
         });
       }
 
-      groups.push(mutation);
+      const rating = res.attributes.personalRating;
+
+      if (rating) {
+        mutations.push({
+          label: res.attributes.personalRating === 1 ? "Undo favorite" : "Undo suggest less",
+          onSelect: () => mutationClient.deleteRating(res.id, res.type),
+        });
+      } else {
+        mutations.push({
+          label: "Favorite",
+          onSelect: () => mutationClient.setRating(res.id, res.type, 1),
+        });
+        mutations.push({
+          label: "Suggest less",
+          onSelect: () => mutationClient.setRating(res.id, res.type, -1),
+        });
+      }
     }
 
-    if (
-      (res.type === "songs" ||
-        res.type === "albums" ||
-        res.type === "artists" ||
-        res.type === "playlists") &&
-      res.extras.libraryId
-    ) {
-      const id = res.extras.libraryId;
-      const pinned = pinnedIds.value.has(id);
-
-      groups.push([
-        {
-          label: pinned ? "Unpin" : "Pin",
-          onSelect: () => mutations.setPinned(id, !pinned),
-        },
-      ]);
-    }
+    groups.push(mutations);
 
     if (res.type === "songs" || res.type === "library-songs") {
       const song = res;
