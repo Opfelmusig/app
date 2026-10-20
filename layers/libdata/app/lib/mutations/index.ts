@@ -1,17 +1,14 @@
-import type { OpfelMusigClient } from "@opfelmusig/lib";
 import type { RateableResourceTypes, RatingValue } from "@opfelmusig/lib/types";
-import type { EntryKey, QueryCache } from "@pinia/colada";
+import type { EntryKey } from "@pinia/colada";
 
 import { invalidate } from "#layers/libdata/app/lib/mutations/invalidate";
 
 const log = logger.withTag("mutations");
 
 export class LibraryMutations {
-  constructor(
-    private client: OpfelMusigClient,
-    private queryCache: QueryCache,
-    private toast: ReturnType<typeof useToast>,
-  ) {}
+  private client = useClient();
+  private queryCache = useQueryCache();
+  private toast = useToast();
 
   private async invalidate(...keys: EntryKey[]) {
     if (!keys.length) return;
