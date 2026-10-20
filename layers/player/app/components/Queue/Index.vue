@@ -8,6 +8,7 @@
         clearable
         @clear="queueStore.clearQueue"
       />
+      <OMTableTitle v-else title="Queue" clearable @clear="queueStore.clearQueue" />
       <QueueList :key="queueStore.isShuffling ? 'shuffled' : 'queue'" :entries="upNext" />
     </template>
     <template v-if="showContextQueue">
