@@ -1,17 +1,38 @@
 <template>
   <PageWrapper>
     <header class="flex flex-col gap-4 p-4 lg:flex-row">
-      <AMArtworkWrapper :resource="playlist" context="header">
-        <AMMediaEditorialVideo
-          :editorial-video="playlist?.attributes.editorialVideo"
-          variant="square"
-        >
-          <template #fallback>
-            <AMArtworkImage />
-            <AMArtworkPlaceholder />
-          </template>
-        </AMMediaEditorialVideo>
-      </AMArtworkWrapper>
+      <UChip
+        position="bottom-right"
+        :ui="{ base: 'size-6 ring-3' }"
+        class="shrink-0 self-start"
+        inset
+        color="neutral"
+        :show="!!playlist"
+      >
+        <template #content>
+          <UTooltip
+            :text="playlist?.extras.isPublic ? 'Public playlist' : 'Private playlist'"
+            arrow
+          >
+            <UIcon
+              :name="playlist?.extras.isPublic ? 'lucide:globe' : 'lucide:lock-keyhole'"
+              class="size-3.5 [&>g]:stroke-3"
+              mode="svg"
+            />
+          </UTooltip>
+        </template>
+        <AMArtworkWrapper :resource="playlist" context="header">
+          <AMMediaEditorialVideo
+            :editorial-video="playlist?.attributes.editorialVideo"
+            variant="square"
+          >
+            <template #fallback>
+              <AMArtworkImage />
+              <AMArtworkPlaceholder />
+            </template>
+          </AMMediaEditorialVideo>
+        </AMArtworkWrapper>
+      </UChip>
       <div class="flex w-full min-w-0 flex-col justify-end gap-4">
         <div v-if="playlist" class="flex w-full min-w-0 flex-col gap-1 whitespace-nowrap">
           <h2>{{ playlist.attributes.name }}</h2>
@@ -72,16 +93,6 @@
             @click="play(0, true)"
           />
           <AMFavoriteButton v-if="playlist" :resource="playlist" />
-          <UTooltip
-            v-if="playlist"
-            :text="playlist.extras.isPublic ? 'Public playlist' : 'Private playlist'"
-            arrow
-          >
-            <OMButtonSecondary
-              :icon="playlist.extras.isPublic ? 'lucide:globe' : 'lucide:globe-lock'"
-              :active="playlist.extras.isPublic"
-            />
-          </UTooltip>
           <OMButtonSeparator />
           <AMControlsSorting
             v-model="sortBy"
