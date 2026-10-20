@@ -38,7 +38,7 @@ const props = defineProps<{
   resource: AmLibraryPlaylistFolder;
 }>();
 
-const { data } = useFolderChildren(() => props.resource.id);
+const { data } = useLibraryFolderChildren(() => props.resource.id);
 const children = computed(() =>
   data.value.filter((child) => isResourceType(child, "library-playlists")).slice(0, 4),
 );

@@ -1,4 +1,4 @@
-export default function useFolderChildren(id: MaybeRefOrGetter<string>) {
+export default function useLibraryFolderChildren(id: MaybeRefOrGetter<string>) {
   const { playlists, folders, error, isPending } = useLibraryPlaylistAndFolders();
 
   return {

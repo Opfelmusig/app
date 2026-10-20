@@ -58,5 +58,5 @@ const {
   query: () => fetchLibraryFolder(id.value),
   staleTime: ms("3h"),
 });
-const { data: children, isPending, error } = useFolderChildren(id);
+const { data: children, isPending, error } = useLibraryFolderChildren(id);
 </script>
