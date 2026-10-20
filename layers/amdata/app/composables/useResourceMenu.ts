@@ -28,6 +28,8 @@ export default function useResourceMenu(
   const { play, shuffle, playNext, playAfter, createStation, pendingResource } =
     useResourcePlayback();
   const { copyLink } = useResourceSharing();
+  const mutations = useMutations();
+  const { pinnedIds } = useLibraryPins();
   const auth = useAuth();
 
   return computed<DropdownMenuItem[][]>(() => {
@@ -42,6 +44,46 @@ export default function useResourceMenu(
 
     const start = toValue(config.extras?.start);
     if (start) groups.push(start);
+
+    if (
+      res.type === "library-songs" ||
+      res.type === "library-albums" ||
+      res.type === "library-artists" ||
+      res.type === "library-playlists"
+    ) {
+      groups.push([
+        pinnedIds.value.has(res.id)
+          ? {
+              label: "Unpin",
+              onSelect: () => mutations.unpin(res.id),
+            }
+          : {
+              label: "Pin",
+              onSelect: () => mutations.pin(res.id),
+            },
+      ]);
+    }
+
+    if (
+      (res.type === "songs" ||
+        res.type === "albums" ||
+        res.type === "artists" ||
+        res.type === "playlists") &&
+      res.extras.libraryId
+    ) {
+      const id = res.extras.libraryId;
+      groups.push([
+        pinnedIds.value.has(id)
+          ? {
+              label: "Unpin",
+              onSelect: () => mutations.unpin(id),
+            }
+          : {
+              label: "Pin",
+              onSelect: () => mutations.pin(id),
+            },
+      ]);
+    }
 
     if (res.type === "songs" || res.type === "library-songs") {
       const song = res;
