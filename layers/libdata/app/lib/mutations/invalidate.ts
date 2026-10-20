@@ -1,24 +1,24 @@
 import type { EntryKey } from "@pinia/colada";
 
 export const invalidate = {
-  library: [
+  library: (type: "songs" | "albums", catalogId?: string): EntryKey[] => [
     ["libdata"],
-    ["amdata", "songs", "resource"],
-    ["amdata", "albums", "resource"],
-    ["amdata", "albums", "tracks"],
-    ["amdata", "albums", "views"],
+    ["amdata", "songs", "resource", ...(type === "songs" && catalogId ? [catalogId] : [])],
+    ["amdata", "albums", "resource", ...(type === "albums" && catalogId ? [catalogId] : [])],
+    ["amdata", "albums", "tracks", ...(type === "albums" && catalogId ? [catalogId] : [])],
+    ["amdata", "albums", "views", ...(type === "albums" && catalogId ? [catalogId] : [])],
     ["amdata", "artists", "views"],
     ["amdata", "playlists", "tracks"],
     ["amdata", "home"],
     ["amdata", "search"],
   ],
-  songs: [
+  songs: (libraryId?: string, catalogId?: string): EntryKey[] => [
     ["libdata", "songs", "list"],
-    ["libdata", "songs", "resource"],
+    ["libdata", "songs", "resource", ...(libraryId ? [libraryId] : [])],
     ["libdata", "albums", "tracks"],
     ["libdata", "playlists", "tracks"],
     ["libdata", "pins"],
-    ["amdata", "songs", "resource"],
+    ["amdata", "songs", "resource", ...(catalogId ? [catalogId] : [])],
     ["amdata", "albums", "tracks"],
     ["amdata", "playlists", "tracks"],
     ["amdata", "artists", "views"],
@@ -26,33 +26,33 @@ export const invalidate = {
     ["amdata", "search", "all"],
     ["amdata", "search", "songs"],
   ],
-  albums: [
+  albums: (libraryId?: string, catalogId?: string): EntryKey[] => [
     ["libdata", "albums", "list"],
-    ["libdata", "albums", "resource"],
+    ["libdata", "albums", "resource", ...(libraryId ? [libraryId] : [])],
     ["libdata", "pins"],
-    ["amdata", "albums", "resource"],
-    ["amdata", "albums", "views"],
+    ["amdata", "albums", "resource", ...(catalogId ? [catalogId] : [])],
+    ["amdata", "albums", "views", ...(catalogId ? [catalogId] : [])],
     ["amdata", "artists", "views"],
     ["amdata", "home"],
     ["amdata", "search", "all"],
     ["amdata", "search", "albums"],
   ],
-  artists: [
+  artists: (libraryId?: string, catalogId?: string): EntryKey[] => [
     ["libdata", "artists", "list"],
-    ["libdata", "artists", "resource"],
+    ["libdata", "artists", "resource", ...(libraryId ? [libraryId] : [])],
     ["libdata", "pins"],
-    ["amdata", "artists", "resource"],
-    ["amdata", "artists", "views"],
+    ["amdata", "artists", "resource", ...(catalogId ? [catalogId] : [])],
+    ["amdata", "artists", "views", ...(catalogId ? [catalogId] : [])],
     ["amdata", "playlists", "views"],
     ["amdata", "home"],
     ["amdata", "search", "all"],
     ["amdata", "search", "artists"],
   ],
-  playlists: [
+  playlists: (libraryId?: string, catalogId?: string): EntryKey[] => [
     ["libdata", "playlists", "list"],
-    ["libdata", "playlists", "resource"],
+    ["libdata", "playlists", "resource", ...(libraryId ? [libraryId] : [])],
     ["libdata", "pins"],
-    ["amdata", "playlists", "resource"],
+    ["amdata", "playlists", "resource", ...(catalogId ? [catalogId] : [])],
     ["amdata", "albums", "views"],
     ["amdata", "artists", "views"],
     ["amdata", "social-profiles", "shared-playlists"],
@@ -60,4 +60,4 @@ export const invalidate = {
     ["amdata", "search", "all"],
     ["amdata", "search", "playlists"],
   ],
-} satisfies Record<string, EntryKey[]>;
+};

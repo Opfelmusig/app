@@ -65,41 +65,54 @@ export class LibraryMutations {
 
   async addToLibrary(id: string, type: "songs" | "albums") {
     await this.mutate("library:add", () => this.client.library.add({ [type]: [id] }));
-    await this.invalidate(...invalidate.library);
+    await this.invalidate(...invalidate.library(type, id));
   }
 
-  async removeFromLibrary(id: string, type: "songs" | "albums") {
+  async removeFromLibrary(id: string, type: "songs" | "albums", catalogId?: string) {
     await this.mutate("library:remove", () => this.client.library.remove(id, type));
-    await this.invalidate(...invalidate.library);
+    await this.invalidate(...invalidate.library(type, catalogId));
   }
 
-  private async invalidateResourceType(type: RateableResourceTypes) {
+  private async invalidateResourceType(
+    id: string,
+    type: RateableResourceTypes,
+    counterpartId?: string,
+  ) {
+    const isLibrary = type.startsWith("library-");
+    const libraryId = isLibrary ? id : counterpartId;
+    const catalogId = isLibrary ? counterpartId : id;
+
     if (type === "songs" || type === "library-songs") {
-      await this.invalidate(...invalidate.songs);
+      await this.invalidate(...invalidate.songs(libraryId, catalogId));
     } else if (type === "albums" || type === "library-albums") {
-      await this.invalidate(...invalidate.albums);
+      await this.invalidate(...invalidate.albums(libraryId, catalogId));
     } else if (type === "artists" || type === "library-artists") {
-      await this.invalidate(...invalidate.artists);
+      await this.invalidate(...invalidate.artists(libraryId, catalogId));
     } else if (type === "playlists" || type === "library-playlists") {
-      await this.invalidate(...invalidate.playlists);
+      await this.invalidate(...invalidate.playlists(libraryId, catalogId));
     }
   }
 
-  async setRating(id: string, type: RateableResourceTypes, rating: RatingValue) {
+  async setRating(
+    id: string,
+    type: RateableResourceTypes,
+    rating: RatingValue,
+    counterpartId?: string,
+  ) {
     await this.mutate("rating:add", () => this.client.me.ratings.set(id, type, rating));
     if (type === "songs" || type === "library-songs") {
       this.queue.updateRating(id, rating);
       this.history.updateRating(id, rating);
     }
-    await this.invalidateResourceType(type);
+    await this.invalidateResourceType(id, type, counterpartId);
   }
 
-  async deleteRating(id: string, type: RateableResourceTypes) {
+  async deleteRating(id: string, type: RateableResourceTypes, counterpartId?: string) {
     await this.mutate("rating:remove", () => this.client.me.ratings.delete(id, type));
     if (type === "songs" || type === "library-songs") {
       this.queue.updateRating(id, null);
       this.history.updateRating(id, null);
     }
-    await this.invalidateResourceType(type);
+    await this.invalidateResourceType(id, type, counterpartId);
   }
 }

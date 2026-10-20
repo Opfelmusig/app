@@ -79,20 +79,27 @@ export default function useResourceMenu(
       }
 
       const rating = res.attributes.personalRating;
+      const counterpartId =
+        res.type === "songs" ||
+        res.type === "albums" ||
+        res.type === "artists" ||
+        res.type === "playlists"
+          ? res.extras.libraryId
+          : res.extras.catalogId;
 
       if (rating) {
         mutations.push({
           label: res.attributes.personalRating === 1 ? "Undo favorite" : "Undo suggest less",
-          onSelect: () => mutationClient.deleteRating(res.id, res.type),
+          onSelect: () => mutationClient.deleteRating(res.id, res.type, counterpartId),
         });
       } else {
         mutations.push({
           label: "Favorite",
-          onSelect: () => mutationClient.setRating(res.id, res.type, 1),
+          onSelect: () => mutationClient.setRating(res.id, res.type, 1, counterpartId),
         });
         mutations.push({
           label: "Suggest less",
-          onSelect: () => mutationClient.setRating(res.id, res.type, -1),
+          onSelect: () => mutationClient.setRating(res.id, res.type, -1, counterpartId),
         });
       }
 
@@ -255,6 +262,8 @@ export default function useResourceMenu(
     ) {
       const libraryId =
         res.type === "songs" || res.type === "albums" ? res.extras.libraryId : res.id;
+      const catalogId =
+        res.type === "songs" || res.type === "albums" ? res.id : res.extras.catalogId;
       const type = res.type === "songs" || res.type === "library-songs" ? "songs" : "albums";
 
       if (libraryId) {
@@ -262,7 +271,7 @@ export default function useResourceMenu(
           {
             label: "Remove from library",
             color: "error",
-            onSelect: () => mutationClient.removeFromLibrary(libraryId, type),
+            onSelect: () => mutationClient.removeFromLibrary(libraryId, type, catalogId),
           },
         ]);
       }
