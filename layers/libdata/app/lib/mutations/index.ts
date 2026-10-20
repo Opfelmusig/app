@@ -2,6 +2,8 @@ import type { OpfelMusigClient } from "@opfelmusig/lib";
 import type { RateableResourceTypes, RatingValue } from "@opfelmusig/lib/types";
 import type { EntryKey, QueryCache } from "@pinia/colada";
 
+import { invalidate } from "#layers/libdata/app/lib/mutations/invalidate";
+
 const log = logger.withTag("mutations");
 
 export class LibraryMutations {
@@ -11,7 +13,9 @@ export class LibraryMutations {
     private toast: ReturnType<typeof useToast>,
   ) {}
 
-  async invalidate(...keys: [EntryKey, ...EntryKey[]]) {
+  private async invalidate(...keys: EntryKey[]) {
+    if (!keys.length) return;
+
     try {
       const results = await Promise.allSettled(
         keys.map((key) =>
@@ -39,7 +43,7 @@ export class LibraryMutations {
     }
   }
 
-  async mutate<T>(name: string, mutation: () => Promise<T>): Promise<T> {
+  private async mutate<T>(name: string, mutation: () => Promise<T>): Promise<T> {
     try {
       return await mutation();
     } catch (cause) {
@@ -60,59 +64,15 @@ export class LibraryMutations {
     await this.invalidate(["libdata", "pins"]);
   }
 
-  async invalidateResourceType(type: RateableResourceTypes) {
+  private async invalidateResourceType(type: RateableResourceTypes) {
     if (type === "songs" || type === "library-songs") {
-      await this.invalidate(
-        ["libdata", "songs", "list"],
-        ["libdata", "songs", "resource"],
-        ["libdata", "albums", "tracks"],
-        ["libdata", "playlists", "tracks"],
-        ["libdata", "pins"],
-        ["amdata", "songs", "resource"],
-        ["amdata", "albums", "tracks"],
-        ["amdata", "playlists", "tracks"],
-        ["amdata", "artists", "views"],
-        ["amdata", "home"],
-        ["amdata", "search", "all"],
-        ["amdata", "search", "songs"],
-      );
+      await this.invalidate(...invalidate.songs);
     } else if (type === "albums" || type === "library-albums") {
-      await this.invalidate(
-        ["libdata", "albums", "list"],
-        ["libdata", "albums", "resource"],
-        ["libdata", "pins"],
-        ["amdata", "albums", "resource"],
-        ["amdata", "albums", "views"],
-        ["amdata", "artists", "views"],
-        ["amdata", "home"],
-        ["amdata", "search", "all"],
-        ["amdata", "search", "albums"],
-      );
+      await this.invalidate(...invalidate.albums);
     } else if (type === "artists" || type === "library-artists") {
-      await this.invalidate(
-        ["libdata", "artists", "list"],
-        ["libdata", "artists", "resource"],
-        ["libdata", "pins"],
-        ["amdata", "artists", "resource"],
-        ["amdata", "artists", "views"],
-        ["amdata", "playlists", "views"],
-        ["amdata", "home"],
-        ["amdata", "search", "all"],
-        ["amdata", "search", "artists"],
-      );
+      await this.invalidate(...invalidate.artists);
     } else if (type === "playlists" || type === "library-playlists") {
-      await this.invalidate(
-        ["libdata", "playlists", "list"],
-        ["libdata", "playlists", "resource"],
-        ["libdata", "pins"],
-        ["amdata", "playlists", "resource"],
-        ["amdata", "albums", "views"],
-        ["amdata", "artists", "views"],
-        ["amdata", "social-profiles", "shared-playlists"],
-        ["amdata", "home"],
-        ["amdata", "search", "all"],
-        ["amdata", "search", "playlists"],
-      );
+      await this.invalidate(...invalidate.playlists);
     }
   }
 
