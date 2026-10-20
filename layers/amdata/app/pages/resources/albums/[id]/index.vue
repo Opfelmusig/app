@@ -141,14 +141,14 @@ const {
   isPending,
   error,
 } = useAmQuery({
-  key: () => ["albums", id.value, "resource"],
+  key: () => ["albums", "resource", id.value],
   query: () => fetchCatalogAlbum(id.value),
   staleTime: ms("1h"),
   gcTime: ms("3h"),
 });
 
 const { data: views } = useAmQuery({
-  key: () => ["albums", id.value, "views"],
+  key: () => ["albums", "views", id.value, "all"],
   query: () => fetchCatalogAlbumViews(id.value),
   staleTime: ms("30m"),
   gcTime: ms("3h"),
@@ -159,7 +159,7 @@ const {
   isPending: tracksPending,
   error: tracksError,
 } = useAmQuery({
-  key: () => ["albums", id.value, "tracks"],
+  key: () => ["albums", "tracks", id.value],
   query: () => fetchCatalogAlbumTracks(id.value),
   staleTime: ms("30m"),
   gcTime: ms("3h"),

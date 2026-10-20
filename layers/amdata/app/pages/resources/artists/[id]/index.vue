@@ -121,14 +121,14 @@ const {
   isPending,
   error,
 } = useAmQuery({
-  key: () => ["artists", id.value, "resource"],
+  key: () => ["artists", "resource", id.value],
   query: () => fetchCatalogArtist(id.value),
   staleTime: ms("1h"),
   gcTime: ms("3h"),
 });
 
 const { data: viewsData } = useAmQuery({
-  key: () => ["artists", id.value, "views"],
+  key: () => ["artists", "views", id.value, "all"],
   query: () => fetchCatalogArtistViews(id.value),
   staleTime: ms("30m"),
   gcTime: ms("3h"),

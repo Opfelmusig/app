@@ -32,7 +32,7 @@
 import { fetchHome } from "#layers/amdata/app/lib/queries/home";
 
 const { data, isPending, error } = useAmQuery({
-  key: () => ["home"],
+  key: () => ["home", "list"],
   query: () => fetchHome(),
   staleTime: ms("2m"),
   gcTime: ms("3h"),

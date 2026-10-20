@@ -31,7 +31,7 @@ const queryTitle = useRouteQuery<string>("title", "");
 const title = computed(() => queryTitle.value || view.value);
 
 const { data, isPending, error } = useAmQuery({
-  key: () => ["albums", id.value, "views", view.value],
+  key: () => ["albums", "views", id.value, view.value],
   query: () => fetchCatalogAlbumView(id.value, view.value),
   staleTime: ms("30m"),
   gcTime: ms("3h"),

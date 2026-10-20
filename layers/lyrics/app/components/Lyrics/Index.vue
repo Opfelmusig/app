@@ -13,7 +13,7 @@ const client = useClient();
 const currentSong = computed(() => queueStore.current?.entry);
 
 const { data, error, isPending } = useAmQuery({
-  key: () => ["songs", currentSong.value?.id ?? null, "syllable-lyrics"],
+  key: () => ["songs", "syllable-lyrics", currentSong.value?.id ?? null],
   staleTime: Infinity,
   gcTime: ms("3h"),
   enabled: () => !!currentSong.value,

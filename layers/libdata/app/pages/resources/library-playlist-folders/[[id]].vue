@@ -54,7 +54,7 @@ const {
   isPending: folderPending,
   error: folderError,
 } = useLibraryQuery({
-  key: () => ["playlist-folders", id.value, "resource"],
+  key: () => ["playlist-folders", "resource", id.value],
   query: () => fetchLibraryFolder(id.value),
   staleTime: ms("3h"),
 });

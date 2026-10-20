@@ -81,7 +81,7 @@ const {
   isPending,
   error,
 } = useAmQuery({
-  key: () => ["social-profiles", handle.value, "resource", "v2"],
+  key: () => ["social-profiles", "resource", handle.value],
   query: () => fetchSocialProfile(handle.value),
   staleTime: ms("1h"),
   gcTime: ms("3h"),
@@ -92,7 +92,7 @@ const {
   isPending: sharedPlaylistsPending,
   error: sharedPlaylistsError,
 } = useAmQuery({
-  key: () => ["social-profiles", profile.value?.id ?? null, "shared-playlists"],
+  key: () => ["social-profiles", "shared-playlists", profile.value?.id ?? null],
   query: async () => {
     if (!profile.value) return [];
     return fetchSocialProfileSharedPlaylists(profile.value.id);

@@ -103,7 +103,7 @@ const {
   isPending,
   error,
 } = useLibraryQuery({
-  key: () => ["songs", id.value, "resource"],
+  key: () => ["songs", "resource", id.value],
   query: () => fetchLibrarySong(id.value),
   staleTime: ms("3h"),
 });
@@ -115,7 +115,7 @@ const {
   isPending: lyricsPending,
   error: lyricsError,
 } = useAmQuery({
-  key: () => ["songs", catalogId.value ?? null, "lyrics"],
+  key: () => ["songs", "lyrics", catalogId.value ?? null],
   query: async () => (catalogId.value ? fetchCatalogSongLyrics(catalogId.value) : undefined),
   enabled: catalogId,
   staleTime: Infinity,

@@ -149,7 +149,7 @@ const {
   isPending: artistPending,
   error: artistError,
 } = useLibraryQuery({
-  key: () => ["artists", id.value ?? null, "resource"],
+  key: () => ["artists", "resource", id.value ?? null],
   query: () => fetchLibraryArtist(id.value!),
   enabled: id,
   staleTime: ms("3h"),

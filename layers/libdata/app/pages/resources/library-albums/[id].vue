@@ -123,7 +123,7 @@ const {
   isPending,
   error,
 } = useLibraryQuery({
-  key: () => ["albums", id.value, "resource"],
+  key: () => ["albums", "resource", id.value],
   query: () => fetchLibraryAlbum(id.value),
   staleTime: ms("3h"),
 });

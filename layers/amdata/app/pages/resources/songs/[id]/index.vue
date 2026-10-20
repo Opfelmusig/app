@@ -100,7 +100,7 @@ const {
   isPending,
   error,
 } = useAmQuery({
-  key: () => ["songs", id.value, "resource"],
+  key: () => ["songs", "resource", id.value],
   query: () => fetchCatalogSong(id.value),
   staleTime: ms("1h"),
   gcTime: ms("3h"),
@@ -111,7 +111,7 @@ const {
   isPending: lyricsPending,
   error: lyricsError,
 } = useAmQuery({
-  key: () => ["songs", id.value, "lyrics"],
+  key: () => ["songs", "lyrics", id.value],
   query: () => fetchCatalogSongLyrics(id.value),
   staleTime: Infinity,
   gcTime: ms("3h"),
