@@ -7,6 +7,7 @@ export default function usePins() {
     key: () => ["pins"],
     query: () => fetchLibraryPins(),
     staleTime: ms("6h"),
+    gcTime: false,
   });
 
   const pinnedIds = computed(

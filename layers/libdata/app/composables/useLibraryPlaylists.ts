@@ -5,5 +5,6 @@ export default function useLibraryPlaylists() {
     key: () => ["playlists"],
     query: () => fetchLibraryPlaylists(),
     staleTime: ms("6h"),
+    gcTime: false,
   });
 }

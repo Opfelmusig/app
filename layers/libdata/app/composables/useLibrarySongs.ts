@@ -5,5 +5,6 @@ export default function useLibrarySongs() {
     key: () => ["songs"],
     query: () => fetchLibrarySongs(),
     staleTime: ms("6h"),
+    gcTime: false,
   });
 }

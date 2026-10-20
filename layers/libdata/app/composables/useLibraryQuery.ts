@@ -3,7 +3,7 @@ import type { UseQueryOptions, UseQueryReturn } from "@pinia/colada";
 type LibraryQueryOptions<T> = Pick<UseQueryOptions<T>, "key" | "query"> & {
   enabled?: MaybeRefOrGetter<boolean | string | null | undefined>;
   staleTime: number;
-  gcTime?: number;
+  gcTime?: number | false;
 };
 
 export default function useLibraryQuery<T>(options: LibraryQueryOptions<T>): UseQueryReturn<T> {
@@ -28,7 +28,7 @@ export function useLibraryQueryOptions<T>(options: LibraryQueryOptions<T>): UseQ
       !!storefront.value?.id &&
       (options.enabled === undefined || !!toValue(options.enabled)),
     staleTime: options.staleTime,
-    gcTime: options.gcTime ?? false,
+    gcTime: options.gcTime ?? ms("7d"),
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,
