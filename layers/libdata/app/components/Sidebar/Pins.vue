@@ -11,6 +11,7 @@
             <AMArtworkPlaceholder />
           </AMArtworkWrapper>
           <SidebarItemLabel>{{ pin.attributes.name }}</SidebarItemLabel>
+          <SidebarItemStar v-if="pin.attributes.personalRating === 1" />
         </SidebarItemWrapper>
       </SidebarResourceMenu>
     </template>
