@@ -4,6 +4,7 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 import MutationFolderDelete from "#layers/libdata/app/components/Mutation/Folder/Delete.vue";
 import MutationFolderEdit from "#layers/libdata/app/components/Mutation/Folder/Edit.vue";
 import MutationFolderMove from "#layers/libdata/app/components/Mutation/Folder/Move.vue";
+import MutationLibraryRemove from "#layers/libdata/app/components/Mutation/Library/Remove.vue";
 import MutationPlaylistAdd from "#layers/libdata/app/components/Mutation/Playlist/Add.vue";
 import MutationPlaylistDelete from "#layers/libdata/app/components/Mutation/Playlist/Delete.vue";
 import MutationPlaylistEdit from "#layers/libdata/app/components/Mutation/Playlist/Edit.vue";
@@ -367,7 +368,14 @@ export default function useResourceMenu(
           {
             label: "Remove from library",
             color: "error",
-            onSelect: () => mutationClient.removeFromLibrary(libraryId, type, catalogId),
+            onSelect: () => {
+              overlay.create(MutationLibraryRemove, { destroyOnClose: true }).open({
+                libraryId,
+                type,
+                catalogId,
+                name: res.attributes.name,
+              });
+            },
           },
         ]);
       }
