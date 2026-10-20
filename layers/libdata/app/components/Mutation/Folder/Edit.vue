@@ -5,9 +5,6 @@
         <UFormField label="Name" required>
           <UInput v-model="name" autofocus required :disabled="isLoading" class="w-full" />
         </UFormField>
-        <p v-if="error" role="alert" class="text-sm text-error">
-          Could not save the changes. Please try again.
-        </p>
       </form>
     </template>
     <template #footer>
@@ -30,7 +27,7 @@ const open = defineModel<boolean>("open", { default: false });
 const mutations = useMutations();
 const name = ref(props.folder.attributes.name);
 
-const { mutate, isLoading, error } = useMutation({
+const { mutate, isLoading } = useMutation({
   mutation: (input: { name: string }) => mutations.editPlaylistFolder(props.folder.id, input),
   onSuccess: () => {
     open.value = false;

@@ -9,9 +9,6 @@
           <UTextarea v-model="description" :disabled="isLoading" :rows="3" class="w-full" />
         </UFormField>
         <UCheckbox v-model="isPublic" label="Public playlist" :disabled="isLoading" />
-        <p v-if="error" role="alert" class="text-sm text-error">
-          Could not save the changes. Please try again.
-        </p>
       </form>
     </template>
     <template #footer>
@@ -36,7 +33,7 @@ const name = ref(props.playlist.attributes.name);
 const description = ref(props.playlist.attributes.description ?? "");
 const isPublic = ref(props.playlist.extras.isPublic);
 
-const { mutate, isLoading, error } = useMutation({
+const { mutate, isLoading } = useMutation({
   mutation: (input: { name: string; description: string; isPublic: boolean }) =>
     mutations.editPlaylist(props.playlist, input),
   onSuccess: () => {

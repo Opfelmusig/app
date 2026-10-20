@@ -17,9 +17,6 @@
             class="w-full"
           />
         </UFormField>
-        <p v-if="createFolderError" role="alert" class="text-sm text-error">
-          Could not create the folder. Please try again.
-        </p>
       </form>
     </template>
     <template #footer>
@@ -52,7 +49,6 @@ const folderName = ref("");
 const {
   mutate: submitCreateFolder,
   isLoading: creatingFolder,
-  error: createFolderError,
   reset: resetCreateFolder,
 } = useMutation({
   mutation: (input: { name: string; parentId: string }) =>

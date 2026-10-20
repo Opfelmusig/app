@@ -26,9 +26,6 @@
           />
         </UFormField>
         <UCheckbox v-model="playlistPublic" label="Public playlist" :disabled="creatingPlaylist" />
-        <p v-if="createPlaylistError" role="alert" class="text-sm text-error">
-          Could not create the playlist. Please try again.
-        </p>
       </form>
     </template>
     <template #footer>
@@ -63,7 +60,6 @@ const playlistPublic = ref(false);
 const {
   mutate: submitCreatePlaylist,
   isLoading: creatingPlaylist,
-  error: createPlaylistError,
   reset: resetCreatePlaylist,
 } = useMutation({
   mutation: (input: { name: string; description?: string; isPublic: boolean; parentId: string }) =>

@@ -10,9 +10,6 @@
       <p class="text-sm text-muted">
         This deletes the folder and all playlists and folders inside it. Songs stay in your library.
       </p>
-      <p v-if="error" role="alert" class="mt-4 text-sm text-error">
-        Could not delete this item. Please try again.
-      </p>
     </template>
     <template #footer>
       <UButton color="neutral" variant="ghost" :disabled="isLoading" @click="open = false">
@@ -33,7 +30,7 @@ const mutations = useMutations();
 const route = useRoute();
 const { playlists, folders } = useLibraryPlaylistAndFolders();
 
-const { mutate, isLoading, error } = useMutation({
+const { mutate, isLoading } = useMutation({
   mutation: async (input: { from: string; returnTo?: string }) => {
     await mutations.deletePlaylistFolder(props.folder.id);
     return input;

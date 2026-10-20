@@ -8,19 +8,15 @@
   >
     <template #body>
       <p v-if="foldersPending" role="status" class="text-sm text-muted">Loading folders…</p>
-      <div v-else-if="foldersError" class="flex flex-col items-start gap-2">
-        <p role="alert" class="text-sm text-error">Could not load folders.</p>
-        <UButton color="neutral" variant="ghost" @click="refetch()">Try again</UButton>
-      </div>
+      <p v-else-if="foldersError" role="alert" class="text-sm text-error">
+        Could not load folders.
+      </p>
       <MutationFolderPicker
         v-else
         v-model="parentId"
         :folders="folders ?? []"
         :disabled="isLoading"
       />
-      <p v-if="error" role="alert" class="mt-4 text-sm text-error">
-        Could not move the playlist. Please try again.
-      </p>
     </template>
     <template #footer>
       <UButton color="neutral" variant="ghost" :disabled="isLoading" @click="open = false">
@@ -36,15 +32,10 @@ const props = defineProps<{ playlist: AmLibraryPlaylist }>();
 const open = defineModel<boolean>("open", { default: false });
 
 const mutations = useMutations();
-const {
-  data: folders,
-  isPending: foldersPending,
-  error: foldersError,
-  refetch,
-} = useLibraryFolders();
+const { data: folders, isPending: foldersPending, error: foldersError } = useLibraryFolders();
 const parentId = ref(props.playlist.extras.parentId);
 
-const { mutate, isLoading, error } = useMutation({
+const { mutate, isLoading } = useMutation({
   mutation: (destination: string) => mutations.movePlaylist(props.playlist.id, destination),
   onSuccess: () => {
     open.value = false;
