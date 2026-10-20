@@ -23,9 +23,9 @@
             folder?.attributes.name ?? (id === ROOT_FOLDER_ID ? "Playlists" : "Folder not found")
           }}
         </h2>
-        <OMButtonTertiary
+        <OMMenuButton
           v-if="(folder || id === ROOT_FOLDER_ID) && !folderPending && !folderError"
-          icon="lucide:ellipsis"
+          :items="folderMenuItems"
           class="ml-auto"
         />
       </div>
@@ -39,6 +39,7 @@
     <AMFooter>
       <AMFooterCount :count="children?.length" singular="item" />
     </AMFooter>
+    <MutationCreatePlaylist v-model:open="createPlaylistOpen" :parent="folder" />
   </PageWrapper>
 </template>
 
@@ -59,4 +60,20 @@ const {
   staleTime: ms("3h"),
 });
 const { data: children, isPending, error } = useLibraryFolderChildren(id);
+
+const createPlaylistOpen = ref(false);
+
+const folderMenuItems = [
+  {
+    label: "Create playlist",
+    icon: "lucide:list-plus",
+    onSelect: () => {
+      createPlaylistOpen.value = true;
+    },
+  },
+];
+
+watch(id, () => {
+  createPlaylistOpen.value = false;
+});
 </script>

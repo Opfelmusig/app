@@ -22,7 +22,7 @@ export async function fetchLibraryFolder(id: string) {
   });
 
   const folder = response.data[0];
-  if (!hasResourceName(folder)) return null;
+  if (!hasResourceName(folder)) return;
 
   return parseLibraryPlaylistFolder(folder);
 }

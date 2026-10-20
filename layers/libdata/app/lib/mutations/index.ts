@@ -1,4 +1,8 @@
-import type { RateableResourceTypes, RatingValue } from "@opfelmusig/lib/types";
+import type {
+  MutateLibraryPlaylist,
+  RateableResourceTypes,
+  RatingValue,
+} from "@opfelmusig/lib/types";
 import type { EntryKey } from "@pinia/colada";
 
 import { invalidate } from "#layers/libdata/app/lib/mutations/invalidate";
@@ -61,6 +65,13 @@ export class LibraryMutations {
     else await this.mutate("unpin", () => this.client.library.unpin(id));
 
     await this.invalidate(["libdata", "pins"]);
+  }
+
+  async createPlaylist(attributes: MutateLibraryPlaylist["attributes"], parentId: string) {
+    await this.mutate("playlist:create", () =>
+      this.client.library.playlists.create(attributes, { parentId }),
+    );
+    await this.invalidate(["libdata", "playlists", "list"]);
   }
 
   async addToLibrary(id: string, type: "songs" | "albums") {
