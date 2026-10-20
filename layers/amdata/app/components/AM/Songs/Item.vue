@@ -1,12 +1,12 @@
 <template>
-  <OMContextMenu :items="menuItems">
+  <OMContextMenu :items="controlsDisabled ? [] : menuItems">
     <OMTableRow
       ref="row"
       class="scroll-mt-8"
       :highlighted="isHighlighted"
       :disabled
       :reorder-id
-      @dblclick="$emit('play')"
+      @dblclick="!controlsDisabled && $emit('play')"
     >
       <OMTableSimple>
         <AMArtworkWrapper
@@ -45,7 +45,11 @@
             </div>
             <AMArtworkPlaceholder />
           </template>
-          <AMArtworkOverlay v-if="!isActive" :transparent="albumMode" @click="$emit('play')">
+          <AMArtworkOverlay
+            v-if="!isActive && !controlsDisabled"
+            :transparent="albumMode"
+            @click="$emit('play')"
+          >
             <OMIcon name="lucide:play" :class="iconClass" filled />
           </AMArtworkOverlay>
         </AMArtworkWrapper>
@@ -92,7 +96,7 @@
         {{ msToHMS(song.attributes.durationInMillis) }}
       </OMTableData>
       <OMTableSimple class="pl-1">
-        <OMMenuButton :items="menuItems" />
+        <OMMenuButton :items="menuItems" :disabled="controlsDisabled" />
       </OMTableSimple>
     </OMTableRow>
   </OMContextMenu>
@@ -107,6 +111,7 @@ const props = defineProps<{
   song: AmSong;
   albumMode?: boolean;
   reorderId?: string;
+  controlsDisabled?: boolean;
   extraMenuItems?: DropdownMenuItem[];
 }>();
 
@@ -137,7 +142,7 @@ const queueStore = useQueueStore();
 const playbackStore = usePlaybackStore();
 
 const isActive = computed(() => queueStore.current?.entry.id === props.song.id);
-const disabled = computed(() => !props.song.attributes.playParams);
+const disabled = computed(() => !props.song.attributes.playParams && !props.controlsDisabled);
 
 const menuItems = useResourceMenu(() => props.song, {
   actions: {

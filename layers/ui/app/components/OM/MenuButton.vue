@@ -1,8 +1,9 @@
 <template>
-  <UDropdownMenu :items :content="{ side: 'bottom', align: 'end' }">
+  <UDropdownMenu :items :disabled :content="{ side: 'bottom', align: 'end' }">
     <slot>
       <OMButtonTertiary
         icon="lucide:ellipsis"
+        :disabled
         class="no-active text-muted"
         @click.stop
         @dblclick.stop
@@ -16,5 +17,6 @@ import type { DropdownMenuProps } from "@nuxt/ui";
 
 defineProps<{
   items: DropdownMenuProps["items"];
+  disabled?: boolean;
 }>();
 </script>

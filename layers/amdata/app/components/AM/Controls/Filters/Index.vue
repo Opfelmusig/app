@@ -1,5 +1,5 @@
 <template>
-  <OMMenu icon="lucide:filter" :active fill>
+  <OMMenu icon="lucide:filter" :active :disabled fill>
     <slot />
     <USeparator />
     <div class="flex w-48 flex-col gap-2 p-1">
@@ -22,6 +22,7 @@
 <script lang="ts" setup>
 defineProps<{
   active?: boolean;
+  disabled?: boolean;
 }>();
 
 defineEmits<{

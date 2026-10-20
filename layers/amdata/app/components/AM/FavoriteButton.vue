@@ -3,7 +3,7 @@
     fill
     icon="lucide:star"
     :active="resource.attributes.personalRating === 1"
-    :disabled="isLoading"
+    :disabled="disabled || isLoading"
     @click="toggle()"
   />
 </template>
@@ -11,6 +11,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   resource: AmSong | AmAlbum | AmArtist | AmPlaylist;
+  disabled?: boolean;
 }>();
 
 const mutations = useMutations();

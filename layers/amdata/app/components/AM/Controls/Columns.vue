@@ -1,5 +1,5 @@
 <template>
-  <OMMenu icon="lucide:columns-3" :active>
+  <OMMenu icon="lucide:columns-3" :active :disabled>
     <div class="flex w-48 flex-col gap-2 p-2.5 pt-2">
       <span class="text-sm text-muted">Columns</span>
       <UCheckboxGroup v-model="model" :ui="{ fieldset: 'gap-2' }" :items />
@@ -30,6 +30,7 @@ const model = defineModel<string[]>({ default: () => [] });
 defineProps<{
   items: CheckboxGroupProps["items"];
   active?: boolean;
+  disabled?: boolean;
 }>();
 
 defineEmits<{

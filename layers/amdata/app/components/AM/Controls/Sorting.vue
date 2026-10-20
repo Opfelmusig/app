@@ -1,5 +1,5 @@
 <template>
-  <OMMenu icon="lucide:arrow-up-down" :active>
+  <OMMenu icon="lucide:arrow-up-down" :active :disabled>
     <div class="flex gap-1 p-1">
       <UButton
         v-for="direction in directions"
@@ -47,6 +47,7 @@ const directionModel = defineModel<SortingDirection>("direction", {
 defineProps<{
   items: RadioGroupProps["items"];
   active?: boolean;
+  disabled?: boolean;
 }>();
 
 defineEmits<{
