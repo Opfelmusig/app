@@ -96,6 +96,18 @@ export class LibraryMutations {
     );
   }
 
+  async removePlaylistTrack(id: string, songId: string) {
+    await this.mutate("playlist-track:remove", () =>
+      this.client.library.playlists.removeTracks(id, [songId]),
+    );
+    await this.invalidate(
+      ["libdata", "playlists", "tracks", id],
+      ["libdata", "playlists", "resource", id],
+      ["libdata", "playlists", "list"],
+      ["libdata", "pins"],
+    );
+  }
+
   async movePlaylist(id: string, parentId: string) {
     await this.mutate("playlist:move", () => this.client.library.playlists.setParent(id, parentId));
     await this.invalidate(

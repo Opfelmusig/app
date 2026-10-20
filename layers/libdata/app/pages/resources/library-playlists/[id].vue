@@ -129,7 +129,13 @@
         :total="tracks?.length"
         :songs="displayedTracks"
       >
-        <AMSongs :songs="displayedTracks" @play="play" />
+        <AMSongsItem
+          v-for="(song, index) in displayedTracks"
+          :key="`${song.id}:${index}`"
+          :song
+          :extra-menu-items="songMenuItems(song)"
+          @play="play(index)"
+        />
       </AMSongsStatus>
     </AMSongsWrapper>
     <AMFooter>
@@ -146,6 +152,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { DropdownMenuItem } from "@nuxt/ui";
+
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
 import { defaultSongSorting } from "#layers/amdata/app/lib/controls/sorting";
@@ -162,7 +170,42 @@ const {
   query: () => fetchLibraryPlaylist(id.value),
   staleTime: ms("3h"),
 });
-const { data: tracks, isPending: tracksPending, error: tracksError } = useLibraryPlaylistTracks(id);
+const {
+  data: tracks,
+  isPending: tracksPending,
+  isLoading: tracksLoading,
+  error: tracksError,
+} = useLibraryPlaylistTracks(id);
+
+const mutations = useMutations();
+const { mutate: removeTrack, isLoading: removingTrack } = useMutation({
+  mutation: (input: { playlistId: string; songId: string }) =>
+    mutations.removePlaylistTrack(input.playlistId, input.songId),
+});
+
+function songMenuItems(song: AmSong): DropdownMenuItem[] {
+  if (!playlist.value?.extras.canEdit) return [];
+
+  return [
+    {
+      label: "Remove from playlist",
+      color: "error",
+      disabled: removingTrack.value || tracksLoading.value || !!tracksError.value,
+      onSelect: () => {
+        if (
+          removingTrack.value ||
+          tracksLoading.value ||
+          tracksError.value ||
+          song.type !== "library-songs"
+        )
+          return;
+        if (!tracks.value?.includes(song) || playlist.value?.id !== id.value) return;
+
+        removeTrack({ playlistId: id.value, songId: song.id });
+      },
+    },
+  ];
+}
 
 const { columns, reset, columnsChanged } = useColumns(id, defaultSongColumns);
 

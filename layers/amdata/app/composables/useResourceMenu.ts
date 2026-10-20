@@ -277,7 +277,7 @@ export default function useResourceMenu(
       ]);
     }
 
-    if (res.type === "library-playlists" && !res.extras.tags.includes("favorited")) {
+    if (res.type === "library-playlists") {
       if (res.extras.canEdit) {
         groups.push([
           {
