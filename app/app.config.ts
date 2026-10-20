@@ -9,6 +9,28 @@ export default defineAppConfig({
         base: "select-none",
       },
     },
+    modal: {
+      slots: {
+        footer: "justify-end",
+      },
+      variants: {
+        fullscreen: {
+          false: {
+            content: "max-w-md rounded-xl",
+          },
+        },
+      },
+    },
+    dropdownMenu: {
+      slots: {
+        content: "w-48 rounded-xl",
+      },
+    },
+    contextMenu: {
+      slots: {
+        content: "w-48 rounded-xl",
+      },
+    },
     slider: {
       slots: {
         thumb: "size-0! opacity-0",

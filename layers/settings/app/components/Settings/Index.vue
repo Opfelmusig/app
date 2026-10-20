@@ -4,7 +4,7 @@
       v-model:open="settingsStore.isOpen"
       title="Settings"
       :ui="{
-        content: 'h-[min(680px,85dvh)] max-w-5xl rounded-xl',
+        content: 'h-[min(680px,85dvh)] max-w-5xl',
         header: 'shrink-0',
         body: 'flex min-h-0 overflow-hidden p-0 sm:p-0',
       }"

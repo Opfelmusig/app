@@ -5,7 +5,6 @@
     :description="`Delete “${playlist.attributes.name}”?`"
     :dismissible="!isLoading"
     :close="!isLoading"
-    :ui="{ content: 'max-w-md rounded-xl', footer: 'justify-end' }"
   >
     <template #body>
       <p class="text-sm text-muted">

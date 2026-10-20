@@ -1,11 +1,5 @@
 <template>
-  <UModal
-    v-model:open="open"
-    title="Edit playlist"
-    :dismissible="!isLoading"
-    :close="!isLoading"
-    :ui="{ content: 'max-w-md rounded-xl', footer: 'justify-end' }"
-  >
+  <UModal v-model:open="open" title="Edit playlist" :dismissible="!isLoading" :close="!isLoading">
     <template #body>
       <form id="edit-playlist" class="flex flex-col gap-4" @submit.prevent="save">
         <UFormField label="Name" required>

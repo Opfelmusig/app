@@ -1,9 +1,5 @@
 <template>
-  <UDropdownMenu
-    :items
-    :content="{ side: 'bottom', align: 'end' }"
-    :ui="{ content: 'w-48 rounded-xl' }"
-  >
+  <UDropdownMenu :items :content="{ side: 'bottom', align: 'end' }">
     <slot>
       <OMButtonTertiary
         icon="lucide:ellipsis"

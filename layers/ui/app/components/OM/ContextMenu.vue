@@ -1,5 +1,5 @@
 <template>
-  <UContextMenu v-if="items?.length" :items :ui="{ content: 'w-48 rounded-xl' }">
+  <UContextMenu v-if="items?.length" :items>
     <slot />
   </UContextMenu>
   <slot v-else />

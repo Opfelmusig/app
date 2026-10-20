@@ -2,7 +2,7 @@
   <div class="relative z-120">
     <UModal
       v-model:open="isOpen"
-      :ui="{ content: 'top-[calc(50%-192px)] max-w-lg translate-y-0 overflow-hidden rounded-xl' }"
+      :ui="{ content: 'top-[calc(50%-192px)] max-w-lg translate-y-0 overflow-hidden' }"
     >
       <template #content>
         <UCommandPalette

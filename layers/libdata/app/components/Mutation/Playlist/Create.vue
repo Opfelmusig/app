@@ -5,7 +5,6 @@
     :description="parent?.attributes.name ? `In ${parent?.attributes.name}` : ''"
     :dismissible="!creatingPlaylist"
     :close="!creatingPlaylist"
-    :ui="{ content: 'max-w-md rounded-xl', footer: 'justify-end' }"
   >
     <template #body>
       <form id="create-playlist" class="flex flex-col gap-4" @submit.prevent="createPlaylist">

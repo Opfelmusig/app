@@ -5,7 +5,6 @@
     :description="parent?.attributes.name ? `In ${parent.attributes.name}` : ''"
     :dismissible="!creatingFolder"
     :close="!creatingFolder"
-    :ui="{ content: 'max-w-md rounded-xl', footer: 'justify-end' }"
   >
     <template #body>
       <form id="create-folder" class="flex flex-col gap-4" @submit.prevent="createFolder">
