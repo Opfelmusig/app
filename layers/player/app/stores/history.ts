@@ -1,5 +1,5 @@
 import type { RatingValue } from "@opfelmusig/lib/types";
-import { pipe, take, uniqueBy } from "remeda";
+import { pipe, take, uniqueWith } from "remeda";
 
 export interface HistoryEntry {
   id: string;
@@ -15,7 +15,18 @@ export const useHistoryStore = defineStore(
     function record(track: AmSong) {
       entries.value = pipe(
         [{ id: crypto.randomUUID(), playedAt: new Date().toISOString(), track }, ...entries.value],
-        uniqueBy(({ track }) => track.id),
+        uniqueWith(({ track: left }, { track: right }) => {
+          const leftIds = [
+            left.id,
+            left.type === "songs" ? left.extras.libraryId : left.extras.catalogId,
+          ];
+          const rightIds = [
+            right.id,
+            right.type === "songs" ? right.extras.libraryId : right.extras.catalogId,
+          ];
+
+          return leftIds.some((id) => id !== undefined && rightIds.includes(id));
+        }),
         take(500),
       );
     }
