@@ -1,3 +1,4 @@
+import type { RatingValue } from "@opfelmusig/lib/types";
 import { pipe, take, uniqueBy } from "remeda";
 
 export interface HistoryEntry {
@@ -19,6 +20,17 @@ export const useHistoryStore = defineStore(
       );
     }
 
+    function updateRating(id: string, rating: RatingValue | null) {
+      for (const { track } of entries.value) {
+        const counterpartId =
+          track.type === "songs" ? track.extras.libraryId : track.extras.catalogId;
+        if (track.id !== id && counterpartId !== id) continue;
+
+        if (rating === null) delete track.attributes.personalRating;
+        else track.attributes.personalRating = rating;
+      }
+    }
+
     function clear() {
       entries.value = [];
     }
@@ -27,7 +39,7 @@ export const useHistoryStore = defineStore(
       entries.value = entries.value.filter((entry) => entry.id !== id);
     }
 
-    return { entries, record, clear, deleteEntry };
+    return { entries, record, updateRating, clear, deleteEntry };
   },
   { persist: true },
 );

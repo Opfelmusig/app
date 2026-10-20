@@ -1,3 +1,4 @@
+import type { RatingValue } from "@opfelmusig/lib/types";
 import { shuffle as shuffleList } from "remeda";
 import type {
   CreateQueueContext,
@@ -66,6 +67,17 @@ export const useQueueStore = defineStore(
 
     function createQueueFromTracks(tracks: AmSong[], fromContext = false): QueueEntry[] {
       return tracks.map((track) => createQueueFromTrack(track, fromContext));
+    }
+
+    function updateRating(id: string, rating: RatingValue | null) {
+      for (const { entry } of [...queue.value, ...contextQueue.value, ...shuffledQueue.value]) {
+        const counterpartId =
+          entry.type === "songs" ? entry.extras.libraryId : entry.extras.catalogId;
+        if (entry.id !== id && counterpartId !== id) continue;
+
+        if (rating === null) delete entry.attributes.personalRating;
+        else entry.attributes.personalRating = rating;
+      }
     }
 
     function play(track: AmSong) {
@@ -357,6 +369,7 @@ export const useQueueStore = defineStore(
       playNext,
       playAfter,
       playEntry,
+      updateRating,
       deleteEntry,
       moveEntry,
       isLooping,

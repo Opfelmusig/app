@@ -9,6 +9,8 @@ export class LibraryMutations {
   private client = useClient();
   private queryCache = useQueryCache();
   private toast = useToast();
+  private queue = useQueueStore();
+  private history = useHistoryStore();
 
   private async invalidate(...keys: EntryKey[]) {
     if (!keys.length) return;
@@ -75,11 +77,19 @@ export class LibraryMutations {
 
   async setRating(id: string, type: RateableResourceTypes, rating: RatingValue) {
     await this.mutate("rating:add", () => this.client.me.ratings.set(id, type, rating));
+    if (type === "songs" || type === "library-songs") {
+      this.queue.updateRating(id, rating);
+      this.history.updateRating(id, rating);
+    }
     await this.invalidateResourceType(type);
   }
 
   async deleteRating(id: string, type: RateableResourceTypes) {
     await this.mutate("rating:remove", () => this.client.me.ratings.delete(id, type));
+    if (type === "songs" || type === "library-songs") {
+      this.queue.updateRating(id, null);
+      this.history.updateRating(id, null);
+    }
     await this.invalidateResourceType(type);
   }
 }
