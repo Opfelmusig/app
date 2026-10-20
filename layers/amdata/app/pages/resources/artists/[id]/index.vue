@@ -45,45 +45,47 @@
             />
             <template v-if="latestRelease">
               <OMButtonSeparator class="shrink-0" />
-              <NuxtLink
-                :to="resourceLink(latestRelease)"
-                class="flex h-9 min-w-0 items-center gap-2 rounded-xl pr-2.5 text-muted select-none hover:bg-muted"
-              >
-                <div class="size-9 shrink-0 overflow-hidden p-1">
-                  <AMArtworkWrapper
-                    class="size-full rounded-lg"
-                    :resource="latestRelease"
-                    context="list"
-                  >
-                    <AMArtworkImage />
-                    <AMArtworkPlaceholder />
-                    <AMArtworkOverlay
-                      class="cursor-default p-0"
-                      @click.prevent.stop="play(latestRelease)"
-                    >
-                      <OMIcon
-                        :name="latestReleasePending ? 'lucide:loader-circle' : 'lucide:play'"
-                        class="size-4"
-                        :class="
-                          latestReleasePending ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''
-                        "
-                        :filled="!latestReleasePending"
-                      />
-                    </AMArtworkOverlay>
-                  </AMArtworkWrapper>
-                </div>
-                <span
-                  class="flex min-w-0 items-baseline gap-2 text-sm whitespace-nowrap text-muted"
+              <OMContextMenu :items="latestReleaseMenuItems">
+                <NuxtLink
+                  :to="resourceLink(latestRelease)"
+                  class="flex h-9 min-w-0 items-center gap-2 rounded-xl pr-2.5 text-muted select-none hover:bg-muted"
                 >
-                  <span class="truncate text-sm font-medium text-default">
-                    {{ latestRelease.attributes.name }}
+                  <div class="size-9 shrink-0 overflow-hidden p-1">
+                    <AMArtworkWrapper
+                      class="size-full rounded-lg"
+                      :resource="latestRelease"
+                      context="list"
+                    >
+                      <AMArtworkImage />
+                      <AMArtworkPlaceholder />
+                      <AMArtworkOverlay
+                        class="cursor-default p-0"
+                        @click.prevent.stop="play(latestRelease)"
+                      >
+                        <OMIcon
+                          :name="latestReleasePending ? 'lucide:loader-circle' : 'lucide:play'"
+                          class="size-4"
+                          :class="
+                            latestReleasePending ? 'animate-spin stroke-3 [&>path]:stroke-3' : ''
+                          "
+                          :filled="!latestReleasePending"
+                        />
+                      </AMArtworkOverlay>
+                    </AMArtworkWrapper>
+                  </div>
+                  <span
+                    class="flex min-w-0 items-baseline gap-2 text-sm whitespace-nowrap text-muted"
+                  >
+                    <span class="truncate text-sm font-medium text-default">
+                      {{ latestRelease.attributes.name }}
+                    </span>
+                    <span v-if="latestRelease.attributes.releaseDate" class="shrink-0">
+                      (<AMReleaseDate :release-date="latestRelease.attributes.releaseDate" />)
+                    </span>
                   </span>
-                  <span v-if="latestRelease.attributes.releaseDate" class="shrink-0">
-                    (<AMReleaseDate :release-date="latestRelease.attributes.releaseDate" />)
-                  </span>
-                </span>
-                <OMIcon name="lucide:chevron-right" class="size-4 shrink-0" />
-              </NuxtLink>
+                  <OMIcon name="lucide:chevron-right" class="size-4 shrink-0" />
+                </NuxtLink>
+              </OMContextMenu>
             </template>
           </template>
           <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
@@ -153,6 +155,7 @@ const latestRelease = computed(() => {
   const resource = latestReleaseView.value?.items[0];
   return resource?.type === "albums" ? resource : undefined;
 });
+const latestReleaseMenuItems = useResourceMenu(latestRelease);
 
 const { play, pendingResource } = useResourcePlayback();
 const latestReleasePending = computed(() => pendingResource.value === latestRelease.value?.id);
