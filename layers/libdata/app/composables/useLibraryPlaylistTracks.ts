@@ -8,6 +8,7 @@ export function useLibraryPlaylistTracksOptions(id: MaybeRefOrGetter<string>) {
   return useLibraryQueryOptions({
     key: () => ["playlists", toValue(id), "tracks"],
     query: () => fetchLibraryPlaylistTracks(toValue(id)),
-    staleTime: ms("6h"),
+    staleTime: ms("1h"),
+    gcTime: false,
   });
 }

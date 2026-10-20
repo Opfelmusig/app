@@ -4,7 +4,7 @@ export default function useLibraryAlbums() {
   return useLibraryQuery({
     key: () => ["albums"],
     query: () => fetchLibraryAlbums(),
-    staleTime: ms("6h"),
+    staleTime: ms("3h"),
     gcTime: false,
   });
 }

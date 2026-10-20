@@ -22,8 +22,8 @@ export default defineNuxtPlugin({
     const developerToken = useQuery({
       key: ["apple-music", "developer-token"],
       query: getAppleMusicDeveloperToken,
-      staleTime: ms("30m"),
-      gcTime: ms("1d"),
+      staleTime: ms("1h"),
+      gcTime: false,
       autoRefetch: true,
     });
 

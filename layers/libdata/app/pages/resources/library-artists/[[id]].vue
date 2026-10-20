@@ -152,7 +152,7 @@ const {
   key: () => ["artists", id.value ?? null, "resource"],
   query: () => fetchLibraryArtist(id.value!),
   enabled: id,
-  staleTime: ms("6h"),
+  staleTime: ms("3h"),
 });
 const menuItems = useResourceMenu(() => currentArtist.value);
 const {

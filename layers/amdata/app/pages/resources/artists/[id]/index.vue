@@ -124,14 +124,14 @@ const {
   key: () => ["artists", id.value, "resource"],
   query: () => fetchCatalogArtist(id.value),
   staleTime: ms("1h"),
-  gcTime: ms("1d"),
+  gcTime: ms("3h"),
 });
 
 const { data: viewsData } = useAmQuery({
   key: () => ["artists", id.value, "views"],
   query: () => fetchCatalogArtistViews(id.value),
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 
 const menuItems = useResourceMenu(() => (artist.value ? artist.value : undefined));

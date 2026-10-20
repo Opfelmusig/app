@@ -144,14 +144,14 @@ const {
   key: () => ["albums", id.value, "resource"],
   query: () => fetchCatalogAlbum(id.value),
   staleTime: ms("1h"),
-  gcTime: ms("1d"),
+  gcTime: ms("3h"),
 });
 
 const { data: views } = useAmQuery({
   key: () => ["albums", id.value, "views"],
   query: () => fetchCatalogAlbumViews(id.value),
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 
 const {
@@ -161,8 +161,8 @@ const {
 } = useAmQuery({
   key: () => ["albums", id.value, "tracks"],
   query: () => fetchCatalogAlbumTracks(id.value),
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 
 const {

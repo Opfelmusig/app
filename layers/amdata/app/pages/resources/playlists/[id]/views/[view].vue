@@ -33,7 +33,7 @@ const title = computed(() => queryTitle.value || view.value);
 const { data, isPending, error } = useAmQuery({
   key: () => ["playlists", id.value, "views", view.value],
   query: () => fetchCatalogPlaylistView(id.value, view.value),
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 </script>

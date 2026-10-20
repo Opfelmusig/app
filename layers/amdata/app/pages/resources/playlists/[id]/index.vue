@@ -150,14 +150,14 @@ const {
   key: () => ["playlists", id.value, "resource"],
   query: () => fetchCatalogPlaylist(id.value),
   staleTime: ms("1h"),
-  gcTime: ms("1d"),
+  gcTime: ms("3h"),
 });
 
 const { data: views } = useAmQuery({
   key: () => ["playlists", id.value, "views"],
   query: () => fetchCatalogPlaylistViews(id.value),
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 
 const {
@@ -167,8 +167,8 @@ const {
 } = useAmQuery({
   key: () => ["playlists", id.value, "tracks"],
   query: () => fetchCatalogPlaylistTracks(id.value),
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 
 const {

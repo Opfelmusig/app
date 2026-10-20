@@ -103,7 +103,7 @@ const {
   key: () => ["songs", id.value, "resource"],
   query: () => fetchCatalogSong(id.value),
   staleTime: ms("1h"),
-  gcTime: ms("1d"),
+  gcTime: ms("3h"),
 });
 
 const {
@@ -113,8 +113,8 @@ const {
 } = useAmQuery({
   key: () => ["songs", id.value, "lyrics"],
   query: () => fetchCatalogSongLyrics(id.value),
-  staleTime: ms("1d"),
-  gcTime: ms("7d"),
+  staleTime: Infinity,
+  gcTime: ms("3h"),
 });
 
 const queueStore = useQueueStore();

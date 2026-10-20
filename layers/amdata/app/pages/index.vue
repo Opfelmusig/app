@@ -35,6 +35,6 @@ const { data, isPending, error } = useAmQuery({
   key: () => ["home"],
   query: () => fetchHome(),
   staleTime: ms("2m"),
-  gcTime: ms("6h"),
+  gcTime: ms("3h"),
 });
 </script>

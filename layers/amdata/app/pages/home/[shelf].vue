@@ -21,8 +21,8 @@ const shelf = useRouteParams<string>("shelf");
 const { data, isPending, error } = useAmQuery({
   key: () => ["home", "shelf", shelf.value],
   query: () => fetchHomeShelf(shelf.value),
-  staleTime: ms("5m"),
-  gcTime: ms("6h"),
+  staleTime: ms("2m"),
+  gcTime: ms("3h"),
 });
 
 const items = computed(() => data.value?.relationships.content ?? []);

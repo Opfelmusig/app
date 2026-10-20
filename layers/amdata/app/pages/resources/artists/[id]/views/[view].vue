@@ -40,8 +40,8 @@ const contextName = computed(() => [resourceName.value, title.value].filter(Bool
 const { data, isPending, error } = useAmQuery({
   key: () => ["artists", id.value, "views", view.value],
   query: () => fetchCatalogArtistView(id.value, view.value),
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 
 const songs = computed(() => data.value?.filter((item) => item.type === "songs") ?? []);

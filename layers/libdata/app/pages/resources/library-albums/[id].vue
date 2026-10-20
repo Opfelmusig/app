@@ -125,7 +125,7 @@ const {
 } = useLibraryQuery({
   key: () => ["albums", id.value, "resource"],
   query: () => fetchLibraryAlbum(id.value),
-  staleTime: ms("6h"),
+  staleTime: ms("3h"),
 });
 const { data: tracks, isPending: tracksPending, error: tracksError } = useLibraryAlbumTracks(id);
 

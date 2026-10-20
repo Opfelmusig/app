@@ -4,7 +4,7 @@ export default function useLibraryArtists() {
   return useLibraryQuery({
     key: () => ["artists"],
     query: () => fetchLibraryArtists(),
-    staleTime: ms("6h"),
+    staleTime: ms("3h"),
     gcTime: false,
   });
 }

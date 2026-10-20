@@ -14,8 +14,8 @@ const currentSong = computed(() => queueStore.current?.entry);
 
 const { data, error, isPending } = useAmQuery({
   key: () => ["songs", currentSong.value?.id ?? null, "syllable-lyrics"],
-  staleTime: ms("1d"),
-  gcTime: ms("7d"),
+  staleTime: Infinity,
+  gcTime: ms("3h"),
   enabled: () => !!currentSong.value,
   async query() {
     if (!currentSong.value) return;

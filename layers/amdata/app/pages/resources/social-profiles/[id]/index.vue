@@ -84,7 +84,7 @@ const {
   key: () => ["social-profiles", handle.value, "resource", "v2"],
   query: () => fetchSocialProfile(handle.value),
   staleTime: ms("1h"),
-  gcTime: ms("1d"),
+  gcTime: ms("3h"),
 });
 
 const {
@@ -98,8 +98,8 @@ const {
     return fetchSocialProfileSharedPlaylists(profile.value.id);
   },
   enabled: () => !!profile.value,
-  staleTime: ms("10m"),
-  gcTime: ms("6h"),
+  staleTime: ms("30m"),
+  gcTime: ms("3h"),
 });
 
 const sharedPlaylists = computed(() => playlists.value ?? []);

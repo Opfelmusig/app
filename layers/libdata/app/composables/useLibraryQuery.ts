@@ -28,7 +28,7 @@ export function useLibraryQueryOptions<T>(options: LibraryQueryOptions<T>): UseQ
       !!storefront.value?.id &&
       (options.enabled === undefined || !!toValue(options.enabled)),
     staleTime: options.staleTime,
-    gcTime: options.gcTime ?? ms("7d"),
+    gcTime: options.gcTime ?? ms("3h"),
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     refetchOnMount: true,

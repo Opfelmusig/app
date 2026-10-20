@@ -105,7 +105,7 @@ const {
 } = useLibraryQuery({
   key: () => ["songs", id.value, "resource"],
   query: () => fetchLibrarySong(id.value),
-  staleTime: ms("6h"),
+  staleTime: ms("3h"),
 });
 
 const catalogId = computed(() => song.value?.extras.catalogId);
@@ -118,8 +118,8 @@ const {
   key: () => ["songs", catalogId.value ?? null, "lyrics"],
   query: async () => (catalogId.value ? fetchCatalogSongLyrics(catalogId.value) : undefined),
   enabled: catalogId,
-  staleTime: ms("1d"),
-  gcTime: ms("7d"),
+  staleTime: Infinity,
+  gcTime: ms("3h"),
 });
 
 const queueStore = useQueueStore();

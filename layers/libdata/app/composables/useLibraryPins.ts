@@ -6,7 +6,7 @@ export default function useLibraryPins() {
   const query = useLibraryQuery({
     key: () => ["pins"],
     query: () => fetchLibraryPins(),
-    staleTime: ms("6h"),
+    staleTime: ms("3h"),
     gcTime: false,
   });
 

@@ -135,8 +135,8 @@ const { data, isPending, error } = useAmQuery({
   key: () => ["search", term.value, filter.value],
   query: () => fetchCatalogSearch(term.value, filter.value),
   enabled: () => !!term.value.trim(),
-  staleTime: ms("5m"),
-  gcTime: ms("30m"),
+  staleTime: Infinity,
+  gcTime: ms("5m"),
 });
 
 const isEmpty = computed(() => sections.every((section) => !data.value?.[section].length));

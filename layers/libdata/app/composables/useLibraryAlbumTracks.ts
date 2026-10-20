@@ -8,6 +8,6 @@ export function useLibraryAlbumTracksOptions(id: MaybeRefOrGetter<string>) {
   return useLibraryQueryOptions({
     key: () => ["albums", toValue(id), "tracks"],
     query: () => fetchLibraryAlbumTracks(toValue(id)),
-    staleTime: ms("6h"),
+    staleTime: ms("30m"),
   });
 }
