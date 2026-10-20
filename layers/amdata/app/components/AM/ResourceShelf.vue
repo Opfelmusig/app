@@ -53,10 +53,10 @@
 </template>
 
 <script lang="ts" setup>
+import { partition } from "remeda";
 import type { RouteLocationRaw } from "vue-router";
 
 type ShelfResource = Exclude<AmResource, AmLibraryPlaylistFolder>;
-type GridResource = Exclude<ShelfResource, AmSong>;
 
 const props = defineProps<{
   title: string;
@@ -67,16 +67,14 @@ const props = defineProps<{
   showYear?: boolean;
 }>();
 
-const songs = computed(() =>
-  props.items.filter(
+const partitionedItems = computed(() =>
+  partition(
+    props.items,
     (item): item is AmSong => item.type === "songs" || item.type === "library-songs",
   ),
 );
-const gridItems = computed(() =>
-  props.items.filter(
-    (item): item is GridResource => item.type !== "songs" && item.type !== "library-songs",
-  ),
-);
+const songs = computed(() => partitionedItems.value[0]);
+const gridItems = computed(() => partitionedItems.value[1]);
 
 const queueStore = useQueueStore();
 

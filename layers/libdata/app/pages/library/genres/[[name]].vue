@@ -69,6 +69,8 @@
 </template>
 
 <script lang="ts" setup>
+import { filter, flatMap, isTruthy, pipe, sort, unique } from "remeda";
+
 import { defaultAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
 
 const {
@@ -78,9 +80,13 @@ const {
 } = useLibraryAlbums();
 
 const genres = computed(() =>
-  [...new Set((albums.value ?? []).flatMap((album) => album.attributes.genreNames))]
-    .filter(Boolean)
-    .toSorted((left, right) => left.localeCompare(right)),
+  pipe(
+    albums.value ?? [],
+    flatMap((album) => album.attributes.genreNames),
+    filter(isTruthy),
+    unique(),
+    sort((left, right) => left.localeCompare(right)),
+  ),
 );
 
 const name = useRouteParams<string | undefined>("name");

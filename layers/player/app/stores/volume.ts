@@ -1,3 +1,5 @@
+import { clamp } from "remeda";
+
 const MIN_DB = -60;
 const ACCURACY = 100000;
 
@@ -12,7 +14,7 @@ export const useVolumeStore = defineStore(
 
       if (!Number.isFinite(number)) return 0;
 
-      return round(Math.max(0, Math.min(1, number)));
+      return round(clamp(number, { min: 0, max: 1 }));
     };
 
     const volume = computed({

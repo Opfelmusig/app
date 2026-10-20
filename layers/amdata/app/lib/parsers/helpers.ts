@@ -1,11 +1,15 @@
+import { filter, map, pipe } from "remeda";
+
 export function parseCatalogLinks(
   resources: readonly { id: string; attributes?: { name?: string } }[] | undefined,
 ): AmCatalogLink[] {
-  return (
-    resources?.filter(hasResourceName).map((resource) => ({
+  return pipe(
+    resources ?? [],
+    filter(hasResourceName),
+    map((resource) => ({
       id: resource.id,
       name: resource.attributes.name,
-    })) ?? []
+    })),
   );
 }
 

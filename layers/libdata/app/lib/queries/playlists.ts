@@ -44,10 +44,8 @@ export async function fetchLibraryPlaylistTracks(id: string, signal: AbortSignal
     { signal },
   );
 
-  const songs = tracks
+  return tracks
     .filter((track) => track.type === "library-songs")
     .filter(hasResourceName)
     .map(parseLibrarySong);
-
-  return songs;
 }

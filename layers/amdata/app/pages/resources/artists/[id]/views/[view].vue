@@ -19,6 +19,8 @@
 </template>
 
 <script lang="ts" setup>
+import { partition } from "remeda";
+
 import {
   artistViews,
   fetchCatalogArtistView,
@@ -44,8 +46,11 @@ const { data, isPending, error } = useAmQuery({
   gcTime: ms("3h"),
 });
 
-const songs = computed(() => data.value?.filter((item) => item.type === "songs") ?? []);
-const gridItems = computed(() => data.value?.filter((item) => item.type !== "songs") ?? []);
+const partitionedItems = computed(() =>
+  partition(data.value ?? [], (item) => item.type === "songs"),
+);
+const songs = computed(() => partitionedItems.value[0]);
+const gridItems = computed(() => partitionedItems.value[1]);
 
 const queueStore = useQueueStore();
 const route = useRoute();

@@ -1,4 +1,5 @@
 import { Channel, invoke } from "@tauri-apps/api/core";
+import { clamp } from "remeda";
 
 import { createPlaybackActivityReporter } from "#layers/player/app/lib/activity";
 import type { QueueEntry } from "#layers/player/app/types/queue";
@@ -220,7 +221,7 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
 
   function seek(seconds: number) {
     if (!Number.isFinite(seconds) || !session) return;
-    const target = Math.max(0, Math.min(seconds, duration.value));
+    const target = clamp(seconds, { min: 0, max: duration.value });
     activity.seek(position.value, target, duration.value);
     clock.reset(target);
     savedPosition.value.position = target;

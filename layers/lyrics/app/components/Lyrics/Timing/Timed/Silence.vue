@@ -16,6 +16,8 @@
 </template>
 
 <script lang="ts" setup>
+import { clamp } from "remeda";
+
 const props = defineProps<{
   silence: LyricsTimelineItemSilence;
   progress: number;
@@ -30,7 +32,7 @@ const silenceProgress = computed(() => {
 
   if (duration <= 0) return 0;
 
-  return Math.max(0, Math.min(1, (props.progress - startMs) / duration));
+  return clamp((props.progress - startMs) / duration, { min: 0, max: 1 });
 });
 
 const lineActive = computed(

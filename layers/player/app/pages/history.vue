@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts" setup>
-import { entries, groupBy, map, pipe } from "remeda";
+import { entries, groupBy, indexBy, map, pipe } from "remeda";
 
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
@@ -98,10 +98,10 @@ const search = ref("");
 const tracks = computed(() => historyStore.entries.map((entry) => entry.track));
 const searchedSongs = useSearch(tracks, search, songSearchKeys);
 const displayedEntries = computed(() => {
-  const entriesById = new Map(historyStore.entries.map((entry) => [entry.track.id, entry]));
+  const entriesById = indexBy(historyStore.entries, (entry) => entry.track.id);
 
   return filterResources<AmSong>(searchedSongs.value, filters.value).flatMap((song) => {
-    const entry = entriesById.get(song.id);
+    const entry = entriesById[song.id];
     return entry ? [entry] : [];
   });
 });
