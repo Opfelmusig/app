@@ -1,4 +1,4 @@
-export default function (type?: AmResource["type"] | null) {
+export default function (type?: AmResourceType | null) {
   switch (type) {
     case "artists":
     case "library-artists":

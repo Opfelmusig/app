@@ -21,3 +21,5 @@ export type AmResource =
   | AmCatalogStation
   | AmLibraryPlaylistFolder
   | AmSocialProfile;
+
+export type AmResourceType = AmResource["type"];

@@ -68,7 +68,7 @@ export function resourceArtistLinks(resource: AmSong | AmAlbum) {
   return [];
 }
 
-export function rawResourceLink(type?: AmResource["type"], id?: string, songId?: string) {
+export function rawResourceLink(type?: AmResourceType, id?: string, songId?: string) {
   if (!type || !id) return;
 
   return songId ? `/resources/${type}/${id}?song_id=${songId}` : `/resources/${type}/${id}`;
