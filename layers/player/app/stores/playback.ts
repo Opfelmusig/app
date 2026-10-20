@@ -264,12 +264,18 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
     (value) => control({ action: "audio", value }),
     { deep: true, throttle: 80 },
   );
-  useNuxtApp().hook("auth:logout", () => {
-    stop();
-    queueStore.clear();
-    historyStore.clear();
-    savedPosition.value = { id: "", position: 0 };
-  });
+  watch(
+    auth.valid,
+    (valid) => {
+      if (valid) return;
+
+      stop();
+      queueStore.clear();
+      historyStore.clear();
+      savedPosition.value = { id: "", position: 0 };
+    },
+    { flush: "sync" },
+  );
   watch(
     [auth.valid, () => settingsStore.player.activityReporting],
     ([valid]) => {

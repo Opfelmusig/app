@@ -14,7 +14,7 @@ const CLIENT = "auth";
 export default defineNuxtPlugin({
   name: "session:ready",
   dependsOn: ["colada:ready"],
-  setup: async (nuxtApp) => {
+  setup: async () => {
     if (isMiniplayer) return {};
 
     const log = logger.withTag("auth");
@@ -164,11 +164,7 @@ export default defineNuxtPlugin({
       tokenValid.value = false;
       profile.value = undefined;
 
-      try {
-        await nuxtApp.callHook("auth:logout");
-      } finally {
-        clearPlaybackStorage();
-      }
+      clearPlaybackStorage();
 
       log.info("Logout completed");
 
