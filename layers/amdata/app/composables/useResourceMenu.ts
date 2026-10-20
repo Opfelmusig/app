@@ -49,7 +49,11 @@ export default function useResourceMenu(
       res.type === "library-songs" ||
       res.type === "library-albums" ||
       res.type === "library-artists" ||
-      res.type === "library-playlists"
+      res.type === "library-playlists" ||
+      res.type === "songs" ||
+      res.type === "albums" ||
+      res.type === "artists" ||
+      res.type === "playlists"
     ) {
       const mutation: DropdownMenuItem[] = [];
 
