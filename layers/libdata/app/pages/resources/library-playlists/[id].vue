@@ -86,22 +86,30 @@
         </div>
         <p v-else class="text-sm text-muted">Playlist not found.</p>
         <div class="flex items-center gap-2">
-          <OMButtonPlay :disabled="!playlist || !displayedTracks.length" @click="play()" />
+          <OMButtonPlay
+            :disabled="editing || !playlist || !displayedTracks.length"
+            @click="play()"
+          />
           <OMButtonSecondary
             icon="lucide:shuffle"
-            :disabled="!playlist || !displayedTracks.length"
+            :disabled="editing || !playlist || !displayedTracks.length"
             @click="play(0, true)"
           />
-          <AMFavoriteButton v-if="playlist" :resource="playlist" />
+          <AMFavoriteButton v-if="playlist" :resource="playlist" :disabled="editing" />
           <OMButtonSeparator />
           <AMControlsSorting
-            v-model="sortBy"
-            v-model:direction="direction"
+            v-model="displaySortBy"
+            v-model:direction="displayDirection"
+            :disabled="editing"
             :items="defaultSongSorting"
-            :active="sortChanged"
+            :active="!editing && sortChanged"
             @reset="resetSorting"
           />
-          <AMControlsFilters :active="changed" @reset="resetFilters">
+          <AMControlsFilters
+            :disabled="editing"
+            :active="!editing && changed"
+            @reset="resetFilters"
+          >
             <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
             <AMControlsFiltersItem
               v-model="selectedContentRatings"
@@ -114,15 +122,48 @@
           </AMControlsFilters>
           <AMControlsColumns
             v-model="columns"
+            :disabled="editing"
             :items="songColumns"
             :active="columnsChanged"
             @reset="reset"
           />
-          <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
+          <template v-if="editing || playlist?.extras.canEdit">
+            <OMButtonSeparator />
+            <template v-if="editing">
+              <OMButtonSecondary
+                icon="lucide:x"
+                :disabled="savingOrder"
+                @click="orderDraft = null"
+              />
+              <OMButtonSecondary
+                :icon="savingOrder ? 'lucide:loader-circle' : 'lucide:check'"
+                :disabled="savingOrder"
+                :class="savingOrder ? '[&_svg]:animate-spin' : ''"
+                @click="saveOrder"
+              />
+            </template>
+            <OMButtonSecondary
+              v-else
+              icon="lucide:pencil"
+              :disabled="!tracks?.length || tracksLoading || !!tracksError || removingTrack"
+              @click="startReordering"
+            />
+          </template>
+          <OMMenuButton
+            v-if="menuItems.length"
+            :items="menuItems"
+            :disabled="editing"
+            class="ml-auto"
+          />
         </div>
       </div>
     </header>
-    <AMSongsWrapper :columns>
+    <AMSongsWrapper
+      :columns
+      :reorderable="editing && !savingOrder"
+      :reorder-ids="songRows.map((row) => row.id)"
+      @reorder="reorder"
+    >
       <AMSongsStatus
         :is-pending="tracksPending"
         :error="tracksError"
@@ -130,10 +171,12 @@
         :songs="displayedTracks"
       >
         <AMSongsItem
-          v-for="(song, index) in displayedTracks"
-          :key="`${song.id}:${index}`"
-          :song
-          :extra-menu-items="songMenuItems(song)"
+          v-for="(row, index) in songRows"
+          :key="row.id"
+          :song="row.song"
+          :reorder-id="row.id"
+          :controls-disabled="editing"
+          :extra-menu-items="songMenuItems(row.song)"
           @play="play(index)"
         />
       </AMSongsStatus>
@@ -156,7 +199,7 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 
 import { defaultSongColumns, songColumns } from "#layers/amdata/app/lib/controls/columns";
 import { contentRatingFilter, ratingFilter } from "#layers/amdata/app/lib/controls/filters";
-import { defaultSongSorting } from "#layers/amdata/app/lib/controls/sorting";
+import { defaultSongSorting, type SortingDirection } from "#layers/amdata/app/lib/controls/sorting";
 import { fetchLibraryPlaylist } from "#layers/libdata/app/lib/queries/playlists";
 
 const id = useRouteParams<string>("id");
@@ -178,13 +221,81 @@ const {
 } = useLibraryPlaylistTracks(id);
 
 const mutations = useMutations();
+
+interface PlaylistOrderDraft {
+  playlistId: string;
+  original: AmLibrarySong[];
+  rows: { id: string; song: AmLibrarySong }[];
+}
+
+const orderDraft = shallowRef<PlaylistOrderDraft | null>(null);
+const editing = computed(() => orderDraft.value !== null);
+const { mutate: submitOrder, isLoading: savingOrder } = useMutation({
+  mutation: (draft: PlaylistOrderDraft) =>
+    mutations.reorderPlaylistTracks(
+      draft.playlistId,
+      draft.original,
+      draft.rows.map((row) => row.song),
+    ),
+  onSuccess: (_, draft) => {
+    if (orderDraft.value === draft) orderDraft.value = null;
+  },
+});
+
+function startReordering() {
+  if (
+    !playlist.value?.extras.canEdit ||
+    playlist.value.id !== id.value ||
+    !tracks.value?.length ||
+    tracksLoading.value ||
+    tracksError.value ||
+    removingTrack.value
+  )
+    return;
+
+  orderDraft.value = {
+    playlistId: id.value,
+    original: [...tracks.value],
+    rows: tracks.value.map((song, index) => ({ id: String(index), song })),
+  };
+}
+
+function reorder(move: TableReorder) {
+  const draft = orderDraft.value;
+  if (!draft || savingOrder.value) return;
+  const from = draft.rows.findIndex((row) => row.id === move.id);
+  const target = draft.rows.findIndex((row) => row.id === move.targetId);
+  if (from < 0 || target < 0 || from === target) return;
+
+  const to = target + (move.placement === "after" ? 1 : 0) - (from < target ? 1 : 0);
+  const rows = [...draft.rows];
+  const [row] = rows.splice(from, 1);
+  if (!row) return;
+  rows.splice(to, 0, row);
+  orderDraft.value = { ...draft, rows };
+}
+
+function saveOrder() {
+  const draft = orderDraft.value;
+  if (!draft || savingOrder.value || draft.playlistId !== id.value) return;
+  if (draft.rows.every((row, index) => row.song === draft.original[index])) {
+    orderDraft.value = null;
+    return;
+  }
+  submitOrder(draft);
+}
+
+watch(id, () => {
+  orderDraft.value = null;
+});
+
 const { mutate: removeTrack, isLoading: removingTrack } = useMutation({
   mutation: (input: { playlistId: string; songId: string }) =>
     mutations.removePlaylistTrack(input.playlistId, input.songId),
 });
 
 function songMenuItems(song: AmSong): DropdownMenuItem[] {
-  if (!playlist.value?.extras.canEdit) return [];
+  if (editing.value || !playlist.value?.extras.canEdit) return [];
 
   return [
     {
@@ -193,6 +304,7 @@ function songMenuItems(song: AmSong): DropdownMenuItem[] {
       disabled: removingTrack.value || tracksLoading.value || !!tracksError.value,
       onSelect: () => {
         if (
+          editing.value ||
           removingTrack.value ||
           tracksLoading.value ||
           tracksError.value ||
@@ -211,6 +323,19 @@ const { columns, reset, columnsChanged } = useColumns(id, defaultSongColumns);
 
 const { sortBy, direction, sortChanged, reset: resetSorting } = useSorting<SongSort>(id, "default");
 
+const displaySortBy = computed({
+  get: () => (editing.value ? "default" : sortBy.value),
+  set: (value: SongSort) => {
+    if (!editing.value) sortBy.value = value;
+  },
+});
+const displayDirection = computed({
+  get: () => (editing.value ? "asc" : direction.value),
+  set: (value: SortingDirection) => {
+    if (!editing.value) direction.value = value;
+  },
+});
+
 const {
   filters,
   selectedRatings,
@@ -221,15 +346,22 @@ const {
 } = useFilters();
 
 const displayedTracks = computed(() => {
+  if (orderDraft.value) return orderDraft.value.rows.map((row) => row.song);
   const filteredSongs = filterResources(tracks.value ?? [], filters.value);
 
   return sortSongs(filteredSongs, sortBy.value, direction.value);
 });
 
+const songRows = computed(
+  () =>
+    orderDraft.value?.rows ??
+    displayedTracks.value.map((song, index) => ({ id: String(index), song })),
+);
+
 const queueStore = useQueueStore();
 
 function play(index: number = 0, shuffle: boolean = false) {
-  if (!playlist.value || displayedTracks.value.length === 0) return;
+  if (editing.value || !playlist.value || displayedTracks.value.length === 0) return;
 
   queueStore.playContext(
     {

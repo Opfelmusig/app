@@ -1,3 +1,4 @@
+import { collect } from "@opfelmusig/lib/helpers";
 import type {
   MutateLibraryPlaylist,
   MutateLibraryPlaylistFolder,
@@ -114,6 +115,37 @@ export class LibraryMutations {
       ["libdata", "playlists", "list"],
       ["libdata", "playlists", "resource", id],
       ["libdata", "pins"],
+    );
+  }
+
+  async reorderPlaylistTracks(
+    id: string,
+    original: readonly AmLibrarySong[],
+    tracks: readonly AmLibrarySong[],
+  ) {
+    await this.mutate("playlist-tracks:reorder", async () => {
+      const current = await collect(
+        this.client.library.playlists.iterateRelationship(id, "tracks", { limit: 100 }),
+      );
+      if (
+        current.length !== original.length ||
+        current.some(
+          (track, index) =>
+            track.id !== original[index]?.id || track.type !== original[index]?.type,
+        )
+      ) {
+        await this.invalidate(["libdata", "playlists", "tracks", id]);
+        throw new Error("The playlist changed. Cancel editing and try again.");
+      }
+
+      await this.client.library.playlists.setTracks(
+        id,
+        tracks.map(({ id, type }) => ({ id, type })),
+      );
+    });
+    await this.invalidate(
+      ["libdata", "playlists", "tracks", id],
+      ["libdata", "playlists", "resource", id],
     );
   }
 
