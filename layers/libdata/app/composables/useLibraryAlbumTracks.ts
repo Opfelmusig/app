@@ -7,7 +7,7 @@ export default function useLibraryAlbumTracks(id: MaybeRefOrGetter<string>) {
 export function useLibraryAlbumTracksOptions(id: MaybeRefOrGetter<string>) {
   return useLibraryQueryOptions({
     key: () => ["albums", toValue(id), "tracks"],
-    query: () => fetchLibraryAlbumTracks(toValue(id)),
+    query: ({ signal }) => fetchLibraryAlbumTracks(toValue(id), signal),
     staleTime: ms("30m"),
   });
 }

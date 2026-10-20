@@ -3,14 +3,16 @@ import { collect } from "@opfelmusig/lib/helpers";
 import { parseLibraryArtist } from "#layers/amdata/app/lib/parsers/artists";
 import { libraryArtistsScopes } from "#layers/libdata/app/lib/scopes/library";
 
-export async function fetchLibraryArtists() {
+export async function fetchLibraryArtists(signal: AbortSignal) {
   const client = useClient();
 
   const artists = await collect(
     client.library.artists.iterateAll({
       limit: 100,
       scopes: libraryArtistsScopes,
+      config: { signal },
     }),
+    { signal },
   );
 
   return artists.filter(hasResourceName).map(parseLibraryArtist);

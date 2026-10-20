@@ -7,7 +7,7 @@ export default function useLibraryPlaylistTracks(id: MaybeRefOrGetter<string>) {
 export function useLibraryPlaylistTracksOptions(id: MaybeRefOrGetter<string>) {
   return useLibraryQueryOptions({
     key: () => ["playlists", toValue(id), "tracks"],
-    query: () => fetchLibraryPlaylistTracks(toValue(id)),
+    query: ({ signal }) => fetchLibraryPlaylistTracks(toValue(id), signal),
     staleTime: ms("1h"),
     gcTime: false,
   });

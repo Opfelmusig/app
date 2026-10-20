@@ -3,7 +3,7 @@ import { fetchLibrarySongs } from "#layers/libdata/app/lib/queries/songs";
 export default function useLibrarySongs() {
   return useLibraryQuery({
     key: () => ["songs"],
-    query: () => fetchLibrarySongs(),
+    query: ({ signal }) => fetchLibrarySongs(signal),
     staleTime: ms("3h"),
     gcTime: false,
   });

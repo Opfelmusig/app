@@ -3,7 +3,7 @@ import { collect } from "@opfelmusig/lib/helpers";
 import { parseLibrarySong } from "#layers/amdata/app/lib/parsers/songs";
 import { librarySongsScopes } from "#layers/libdata/app/lib/scopes/library";
 
-export async function fetchLibrarySongs() {
+export async function fetchLibrarySongs(signal: AbortSignal) {
   const client = useClient();
 
   const songs = await collect(
@@ -11,7 +11,9 @@ export async function fetchLibrarySongs() {
       limit: 100,
       scopes: librarySongsScopes,
       sort: "-dateAdded",
+      config: { signal },
     }),
+    { signal },
   );
 
   return songs.filter(hasResourceName).map(parseLibrarySong);

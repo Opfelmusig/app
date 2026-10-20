@@ -3,10 +3,13 @@ import { collect } from "@opfelmusig/lib/helpers";
 import { parseLibraryPlaylistFolder } from "#layers/amdata/app/lib/parsers/folders";
 import { libraryFoldersScopes } from "#layers/libdata/app/lib/scopes/library";
 
-export async function fetchLibraryFolders() {
+export async function fetchLibraryFolders(signal: AbortSignal) {
   const client = useClient();
 
-  const playlists = await collect(client.library.playlistFolders.iterateFolders());
+  const playlists = await collect(
+    client.library.playlistFolders.iterateFolders({ config: { signal } }),
+    { signal },
+  );
 
   return playlists.filter(hasResourceName).map(parseLibraryPlaylistFolder);
 }
