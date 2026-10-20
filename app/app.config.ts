@@ -25,10 +25,26 @@ export default defineAppConfig({
       slots: {
         content: "w-48 rounded-xl",
       },
+      variants: {
+        size: {
+          md: {
+            item: "px-2.5",
+            label: "px-2.5",
+          },
+        },
+      },
     },
     contextMenu: {
       slots: {
         content: "w-48 rounded-xl",
+      },
+      variants: {
+        size: {
+          md: {
+            item: "px-2.5",
+            label: "px-2.5",
+          },
+        },
       },
     },
     slider: {
