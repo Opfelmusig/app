@@ -51,14 +51,33 @@ export default function useResourceMenu(
       res.type === "library-artists" ||
       res.type === "library-playlists"
     ) {
-      const pinned = pinnedIds.value.has(res.id);
+      const mutation: DropdownMenuItem[] = [];
 
-      groups.push([
-        {
-          label: pinned ? "Unpin" : "Pin",
-          onSelect: () => mutations.setPinned(res.id, !pinned),
-        },
-      ]);
+      const pinned = pinnedIds.value.has(res.id);
+      const rating = res.attributes.personalRating;
+
+      mutation.push({
+        label: pinned ? "Unpin" : "Pin",
+        onSelect: () => mutations.setPinned(res.id, !pinned),
+      });
+
+      if (rating) {
+        mutation.push({
+          label: res.attributes.personalRating === 1 ? "Undo favorite" : "Undo suggest less",
+          onSelect: () => mutations.deleteRating(res.id, res.type),
+        });
+      } else {
+        mutation.push({
+          label: "Favorite",
+          onSelect: () => mutations.setRating(res.id, res.type, 1),
+        });
+        mutation.push({
+          label: "Suggest less",
+          onSelect: () => mutations.setRating(res.id, res.type, -1),
+        });
+      }
+
+      groups.push(mutation);
     }
 
     if (
