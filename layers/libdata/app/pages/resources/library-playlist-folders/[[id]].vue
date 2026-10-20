@@ -40,6 +40,7 @@
       <AMFooterCount :count="children?.length" singular="item" />
     </AMFooter>
     <MutationCreatePlaylist v-model:open="createPlaylistOpen" :parent="folder" />
+    <MutationCreateFolder v-model:open="createFolderOpen" :parent="folder" />
   </PageWrapper>
 </template>
 
@@ -62,6 +63,7 @@ const {
 const { data: children, isPending, error } = useLibraryFolderChildren(id);
 
 const createPlaylistOpen = ref(false);
+const createFolderOpen = ref(false);
 
 const folderMenuItems = [
   {
@@ -71,9 +73,17 @@ const folderMenuItems = [
       createPlaylistOpen.value = true;
     },
   },
+  {
+    label: "Create folder",
+    icon: "lucide:folder-plus",
+    onSelect: () => {
+      createFolderOpen.value = true;
+    },
+  },
 ];
 
 watch(id, () => {
   createPlaylistOpen.value = false;
+  createFolderOpen.value = false;
 });
 </script>

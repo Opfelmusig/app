@@ -1,5 +1,6 @@
 import type {
   MutateLibraryPlaylist,
+  MutateLibraryPlaylistFolder,
   RateableResourceTypes,
   RatingValue,
 } from "@opfelmusig/lib/types";
@@ -72,6 +73,16 @@ export class LibraryMutations {
       this.client.library.playlists.create(attributes, { parentId }),
     );
     await this.invalidate(["libdata", "playlists", "list"]);
+  }
+
+  async createPlaylistFolder(
+    attributes: MutateLibraryPlaylistFolder["attributes"],
+    parentId: string,
+  ) {
+    await this.mutate("playlist-folder:create", () =>
+      this.client.library.playlistFolders.create(attributes, { parentId }),
+    );
+    await this.invalidate(["libdata", "playlist-folders", "list"]);
   }
 
   async addToLibrary(id: string, type: "songs" | "albums") {
