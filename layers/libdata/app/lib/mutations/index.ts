@@ -10,13 +10,25 @@ export class LibraryMutations {
     private toast: ReturnType<typeof useToast>,
   ) {}
 
-  async invalidate(key: EntryKey) {
+  async invalidate(...keys: [EntryKey, ...EntryKey[]]) {
     try {
-      await this.queryCache.invalidateQueries({
+      const results = await Promise.allSettled(
+        keys.map((key) =>
+          this.queryCache.invalidateQueries({
         key,
-      });
+          }),
+        ),
+      );
+
+      const errors = results
+        .filter((result) => result.status === "rejected")
+        .map((result) => result.reason);
+
+      if (errors.length) {
+        throw new AggregateError(errors, "Could not invalidate queries");
+      }
     } catch (cause) {
-      log.error("Could not invalidate queries", { key, cause });
+      log.error("Could not invalidate queries", { keys, cause });
       this.toast.add({
         title: "Library refresh failed",
         description:
@@ -40,13 +52,10 @@ export class LibraryMutations {
     }
   }
 
-  async pin(id: string) {
-    await this.mutate("pin", () => this.client.library.pin(id));
-    await this.invalidate(["libdata", "pins"]);
-  }
+  async setPinned(id: string, pinned: boolean) {
+    if (pinned) await this.mutate("pin", () => this.client.library.pin(id));
+    else await this.mutate("unpin", () => this.client.library.unpin(id));
 
-  async unpin(id: string) {
-    await this.mutate("unpin", () => this.client.library.unpin(id));
     await this.invalidate(["libdata", "pins"]);
   }
 }

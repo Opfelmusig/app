@@ -51,16 +51,13 @@ export default function useResourceMenu(
       res.type === "library-artists" ||
       res.type === "library-playlists"
     ) {
+      const pinned = pinnedIds.value.has(res.id);
+
       groups.push([
-        pinnedIds.value.has(res.id)
-          ? {
-              label: "Unpin",
-              onSelect: () => mutations.unpin(res.id),
-            }
-          : {
-              label: "Pin",
-              onSelect: () => mutations.pin(res.id),
-            },
+        {
+          label: pinned ? "Unpin" : "Pin",
+          onSelect: () => mutations.setPinned(res.id, !pinned),
+        },
       ]);
     }
 
@@ -72,16 +69,13 @@ export default function useResourceMenu(
       res.extras.libraryId
     ) {
       const id = res.extras.libraryId;
+      const pinned = pinnedIds.value.has(id);
+
       groups.push([
-        pinnedIds.value.has(id)
-          ? {
-              label: "Unpin",
-              onSelect: () => mutations.unpin(id),
-            }
-          : {
-              label: "Pin",
-              onSelect: () => mutations.pin(id),
-            },
+        {
+          label: pinned ? "Unpin" : "Pin",
+          onSelect: () => mutations.setPinned(id, !pinned),
+        },
       ]);
     }
 
