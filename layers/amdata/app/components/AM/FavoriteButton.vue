@@ -4,8 +4,6 @@
     icon="lucide:star"
     :active="resource.attributes.personalRating === 1"
     :disabled="isLoading"
-    :aria-pressed="resource.attributes.personalRating === 1"
-    :aria-label="resource.attributes.personalRating === 1 ? 'Undo favorite' : 'Favorite'"
     @click="toggle()"
   />
 </template>

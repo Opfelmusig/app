@@ -96,6 +96,15 @@ export class LibraryMutations {
     );
   }
 
+  async movePlaylist(id: string, parentId: string) {
+    await this.mutate("playlist:move", () => this.client.library.playlists.setParent(id, parentId));
+    await this.invalidate(
+      ["libdata", "playlists", "list"],
+      ["libdata", "playlists", "resource", id],
+      ["libdata", "pins"],
+    );
+  }
+
   async createPlaylistFolder(
     attributes: MutateLibraryPlaylistFolder["attributes"],
     parentId: string,
@@ -122,6 +131,13 @@ export class LibraryMutations {
       ["libdata", "playlists"],
       ["libdata", "pins"],
     );
+  }
+
+  async movePlaylistFolder(id: string, parentId: string) {
+    await this.mutate("playlist-folder:move", () =>
+      this.client.library.playlistFolders.setParent(id, parentId),
+    );
+    await this.invalidate(["libdata", "playlist-folders"]);
   }
 
   async addToLibrary(id: string, type: "songs" | "albums") {

@@ -3,8 +3,10 @@ import { ROOT_FOLDER_ID } from "@opfelmusig/lib/helpers";
 
 import MutationFolderDelete from "#layers/libdata/app/components/Mutation/Folder/Delete.vue";
 import MutationFolderEdit from "#layers/libdata/app/components/Mutation/Folder/Edit.vue";
+import MutationFolderMove from "#layers/libdata/app/components/Mutation/Folder/Move.vue";
 import MutationPlaylistDelete from "#layers/libdata/app/components/Mutation/Playlist/Delete.vue";
 import MutationPlaylistEdit from "#layers/libdata/app/components/Mutation/Playlist/Edit.vue";
+import MutationPlaylistMove from "#layers/libdata/app/components/Mutation/Playlist/Move.vue";
 
 interface ResourceMenuActions {
   play?: () => void;
@@ -286,6 +288,14 @@ export default function useResourceMenu(
                 .open({ playlist: res });
             },
           },
+          {
+            label: "Move playlist",
+            onSelect: () => {
+              overlay
+                .create(MutationPlaylistMove, { destroyOnClose: true })
+                .open({ playlist: res });
+            },
+          },
         ]);
       }
 
@@ -309,6 +319,12 @@ export default function useResourceMenu(
             label: "Edit folder",
             onSelect: () => {
               overlay.create(MutationFolderEdit, { destroyOnClose: true }).open({ folder: res });
+            },
+          },
+          {
+            label: "Move folder",
+            onSelect: () => {
+              overlay.create(MutationFolderMove, { destroyOnClose: true }).open({ folder: res });
             },
           },
         ],
