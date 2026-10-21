@@ -1,6 +1,6 @@
 [package]
 name = "opfelmusig"
-version = "0.1.0"
+version = "0.2.0"
 description = "An alternative Apple Music client"
 authors = ["waradu"]
 license = "MIT"
@@ -21,8 +21,17 @@ anyhow = "1"
 base64 = "0.22"
 dirs = "6"
 discord-rich-presence = "1.1"
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
-rodio = { version = "0.22", default-features = false, features = ["playback", "symphonia-aac", "symphonia-isomp4", "mp3"] }
+reqwest = { version = "0.12", default-features = false, features = [
+  "json",
+  "rustls-tls",
+  "stream",
+] }
+rodio = { version = "0.22", default-features = false, features = [
+  "playback",
+  "symphonia-aac",
+  "symphonia-isomp4",
+  "mp3",
+] }
 sha2 = "0.10"
 playwire = "2.0.0"
 tokio = { version = "1", features = ["macros", "sync", "time"] }
