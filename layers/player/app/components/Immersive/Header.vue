@@ -1,9 +1,13 @@
 <template>
   <div
-    class="flex h-9 w-full items-center justify-end gap-1.5 overflow-hidden bg-default p-1.5 text-muted shadow-2xl"
+    class="flex h-9 w-full items-center justify-end gap-1.5 overflow-hidden p-1.5 text-muted shadow-2xl transition-colors"
+    :class="settingsStore.immersive.queue ? '' : 'bg-immersive-background'"
     data-tauri-drag-region
   >
-    <div class="mr-2 flex w-40 shrink-0 items-center gap-2" data-tauri-drag-region>
+    <div
+      class="mr-2 flex w-40 shrink-0 items-center gap-2 text-highlighted/40"
+      data-tauri-drag-region
+    >
       <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
       <USlider
         v-model="volumeStore.volume"
@@ -18,7 +22,11 @@
       />
       <UIcon name="lucide:volume-2" class="ml-1 size-3.5 shrink-0" />
     </div>
-    <USeparator orientation="vertical" class="h-4 shrink-0" />
+    <USeparator
+      orientation="vertical"
+      class="h-4 shrink-0"
+      :ui="{ border: 'border-inverted/20' }"
+    />
     <div
       class="flex gap-1.5"
       :class="isMacos ? '[&>button]:last:rounded-tr-[9px]' : ''"

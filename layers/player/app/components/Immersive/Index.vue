@@ -6,7 +6,10 @@
 
     <div class="flex min-h-0 flex-1">
       <div class="relative flex size-full flex-col items-center justify-between">
-        <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-t-xl">
+        <div
+          class="pointer-events-none absolute inset-0 overflow-hidden transition-[border-radius]"
+          :class="settingsStore.immersive.queue ? 'rounded-tr-xl' : ''"
+        >
           <ImmersiveMesh />
           <ImmersiveArtwork />
         </div>
