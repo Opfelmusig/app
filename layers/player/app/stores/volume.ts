@@ -4,7 +4,7 @@ const MIN_DB = -60;
 const ACCURACY = 100000;
 
 export const useVolumeStore = defineStore(
-  "opfelmusig:volume-store",
+  "opfelmusig:volume-store:v2",
   () => {
     const rawVolume = ref(0.7);
 

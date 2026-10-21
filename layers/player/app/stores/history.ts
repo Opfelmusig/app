@@ -8,7 +8,7 @@ export interface HistoryEntry {
 }
 
 export const useHistoryStore = defineStore(
-  "opfelmusig:history-store",
+  "opfelmusig:history-store:v2",
   () => {
     const entries = ref<HistoryEntry[]>([]);
 

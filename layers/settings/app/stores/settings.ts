@@ -14,7 +14,7 @@ export type SettingsPage =
   | "application";
 
 export const useSettingsStore = defineStore(
-  "opfelmusig:settings-store",
+  "opfelmusig:settings-store:v2",
   () => {
     const isOpen = ref(false);
     const commandPaletteOpen = ref(false);

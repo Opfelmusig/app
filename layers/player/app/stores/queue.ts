@@ -7,7 +7,7 @@ import type {
 } from "~~/layers/player/app/types/queue";
 
 export const useQueueStore = defineStore(
-  "opfelmusig:queue-store",
+  "opfelmusig:queue-store:v2",
   () => {
     const toast = useToast();
     const log = logger.withTag("queue");
