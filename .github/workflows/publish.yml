@@ -6,26 +6,24 @@ on:
 jobs:
   publish-tauri:
     permissions:
-      contents: read
+      contents: write
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: "macos"
-            runner: '["self-hosted", "macOS", "ARM64"]'
+            runner: "macos-latest"
             args: "--target aarch64-apple-darwin"
           - os: "linux"
-            runner: '["self-hosted", "Linux", "X64"]'
+            runner: "ubuntu-22.04"
             args: ""
           - os: "windows"
-            runner: '["self-hosted", "Windows", "X64"]'
+            runner: "windows-latest"
             args: ""
 
-    runs-on: ${{ fromJSON(matrix.runner) }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          set-safe-directory: false
       - uses: oven-sh/setup-bun@v2
 
       - name: setup node
@@ -33,21 +31,11 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Configure runner Rust directories
-        shell: "node {0}"
+      - name: install Linux dependencies
+        if: matrix.os == 'linux'
         run: |
-          const fs = require("node:fs")
-          const path = require("node:path")
-          const toolCache = process.env.RUNNER_TOOL_CACHE
-
-          if (!toolCache) {
-            throw new Error("RUNNER_TOOL_CACHE is not available.")
-          }
-
-          fs.appendFileSync(
-            process.env.GITHUB_ENV,
-            `CARGO_HOME=${path.join(toolCache, "cargo")}\nRUSTUP_HOME=${path.join(toolCache, "rustup")}\n`,
-          )
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libasound2-dev libdbus-1-dev
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -89,15 +77,12 @@ jobs:
 
       - uses: tauri-apps/tauri-action@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.DOWNLOADS_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         with:
-          owner: opfelmusig
-          repo: downloads
-          releaseCommitish: main
           tagName: app-v__VERSION__
           releaseName: "App v__VERSION__"
-          releaseBody: "There may or may not be a changelog for v__VERSION__. Check the [CHANGELOG](https://github.com/opfelmusig/downloads/blob/main/CHANGELOG.md)."
+          generateReleaseNotes: true
           releaseDraft: false
           prerelease: false
           uploadUpdaterJson: true

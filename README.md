@@ -13,7 +13,8 @@ An alternative Apple Music client.
 > The source code is currently private. This might change in the future.
 
 ### Download
-[Latest Version](https://github.com/opfelmusig/downloads/releases/latest)
+
+[Latest Version](https://github.com/opfelmusig/app/releases/latest)
 
 On macOS, the app is not signed or notarized and may appear damaged. After installing it, run `sudo xattr -rd com.apple.quarantine "/Applications/Öpfelmusig.app"`.
 
