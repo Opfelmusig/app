@@ -27,15 +27,6 @@ A valid Apple Music subscription is required.
 5. Search or filter the list for the cookie named `media-user-token` or similar.
 6. Click on that token and copy the full text shown in the cookie value box at the bottom of the panel.
 
-### Widevine credentials
-
-> \[!CAUTION]
->
-> Öpfelmusig cannot provide or help obtain Widevine credentials.
-> Without them, you can finish setup and browse Apple Music, but protected songs will not play.
-
-When the Widevine error appears during playback, click Open folder. Add either `device.wvd` or both `device_private_key.pem` and `device_client_id_blob` to that folder, then try playing the song again.
-
 ## Features
 
 - Apple Music Playback
@@ -52,7 +43,7 @@ When the Widevine error appears during playback, click Open folder. Add either `
   - Create playlist folders and organize playlists inside them
 - Reports playback activity to Apple Music so Recently Played, recommendations, stats.fm, and Apple Music data exports continue to work
 - Immersive player and animated artwork
-- Mini-player and lyrics widgets
+- Miniplayer
 - Equalizer
 - Discord Rich Presence
 - Native media controls and system-tray support
