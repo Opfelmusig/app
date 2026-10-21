@@ -38,6 +38,8 @@ export class LibraryMutations {
       if (errors.length) {
         throw new AggregateError(errors, "Could not invalidate queries");
       }
+
+      log.info("Invalidated queries", { keys });
     } catch (cause) {
       log.error("Could not invalidate queries", { keys, cause });
       this.toast.add({
@@ -51,7 +53,9 @@ export class LibraryMutations {
 
   private async mutate<T>(action: string, mutation: () => Promise<T>): Promise<T> {
     try {
-      return await mutation();
+      const result = await mutation();
+      log.info("Executed mutation", { action });
+      return result;
     } catch (cause) {
       log.error("Could not execute mutation", { action, cause });
       this.toast.add({
@@ -61,6 +65,12 @@ export class LibraryMutations {
       });
       throw cause;
     }
+  }
+
+  private invalidateAfterCreate(...keys: EntryKey[]) {
+    setTimeout(() => {
+      this.invalidate(...keys);
+    }, ms("5s"));
   }
 
   async setPinned(id: string, pinned: boolean) {
@@ -74,7 +84,7 @@ export class LibraryMutations {
     const response = await this.mutate("create the playlist", () =>
       this.client.library.playlists.create(attributes, { parentId }),
     );
-    await this.invalidate(["libdata", "playlists", "list"]);
+    this.invalidateAfterCreate(["libdata", "playlists", "list"]);
     return response.data[0];
   }
 
@@ -108,7 +118,7 @@ export class LibraryMutations {
     await this.mutate("add the song to the playlist", () =>
       this.client.library.playlists.appendTracks(id, tracks),
     );
-    await this.invalidate(
+    this.invalidateAfterCreate(
       ["libdata", "playlists", "tracks", id],
       ["libdata", "playlists", "resource", id],
     );
@@ -175,7 +185,7 @@ export class LibraryMutations {
     await this.mutate("create the folder", () =>
       this.client.library.playlistFolders.create(attributes, { parentId }),
     );
-    await this.invalidate(["libdata", "playlist-folders", "list"]);
+    this.invalidateAfterCreate(["libdata", "playlist-folders", "list"]);
   }
 
   async editPlaylistFolder(id: string, attributes: MutateLibraryPlaylistFolder["attributes"]) {
@@ -205,7 +215,7 @@ export class LibraryMutations {
     await this.mutate("add the item to your library", () =>
       this.client.library.add({ [type]: [id] }),
     );
-    await this.invalidate(...invalidate.library(type, id));
+    this.invalidateAfterCreate(...invalidate.library(type, id));
   }
 
   async removeFromLibrary(id: string, type: "songs" | "albums", catalogId?: string) {
