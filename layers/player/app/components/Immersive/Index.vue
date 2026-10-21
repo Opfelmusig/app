@@ -4,17 +4,20 @@
   >
     <ImmersiveHeader />
 
+    <div
+      class="pointer-events-none absolute inset-0 overflow-hidden transition-[padding]"
+      :style="{ maskImage }"
+      :class="settingsStore.immersive.queue ? 'pr-100' : 'pr-0'"
+    >
+      <div class="relative size-full overflow-hidden">
+        <ImmersiveMesh />
+        <ImmersiveArtwork />
+      </div>
+    </div>
+
     <div class="flex min-h-0 flex-1">
       <div class="relative flex size-full flex-col items-center justify-between">
-        <div
-          class="pointer-events-none absolute inset-0 overflow-hidden transition-[border-radius]"
-          :class="settingsStore.immersive.queue ? 'rounded-tr-xl' : ''"
-        >
-          <ImmersiveMesh />
-          <ImmersiveArtwork />
-        </div>
-
-        <div class="z-30 flex h-full w-120 overflow-hidden pb-12">
+        <div class="z-40 flex h-full w-120 overflow-hidden pb-12">
           <Transition
             enter-active-class="transition-opacity"
             enter-from-class="opacity-0"
@@ -27,7 +30,7 @@
           </Transition>
         </div>
 
-        <div class="absolute z-30 flex size-full items-end justify-center p-2">
+        <div class="pointer-events-none absolute z-50 flex size-full items-end justify-center p-2">
           <ImmersivePlayer />
         </div>
       </div>
@@ -39,4 +42,15 @@
 
 <script lang="ts" setup>
 const settingsStore = useSettingsStore();
+
+const stops = Array.from({ length: 15 }, (_, i) => {
+  const t = i / 14;
+  const position = 3 * (1 - t) ** 2 * t * 0.42 + 3 * (1 - t) * t ** 2 * 0.58 + t ** 3;
+  const opacity = 1 - 0.5 * (3 * (1 - t) * t ** 2 + t ** 3);
+  const offset = 80 * (1 - position);
+
+  return `rgb(0 0 0 / ${opacity.toFixed(5)}) calc(100% - ${offset.toFixed(5)}px)`;
+});
+
+const maskImage = `linear-gradient(to top, black 0%, ${stops.join(", ")})`;
 </script>

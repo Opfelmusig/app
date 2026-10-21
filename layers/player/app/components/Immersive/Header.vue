@@ -1,7 +1,7 @@
 <template>
   <div
-    class="flex h-9 w-full items-center justify-end gap-1.5 overflow-hidden p-1.5 text-muted shadow-2xl transition-colors"
-    :class="settingsStore.immersive.queue ? '' : 'bg-immersive-background'"
+    class="z-30 flex h-9 w-full items-center justify-end gap-1.5 overflow-hidden p-1.5 text-muted transition-colors"
+    :class="settingsStore.immersive.queue ? 'bg-default' : ''"
     data-tauri-drag-region
   >
     <div

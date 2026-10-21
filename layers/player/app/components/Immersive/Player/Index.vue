@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-end justify-center">
+  <div class="pointer-events-auto flex items-end justify-center">
     <motion.div
       class="relative shrink-0 border border-inverted/10 backdrop-blur-md transition-colors"
       :class="expanded ? 'bg-default/90' : 'cursor-pointer bg-default/80'"
