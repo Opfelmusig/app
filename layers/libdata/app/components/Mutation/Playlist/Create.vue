@@ -67,8 +67,9 @@ const {
       { name: input.name, description: input.description, isPublic: input.isPublic },
       input.parentId,
     ),
-  onSuccess: () => {
+  onSuccess: async (playlist) => {
     open.value = false;
+    if (playlist) await navigateTo(rawResourceLink("library-playlists", playlist.id));
   },
 });
 

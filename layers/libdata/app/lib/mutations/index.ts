@@ -71,10 +71,11 @@ export class LibraryMutations {
   }
 
   async createPlaylist(attributes: MutateLibraryPlaylist["attributes"], parentId: string) {
-    await this.mutate("create the playlist", () =>
+    const response = await this.mutate("create the playlist", () =>
       this.client.library.playlists.create(attributes, { parentId }),
     );
     await this.invalidate(["libdata", "playlists", "list"]);
+    return response.data[0];
   }
 
   async editPlaylist(playlist: AmLibraryPlaylist, attributes: MutateLibraryPlaylist["attributes"]) {
