@@ -79,9 +79,11 @@ Just report them here in this repo as issues. Include the details in Settings > 
 ## Showcase
 
 Immersive Fullscreen  
-<img width="3016" height="2008" alt="immersive fullscreen" src="https://github.com/user-attachments/assets/1bb73eb4-35f0-488b-aae0-ca394e311c30" />
+<img width="3016" height="2008" alt="immersive fullscreen" src="https://github.com/user-attachments/assets/b2a9b3bd-0c6b-44b3-bc5b-ebc627b4f867" />
 
-<img width="3016" height="2008" alt="immersive fullscreen small island" src="https://github.com/user-attachments/assets/88e335c6-cd0f-4339-9103-11b4a78259b6" />
+<img width="3016" height="2008" alt="immersive fullscreen expanded" src="https://github.com/user-attachments/assets/99a5e80a-697a-4f01-a0bb-1069ded42336" />
+
+<img width="3016" height="2008" alt="immersive fullscreen lyrics" src="https://github.com/user-attachments/assets/741bcb82-c0c4-4466-a5d3-9bca237af5e8" />
 
 Album Page  
 <img width="3016" height="2008" alt="album page" src="https://github.com/user-attachments/assets/0843713a-c77d-4c40-aab7-710b226f9eb3" />
