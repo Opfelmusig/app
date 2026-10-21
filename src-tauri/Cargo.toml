@@ -56,6 +56,10 @@ tauri-plugin-window-state = "2"
 tauri-plugin-clipboard-manager = "2"
 tauri-plugin-prevent-default = "6"
 
+[target.'cfg(target_os = "linux")'.dependencies]
+# Deep-link 2.6.2 is incompatible with the ParseOption fields added in rust-ini 0.21.3.
+rust-ini = "=0.21.1"
+
 [profile.dev.package.scrypt]
 opt-level = 3
 
