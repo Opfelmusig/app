@@ -92,7 +92,7 @@ onMounted(() => {
     hls = new Hls({
       loader: FetchLoader,
       autoStartLoad: false,
-      videoPreference: props.quality === "highest" ? undefined : { videoCodec: "avc1" },
+      videoPreference: { videoCodec: "avc1" },
       fetchSetup(context, initParams) {
         if (context.rangeEnd !== undefined) {
           initParams.cache = "no-store";
@@ -119,13 +119,17 @@ onMounted(() => {
 
       if (props.quality === "highest" && hls.levels.length) {
         const bestLevel = firstBy(
-          hls.levels.map((level, index) => ({ level, index })),
+          hls.levels
+            .map((level, index) => ({ level, index }))
+            .filter(({ level }) => level.videoCodec?.startsWith("avc1")),
           [({ level }) => level.width * level.height, "desc"],
-          ({ level }) => level.bitrate,
-        )!.index;
+          [({ level }) => level.bitrate, "desc"],
+        )?.index;
 
-        hls.startLevel = bestLevel;
-        hls.loadLevel = bestLevel;
+        if (bestLevel !== undefined) {
+          hls.startLevel = bestLevel;
+          hls.loadLevel = bestLevel;
+        }
       }
 
       log.debug("Motion video manifest parsed", {
