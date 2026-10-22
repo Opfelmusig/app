@@ -72,6 +72,16 @@ import { clearPersistedQueryCache } from "~~/colada.options";
 
 const error = useError();
 
+onMounted(() => {
+  if (!error.value) return;
+
+  logger.withTag("app").error("Application error", {
+    cause: error.value,
+    route: window.location.pathname,
+    window: currentWindow.label,
+  });
+});
+
 const isDev = import.meta.dev;
 
 const status = computed(() => error.value?.status ?? error.value?.statusCode);
