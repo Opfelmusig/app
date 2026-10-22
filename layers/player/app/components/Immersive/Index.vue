@@ -5,8 +5,8 @@
     <ImmersiveHeader />
 
     <div
-      class="pointer-events-none absolute inset-0 overflow-hidden transition-[padding]"
-      :style="{ maskImage: settingsStore.immersive.enhanced ? maskImage : undefined }"
+      class="pointer-events-none absolute inset-0 overflow-hidden transition-[padding,mask-image]"
+      :style="{ maskImage }"
       :class="settingsStore.immersive.queue ? 'pr-100' : 'pr-0'"
     >
       <div class="relative size-full overflow-hidden">
@@ -47,7 +47,7 @@ const stops = Array.from({ length: 15 }, (_, i) => {
   const t = i / 14;
   const position = 3 * (1 - t) ** 2 * t * 0.42 + 3 * (1 - t) * t ** 2 * 0.58 + t ** 3;
   const opacity = 1 - 0.5 * (3 * (1 - t) * t ** 2 + t ** 3);
-  const offset = 80 * (1 - position);
+  const offset = 100 * (1 - position);
 
   return `rgb(0 0 0 / ${opacity.toFixed(5)}) calc(100% - ${offset.toFixed(5)}px)`;
 });

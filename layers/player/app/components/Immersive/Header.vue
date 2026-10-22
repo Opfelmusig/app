@@ -5,7 +5,7 @@
     data-tauri-drag-region
   >
     <div
-      class="mr-2 flex w-40 shrink-0 items-center gap-2 text-highlighted/40"
+      class="mr-2 flex w-40 shrink-0 items-center gap-2 text-highlighted/60"
       data-tauri-drag-region
     >
       <UIcon name="lucide:volume" class="size-3.5 shrink-0" />
