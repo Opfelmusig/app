@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 const settingsStore = useSettingsStore();
 
-const baseClasses = cn("absolute -inset-20 opacity-50 blur-[72px] saturate-120");
+const baseClasses = cn("absolute -inset-20 opacity-40 blur-[72px] saturate-120");
 
 const layerClass = cn(baseClasses, "will-change-transform");
 </script>
@@ -67,7 +67,7 @@ const layerClass = cn(baseClasses, "will-change-transform");
     transform: translate3d(0%, 0%, 0) scale(1.08);
   }
   100% {
-    transform: translate3d(7%, -12%, 0) scale(1.21);
+    transform: translate3d(10%, -16%, 0) scale(1.21);
   }
 }
 
@@ -76,7 +76,7 @@ const layerClass = cn(baseClasses, "will-change-transform");
     transform: translate3d(0%, 0%, 0) scale(1.1);
   }
   100% {
-    transform: translate3d(-8%, 6%, 0) scale(1.33);
+    transform: translate3d(-11%, 8%, 0) scale(1.33);
   }
 }
 
@@ -85,7 +85,7 @@ const layerClass = cn(baseClasses, "will-change-transform");
     transform: translate3d(0%, 0%, 0) scale(1.06);
   }
   100% {
-    transform: translate3d(3%, 11%, 0) scale(1.45);
+    transform: translate3d(5%, 15%, 0) scale(1.45);
   }
 }
 </style>
