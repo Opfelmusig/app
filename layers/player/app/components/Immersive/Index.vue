@@ -16,8 +16,8 @@
     </div>
 
     <div class="flex min-h-0 flex-1">
-      <div class="relative flex size-full flex-col items-center justify-between">
-        <div class="z-40 flex h-full w-120 overflow-hidden pb-12">
+      <div class="relative flex h-full min-w-0 flex-1 flex-col items-center justify-between">
+        <div class="z-40 flex h-full w-120 max-w-full overflow-hidden pb-12">
           <Transition
             enter-active-class="transition-opacity"
             enter-from-class="opacity-0"
