@@ -1,16 +1,16 @@
 <template>
   <div
-    class="fixed inset-0 z-100 flex size-full shrink-0 flex-col overflow-hidden rounded-xl bg-default select-none"
+    class="fixed inset-0 z-100 flex size-full shrink-0 flex-col overflow-hidden bg-default select-none"
   >
     <ImmersiveHeader />
 
     <div
       class="pointer-events-none absolute inset-0 overflow-hidden transition-[padding]"
-      :style="{ maskImage }"
+      :style="{ maskImage: settingsStore.immersive.enhanced ? maskImage : undefined }"
       :class="settingsStore.immersive.queue ? 'pr-100' : 'pr-0'"
     >
       <div class="relative size-full overflow-hidden">
-        <ImmersiveMesh />
+        <ImmersiveMesh v-if="settingsStore.immersive.enhanced" />
         <ImmersiveArtwork />
       </div>
     </div>

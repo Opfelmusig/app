@@ -9,6 +9,10 @@
     </SettingsSection>
     <SettingsSection title="Player">
       <SettingsToggle v-model="settingsStore.player.animatedArtwork" label="Animated artwork" />
+      <SettingsToggle
+        v-model="settingsStore.immersive.enhanced"
+        label="Enhanced immersive fullscreen"
+      />
       <SettingsConfig label="Miniplayer layout">
         <USelect
           v-model="settingsStore.player.miniplayerLayout"

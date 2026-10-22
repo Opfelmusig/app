@@ -5,30 +5,41 @@
     @load.capture="revealArtwork"
     @loadeddata.capture="revealArtwork"
   >
-    <div
-      v-if="resource?.attributes.editorialVideo || resource?.attributes.artwork"
-      class="relative flex size-full justify-center"
-    >
-      <div
-        class="absolute z-10 flex size-full h-full w-full items-center justify-center overflow-hidden blur-xl transition-[filter,opacity]"
-        :style="{ maskImage: artworkMask }"
-      >
-        <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 512 })" />
-      </div>
-      <div class="relative z-20 aspect-square h-full" :style="{ maskImage: artworkMask }">
-        <AMMediaEditorialVideo
-          :editorial-video="resource?.attributes.editorialVideo"
-          variant="square"
-          quality="highest"
-          :paused="!settingsStore.immersive.isOpen"
-          class="h-full transition-[filter,opacity] [&_img]:object-cover"
+    <template v-if="resource?.attributes.editorialVideo || resource?.attributes.artwork">
+      <div v-if="settingsStore.immersive.enhanced" class="relative flex size-full justify-center">
+        <div
+          class="absolute z-10 flex size-full h-full w-full items-center justify-center overflow-hidden blur-xl transition-[filter,opacity]"
+          :style="{ maskImage: artworkMask }"
         >
-          <template #fallback>
-            <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />
-          </template>
-        </AMMediaEditorialVideo>
+          <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 512 })" />
+        </div>
+        <div class="relative z-20 aspect-square h-full" :style="{ maskImage: artworkMask }">
+          <AMMediaEditorialVideo
+            :editorial-video="resource?.attributes.editorialVideo"
+            variant="square"
+            quality="highest"
+            :paused="!settingsStore.immersive.isOpen"
+            class="h-full transition-opacity [&_img]:object-cover"
+          >
+            <template #fallback>
+              <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />
+            </template>
+          </AMMediaEditorialVideo>
+        </div>
       </div>
-    </div>
+      <AMMediaEditorialVideo
+        v-else
+        :editorial-video="resource?.attributes.editorialVideo"
+        variant="square"
+        quality="highest"
+        :paused="!settingsStore.immersive.isOpen"
+        class="z-20 size-full transition-opacity [&_img]:object-cover"
+      >
+        <template #fallback>
+          <AMArtworkImage :src="getArtworkUrl(resource?.attributes.artwork, { width: 2048 })" />
+        </template>
+      </AMMediaEditorialVideo>
+    </template>
     <div v-else class="flex size-full items-center justify-center bg-muted">
       <OMIcon name="lucide:music" class="size-12" />
     </div>
@@ -44,7 +55,6 @@ const settingsStore = useSettingsStore();
 function revealArtwork(event: Event) {
   const media = event.target;
   if (!(media instanceof HTMLImageElement || media instanceof HTMLVideoElement)) return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   media.animate([{ opacity: 0 }, { opacity: 1 }], {
     duration: 500,
