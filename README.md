@@ -79,26 +79,26 @@ Just report them here in this repo as issues. Include the details in Settings > 
 ## Showcase
 
 Immersive Fullscreen  
-<img width="3016" height="2008" alt="immersive fullscreen" src="https://github.com/user-attachments/assets/b2a9b3bd-0c6b-44b3-bc5b-ebc627b4f867" />
+<img width="3016" alt="immersive fullscreen" src="https://github.com/user-attachments/assets/b2a9b3bd-0c6b-44b3-bc5b-ebc627b4f867" />
 
-<img width="3016" height="2008" alt="immersive fullscreen expanded" src="https://github.com/user-attachments/assets/99a5e80a-697a-4f01-a0bb-1069ded42336" />
+<img width="3016" alt="immersive fullscreen expanded" src="https://github.com/user-attachments/assets/99a5e80a-697a-4f01-a0bb-1069ded42336" />
 
-<img width="3016" height="2008" alt="immersive fullscreen lyrics" src="https://github.com/user-attachments/assets/741bcb82-c0c4-4466-a5d3-9bca237af5e8" />
+<img width="3016" alt="immersive fullscreen lyrics" src="https://github.com/user-attachments/assets/741bcb82-c0c4-4466-a5d3-9bca237af5e8" />
 
 Album Page  
-<img width="3016" height="2008" alt="album page" src="https://github.com/user-attachments/assets/0843713a-c77d-4c40-aab7-710b226f9eb3" />
+<img width="3016" alt="album page" src="https://github.com/user-attachments/assets/0843713a-c77d-4c40-aab7-710b226f9eb3" />
 
 Artist Page  
-<img width="3136" height="2126" alt="artist page" src="https://github.com/user-attachments/assets/474c557d-099b-4da5-a610-1709228a9dc6" />
+<img width="3036" alt="artist page" src="https://github.com/user-attachments/assets/474c557d-099b-4da5-a610-1709228a9dc6" />
 
 Search Page  
-<img width="3016" height="2008" alt="search page" src="https://github.com/user-attachments/assets/59a9fc94-cad0-4f59-b743-1c7e2aadf596" />
+<img width="3016" alt="search page" src="https://github.com/user-attachments/assets/59a9fc94-cad0-4f59-b743-1c7e2aadf596" />
 
 Home Page  
-<img width="3016" height="2008" alt="home page" src="https://github.com/user-attachments/assets/63446d7a-fb91-4eab-a6be-bb4cbcec21bf" />
+<img width="3016" alt="home page" src="https://github.com/user-attachments/assets/63446d7a-fb91-4eab-a6be-bb4cbcec21bf" />
 
 Mini Player  
-<img width="366" height="206" alt="mini player" src="https://github.com/user-attachments/assets/6b2efc57-56ac-4c73-8cc1-546dcecfc78b" />
+<img width="366" alt="mini player" src="https://github.com/user-attachments/assets/6b2efc57-56ac-4c73-8cc1-546dcecfc78b" />
 
 Immersive Mini Player  
-<img width="370" height="370" alt="immersive mini player" src="https://github.com/user-attachments/assets/afb2bcfe-cda0-4eb5-b01b-f201ba14b5ea" />
+<img width="370" alt="immersive mini player" src="https://github.com/user-attachments/assets/afb2bcfe-cda0-4eb5-b01b-f201ba14b5ea" />
