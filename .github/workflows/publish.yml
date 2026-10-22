@@ -82,7 +82,7 @@ jobs:
         with:
           tagName: app-v__VERSION__
           releaseName: "App v__VERSION__"
-          generateReleaseNotes: true
+          releaseBody: "There may or may not be a changelog for v__VERSION__. Check the [CHANGELOG](https://github.com/opfelmusig/app/blob/main/CHANGELOG.md)."
           releaseDraft: false
           prerelease: false
           uploadUpdaterJson: true
