@@ -22,6 +22,8 @@ export class LibraryMutations {
   private async invalidate(...keys: EntryKey[]) {
     if (!keys.length) return;
 
+    const startedAt = performance.now();
+
     try {
       const results = await Promise.allSettled(
         keys.map((key) =>
@@ -39,9 +41,16 @@ export class LibraryMutations {
         throw new AggregateError(errors, "Could not invalidate queries");
       }
 
-      log.info("Invalidated queries", { keys });
+      log.info("Invalidated queries", {
+        keys,
+        durationMs: Math.round(performance.now() - startedAt),
+      });
     } catch (cause) {
-      log.error("Could not invalidate queries", { keys, cause });
+      log.error("Could not invalidate queries", {
+        keys,
+        cause,
+        durationMs: Math.round(performance.now() - startedAt),
+      });
       this.toast.add({
         title: "Library refresh failed",
         description:
@@ -52,12 +61,21 @@ export class LibraryMutations {
   }
 
   private async mutate<T>(action: string, mutation: () => Promise<T>): Promise<T> {
+    const startedAt = performance.now();
+
     try {
       const result = await mutation();
-      log.info("Executed mutation", { action });
+      log.info("Executed mutation", {
+        action,
+        durationMs: Math.round(performance.now() - startedAt),
+      });
       return result;
     } catch (cause) {
-      log.error("Could not execute mutation", { action, cause });
+      log.error("Could not execute mutation", {
+        action,
+        cause,
+        durationMs: Math.round(performance.now() - startedAt),
+      });
       this.toast.add({
         title: "Action failed",
         description: `Could not ${action}.`,
