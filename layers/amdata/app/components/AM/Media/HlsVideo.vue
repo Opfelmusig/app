@@ -9,6 +9,7 @@
     :autoplay="!paused"
     class="size-full object-cover select-none"
     @canplay="syncPlayback"
+    @error="logMediaError"
   />
 </template>
 
@@ -25,6 +26,24 @@ const props = defineProps<{
 }>();
 
 const video = ref<HTMLVideoElement | null>(null);
+const log = logger.withTag("hls");
+
+function playbackContext() {
+  return {
+    src: props.src,
+    quality: props.quality ?? "auto",
+    level: hls?.loadLevel,
+    videoCodec: hls?.levels[hls.loadLevel]?.videoCodec,
+  };
+}
+
+function logMediaError() {
+  log.error("Motion video media error", {
+    code: video.value?.error?.code,
+    message: video.value?.error?.message,
+    ...playbackContext(),
+  });
+}
 
 function syncPlayback() {
   if (!video.value) return;
@@ -32,7 +51,13 @@ function syncPlayback() {
   if (props.paused) {
     video.value.pause();
   } else {
-    video.value.play().catch(() => undefined);
+    video.value.play().catch((cause) => {
+      if (cause instanceof DOMException && cause.name === "AbortError") {
+        return;
+      }
+
+      log.error("Could not play motion video", { cause });
+    });
   }
 }
 
@@ -76,6 +101,19 @@ onMounted(() => {
         return new Request(context.url, initParams);
       },
     });
+    hls.on(Hls.Events.ERROR, (_event, data) => {
+      const context = {
+        type: data.type,
+        details: data.details,
+        fatal: data.fatal,
+        cause: data.error,
+        status: data.response?.code,
+        ...playbackContext(),
+      };
+
+      if (data.fatal) log.error("Fatal motion video HLS error", context);
+      else log.warn("Motion video HLS error", context);
+    });
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       if (!hls) return;
 
@@ -90,6 +128,17 @@ onMounted(() => {
         hls.loadLevel = bestLevel;
       }
 
+      log.debug("Motion video manifest parsed", {
+        ...playbackContext(),
+        version: Hls.version,
+        startLevel: hls.startLevel,
+        levels: hls.levels.map((level, index) => ({
+          index,
+          width: level.width,
+          height: level.height,
+          bitrate: level.bitrate,
+        })),
+      });
       hls.startLoad();
     });
     loadSource(props.src);
@@ -100,6 +149,8 @@ onMounted(() => {
 
   if (supportsNativeHls) {
     loadSource(props.src);
+  } else {
+    log.error("Motion video HLS playback is not supported", { version: Hls.version });
   }
 });
 
