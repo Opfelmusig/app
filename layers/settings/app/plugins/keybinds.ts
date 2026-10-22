@@ -99,6 +99,11 @@ export default defineNuxtPlugin({
           config: { meta: { group: "Player", name: "Toggle immersive mode" } },
         },
         {
+          keys: "shift+i",
+          run: () => (settingsStore.immersive.enhanced = !settingsStore.immersive.enhanced),
+          config: { meta: { group: "Player", name: "Toggle immersive artwork mode" } },
+        },
+        {
           keys: "ctrl-cmd+shift+m",
           run: openMiniplayer,
           config: { meta: { group: "Player", name: "Open miniplayer" } },
