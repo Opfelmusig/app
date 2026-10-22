@@ -5,7 +5,7 @@
   >
     <div
       v-for="layer in layers"
-      :key="layer.resource.id"
+      :key="layer.key"
       class="absolute inset-0 transition-opacity duration-500 ease-out starting:opacity-0"
       :class="layer.visible ? 'opacity-100' : 'opacity-0'"
       @transitionend.self="finishTransition(layer, $event)"
@@ -68,21 +68,34 @@ const queueStore = useQueueStore();
 const settingsStore = useSettingsStore();
 
 interface ArtworkLayer {
+  key: string;
   resource: AmSong;
   visible: boolean;
 }
 
 const layers = shallowRef<ArtworkLayer[]>([]);
+const artworkKey = computed(() => {
+  const attributes = queueStore.current?.entry.attributes;
+  const video =
+    attributes?.editorialVideo?.motionSquareVideo1x1 ??
+    attributes?.editorialVideo?.motionDetailSquare;
+
+  return JSON.stringify([
+    getArtworkUrl(attributes?.artwork, { width: 2048 }),
+    settingsStore.player.animatedArtwork ? video?.video : undefined,
+  ]);
+});
 
 watch(
-  () => queueStore.current?.entry,
-  (resource) => {
+  artworkKey,
+  (key) => {
+    const resource = queueStore.current?.entry;
     const previous = layers.value.findLast((layer) => layer.visible);
     layers.value = previous ? [previous] : [];
 
     if (resource?.attributes.editorialVideo || resource?.attributes.artwork) {
-      if (previous?.resource.id === resource.id) return;
-      layers.value = [...layers.value, { resource, visible: false }];
+      if (previous?.key === key) return;
+      layers.value = [...layers.value, { key, resource, visible: false }];
     } else {
       layers.value = [];
     }
