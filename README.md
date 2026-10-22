@@ -89,7 +89,7 @@ Album Page
 <img width="3016" alt="album page" src="https://github.com/user-attachments/assets/0843713a-c77d-4c40-aab7-710b226f9eb3" />
 
 Artist Page  
-<img width="3036" alt="artist page" src="https://github.com/user-attachments/assets/474c557d-099b-4da5-a610-1709228a9dc6" />
+<img width="3016" alt="artist page" src="https://github.com/user-attachments/assets/3a05358b-45d4-4d22-8007-7a96a26c0e93" />
 
 Search Page  
 <img width="3016" alt="search page" src="https://github.com/user-attachments/assets/59a9fc94-cad0-4f59-b743-1c7e2aadf596" />
