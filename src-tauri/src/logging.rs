@@ -48,7 +48,8 @@ pub fn plugin<R: Runtime>() -> tauri::plugin::TauriPlugin<R> {
             Target::new(TargetKind::Stdout),
             Target::new(TargetKind::LogDir {
                 file_name: Some(file_name.to_owned()),
-            }),
+            })
+            .filter(|metadata| metadata.level() <= log::Level::Info),
         ])
         .max_file_size(2_000_000)
         .rotation_strategy(RotationStrategy::KeepSome(3))
