@@ -1,4 +1,4 @@
-import { PiniaColadaQueryHooksPlugin, type PiniaColadaOptions } from "@pinia/colada";
+import type { PiniaColadaOptions } from "@pinia/colada";
 import { PiniaColadaAutoRefetch } from "@pinia/colada-plugin-auto-refetch";
 import { PiniaColadaCachePersister } from "@pinia/colada-plugin-cache-persister";
 import { parse, stringify } from "devalue";
@@ -25,11 +25,42 @@ export default {
   plugins: isMiniplayer
     ? []
     : [
-        PiniaColadaQueryHooksPlugin({
-          onError(cause, entry) {
-            logger.withTag("query").error("Query failed", { cause, key: entry.key });
-          },
-        }),
+        ({ queryCache }) => {
+          const log = logger.withTag("query");
+
+          queryCache.$onAction(({ name, args, after, onError }) => {
+            if (name !== "fetch") return;
+
+            const entry = args[0];
+            const startedAt = performance.now();
+
+            after(() => {
+              const durationMs = Math.round(performance.now() - startedAt);
+
+              if (durationMs < ms("2s")) {
+                log.debug("Query completed", {
+                  key: entry.key,
+                  durationMs,
+                });
+              } else {
+                log.info("Slow query", {
+                  key: entry.key,
+                  durationMs,
+                });
+              }
+            });
+
+            onError((cause) => {
+              if (entry.state.value.error !== cause) return;
+
+              log.error("Query failed", {
+                key: entry.key,
+                cause,
+                durationMs: Math.round(performance.now() - startedAt),
+              });
+            });
+          });
+        },
         PiniaColadaCachePersister({
           key: cacheKey,
           stringify,

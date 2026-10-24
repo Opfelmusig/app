@@ -136,12 +136,6 @@ onMounted(() => {
         ...playbackContext(),
         version: Hls.version,
         startLevel: hls.startLevel,
-        levels: hls.levels.map((level, index) => ({
-          index,
-          width: level.width,
-          height: level.height,
-          bitrate: level.bitrate,
-        })),
       });
       hls.startLoad();
     });
