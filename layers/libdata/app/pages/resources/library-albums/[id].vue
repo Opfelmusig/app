@@ -72,12 +72,7 @@
               <UCheckbox v-model="isUploaded" label="Uploaded" />
             </AMControlsFiltersSection>
           </AMControlsFilters>
-          <AMControlsColumns
-            v-model="columns"
-            :items="songColumns"
-            :active="columnsChanged"
-            @reset="reset"
-          />
+          <AMControlsColumns v-model="columns" :items="songColumns" />
           <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </div>
@@ -124,7 +119,7 @@ const {
 });
 const { data: tracks, isPending: tracksPending, error: tracksError } = useLibraryAlbumTracks(id);
 
-const { columns, reset, columnsChanged } = useColumns(id, ["artist", "length"]);
+const { columns } = useColumns("albums", ["artist", "length"]);
 
 const {
   sortBy,

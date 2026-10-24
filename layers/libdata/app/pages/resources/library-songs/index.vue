@@ -26,12 +26,7 @@
           <UCheckbox v-model="isUploaded" label="Uploaded" />
         </AMControlsFiltersSection>
       </AMControlsFilters>
-      <AMControlsColumns
-        v-model="columns"
-        :items="songColumns"
-        :active="columnsChanged"
-        @reset="reset"
-      />
+      <AMControlsColumns v-model="columns" :items="songColumns" />
       <UInput
         v-model="search"
         variant="soft"
@@ -71,7 +66,7 @@ import { librarySongSorting } from "#layers/amdata/app/lib/controls/sorting";
 
 const { data: songs, isPending: songsPending, error: songsError } = useLibrarySongs();
 
-const { columns, reset, columnsChanged } = useColumns<SongColumns>("songs", defaultSongColumns);
+const { columns } = useColumns<SongColumns>("songs", defaultSongColumns);
 
 const {
   sortBy,

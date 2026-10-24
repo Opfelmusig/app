@@ -120,13 +120,7 @@
               <UCheckbox v-model="isUploaded" label="Uploaded" />
             </AMControlsFiltersSection>
           </AMControlsFilters>
-          <AMControlsColumns
-            v-model="columns"
-            :disabled="editing"
-            :items="songColumns"
-            :active="columnsChanged"
-            @reset="reset"
-          />
+          <AMControlsColumns v-model="columns" :disabled="editing" :items="songColumns" />
           <template v-if="editing || playlist?.extras.canEdit">
             <OMButtonSeparator />
             <template v-if="editing">
@@ -321,7 +315,7 @@ function songMenuItems(song: AmSong): DropdownMenuItem[] {
   ];
 }
 
-const { columns, reset, columnsChanged } = useColumns(id, defaultSongColumns);
+const { columns } = useColumns("playlists", defaultSongColumns);
 
 const { sortBy, direction, sortChanged, reset: resetSorting } = useSorting<SongSort>(id, "default");
 

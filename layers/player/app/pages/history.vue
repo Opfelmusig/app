@@ -19,12 +19,7 @@
           <UCheckbox v-model="isUploaded" label="Uploaded" />
         </AMControlsFiltersSection>
       </AMControlsFilters>
-      <AMControlsColumns
-        v-model="columns"
-        :items="songColumns"
-        :active="columnsChanged"
-        @reset="resetColumns"
-      />
+      <AMControlsColumns v-model="columns" :items="songColumns" />
       <UInput
         v-model="search"
         variant="soft"
@@ -80,11 +75,7 @@ import { songSearchKeys } from "#layers/amdata/app/lib/controls/search";
 
 const historyStore = useHistoryStore();
 const queueStore = useQueueStore();
-const {
-  columns,
-  columnsChanged,
-  reset: resetColumns,
-} = useColumns<SongColumns>("history", defaultSongColumns);
+const { columns } = useColumns<SongColumns>("songs", defaultSongColumns);
 const {
   filters,
   selectedRatings,

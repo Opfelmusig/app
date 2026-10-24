@@ -79,12 +79,7 @@
               <UCheckbox v-model="inLibrary" label="In library" />
             </AMControlsFiltersSection>
           </AMControlsFilters>
-          <AMControlsColumns
-            v-model="columns"
-            :items="songColumns"
-            :active="columnsChanged"
-            @reset="resetColumns"
-          />
+          <AMControlsColumns v-model="columns" :items="songColumns" />
           <OMMenuButton v-if="menuItems.length" :items="menuItems" class="ml-auto" />
         </div>
       </div>
@@ -166,11 +161,7 @@ const {
   gcTime: ms("3h"),
 });
 
-const {
-  columns,
-  columnsChanged,
-  reset: resetColumns,
-} = useColumns<SongColumns>(id, defaultSongColumns);
+const { columns } = useColumns<SongColumns>("playlists", defaultSongColumns);
 
 const { sortBy, direction, sortChanged, reset: resetSorting } = useSorting<SongSort>(id, "default");
 
