@@ -1,41 +1,50 @@
 <template>
-  <div class="pointer-events-auto flex items-end justify-center">
-    <motion.div
-      class="relative shrink-0 border border-inverted/10 backdrop-blur-md transition-colors"
-      :class="expanded ? 'bg-default/90' : 'cursor-pointer bg-default/80'"
-      :initial="false"
-      :animate="target"
-      :transition="transition"
-      @click="expanded = true"
-      @pointerdown="onPointerDown"
-      @pointerup="pressed = false"
-      @pointercancel="pressed = false"
-      @pointerenter="hovered = true"
-      @pointerleave="collapse"
-    >
-      <div class="size-full overflow-hidden rounded-[inherit]">
-        <div
-          ref="content"
-          class="flex flex-col gap-4 transition-[padding] duration-150 ease-out"
-          :class="expanded ? 'p-4 px-6' : lifted ? 'px-3 py-2' : 'px-2.5 py-1.5'"
-        >
-          <ImmersivePlayerInfo :expanded />
+  <OMContextMenu :items="menuItems">
+    <div class="pointer-events-auto flex items-end justify-center">
+      <motion.div
+        class="relative shrink-0 border border-inverted/10 backdrop-blur-md transition-colors"
+        :class="expanded ? 'bg-default/90' : 'cursor-pointer bg-default/80'"
+        :initial="false"
+        :animate="target"
+        :transition="transition"
+        @click="expanded = true"
+        @pointerdown="onPointerDown"
+        @pointerup="pressed = false"
+        @pointercancel="pressed = false"
+        @pointerenter="hovered = true"
+        @pointerleave="collapse"
+      >
+        <div class="size-full overflow-hidden rounded-[inherit]">
           <div
-            class="flex shrink-0 flex-col gap-4 self-center transition-opacity duration-150 ease-out"
-            :class="expanded ? 'opacity-100' : 'pointer-events-none opacity-0'"
-            :style="{ width: `${expandedWidth - 48}px` }"
+            ref="content"
+            class="flex flex-col gap-4 transition-[padding] duration-150 ease-out"
+            :class="expanded ? 'p-4 px-6' : lifted ? 'px-3 py-2' : 'px-2.5 py-1.5'"
           >
-            <ImmersivePlayerProgress />
-            <ImmersivePlayerControls />
+            <ImmersivePlayerInfo :expanded />
+            <div
+              class="flex shrink-0 flex-col gap-4 self-center transition-opacity duration-150 ease-out"
+              :class="expanded ? 'opacity-100' : 'pointer-events-none opacity-0'"
+              :style="{ width: `${expandedWidth - 48}px` }"
+            >
+              <ImmersivePlayerProgress />
+              <ImmersivePlayerControls />
+            </div>
           </div>
         </div>
-      </div>
-    </motion.div>
-  </div>
+      </motion.div>
+    </div>
+  </OMContextMenu>
 </template>
 
 <script lang="ts" setup>
 import { motion, type Transition } from "motion-v";
+
+const queueStore = useQueueStore();
+const menuItems = useResourceMenu(() => queueStore.current?.entry, {
+  sections: {
+    hidePlayback: true,
+  },
+});
 
 const expanded = ref(false);
 const hovered = ref(false);
