@@ -10,7 +10,8 @@
         <AMControlsFilters :active="filtersChanged" @reset="resetFilters">
           <AMControlsFiltersItem v-model="selectedRatings" label="Rating" :items="ratingFilter" />
           <AMControlsFiltersSection label="Artist">
-            <UCheckbox v-model="hasCatalog" label="Available in the catalog" />
+            <UCheckbox v-model="hasCatalog" label="Has catalog" />
+            <UCheckbox v-model="groupByCatalogId" label="Group by catalog" />
           </AMControlsFiltersSection>
         </AMControlsFilters>
         <UInput
@@ -35,6 +36,7 @@
           v-for="artist in displayedArtists"
           :key="artist.id"
           class="group flex h-14 items-center gap-2 border-b border-default px-2 last:border-b-0 hover:bg-raised route:bg-muted/40 [&:active:not(:has(.no-active:active))]:bg-muted/60"
+          :class="{ 'bg-muted/40': id && artist.libraryIds.includes(id) }"
           :to="rawResourceLink('library-artists', artist.id)"
         >
           <AMArtworkWrapper :resource="artist" context="list">
@@ -111,20 +113,28 @@
 import { ratingFilter, type FilterRating } from "#layers/amdata/app/lib/controls/filters";
 import { artistSearchKeys } from "#layers/amdata/app/lib/controls/search";
 import { artistAlbumSorting } from "#layers/amdata/app/lib/controls/sorting";
+import { groupLibraryArtists } from "#layers/libdata/app/lib/artists";
 import { fetchLibraryArtist } from "#layers/libdata/app/lib/queries/artists";
 
 const { data: artists, isPending: artistsPending, error: artistsError } = useLibraryArtists();
+const groupByCatalogId = usePersistableStorage("opfelmusig:list:artists:group-by-catalog-id", true);
+const artistGroups = computed(() =>
+  groupLibraryArtists(artists.value ?? [], groupByCatalogId.value),
+);
 const search = ref("");
-const searchedArtists = useSearch(artists, search, artistSearchKeys);
+const searchedArtists = useSearch(artistGroups, search, [...artistSearchKeys, "names"]);
 
 const descending = ref(false);
 const selectedRatings = ref<FilterRating[]>([]);
 const hasCatalog = ref(false);
-const filtersChanged = computed(() => selectedRatings.value.length > 0 || hasCatalog.value);
+const filtersChanged = computed(
+  () => selectedRatings.value.length > 0 || hasCatalog.value || !groupByCatalogId.value,
+);
 
 function resetFilters() {
   selectedRatings.value = [];
   hasCatalog.value = false;
+  groupByCatalogId.value = false;
 }
 
 const displayedArtists = computed(() => {
@@ -165,7 +175,12 @@ const currentArtistAlbums = computed(() => {
   const artistId = id.value;
   if (!artistId) return [];
 
-  return (albums.value ?? []).filter((album) => album.extras.artistId === artistId);
+  const group = artistGroups.value.find((artist) => artist.libraryIds.includes(artistId));
+  const artistIds = new Set(group?.libraryIds ?? [artistId]);
+
+  return (albums.value ?? []).filter(
+    (album) => album.extras.artistId && artistIds.has(album.extras.artistId),
+  );
 });
 
 const {
@@ -177,5 +192,9 @@ const {
 
 const displayedAlbums = computed(() => {
   return sortAlbums(currentArtistAlbums.value ?? [], sortBy.value, direction.value);
+});
+
+definePageMeta({
+  key: "library-artists",
 });
 </script>
