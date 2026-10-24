@@ -170,14 +170,9 @@ const {
   columns,
   columnsChanged,
   reset: resetColumns,
-} = useColumns<SongColumns>(id.value, defaultSongColumns);
+} = useColumns<SongColumns>(id, defaultSongColumns);
 
-const {
-  sortBy,
-  direction,
-  sortChanged,
-  reset: resetSorting,
-} = useSorting<SongSort>(id.value, "default");
+const { sortBy, direction, sortChanged, reset: resetSorting } = useSorting<SongSort>(id, "default");
 
 const {
   filters,
