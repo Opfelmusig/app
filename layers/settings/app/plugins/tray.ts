@@ -2,7 +2,6 @@ import { invoke } from "@tauri-apps/api/core";
 
 export default defineNuxtPlugin({
   name: "settings:tray",
-  enforce: "pre",
   dependsOn: ["pinia", "pinia-plugin-persistedstate"],
   setup() {
     if (isMiniplayer) return;
@@ -10,7 +9,7 @@ export default defineNuxtPlugin({
     const settingsStore = useSettingsStore();
     const log = logger.withTag("tray");
 
-    const stop = watch(
+    watch(
       () => settingsStore.system.minimizeToTray,
       (enabled) => {
         invoke("native_set_minimize_to_tray", { enabled }).catch((cause) =>
@@ -19,7 +18,5 @@ export default defineNuxtPlugin({
       },
       { immediate: true },
     );
-
-    import.meta.hot?.dispose(stop);
   },
 });

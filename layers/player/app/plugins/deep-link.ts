@@ -23,12 +23,21 @@ export default defineNuxtPlugin({
       if (shouldPlay) playbackStore.play();
     }
 
+    const startedAt = performance.now();
+
     try {
       await onOpenUrl(handle);
       const urls = await getCurrent();
       if (urls) handle(urls);
+
+      log.info("Handled deep links", {
+        durationMs: Math.round(performance.now() - startedAt),
+      });
     } catch (cause) {
-      log.error("Could not handle deep links", { cause });
+      log.error("Could not handle deep links", {
+        cause,
+        durationMs: Math.round(performance.now() - startedAt),
+      });
     }
   },
 });

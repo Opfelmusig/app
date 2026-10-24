@@ -2,7 +2,7 @@ export default defineNuxtPlugin({
   name: "player:bridge",
   dependsOn: ["session:ready"],
   setup: () => {
-    if (isMiniplayer) return {};
+    if (isMiniplayer) return;
 
     const log = logger.withTag("miniplayer");
 

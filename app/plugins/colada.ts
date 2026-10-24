@@ -6,6 +6,12 @@ export default defineNuxtPlugin({
   async setup() {
     if (isMiniplayer) return;
 
+    const startedAt = performance.now();
+
     await isCacheReady();
+
+    logger.withTag("colada").info("Colada ready", {
+      durationMs: Math.round(performance.now() - startedAt),
+    });
   },
 });

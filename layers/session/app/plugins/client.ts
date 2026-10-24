@@ -27,6 +27,8 @@ export default defineNuxtPlugin({
       autoRefetch: true,
     });
 
+    const startedAt = performance.now();
+
     const dataDir = await appDataDir();
     const vaultPath = await join(dataDir, "auth.hold");
     const stronghold = await Stronghold.load(vaultPath, "opfelmusig:auth");
@@ -35,34 +37,52 @@ export default defineNuxtPlugin({
       .catch(() => stronghold.createClient(CLIENT));
     const store = strongholdClient.getStore();
 
-    log.info("Credential store ready");
+    log.info("Credential store ready", {
+      durationMs: Math.round(performance.now() - startedAt),
+    });
 
     async function get() {
+      const startedAt = performance.now();
+
       const storedToken = await store.get(TOKEN_KEY);
-      return storedToken ? new TextDecoder().decode(storedToken) : null;
+
+      const token = storedToken ? new TextDecoder().decode(storedToken) : null;
+
+      log.info("Stored user token loaded", {
+        found: token !== null,
+        durationMs: Math.round(performance.now() - startedAt),
+      });
+
+      return token;
     }
 
     const token = ref<string | null>();
     token.value = await get();
 
-    log.info("Stored user token loaded", { found: token.value !== null });
-
     const tokenValid = ref(false);
 
     async function set(newToken: string) {
+      const startedAt = performance.now();
+
       await store.insert(TOKEN_KEY, Array.from(new TextEncoder().encode(newToken)));
       await stronghold.save();
       token.value = newToken;
 
-      log.info("User token stored");
+      log.info("User token stored", {
+        durationMs: Math.round(performance.now() - startedAt),
+      });
     }
 
     async function remove() {
+      const startedAt = performance.now();
+
       await store.remove(TOKEN_KEY);
       await stronghold.save();
       token.value = null;
 
-      log.info("Stored user token removed");
+      log.info("Stored user token removed", {
+        durationMs: Math.round(performance.now() - startedAt),
+      });
     }
 
     const storefront = ref<Storefront>();
