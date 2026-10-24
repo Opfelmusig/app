@@ -146,7 +146,7 @@ export default defineNuxtPlugin({
       } catch (cause) {
         log.error("Login failed", { cause });
 
-        await logout();
+        await clearAuthentication();
 
         throw cause;
       }
@@ -156,15 +156,21 @@ export default defineNuxtPlugin({
       await navigateTo("/");
     }
 
-    async function logout() {
-      log.info("Logout started");
-
+    async function clearAuthentication() {
       await remove();
       settingsStore.language = undefined;
       tokenValid.value = false;
       profile.value = undefined;
+    }
 
-      clearPlaybackStorage();
+    async function logout() {
+      log.info("Logout started");
+
+      await clearAuthentication();
+      useQueueStore().clear();
+      useHistoryStore().clear();
+
+      clearSessionStorage();
 
       log.info("Logout completed");
 
@@ -184,7 +190,7 @@ export default defineNuxtPlugin({
       log.error("Stored authentication validation failed", { cause });
 
       if (isAuthError(cause)) {
-        await logout();
+        await clearAuthentication();
       } else {
         throw cause;
       }

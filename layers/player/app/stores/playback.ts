@@ -270,9 +270,6 @@ export const usePlaybackStore = defineStore("opfelmusig:playback-store", () => {
       if (valid) return;
 
       stop();
-      queueStore.clear();
-      historyStore.clear();
-      savedPosition.value = { id: "", position: 0 };
     },
     { flush: "sync" },
   );

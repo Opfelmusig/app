@@ -123,7 +123,7 @@ async function logout() {
     await client.getStore().remove("apple-music:user-token");
     await stronghold.save();
 
-    clearPlaybackStorage();
+    clearSessionStorage();
 
     reload();
   } finally {
