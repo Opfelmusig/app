@@ -13,6 +13,10 @@
         v-model="settingsStore.immersive.enhanced"
         label="Enhanced immersive fullscreen"
       />
+      <SettingsToggle
+        v-model="settingsStore.immersive.keepExpanded"
+        label="Keep immersive player expanded"
+      />
       <SettingsConfig label="Miniplayer layout">
         <USelect
           v-model="settingsStore.player.miniplayerLayout"

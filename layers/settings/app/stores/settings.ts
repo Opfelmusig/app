@@ -30,6 +30,7 @@ export const useSettingsStore = defineStore(
     const immersive = reactive({
       isOpen: false,
       enhanced: true,
+      keepExpanded: false,
       lyrics: false,
       queue: false,
     });

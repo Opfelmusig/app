@@ -7,7 +7,7 @@
         :initial="false"
         :animate="target"
         :transition="transition"
-        @click="expanded = true"
+        @click="expandedByClick = true"
         @pointerdown="onPointerDown"
         @pointerup="pressed = false"
         @pointercancel="pressed = false"
@@ -40,13 +40,15 @@
 import { motion, type Transition } from "motion-v";
 
 const queueStore = useQueueStore();
+const settingsStore = useSettingsStore();
 const menuItems = useResourceMenu(() => queueStore.current?.entry, {
   sections: {
     hidePlayback: true,
   },
 });
 
-const expanded = ref(false);
+const expandedByClick = ref(false);
+const expanded = computed(() => settingsStore.immersive.keepExpanded || expandedByClick.value);
 const hovered = ref(false);
 const pressed = ref(false);
 const content = useTemplateRef("content");
@@ -78,7 +80,7 @@ const transition = computed<Transition>(() => {
 });
 
 function collapse() {
-  expanded.value = false;
+  expandedByClick.value = false;
   hovered.value = false;
   pressed.value = false;
 }
