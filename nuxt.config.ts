@@ -46,7 +46,6 @@ export default defineNuxtConfig({
         "@tauri-apps/api/app",
         "@tauri-apps/api/core",
         "@tauri-apps/plugin-http",
-        "@tauri-apps/plugin-stronghold",
         "@tauri-apps/api/window",
         "@tauri-apps/api/path",
         "@tauri-apps/plugin-log",

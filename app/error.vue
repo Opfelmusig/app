@@ -47,6 +47,7 @@
           </button>
         </div>
         <p v-if="cacheError" class="text-sm text-red-400">{{ cacheError }}</p>
+        <p v-if="logoutError" class="text-sm text-red-400">{{ logoutError }}</p>
       </main>
       <div
         v-if="isDev && stack"
@@ -66,9 +67,9 @@
 </template>
 
 <script setup lang="ts">
-import { appDataDir, join } from "@tauri-apps/api/path";
-import { Stronghold } from "@tauri-apps/plugin-stronghold";
 import { clearPersistedQueryCache } from "~~/colada.options";
+
+import { removeStoredUserToken } from "#layers/session/app/lib/credentials";
 
 const error = useError();
 
@@ -109,23 +110,23 @@ function reload() {
 }
 
 const loggingOut = ref(false);
+const logoutError = ref<string>();
 
 async function logout() {
   if (loggingOut.value) return;
 
   loggingOut.value = true;
+  logoutError.value = undefined;
 
   try {
-    const vaultPath = await join(await appDataDir(), "auth.hold");
-    const stronghold = await Stronghold.load(vaultPath, "opfelmusig:auth");
-    const client = await stronghold.loadClient("auth").catch(() => stronghold.createClient("auth"));
-
-    await client.getStore().remove("apple-music:user-token");
-    await stronghold.save();
+    await removeStoredUserToken();
 
     clearSessionStorage();
 
     reload();
+  } catch (cause) {
+    logger.withTag("auth").error("Could not log out", { cause });
+    logoutError.value = cause instanceof Error ? cause.message : "Could not log out. Try again.";
   } finally {
     loggingOut.value = false;
   }

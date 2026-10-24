@@ -21,6 +21,7 @@ anyhow = "1"
 base64 = "0.22"
 dirs = "6"
 discord-rich-presence = "1.1"
+keyring = "4.2"
 reqwest = { version = "0.12", default-features = false, features = [
   "json",
   "rustls-tls",
@@ -48,7 +49,6 @@ tauri-plugin-deep-link = "2"
 tauri-plugin-updater = "2"
 tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
 tauri-plugin-http = { version = "2", features = ["unsafe-headers"] }
-tauri-plugin-stronghold = "2"
 tauri-plugin-os = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-process = "2"
@@ -59,12 +59,6 @@ tauri-plugin-prevent-default = "6"
 [target.'cfg(target_os = "linux")'.dependencies]
 # Deep-link 2.6.2 is incompatible with the ParseOption fields added in rust-ini 0.21.3.
 rust-ini = "=0.21.1"
-
-[profile.dev.package.scrypt]
-opt-level = 3
-
-[profile.dev.package.rust-argon2]
-opt-level = 3
 
 [profile.release]
 codegen-units = 1

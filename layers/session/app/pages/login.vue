@@ -26,6 +26,8 @@
 </template>
 
 <script lang="ts" setup>
+import { CredentialStoreError } from "#layers/session/app/lib/credentials";
+
 const token = ref("");
 const error = ref<string>();
 const loading = ref(false);
@@ -49,6 +51,8 @@ const submit = async () => {
   } catch (ex) {
     if (isAuthError(ex)) {
       error.value = "Invalid user token";
+    } else if (ex instanceof CredentialStoreError) {
+      error.value = ex.message;
     } else {
       error.value = "Unknown error";
     }

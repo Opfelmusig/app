@@ -30,7 +30,6 @@
     "@tauri-apps/plugin-opener": "^2.7.2",
     "@tauri-apps/plugin-os": "^2.4.0",
     "@tauri-apps/plugin-process": "^2.4.0",
-    "@tauri-apps/plugin-stronghold": "^2.4.0",
     "@tauri-apps/plugin-updater": "^2.14.0",
     "@vueuse/components": "^15.0.0",
     "@vueuse/integrations": "^15.0.0",

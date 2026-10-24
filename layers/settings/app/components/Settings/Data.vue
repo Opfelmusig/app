@@ -16,25 +16,11 @@
           @click="invalidateCache"
         />
       </SettingsConfig>
-      <SettingsConfig no-label label="App data folder">
-        <UButton
-          color="neutral"
-          variant="soft"
-          icon="lucide:folder-open"
-          label="Open folder"
-          :loading="openingDataDirectory"
-          @click="openDataDirectory"
-        />
-      </SettingsConfig>
     </SettingsSection>
   </SettingsWrapper>
 </template>
 
 <script lang="ts" setup>
-import { appDataDir } from "@tauri-apps/api/path";
-import { openPath } from "@tauri-apps/plugin-opener";
-
-const openingDataDirectory = ref(false);
 const queryCache = useQueryCache();
 const invalidatingCache = ref(false);
 const cacheError = ref<Error | null>(null);
@@ -54,15 +40,6 @@ async function invalidateCache() {
     cacheError.value = new Error("Could not invalidate the cache. Please try again.");
   } finally {
     invalidatingCache.value = false;
-  }
-}
-
-async function openDataDirectory() {
-  openingDataDirectory.value = true;
-  try {
-    await openPath(await appDataDir());
-  } finally {
-    openingDataDirectory.value = false;
   }
 }
 </script>

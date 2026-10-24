@@ -16,8 +16,6 @@
     "deep-link:default",
     "log:default",
     "updater:default",
-    "stronghold:default",
-    "stronghold:allow-remove-store-record",
     "clipboard-manager:allow-write-text",
     "os:default",
     "process:allow-exit",

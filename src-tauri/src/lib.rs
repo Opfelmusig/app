@@ -1,3 +1,4 @@
+mod credentials;
 mod deep_link;
 mod discord;
 mod drm;
@@ -55,6 +56,9 @@ pub fn run() {
                 .build(),
         )
         .invoke_handler(tauri::generate_handler![
+            credentials::native_auth_get_token,
+            credentials::native_auth_set_token,
+            credentials::native_auth_delete_token,
             tray::native_set_minimize_to_tray,
             discord::native_discord_set_presence,
             media::native_media_listen,
@@ -65,22 +69,6 @@ pub fn run() {
         .setup(|app| {
             deep_link::setup(app.handle())?;
             app.manage(media::NativeMediaSession::new(app.handle()));
-            let app_data_dir = app
-                .path()
-                .app_data_dir()
-                .expect("could not resolve app data path");
-            let app_local_data_dir = app
-                .path()
-                .app_local_data_dir()
-                .expect("could not resolve app local data path");
-
-            std::fs::create_dir_all(app_data_dir)?;
-            std::fs::create_dir_all(&app_local_data_dir)?;
-
-            let salt_path = app_local_data_dir.join("salt.txt");
-
-            app.handle()
-                .plugin(tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build())?;
 
             tray::setup(app.handle())?;
             focus_main_window(app.handle());
