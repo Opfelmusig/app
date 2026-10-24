@@ -5,14 +5,19 @@
 An alternative Apple Music client.  
 Öpfelmusig is the literal Swiss German translation of "Apple Music"
 
+### [Download 🍎🎵](https://github.com/opfelmusig/app/releases/latest)
+
+<sub>
+macOS: <code>.dmg</code>,
+windows: <code>.msi</code>,
+linux: whatever you need
+</sub>
+
 </div>
 <br>
 
-### Download
-
-[Latest Version](https://github.com/opfelmusig/app/releases/latest)
-
-On macOS, the app is not signed or notarized and may appear damaged. After installing it, run `sudo xattr -rd com.apple.quarantine "/Applications/Öpfelmusig.app"`.
+> [!IMPORTANT]
+> Independent project, not affiliated with Apple.
 
 ## Setup
 
@@ -29,52 +34,38 @@ A valid Apple Music subscription is required.
 
 ## Features
 
-- Apple Music Playback
-- Browse Apple Music Catalog
-- Albums, artists, playlists, history, and recommendations
+- Apple Music playback, catalog search, recommendations and radio stations
+- Immersive fullscreen player, animated artwork and always-on-top miniplayer
 - Synchronized lyrics with translations and transliterations
-- Animated Artworks
-- Library management
-  - Add and remove songs and albums
-  - Favorite, unfavorite, or mark items as Suggest Less
-  - Pin and unpin songs, albums, artists, and playlists
-  - Create, edit, move, and delete playlists
-  - Add, remove, and reorder playlist tracks
-  - Create playlist folders and organize playlists inside them
-- Reports playback activity to Apple Music so Recently Played, recommendations, stats.fm, and Apple Music data exports continue to work
-- Immersive player and animated artwork
-- Miniplayer
-- Equalizer
-- Discord Rich Presence
-- Native media controls and system-tray support
-- Updater
+- Editable playback queue with shuffle, repeat and saved playback position
+- 10-band equalizer and volume normalization
+- Library management with favourites, Suggest Less and pins
+- Create, edit and organise playlists and folders, including adding, removing and reordering tracks
+- Library search, filtering, sorting and customizable columns
+- Listening history and Apple Music activity reporting for Recently Played, recommendations and listening data
+- Keyboard shortcuts, command palette and Apple Music link sharing
+- Discord Rich Presence, native media controls and system-tray support
+- Built-in updater
 
 ## Restrictions
 
-- Music videos are not supported and are intentionally hidden.
-- No Lossless, Dolby Atmos, or Spatial Audio. Playback is limited to 256 kbps AAC-LC stereo.
-- Apple Music tokens can expire, requiring you to sign in again.
-- Features may stop working when Apple changes its private APIs.
-- First launch and initial synchronization may take a while, particularly on Linux.
+On macOS, the app is not signed or notarized and may appear damaged. After installing it, run `sudo xattr -rd com.apple.quarantine "/Applications/Öpfelmusig.app"`.
 
-## Feature Ideas
+On Windows, if SmartScreen displays a warning, click `More info → Run anyway`.
 
-Features that may be added in the future based on interest or whenever I feel like it.
+Also:
 
-- Control playback from a phone on the same local network
-- Apple Music Autoplay
-- Themes (color or design)
-- Crossfade
-- Last.fm
-- Statistics
-- Library Backup (export/import)
-- Apple Music login instead of token based authentication
-- Volume normalization
-- Command pallete
+- Playback is limited to 256 kbps AAC-LC stereo, without Lossless, Dolby Atmos or Spatial Audio.
+- Streaming only; downloads and offline playback are not supported.
+- Music videos are unsupported and hidden.
+- Requires an Apple Music subscription and a manually copied user token. Expired tokens must be replaced.
+- App updates may require granting access to your system's credential store again to retrieve your Apple Music token.
+- Features may break when Apple changes its private APIs.
+- Linux needs an available, unlocked Secret Service credential store.
 
 ## Bug and Feature Reports
 
-Just report them here in this repo as issues. Include the details in Settings > Info.
+Just report them here in this repo as issues. Include the details in `Settings → App & Updates → Technical information`.
 
 ## Showcase
 
@@ -102,3 +93,29 @@ Mini Player
 
 Immersive Mini Player  
 <img width="370" alt="immersive mini player" src="https://github.com/user-attachments/assets/afb2bcfe-cda0-4eb5-b01b-f201ba14b5ea" />
+
+## Development
+
+Install Bun, Node.js LTS, Rust stable and the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for your platform. On Linux, also install the ALSA and D-Bus development packages (`libasound2-dev` and `libdbus-1-dev` on Debian/Ubuntu, `alsa-lib` and `dbus` on Arch).
+
+```sh
+git clone https://github.com/opfelmusig/app.git
+cd app
+bun install
+bunx tauri dev
+```
+
+To create a production build:
+
+```sh
+bunx tauri build
+```
+
+---
+
+🍎🎵 is brought to you by [Waradu](https://waradu.dev).
+Check out my friends at [Epilogue](https://epilogue.team).
+
+Looking for a local first music player? Try out [Vleer](https://vleer.app).
+
+<sub>PS: Apple, please don’t sue me. You weren’t supposed to find this anyway.</sub>
