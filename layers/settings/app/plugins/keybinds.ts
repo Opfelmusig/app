@@ -204,6 +204,8 @@ export default defineNuxtPlugin({
             else if (settingsStore.panel.isOpen) settingsStore.panel.isOpen = false;
           },
           config: {
+            when: () =>
+              auth.valid.value && !document.querySelector('[role="menu"][data-state="open"]'),
             meta: { group: "Application", name: "Close current overlay" },
           },
         },
