@@ -234,7 +234,6 @@ const { mutate: submitOrder, isLoading: savingOrder } = useMutation({
   mutation: (draft: PlaylistOrderDraft) =>
     mutations.reorderPlaylistTracks(
       draft.playlistId,
-      draft.original,
       draft.rows.map((row) => row.song),
     ),
   onSuccess: (_, draft) => {
@@ -290,8 +289,8 @@ watch(id, () => {
 });
 
 const { mutate: removeTrack, isLoading: removingTrack } = useMutation({
-  mutation: (input: { playlistId: string; songId: string }) =>
-    mutations.removePlaylistTrack(input.playlistId, input.songId),
+  mutation: (input: { playlistId: string; original: AmLibrarySong[]; index: number }) =>
+    mutations.removePlaylistTrack(input.playlistId, input.original, input.index),
 });
 
 function songMenuItems(song: AmSong): DropdownMenuItem[] {
@@ -311,9 +310,12 @@ function songMenuItems(song: AmSong): DropdownMenuItem[] {
           song.type !== "library-songs"
         )
           return;
-        if (!tracks.value?.includes(song) || playlist.value?.id !== id.value) return;
+        if (!tracks.value || playlist.value?.id !== id.value) return;
 
-        removeTrack({ playlistId: id.value, songId: song.id });
+        const index = tracks.value.indexOf(song);
+        if (index < 0) return;
+
+        removeTrack({ playlistId: id.value, original: [...tracks.value], index });
       },
     },
   ];

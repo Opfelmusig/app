@@ -1,4 +1,3 @@
-import { collect } from "@opfelmusig/lib/helpers";
 import type {
   MutateLibraryPlaylist,
   MutateLibraryPlaylistFolder,
@@ -142,9 +141,12 @@ export class LibraryMutations {
     );
   }
 
-  async removePlaylistTrack(id: string, songId: string) {
+  async removePlaylistTrack(id: string, original: readonly AmLibrarySong[], index: number) {
     await this.mutate("remove the song from the playlist", () =>
-      this.client.library.playlists.removeTracks(id, [songId]),
+      this.setPlaylistTracks(
+        id,
+        original.filter((_, i) => i !== index),
+      ),
     );
     await this.invalidate(
       ["libdata", "playlists", "tracks", id],
@@ -165,34 +167,18 @@ export class LibraryMutations {
     );
   }
 
-  async reorderPlaylistTracks(
-    id: string,
-    original: readonly AmLibrarySong[],
-    tracks: readonly AmLibrarySong[],
-  ) {
-    await this.mutate("reorder the playlist tracks", async () => {
-      const current = await collect(
-        this.client.library.playlists.iterateRelationship(id, "tracks", { limit: 100 }),
-      );
-      if (
-        current.length !== original.length ||
-        current.some(
-          (track, index) =>
-            track.id !== original[index]?.id || track.type !== original[index]?.type,
-        )
-      ) {
-        await this.invalidate(["libdata", "playlists", "tracks", id]);
-        throw new Error("The playlist changed. Cancel editing and try again.");
-      }
-
-      await this.client.library.playlists.setTracks(
-        id,
-        tracks.map(({ id, type }) => ({ id, type })),
-      );
-    });
+  async reorderPlaylistTracks(id: string, tracks: readonly AmLibrarySong[]) {
+    await this.mutate("reorder the playlist tracks", () => this.setPlaylistTracks(id, tracks));
     await this.invalidate(
       ["libdata", "playlists", "tracks", id],
       ["libdata", "playlists", "resource", id],
+    );
+  }
+
+  private setPlaylistTracks(id: string, tracks: readonly AmLibrarySong[]) {
+    return this.client.library.playlists.setTracks(
+      id,
+      tracks.map(({ id, type }) => ({ id, type })),
     );
   }
 
