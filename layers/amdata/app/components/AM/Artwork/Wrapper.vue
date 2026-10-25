@@ -10,7 +10,7 @@ import type { Artwork } from "@opfelmusig/lib/types";
 import { artworkContextKey } from "#layers/amdata/app/lib/contexts/artwork";
 
 const variants = cva(
-  "group relative flex aspect-square shrink-0 items-center justify-center overflow-hidden text-muted select-none",
+  "group relative isolate flex aspect-square shrink-0 items-center justify-center overflow-hidden text-muted select-none",
   {
     variants: {
       context: {
