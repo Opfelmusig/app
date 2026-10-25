@@ -197,11 +197,13 @@ function activityContext(
   switch (source?.type) {
     case "albums":
     case "library-albums": {
-      const catalogId = source.type === "albums" ? source.id : source.extras.catalogId;
       return {
         identity: `${source.type}:${source.id}`,
         type: containerTypes.album,
-        ids: catalogId ? { "album-adam-id": catalogId } : undefined,
+        ids:
+          source.type === "albums"
+            ? { "album-adam-id": source.id }
+            : { "cloud-album-id": source.id },
         feature: "home / album_detail",
       };
     }

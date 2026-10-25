@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.12.0",
-    "@opfelmusig/lib": "^0.0.0-ci.43.sha-01bbab2",
+    "@opfelmusig/lib": "^0.0.1-ci.5.sha-30d17fd",
     "@pinia/colada": "^1.4.8",
     "@pinia/colada-nuxt": "^1.2.0",
     "@pinia/colada-plugin-auto-refetch": "^0.2.7",
