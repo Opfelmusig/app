@@ -38,17 +38,17 @@ export default defineNuxtPlugin({
     const off = useKeybind(
       [
         {
-          keys: ["space", "media-play-pause"],
+          keys: "space",
           run: () => playbackStore.toggle(),
           config: { meta: { group: "Playback", name: "Play / pause" } },
         },
         {
-          keys: ["ctrl-cmd+arrow-left", "media-track-previous"],
+          keys: "ctrl-cmd+arrow-left",
           run: () => playbackStore.previous(),
           config: { meta: { group: "Playback", name: "Previous track" } },
         },
         {
-          keys: ["ctrl-cmd+arrow-right", "media-track-next"],
+          keys: "ctrl-cmd+arrow-right",
           run: () => playbackStore.next(),
           config: { meta: { group: "Playback", name: "Next track" } },
         },
