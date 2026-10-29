@@ -1,3 +1,15 @@
+## v0.2.10
+
+Added:
+
+- Group library artists by catalog to hide duplicate collaboration entries
+
+Fixed:
+
+- Library albums don't appear in Recently Played on the home page after playback
+- Playlist chips are clipped on animated playlist covers
+- Pressing the hardware next-track key skips two songs when the window is focused
+
 ## v0.2.9
 
 Info:
@@ -8,7 +20,6 @@ Your system may prompt you to unlock the credential store or allow access. Follo
 
 Example on macOS:  
 <img width="400" alt="Screenshot 2026-10-24 at 18 15 00@2x" src="https://github.com/user-attachments/assets/6e3ca3bf-fc5d-462f-bb97-c8cbc055c57d" />
-
 
 Added:
 
