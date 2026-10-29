@@ -24,39 +24,46 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
-
-      - name: setup node
-        uses: actions/setup-node@v7
-        with:
-          node-version: lts/*
 
       - name: install Linux dependencies
         if: matrix.os == 'linux'
+        background: true
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libasound2-dev libdbus-1-dev
+          sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libasound2-dev libdbus-1-dev
 
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.os == 'macos' && 'aarch64-apple-darwin' || '' }}
+      - parallel:
+          - uses: oven-sh/setup-bun@v2
+
+          - name: setup node
+            uses: actions/setup-node@v7
+            with:
+              node-version: lts/*
+
+          - name: install Rust stable
+            uses: dtolnay/rust-toolchain@stable
+            with:
+              targets: ${{ matrix.os == 'macos' && 'aarch64-apple-darwin' || '' }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
+        background: true
         with:
           workspaces: "./src-tauri -> target"
           cache-bin: "false"
+          cache-on-failure: "true"
 
       - name: Cache bun dependencies
         uses: actions/cache@v5
         with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          path: ${{ runner.temp }}/bun-install-cache
+          key: bun-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('bun.lock') }}
           restore-keys: |
-            bun-${{ runner.os }}-
+            bun-${{ runner.os }}-${{ runner.arch }}-
 
       - name: install frontend dependencies
+        env:
+          BUN_INSTALL_CACHE_DIR: ${{ runner.temp }}/bun-install-cache
         run: bun ci
 
       - name: Set app version
@@ -74,6 +81,9 @@ jobs:
 
           config.version = `${major}.${minor}.${runNumber}`
           fs.writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`)
+
+      - name: Wait for build dependencies
+        wait-all:
 
       - uses: tauri-apps/tauri-action@v1
         env:
